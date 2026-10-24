@@ -1,0 +1,1 @@
+enum FirebaseStatus { notConfigured, ready }
