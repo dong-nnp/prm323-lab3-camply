@@ -2,6 +2,7 @@ import { Firestore, FieldPath, Query, Timestamp, DocumentData } from 'firebase-a
 import { z } from 'zod';
 import { Actor, authenticated, empty, fail, id, key, publicEvent, required } from './shared.js';
 import { staff } from './events.js';
+import { voucherAdmin } from './rewards.js';
 
 const page = z.object({ limit: z.number().int().min(1).max(50).default(20), cursor: id.optional() }).strict();
 const eventFields = ['organizerId', 'title', 'subtitle', 'description', 'category', 'tags', 'imageUrl', 'status', 'visibility', 'startAt', 'endAt', 'timezone', 'doorsOpenAt', 'checkInStartAt', 'checkInEndAt', 'venue', 'audience', 'benefits', 'participantRequirements', 'schedule', 'scheduleNote', 'featured', 'admissionNote', 'registrationTerms', 'participationMode', 'capacity', 'registeredCount', 'depositCoins', 'attendanceRewardCoins', 'registrationClosesAt'];
@@ -117,14 +118,15 @@ export function queries(db: Firestore, clock: () => Date) {
       return { registration, ticket: required(ticket.data(), 'NO_ACTIVE_TICKET'), event: event.exists ? eventView(eventId, event.data()!) : null };
     },
     getOperationStatus: async (actor: Actor | null, raw: unknown) => {
-      const { operationKind, operationId } = z.object({ operationKind: z.enum(['register', 'cancel', 'daily', 'redeem', 'verify-ticket', 'verify-walkin']), operationId: z.string().min(1).max(128) }).strict().parse(raw), uid = authenticated(actor);
+      const { operationKind, operationId } = z.object({ operationKind: z.enum(['register', 'cancel', 'daily', 'redeem', 'verify-ticket', 'verify-walkin', 'verify-voucher']), operationId: z.string().min(1).max(128) }).strict().parse(raw), uid = authenticated(actor);
       const receipt = required((await db.doc(`operation_receipts/${key(uid, operationKind, operationId)}`).get()).data(), 'NOT_FOUND');
       if (operationKind === 'verify-ticket') await db.runTransaction(tx => staff(tx, db, actor, receipt.result.eventId, 'verify_ticket'));
+      if (operationKind === 'verify-voucher') await db.runTransaction(tx => voucherAdmin(tx, db, actor));
       return { status: receipt.status, result: receipt.result };
     },
     getServerInfo: async (_actor: Actor | null, raw: unknown) => {
       empty.parse(raw);
-      return { apiVersion: 1, serverTime: Timestamp.fromDate(clock()), region: 'asia-southeast1', timezone: 'Asia/Ho_Chi_Minh', monthlyGiftEnabled: false, cashierVerificationEnabled: false };
+      return { apiVersion: 1, serverTime: Timestamp.fromDate(clock()), region: 'asia-southeast1', timezone: 'Asia/Ho_Chi_Minh', monthlyGiftEnabled: true, monthlyGiftMode: 'automatic', cashierVerificationEnabled: true };
     },
   };
 }

@@ -128,7 +128,7 @@ test('daily race grants once; Vietnam midnight advances; gap resets streak', asy
   assert.equal((await call('claimDailyCheckin')).coinsGranted, 10);
   now = new Date('2026-11-07T03:00:00Z');
   assert.equal((await call('claimDailyCheckin')).coinsGranted, 5);
-  await rejects(call('grantMonthlyGift'), 'POLICY_NOT_APPROVED');
+  await rejects(call('grantMonthlyGift'), 'AUTOMATIC_ONLY');
 });
 test('stock=1 concurrent redemption yields one voucher, no double debit on retry', async () => {
   await reward();
@@ -145,7 +145,7 @@ test('stock=1 concurrent redemption yields one voucher, no double debit on retry
   const secret = await call('getVoucherCode', winner, { voucherId: first.voucherId });
   assert.equal(secret.code, (await call('getVoucherCode', winner, { voucherId: first.voucherId })).code);
   await rejects(call('getVoucherCode', winner === alice ? bob : alice, { voucherId: first.voucherId }), 'NOT_OWNER');
-  await rejects(call('verifyVoucher', operator, { code: secret.code, requestId: 'cashier-test' }), 'CASHIER_POLICY_NOT_APPROVED');
+  await rejects(call('verifyVoucher', operator, { code: secret.code, requestId: 'cashier-test' }), 'FORBIDDEN_ADMIN');
 });
 test('stale reward price/terms and insufficient balance leave stock unchanged', async () => {
   await reward({ priceCoins: 250 });
@@ -178,6 +178,9 @@ test('Rules allow own reads and published public queries, deny cross-UID and all
   for (const path of [`wallets/${alice.uid}`, `users/${alice.uid}`, 'attendance/fake', 'events/registered']) await status(fetch(`${firestoreUrl}/${path}`, { method: 'PATCH', headers: a, body: JSON.stringify({ fields: { availableCoins: { integerValue: '99999' } } }) }), 403);
   await status(fetch(`${firestoreUrl}/voucher_secrets/private`, { headers: a }), 403);
   await status(fetch(`${firestoreUrl}/users/${alice.uid}/devices/test`, { headers: a }), 403);
+  await db.doc(`voucher_admins/${alice.uid}`).set({ active: true });
+  await status(fetch(`${firestoreUrl}/voucher_admins/${alice.uid}`, { headers: a }), 403);
+  await status(fetch(`${firestoreUrl}/voucher_admins/${alice.uid}`, { method: 'PATCH', headers: a, body: JSON.stringify({ fields: { active: { booleanValue: true } } }) }), 403);
   const publicQuery = { structuredQuery: { from: [{ collectionId: 'events' }], where: { compositeFilter: { op: 'AND', filters: [ ['status', 'published'], ['visibility', 'public'] ].map(([field, value]) => ({ fieldFilter: { field: { fieldPath: field }, op: 'EQUAL', value: { stringValue: value } } })) } } } };
   await status(fetch(`${firestoreUrl}:runQuery`, { method: 'POST', headers: headersFor(null), body: JSON.stringify(publicQuery) }), 200);
   await event('draft-private', { status: 'draft', visibility: 'private' });
@@ -229,6 +232,13 @@ test('FCM token reassignment and rotation remove the previous account binding', 
   assert.equal((await db.collection('device_bindings').get()).size, 0);
 });
 
+test('FCM device cap rejects an extra installation without deleting registered tokens', async () => {
+  for (let i = 0; i < 10; i++) await call('registerDevice', alice, { installationId: `installation-${i}`, token: `test-token-for-device-number-${i}`, platform: 'android' });
+  await rejects(call('registerDevice', alice, { installationId: 'installation-extra', token: 'test-token-for-extra-device-11', platform: 'android' }), 'TOO_MANY_DEVICES');
+  assert.equal((await db.collection(`users/${alice.uid}/devices`).get()).size, 10);
+  assert.equal((await db.collection('device_bindings').get()).size, 10);
+});
+
 test('Vietnamese search matches d-stroke and diacritics without losing accents', async () => {
   await event('vietnamese', { title: 'Ngày hội Đoàn viên', description: 'Sinh hoạt cộng đồng' });
   for (const q of ['ngay hoi doan vien', 'NGÀY HỘI ĐOÀN VIÊN']) {
@@ -236,6 +246,74 @@ test('Vietnamese search matches d-stroke and diacritics without losing accents',
     assert.deepEqual(result.items.map(item => item.id), ['vietnamese']);
     assert.equal(result.items[0].title, 'Ngày hội Đoàn viên');
   }
+});
+
+test('cancelled owner can compete for the reopened seat with a new ticket', async () => {
+  const first = await call('registerForEvent', alice, registration('first-attempt'));
+  const oldQr = await call('getTicketQr', alice, { eventId: 'registered' });
+  await call('cancelRegistration', alice, { eventId: 'registered', requestId: 'cancel-first' });
+  const results = await Promise.allSettled([
+    call('registerForEvent', alice, registration('second-attempt')),
+    call('registerForEvent', bob, registration('bob-competes')),
+  ]);
+  assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
+  assert.equal(results.find(r => r.status === 'rejected').reason.details.code, 'EVENT_FULL');
+  if (results[0].status === 'rejected') return;
+  assert.notEqual(results[0].value.ticketId, first.ticketId);
+  assert.equal((await db.doc(`tickets/${first.ticketId}`).get()).get('status'), 'revoked');
+  assert.equal((await db.collection(`registrations/${first.registrationId}/history`).get()).size, 1);
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
+  await rejects(call('verifyRegisteredTicket', operator, { qrPayload: oldQr.qrPayload, requestId: 'old-qr-replay' }), 'NO_ACTIVE_TICKET');
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 100);
+});
+
+test('reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt', async () => {
+  const first = await call('registerForEvent', alice, registration('first-ticket'));
+  const oldQr = await call('getTicketQr', alice, { eventId: 'registered' });
+  await call('cancelRegistration', alice, { eventId: 'registered', requestId: 'cancel-ticket' });
+  const second = await call('registerForEvent', alice, registration('second-ticket'));
+  assert.notEqual(first.ticketId, second.ticketId);
+  assert.equal((await db.collection(`registrations/${first.registrationId}/history`).get()).size, 1);
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
+  await rejects(call('verifyRegisteredTicket', operator, { qrPayload: oldQr.qrPayload, requestId: 'revoked-ticket-qr' }), 'NO_ACTIVE_TICKET');
+});
+
+test('only authorized admins consume a sponsor voucher once without another debit', async () => {
+  await reward();
+  const issued = await call('redeemReward', alice, redemption('admin-voucher'));
+  const secret = await call('getVoucherCode', alice, { voucherId: issued.voucherId });
+  const admin = { uid: operator.uid, token: { admin: true } };
+  const input = { code: secret.code, requestId: 'use-voucher-1' };
+  await rejects(call('verifyVoucher', alice, input), 'FORBIDDEN_ADMIN');
+  await rejects(call('verifyVoucher', admin, input), 'FORBIDDEN_ADMIN');
+  await db.doc(`voucher_admins/${admin.uid}`).set({ active: true });
+  const results = await Promise.allSettled([
+    call('verifyVoucher', admin, input),
+    call('verifyVoucher', admin, { ...input, requestId: 'use-voucher-2' }),
+  ]);
+  assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
+  assert.equal(results.find(r => r.status === 'rejected').reason.details.code, 'USED');
+  const winnerId = results[0].status === 'fulfilled' ? input.requestId : 'use-voucher-2';
+  assert.equal((await call('verifyVoucher', admin, { ...input, requestId: winnerId })).status, 'used');
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 0);
+  const voucher = (await db.doc(`vouchers/${issued.voucherId}`).get()).data();
+  assert.equal(voucher.usedBy, admin.uid); assert.ok(voucher.usedAt);
+  assert.equal((await db.doc(`redemptions/${issued.redemptionId}`).get()).get('status'), 'used');
+  await db.doc(`voucher_admins/${admin.uid}`).update({ active: false });
+  await rejects(call('verifyVoucher', admin, { ...input, requestId: winnerId }), 'FORBIDDEN_ADMIN');
+  await rejects(call('getOperationStatus', admin, { operationKind: 'verify-voucher', operationId: winnerId }), 'FORBIDDEN_ADMIN');
+});
+
+test('voucher verification rejects expired codes and forged admin permissions', async () => {
+  await reward({ validDays: 1 });
+  const issued = await call('redeemReward', alice, redemption('expiring-admin'));
+  const secret = await call('getVoucherCode', alice, { voucherId: issued.voucherId });
+  const admin = { uid: operator.uid, token: { admin: true } };
+  await db.doc(`voucher_admins/${admin.uid}`).set({ active: true });
+  await rejects(call('verifyVoucher', operator, { code: secret.code, requestId: 'false-admin-1' }), 'FORBIDDEN_ADMIN');
+  now = new Date(now.getTime() + 86_400_000);
+  await rejects(call('verifyVoucher', admin, { code: secret.code, requestId: 'expired-admin' }), 'EXPIRED');
+  assert.equal((await db.doc(`vouchers/${issued.voucherId}`).get()).get('status'), 'unused');
 });
 
 test('physical reward creates no voucher; expired voucher code is denied', async () => {

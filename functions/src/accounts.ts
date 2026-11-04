@@ -56,7 +56,7 @@ export function accounts(db: Firestore, clock: () => Date) {
         return { dayKey: today, streakDay: grant.streakDay, coinsGranted: grant.coins, wallet: balance };
       });
     },
-    grantMonthlyGift: async (actor: Actor | null, raw: unknown) => { authenticated(actor); empty.parse(raw); return fail('POLICY_NOT_APPROVED'); },
+    grantMonthlyGift: async (actor: Actor | null, raw: unknown) => { authenticated(actor); empty.parse(raw); return fail('AUTOMATIC_ONLY'); },
     markNotificationsRead: async (actor: Actor | null, raw: unknown) => {
       const { notificationIds, before } = z.object({ notificationIds: z.array(id).min(1).max(30).optional(), before: z.iso.datetime().optional() }).strict().parse(raw);
       const uid = authenticated(actor), now = Timestamp.fromDate(clock());

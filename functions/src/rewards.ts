@@ -1,7 +1,13 @@
 import { randomBytes } from 'node:crypto';
-import { Firestore, Timestamp } from 'firebase-admin/firestore';
+import { Firestore, Timestamp, Transaction } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import { Actor, authenticated, changeWallet, coins, fail, id, key, ledger, notification, operation, requestId, required, walletData } from './shared.js';
+
+export async function voucherAdmin(tx: Transaction, db: Firestore, actor: Actor | null) {
+  const uid = authenticated(actor);
+  if (actor?.token.admin !== true || (await tx.get(db.doc(`voucher_admins/${uid}`))).get('active') !== true) fail('FORBIDDEN_ADMIN', 'permission-denied');
+  return uid;
+}
 
 export function rewards(db: Firestore, clock: () => Date) {
   return {
@@ -44,8 +50,24 @@ export function rewards(db: Firestore, clock: () => Date) {
       return { voucherId, code: secret.code, qrPayload: `evia:voucher:${voucherId}:${secret.code}`, expiresAt: voucher.expiresAt };
     },
     verifyVoucher: async (actor: Actor | null, raw: unknown) => {
-      authenticated(actor); z.object({ code: z.string().min(1).max(512), requestId }).strict().parse(raw);
-      return fail('CASHIER_POLICY_NOT_APPROVED');
+      const input = z.object({ code: z.string().regex(/^[A-Za-z0-9_-]{43}$/), requestId }).strict().parse(raw);
+      const uid = authenticated(actor), now = Timestamp.fromDate(clock());
+      // Recheck revocable admin authority even when returning an idempotent receipt.
+      await db.runTransaction(tx => voucherAdmin(tx, db, actor));
+      return operation(db, uid, 'verify-voucher', input.requestId, input, now, async (tx) => {
+        await voucherAdmin(tx, db, actor);
+        const secrets = await tx.get(db.collection('voucher_secrets').where('codeHash', '==', key(input.code)).limit(1));
+        const secret = secrets.docs[0];
+        if (!secret) fail('VOUCHER_UNAVAILABLE', 'not-found');
+        const voucherRef = db.doc(`vouchers/${secret.id}`), voucher = required((await tx.get(voucherRef)).data(), 'VOUCHER_UNAVAILABLE');
+        if (voucher.status !== 'unused') fail(voucher.status === 'used' ? 'USED' : 'VOUCHER_UNAVAILABLE');
+        if (voucher.expiresAt && voucher.expiresAt.toMillis() <= now.toMillis()) fail('EXPIRED');
+        const redemptionRef = db.doc(`redemptions/${voucher.redemptionId}`), redemption = await tx.get(redemptionRef);
+        if (redemption.get('voucherId') !== secret.id || redemption.get('status') !== 'issued') fail('VOUCHER_INTEGRITY_ERROR', 'internal');
+        tx.update(voucherRef, { status: 'used', usedAt: now, usedBy: uid });
+        tx.update(redemptionRef, { status: 'used', usedAt: now, usedBy: uid });
+        return { voucherId: secret.id, redemptionId: voucher.redemptionId, status: 'used', usedAt: now };
+      });
     },
   };
 }

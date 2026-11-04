@@ -3,9 +3,11 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import { createBackend } from './backend.js';
-import { REGION } from './policy.js';
+import { REGION, PRODUCT_TIMEZONE } from './policy.js';
+import { createMaintenance } from './maintenance.js';
 import { key } from './shared.js';
 
 initializeApp();
@@ -52,6 +54,15 @@ export const listMyEvents = callable('listMyEvents');
 export const getTicket = callable('getTicket');
 export const getOperationStatus = callable('getOperationStatus');
 export const getServerInfo = callable('getServerInfo');
+
+const maintenance = createMaintenance(db);
+export const monthlyGiftSchedule = onSchedule({ schedule: '0 0 1 * *', timeZone: PRODUCT_TIMEZONE, timeoutSeconds: 540, retryCount: 3 }, async event => {
+  const result = await maintenance.grantMonthly(new Date(event.scheduleTime));
+  console.info('Monthly gifts finished', result);
+});
+export const noShowSchedule = onSchedule({ schedule: 'every 60 minutes', timeZone: PRODUCT_TIMEZONE, timeoutSeconds: 540, retryCount: 3 }, async () => {
+  console.info('No-show settlement finished', await maintenance.settleNoShows());
+});
 
 export const deliverNotification = onDocumentCreated({ document: 'notifications/{notificationId}', retry: true }, async event => {
   const notification = event.data?.data();
