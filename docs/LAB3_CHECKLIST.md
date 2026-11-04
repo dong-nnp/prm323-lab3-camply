@@ -138,7 +138,7 @@ Tham chiếu: [code-review.md](code-review.md). Checklist này không thay thế
 
 ## 10. Hoàn tất hồ sơ và nộp bài
 
-- [ ] Commit/push source, backend, cấu hình được phép chia sẻ, docs và evidence; lịch sử thể hiện các giai đoạn làm việc.
+- [x] Source/backend/config được phép chia sẻ, docs và evidence đã commit/push lên nhánh KietDM/feat/backend; xác minh remote a76de1f. Chưa merge hoặc tạo PR.
 - [ ] Kiểm tra không commit secrets, service-account keys, API keys bí mật, signing keys hoặc dữ liệu cá nhân.
 - [ ] Đối chiếu tên repo yêu cầu `PRM393_Lab03_<StudentID>` với giảng viên trước khi đổi tên repo hiện tại.
 - [ ] README có topic/API, cách chạy app/tests, versions, AI tools, video link và bản đồ deliverables.
@@ -163,5 +163,5 @@ Tham chiếu: [code-review.md](code-review.md). Checklist này không thay thế
 | Ngày | Mục hoàn thành/thay đổi | Commit/build | Evidence hoặc blocker |
 |---|---|---|---|
 | 04/11/2026 | Tạo checklist từ đề và kiểm tra hiện trạng trong chat | Working tree | [Tracker](IMPLEMENTATION_TRACKER.md), [test plan](test-plan.md), [migration](firebase-migration.md); chưa chạy lại tests ở lượt tạo tài liệu |
-
 | 04/11/2026 | Deploy backend policy revision + 2 Scheduler jobs; 34 Functions/Run revisions, 6/6 Callable + 3/3 Rules smoke đạt | Source baaa372 | [Release](backend-release.md); không seed/test users hoặc chạy job thủ công |
+| 04/11/2026 | Push release evidence và xác minh remote | a76de1f | [Release](backend-release.md), branch KietDM/feat/backend; không merge main |

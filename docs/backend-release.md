@@ -1,6 +1,6 @@
 # Backend release — 04/11/2026
 
-Trạng thái: **deploy và cloud checks đã xác minh đạt**; docs/evidence đang được chuẩn bị publish. Project `prm393-31822`, region `asia-southeast1`, nhánh `KietDM/feat/backend`.
+Trạng thái: **deploy và cloud checks đã xác minh đạt**; docs/evidence đã push và xác minh remote tại commit `a76de1f`. Project `prm393-31822`, region `asia-southeast1`, nhánh `KietDM/feat/backend`.
 
 ## Phạm vi và authorization
 
@@ -29,7 +29,7 @@ Log thực thi: [deploy batches](../evidence/firebase-migration/deploy-20261104-
 | Scheduler OIDC service account/target phù hợp; không public invoker | PASS, target/audience khớp URL Cloud Functions, deadline 540s; service IAM chỉ cấp runtime service account, project không có broad public bindings |
 | Callable public reads và auth-denial smoke | PASS 6/6 sau khi deploy hoàn tất; không authenticated mutations |
 | Firestore public/private Rules smoke | PASS 3/3; 14 composite indexes READY |
-| GitHub source | Remote đã có source `baaa372`; release docs/evidence chờ commit/push cuối |
+| GitHub source và release evidence | PASS, remote tip khớp `a76de1f` sau push; source deploy vẫn là baaa372 |
 
 Evidence được lưu tại [backend-release](../evidence/backend-release/). Không chỉ dùng Functions ACTIVE để kết luận: Cloud Run có thể chưa phục vụ revision mới.
 
@@ -46,3 +46,5 @@ Kiểm tra Scheduler definition/IAM không chứng minh job đã chạy theo l�
 ## Nếu cần rollback
 
 Tạm dừng các Scheduler jobs trước khi khôi phục source backend đã biết ổn định; giữ nguyên wallet, ledger, grant receipts, registration history và voucher-used records. Không reset/xóa database để rollback code, không tự hoàn/cấp xu hàng loạt. Các mutation đã hoàn tất cần được đối soát trước khi xử lý bù. Không thực hiện rollback trong lượt này nếu chưa có lỗi cần xử lý.
+
+GitHub release evidence: [a76de1f](https://github.com/dong-nnp/prm323-lab3-camply/commit/a76de1f615e8ec91db02bdaf8ac8338346496f93). Commit checklist xác nhận push có thể mới hơn commit evidence này; không thay runtime đã deploy.

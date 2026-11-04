@@ -162,3 +162,5 @@ Policy implementation commit: `01082cd`; 31-test evidence was run against this s
 ## Cloud rollout sau readiness — 04/11/2026
 
 User đã cho phép deploy và push. Source baaa372 được deploy đủ 9 nhóm, exit0; 34 Functions ACTIVE cùng hash, 34 latest Run revisions READY. Monthly/no-show Scheduler ENABLED, timezone/target/service-account/private IAM đã kiểm. 14 indexes READY, 6/6 Callable + 3/3 Rules smoke đạt. Không test users, seed, role grants hoặc manual jobs. Xem backend-release.md; nguồn dữ liệu thật, native flows và instrumentation vẫn pending.
+
+GitHub delivery verified: push tới `KietDM/feat/backend` thành công, `git ls-remote` khớp local `a76de1f615e8ec91db02bdaf8ac8338346496f93`. Release evidence và links review fixes đã có trên remote. Không tạo PR/merge hoặc gửi thông báo cho thành viên khác.
