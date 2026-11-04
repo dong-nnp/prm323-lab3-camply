@@ -5,7 +5,16 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
-import { catalogSchema, eventSchema } from '../lib/catalog.js';
+import { catalogSchema, eventSchema, rewardSchema } from '../lib/catalog.js';
+
+test('imported terms versions fit registration and redemption requests', () => {
+  const reward = { id: 'test-reward', title: 'Fixture', description: 'Test only', category: 'test', priceCoins: 200, stockRemaining: 1, status: 'active', usageLocations: [], termsText: 'Test terms', termsVersion: 'v'.repeat(100), redemptionSteps: ['Test step'], fulfillmentType: 'voucher', sourceRef: 'https://example.test/source' };
+  assert.equal(rewardSchema.safeParse(reward).success, true);
+  assert.equal(rewardSchema.safeParse({ ...reward, termsVersion: 'v'.repeat(101) }).success, false);
+  const event = { id: 'test-event', organizerId: 'test-club', title: 'Fixture', description: 'Test only', category: 'test', tags: [], status: 'published', visibility: 'public', startAt: '2026-11-05T03:00:00Z', endAt: '2026-11-05T05:00:00Z', checkInStartAt: '2026-11-05T02:00:00Z', checkInEndAt: '2026-11-05T04:00:00Z', timezone: 'Asia/Ho_Chi_Minh', venue: { name: 'Fixture' }, audience: { scope: 'everyone' }, participationMode: 'registration', capacity: 10, depositCoins: 0, attendanceRewardCoins: 5, registrationTerms: { version: 'v'.repeat(100), text: 'Test terms' }, sourceRef: 'https://example.test/source' };
+  assert.equal(eventSchema.safeParse(event).success, true);
+  assert.equal(eventSchema.safeParse({ ...event, registrationTerms: { ...event.registrationTerms, version: 'v'.repeat(101) } }).success, false);
+});
 
 test('catalog rejects duplicate IDs, invented counters and restricted audience', () => {
   const interest = { id: 'test-interest', label: 'Test only', status: 'active', sourceRef: 'https://example.test/approved' };
