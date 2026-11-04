@@ -1,5 +1,7 @@
 # CODEX — START HERE: EVIA LAB 3
 
+> **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
+
 > **Latest local readiness (04/11/2026):** read [BACKEND_POLICIES.md](BACKEND_POLICIES.md), [FRONTEND_HANDOFF.md](FRONTEND_HANDOFF.md) and [DATA_READINESS.md](DATA_READINESS.md). Owner has resolved monthly/no-show/re-registration/admin voucher policy. Local 34-export backend passes 31 Emulator tests; new jobs/admin changes NOT deployed. Historical 20-test/policy-blocked notes below describe the earlier revision. No approved real catalog exists. Flutter/UI remains owned by the other team.
 
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.

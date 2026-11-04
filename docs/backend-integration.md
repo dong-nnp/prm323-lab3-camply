@@ -2,13 +2,13 @@
 
 Ngày 04/11/2026. Implementation: `functions/src/`. **Project hiện tại:
 `prm393-31822` (evia, Blaze)**. Emulator/tests dùng `demo-evia-backend`.
-Đã deploy 32 Functions + Rules/Storage; 14 indexes READY và API smoke đạt.
+Đã deploy 34 Functions; 34 Cloud Run latest revisions READY, 2 Scheduler jobs ENABLED. Rules smoke đạt, 14 indexes READY; xem [release mới](backend-release.md).
 Bằng chứng: [firebase-migration.md](firebase-migration.md).
 UI và các adapter Flutter hiện tại chưa được nối vào backend này.
 
 ## Backend readiness local — API v1.1 (04/11/2026)
 
-Bản local mới có đăng ký lại sau hủy (vé mới, giữ lịch sử), admin xác nhận voucher một lần, Monthly Gift tự động và no-show forfeiture. **Chưa deploy thay đổi này**; cloud 32 Functions/evidence migration là revision cũ. Xem [handoff](FRONTEND_HANDOFF.md), [data readiness](DATA_READINESS.md) và [policy/jobs](BACKEND_POLICIES.md).
+Bản local mới có đăng ký lại sau hủy (vé mới, giữ lịch sử), admin xác nhận voucher một lần, Monthly Gift tự động và no-show forfeiture. **Đã deploy thay đổi này**; evidence migration 32 Functions là lịch sử revision trước. Xem [handoff](FRONTEND_HANDOFF.md), [data readiness](DATA_READINESS.md) và [policy/jobs](BACKEND_POLICIES.md).
 
 ## Chạy backend độc lập với giao diện
 
@@ -69,7 +69,7 @@ fingerprint đúng signing key. Kiểm thử Auth Emulator không xác nhận Go
 | `getAccount` | `{}` | `{profile,wallet,interestOptions:[{id,label}]}` |
 | `updateProfile` | Một hoặc nhiều `displayName`, `studentId`, `universityEmail` (string, không null), `phoneNumber` (string hoặc null) | `{updated:true}`; không sửa xác minh/role |
 | `saveInterests` | `{interests:[id,...]}` | Tối thiểu **3 ID khác nhau**, tối đa 50; phải tồn tại active trong `interests/`; `{interests,onboardingCompleted:true}` |
-| `getServerInfo` | `{}`; guest được gọi | API version, server time, region, timezone, cờ monthly/admin voucher true trong bản local; monthly mode automatic |
+| `getServerInfo` | `{}`; guest được gọi | API version, server time, region, timezone, cờ monthly/admin voucher true trên cloud; monthly mode automatic |
 
 Danh mục sở thích phải do chủ dự án duyệt/import; backend không tự chọn taxonomy
 từ tên minh họa Figma. Chưa import thì options rỗng và không thể hoàn tất onboarding.

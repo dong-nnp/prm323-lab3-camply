@@ -1,5 +1,9 @@
 # Test plan — template
 
+## Cloud release — 04/11/2026
+
+Source giữ nguyên so với 31-test Emulator run. Build TypeScript đạt; deploy 34 Functions/Run latest revisions READY, 2 Scheduler definitions/IAM đúng, 14 indexes READY. **6/6 Callable smoke và 3/3 Firestore Rules smoke đạt**, không authenticated mutations/test users/seed. [Release evidence](backend-release.md). Không coi definition checks là job business execution, OAuth/FCM hoặc UI/E2E proof.
+
 ## Backend readiness mới — 04/11/2026
 
 Lệnh `npm --prefix functions run test:emulator`, Node22.23.4 + Java21 JBR + Firebase CLI: build TypeScript và **31/31 tests đạt, 0 fail, 0 skipped**. [Log cuối](../evidence/backend-readiness/emulator-final.log). Flutter không thay đổi, không chạy lại UI/native tests trong milestone này.

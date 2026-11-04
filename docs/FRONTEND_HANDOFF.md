@@ -1,6 +1,6 @@
 # Hợp đồng bàn giao cho đội giao diện — không yêu cầu đổi layout
 
-Ngày 04/11/2026. **Backend local mới hơn deployment 32 Functions đã ghi nhận.** Những thay đổi Monthly Gift/no-show/re-registration/admin voucher phải deploy và kiểm chứng cloud riêng trước khi mobile dùng trên project thật. Chưa nối Flutter hoặc thay files trong `lib/`.
+Ngày 04/11/2026. **Backend mới đã deploy: 34 Functions ACTIVE, 34 Cloud Run latest revisions READY, 2 scheduled jobs ENABLED**. Monthly Gift/no-show/re-registration/admin voucher đã có trên cloud; [release evidence](backend-release.md). Chưa nối Flutter hoặc thay files trong `lib/`. Native/authenticated flow acceptance vẫn cần làm khi tích hợp.
 
 ## Dùng chung
 

@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-11-04T16:46:21.964Z",
+  "project": "prm393-31822",
+  "indexes": [
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/bookmarks/indexes/CICAgJim14AJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/attendance/indexes/CICAgOjXh4EJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/notifications/indexes/CICAgJj7z4EJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/following/indexes/CICAgJjF9oIJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/vouchers/indexes/CICAgJiUpoMJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/notifications/indexes/CICAgOi3kJAJ",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/registrations/indexes/CICAgJim14AK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/events/indexes/CICAgOjXh4EK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/vouchers/indexes/CICAgJj7z4EK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/redemptions/indexes/CICAgJjF9oIK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/registrations/indexes/CICAgJiUpoMK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/redemptions/indexes/CICAgOi3kJAK",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/event_intents/indexes/CICAgJim14AL",
+      "state": "READY"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/ledger/indexes/CICAgJiUpoML",
+      "state": "READY"
+    }
+  ]
+}

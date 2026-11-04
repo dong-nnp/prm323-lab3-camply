@@ -1,5 +1,10 @@
 # PRM393 Lab 3 — Flutter source base
 
+## Backend release — 04/11/2026
+
+Đã deploy **34 Functions**, xác minh **34 latest Cloud Run revisions READY**, hai Scheduler jobs ENABLED (Monthly Gift/ngày 1, no-show/mỗi 60 phút). Timezone/IAM đã kiểm; 6/6 Callable smoke + 3/3 Rules smoke đạt. [Release và bằng chứng](docs/backend-release.md). Không chạy thủ công job/cấp xu, không seed dữ liệu thật. UI và instrumentation vẫn chưa tích hợp.
+
+
 
 ## Chuẩn bị backend không phụ thuộc UI — 04/11/2026
 

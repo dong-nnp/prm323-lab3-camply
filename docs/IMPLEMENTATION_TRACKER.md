@@ -1,5 +1,7 @@
 # EVIA LAB 3 — IMPLEMENTATION & EVIDENCE TRACKER
 
+> **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
+
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
 > App đã chuyển bằng FlutterFire; 32 Functions + Rules đã deploy, 14 indexes READY.
 > API smoke cloud + 20 Emulator tests + APK/startup Core đạt; [evidence](firebase-migration.md).
@@ -155,3 +157,8 @@ services/push/login/data/E2E và các policy OPEN vẫn chưa hoàn tất.
 - Flutter/UI untouched, no APK/native run, no ARTEMIS; no new cloud deploy or role grants. Cloud Scheduler execution/IAM/cost and mobile instrumentation are not verified.
 
 Policy implementation commit: `01082cd`; 31-test evidence was run against this source before commit. Documentation/evidence are recorded separately; no new cloud state claimed.
+
+
+## Cloud rollout sau readiness — 04/11/2026
+
+User đã cho phép deploy và push. Source baaa372 được deploy đủ 9 nhóm, exit0; 34 Functions ACTIVE cùng hash, 34 latest Run revisions READY. Monthly/no-show Scheduler ENABLED, timezone/target/service-account/private IAM đã kiểm. 14 indexes READY, 6/6 Callable + 3/3 Rules smoke đạt. Không test users, seed, role grants hoặc manual jobs. Xem backend-release.md; nguồn dữ liệu thật, native flows và instrumentation vẫn pending.

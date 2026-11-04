@@ -1,6 +1,6 @@
 # Quy tắc backend đã chốt — 04/11/2026
 
-Các quyết định trong chat hiện tại thay thế những mục Monthly Gift/no-show/re-registration/cashier còn OPEN ở tài liệu v1.3 trước đây. Implementation mới **chỉ local, chưa deploy**; không suy ra jobs đang chạy trên Firebase thật.
+Các quyết định trong chat hiện tại thay thế những mục Monthly Gift/no-show/re-registration/cashier còn OPEN ở tài liệu v1.3 trước đây. Implementation mới **đã deploy lên project prm393-31822**; hai jobs ENABLED, metadata/IAM đã verify. Xem [release](backend-release.md); chưa kiểm chứng lần chạy tự nhiên trên dữ liệu thật.
 
 ## Monthly Gift
 
@@ -39,9 +39,9 @@ Các quyết định trong chat hiện tại thay thế những mục Monthly Gi
 
 ## Ranh giới triển khai và validation
 
-- Source mới có **34 exports** (32 trước đó + 2 scheduled Functions); số deployed vẫn là snapshot cũ 32 cho đến khi deploy thật.
+- Source mới có **34 exports** (32 trước đó + 2 scheduled Functions); 34/34 đã deploy, cùng source hash và Cloud Run latest revisions READY.
 - Jobs đọc từng trang 100 records, xử lý per-record transaction, dừng và retry khi lỗi. Phù hợp lab; cần task queue/checkpoint trước khi fanout lớn có nguy cơ quá timeout 540 giây.
-- Emulator kiểm business logic trực tiếp, không chứng minh Cloud Scheduler tự gọi đúng lịch/IAM trên cloud. Phải kiểm scheduler timezone, service account, retries và logs sau deployment.
-- Triển khai scheduled Functions tạo tài nguyên Cloud Scheduler và có thể có phí; lượt này không tạo tài nguyên hay ghi tiền trên project thật.
+- Emulator kiểm business logic trực tiếp, không chứng minh Cloud Scheduler tự gọi đúng lịch/IAM trên cloud. Scheduler timezone/service account/retry config đã kiểm trong release; business execution theo lịch thật chưa được dùng làm evidence.
+- Triển khai scheduled Functions tạo tài nguyên Cloud Scheduler và có thể có phí; release đã được người dùng cho phép và tạo hai Scheduler jobs; không gọi thủ công job hoặc ghi tiền thử nghiệm.
 
 Nguồn triển khai: [maintenance.ts](../functions/src/maintenance.ts), [events.ts](../functions/src/events.ts), [rewards.ts](../functions/src/rewards.ts). Nguồn nền tảng: [Firebase scheduled Functions](https://firebase.google.com/docs/functions/schedule-functions), [ScheduledEvent.scheduleTime](https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.scheduler.scheduledevent).

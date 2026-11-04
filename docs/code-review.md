@@ -6,13 +6,13 @@ Ngày 04/11/2026. Đã review local commit `7e9c7bf` bằng **Codex chat assista
 
 | ID | Loại / vị trí baseline 7e9c7bf | Quyết định và lý do | Fix commit / evidence |
 |---|---|---|---|
-| CR-01 | Bug, catalog.ts:15,30 | Accepted: terms version import 101–128 ký tự khiến register/redeem API không dùng được; cần khớp contract | `bf5ca34`, test RED→GREEN |
-| CR-02 | Validation, catalog.ts:32 | Accepted: preflight phải từ chối catalog rỗng như apply | `ae4bfe4`, subprocess RED→GREEN |
-| CR-03 | Bug, queries.ts:43 | Accepted: tìm không dấu phải khớp đ theo contract tiếng Việt | `bd6f39d`, Emulator RED→GREEN |
+| CR-01 | Bug, catalog.ts:15,30 | Accepted: terms version import 101–128 ký tự khiến register/redeem API không dùng được; cần khớp contract | [bf5ca34](https://github.com/dong-nnp/prm323-lab3-camply/commit/bf5ca34e19850a824c778fafec00ba42827d11f6), test RED→GREEN |
+| CR-02 | Validation, catalog.ts:32 | Accepted: preflight phải từ chối catalog rỗng như apply | [ae4bfe4](https://github.com/dong-nnp/prm323-lab3-camply/commit/ae4bfe476d14235dce91f4ad3a9a8d0a806b4eed), subprocess RED→GREEN |
+| CR-03 | Bug, queries.ts:43 | Accepted: tìm không dấu phải khớp đ theo contract tiếng Việt | [bd6f39d](https://github.com/dong-nnp/prm323-lab3-camply/commit/bd6f39d6a70ce287995a40e3b42f34e70982b0b4), Emulator RED→GREEN |
 | CR-04 | Maintainability/contract, backend-integration.md:66 | Modified: sửa docs nullable về đúng schema, không tự mở rộng clear profile | Diff contract trong milestone này |
 | CR-05 | Integration/test gap, backend-integration.md:84,172–177 | Modified: thêm owner lookup/allowlist vào handoff; tránh endpoint chưa cần. Native navigation vẫn pending | [Handoff](FRONTEND_HANDOFF.md) |
 
-Ba fixes đầu có commit riêng mang finding ID, hiện local. Cần push để bổ sung links GitHub/PR truy cập được cho hồ sơ nộp; không coi commit chưa publish là evidence online.
+Ba fixes đầu có commit riêng mang finding ID. Đã xác minh remote branch chứa cả ba commits và bổ sung links ở bảng. Chưa tạo PR hoặc external approval; release đang được kiểm tra riêng.
 
 ## AI tools disclosure trong milestone
 
@@ -22,7 +22,8 @@ Ba fixes đầu có commit riêng mang finding ID, hiện local. Cần push đ�
 
 ## Còn lại
 
-- [ ] Push fixes, gắn links truy cập được; ưu tiên review PR trước merge.
+- [x] Xác minh fix commits có trên remote và gắn links truy cập được theo repository permissions.
+- [ ] Ưu tiên review PR trước merge; chưa tạo PR/approval trong lượt release.
 - [ ] Review Flutter/service integration và kiểm notification routing trên Android khi app sẵn sàng.
 - [ ] Tổng hợp disclosure AI tools của cả nhóm.
 

@@ -30,7 +30,7 @@ Những giá trị sau cũng có thể thay từ xa trong tương lai mà không
 | Phần thưởng: `priceCoins`, `stockRemaining`, `status`, `validDays`, `termsVersion`, `termsText` | Reward records | Backend kiểm tra giá/stock trong transaction; giữ lịch sử redemption/voucher đã phát hành. Café hiện chốt 200 xu, tài liệu này không cho phép tự đổi policy |
 | Sở thích: `label`, `status` | Interest records | Quản lý taxonomy được duyệt; xử lý tương thích với hồ sơ đã chọn các ID cũ |
 | Signup bonus và daily schedule | `SIGNUP_BONUS_COINS` và `dailyGrant` trong `functions/src/policy.ts` | Hiện hard-code ở backend, chưa đổi được qua admin. Nếu cần cấu hình sau này: thiết kế policy server có version, thời điểm hiệu lực và audit trước; giữ 200 xu/UID, lịch `[5,10,15,30,50,70,100]`, ngày 8+100 và timezone đã chốt cho đến khi có quyết định mới |
-| Monthly Gift, admin voucher, no-show, đăng ký lại sau hủy | Đã được chủ dự án chốt, có backend local mới trong [BACKEND_POLICIES.md](BACKEND_POLICIES.md) | Giữ policy ở server có version/audit; không dùng client Remote Config để vượt quyền hoặc quyết định số xu. Chưa deploy jobs/admin changes |
+| Monthly Gift, admin voucher, no-show, đăng ký lại sau hủy | Đã được chủ dự án chốt, có backend local mới trong [BACKEND_POLICIES.md](BACKEND_POLICIES.md) | Giữ policy ở server có version/audit; không dùng client Remote Config để vượt quyền hoặc quyết định số xu. Jobs/admin changes đã deploy; xem backend-release.md. Remote Config runtime vẫn pending |
 
 Remote Config phía client không chứa secrets, credentials, role/staff permissions, QR signing secrets hoặc số dư/ledger. Không cho admin tùy ý đổi Firebase project, endpoint, auth guard hay Security Rules qua config app.
 

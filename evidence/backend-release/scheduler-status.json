@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-11-04T16:44:10.548Z",
+  "project": "prm393-31822",
+  "verified": true,
+  "jobs": [
+    {
+      "name": "projects/prm393-31822/locations/asia-southeast1/jobs/firebase-schedule-noShowSchedule-asia-southeast1",
+      "functionId": "noShowSchedule",
+      "state": "ENABLED",
+      "schedule": "every 60 minutes",
+      "timeZone": "Asia/Ho_Chi_Minh",
+      "uri": "https://asia-southeast1-prm393-31822.cloudfunctions.net/noShowSchedule",
+      "serviceAccountEmail": "465411217120-compute@developer.gserviceaccount.com",
+      "audience": "https://asia-southeast1-prm393-31822.cloudfunctions.net/noShowSchedule",
+      "attemptDeadline": "540s",
+      "retryConfig": {
+        "retryCount": 3,
+        "maxRetryDuration": "0s",
+        "minBackoffDuration": "5s",
+        "maxBackoffDuration": "3600s",
+        "maxDoublings": 5
+      },
+      "lastAttemptTime": null,
+      "nextScheduleTime": "2026-11-04T17:43:00Z",
+      "expectedServiceAccount": "465411217120-compute@developer.gserviceaccount.com",
+      "allowedTargetUris": [
+        "https://noshowschedule-mohnhzr27a-as.a.run.app",
+        "https://asia-southeast1-prm393-31822.cloudfunctions.net/noShowSchedule"
+      ],
+      "invokerBindings": [
+        {
+          "role": "roles/run.invoker",
+          "members": [
+            "serviceAccount:465411217120-compute@developer.gserviceaccount.com"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "projects/prm393-31822/locations/asia-southeast1/jobs/firebase-schedule-monthlyGiftSchedule-asia-southeast1",
+      "functionId": "monthlyGiftSchedule",
+      "state": "ENABLED",
+      "schedule": "0 0 1 * *",
+      "timeZone": "Asia/Ho_Chi_Minh",
+      "uri": "https://asia-southeast1-prm393-31822.cloudfunctions.net/monthlyGiftSchedule",
+      "serviceAccountEmail": "465411217120-compute@developer.gserviceaccount.com",
+      "audience": "https://asia-southeast1-prm393-31822.cloudfunctions.net/monthlyGiftSchedule",
+      "attemptDeadline": "540s",
+      "retryConfig": {
+        "retryCount": 3,
+        "maxRetryDuration": "0s",
+        "minBackoffDuration": "5s",
+        "maxBackoffDuration": "3600s",
+        "maxDoublings": 5
+      },
+      "lastAttemptTime": null,
+      "nextScheduleTime": "2026-11-30T17:00:00Z",
+      "expectedServiceAccount": "465411217120-compute@developer.gserviceaccount.com",
+      "allowedTargetUris": [
+        "https://monthlygiftschedule-mohnhzr27a-as.a.run.app",
+        "https://asia-southeast1-prm393-31822.cloudfunctions.net/monthlyGiftSchedule"
+      ],
+      "invokerBindings": [
+        {
+          "role": "roles/run.invoker",
+          "members": [
+            "serviceAccount:465411217120-compute@developer.gserviceaccount.com"
+          ]
+        }
+      ]
+    }
+  ]
+}

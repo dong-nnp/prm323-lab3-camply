@@ -1,5 +1,7 @@
 # EVIA — PROJECT CONTEXT / SOURCE OF TRUTH FOR CODEX
 
+> **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
+
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
 > App đã chuyển bằng FlutterFire; 32 Functions + Rules đã deploy, 14 indexes READY.
 > API smoke cloud + 20 Emulator tests + APK/startup Core đạt; [evidence](firebase-migration.md).

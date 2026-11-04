@@ -43,7 +43,7 @@ Tham chiếu: [design-traceability.md](design-traceability.md), [architecture.md
 - [ ] Đồng bộ UI demo với scope hiện tại: không Waitlist/milestones, walk-in chỉ QR, Café 200 xu, tối thiểu 3 sở thích không Skip.
 - [x] Chốt Monthly Gift, admin voucher tại nhà tài trợ, no-show và đăng ký lại; xem [BACKEND_POLICIES.md](BACKEND_POLICIES.md).
 - [x] Triển khai/kiểm thử các policy mới trên Emulator, gồm đăng ký lại với vé mới, monthly/no-show jobs và admin voucher.
-- [ ] Deploy/kiểm chứng revision mới và Cloud Scheduler; chưa chạy jobs hoặc cấp admin quyền trên cloud.
+- [x] Deploy revision mới: 34 Functions/Run revisions READY; 2 Scheduler jobs ENABLED, timezone/target/IAM đã verify. Không manual job hoặc cấp voucher-admin role; chưa có business execution evidence trên dữ liệu thật.
 - [x] Chuẩn bị [quy trình dữ liệu thật](DATA_READINESS.md) và [handoff frontend](FRONTEND_HANDOFF.md); chưa có dataset được duyệt.
 
 Tham chiếu: [backend-integration.md](backend-integration.md), [firebase-migration.md](firebase-migration.md), [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md).
@@ -131,7 +131,7 @@ Tham chiếu: [test-plan.md](test-plan.md), [e2e_test/](../e2e_test/).
 - [x] Ghi 5 findings gắn baseline file:line, gồm bug/validation/contract/integration gap.
 - [x] Có quyết định/lý do từng finding trong code-review.md.
 - [x] Sửa CR-01/02/03, mỗi finding một commit riêng có ID; ghi hashes local vào record.
-- [ ] Push fix commits, bổ sung links GitHub/PR truy cập được vào review record.
+- [x] Xác minh fix commits đã có trên remote và bổ sung links GitHub vào review record; chưa tạo PR/approval.
 - [ ] Khai báo tất cả AI tools đã dùng và mục đích sử dụng.
 
 Tham chiếu: [code-review.md](code-review.md). Checklist này không thay thế AI review record.
@@ -163,3 +163,5 @@ Tham chiếu: [code-review.md](code-review.md). Checklist này không thay thế
 | Ngày | Mục hoàn thành/thay đổi | Commit/build | Evidence hoặc blocker |
 |---|---|---|---|
 | 04/11/2026 | Tạo checklist từ đề và kiểm tra hiện trạng trong chat | Working tree | [Tracker](IMPLEMENTATION_TRACKER.md), [test plan](test-plan.md), [migration](firebase-migration.md); chưa chạy lại tests ở lượt tạo tài liệu |
+
+| 04/11/2026 | Deploy backend policy revision + 2 Scheduler jobs; 34 Functions/Run revisions, 6/6 Callable + 3/3 Rules smoke đạt | Source baaa372 | [Release](backend-release.md); không seed/test users hoặc chạy job thủ công |

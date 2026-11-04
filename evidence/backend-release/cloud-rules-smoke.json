@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-04T16:39:25.367Z",
+  "project": "prm393-31822",
+  "checks": [
+    {
+      "name": "guest-public-filtered",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "name": "guest-unfiltered-denied",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "name": "guest-wallet-denied",
+      "status": 403,
+      "expected": 403
+    }
+  ]
+}
