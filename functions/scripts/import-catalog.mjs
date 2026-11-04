@@ -17,7 +17,6 @@ const db = getFirestore();
 const convert = value => Array.isArray(value) ? value.map(convert) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k.endsWith('At') && typeof v === 'string' ? Timestamp.fromDate(new Date(v)) : convert(v)])) : value;
 await db.runTransaction(async tx => {
   const refs = Object.entries(catalog).flatMap(([collection, rows]) => rows.map(row => db.doc(`${collection}/${row.id}`)));
-  if (!refs.length) throw new Error('Empty catalog');
   const prior = await tx.getAll(...refs);
   if (prior.some(d => d.exists)) throw new Error('Create-only import: an ID already exists; no documents were overwritten');
   for (const event of catalog.events) {

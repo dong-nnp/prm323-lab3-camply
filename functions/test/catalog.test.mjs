@@ -38,3 +38,15 @@ test('import dry-run validates input without initializing Firebase or writing do
     assert.match(stdout, /"interests":1/);
   } finally { await rm(folder, { recursive: true }); }
 });
+
+test('import dry-run rejects an empty catalog before any Firebase access', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'evia-empty-catalog-'));
+  try {
+    const file = join(folder, 'empty.json');
+    await writeFile(file, '{}');
+    await assert.rejects(
+      promisify(execFile)(process.execPath, ['scripts/import-catalog.mjs', '--input', file, '--project', 'demo-evia-backend'], { cwd: new URL('..', import.meta.url) }),
+      error => error.code === 1 && /Empty catalog/.test(error.stderr),
+    );
+  } finally { await rm(folder, { recursive: true }); }
+});
