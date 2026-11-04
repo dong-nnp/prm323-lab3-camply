@@ -40,7 +40,7 @@ export function queries(db: Firestore, clock: () => Date) {
       else query = query.where('status', '==', 'active');
       const result = await list(query, input, input.kind === 'events' ? { field: 'startAt', path: 'events' } : undefined);
       // shortcut: filter bounded candidate pages; add a search index when catalog size makes scanning costly.
-      const norm = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+      const norm = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/đ/g, 'd');
       const following = new Set<string>();
       if (input.feed === 'following' && result.items.length) {
         const organizerIds: string[] = [...new Set(result.items.map((item: DocumentData) => item.organizerId as string))];

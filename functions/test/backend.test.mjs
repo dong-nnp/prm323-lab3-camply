@@ -229,6 +229,15 @@ test('FCM token reassignment and rotation remove the previous account binding', 
   assert.equal((await db.collection('device_bindings').get()).size, 0);
 });
 
+test('Vietnamese search matches d-stroke and diacritics without losing accents', async () => {
+  await event('vietnamese', { title: 'Ngày hội Đoàn viên', description: 'Sinh hoạt cộng đồng' });
+  for (const q of ['ngay hoi doan vien', 'NGÀY HỘI ĐOÀN VIÊN']) {
+    const result = await call('getPublicCatalog', null, { kind: 'events', q });
+    assert.deepEqual(result.items.map(item => item.id), ['vietnamese']);
+    assert.equal(result.items[0].title, 'Ngày hội Đoàn viên');
+  }
+});
+
 test('physical reward creates no voucher; expired voucher code is denied', async () => {
   await reward({ fulfillmentType: 'physical', redemptionInstructions: 'Test pickup' });
   const physical = await call('redeemReward', alice, redemption('physical-test'));
