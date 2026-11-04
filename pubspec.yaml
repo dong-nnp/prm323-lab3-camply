@@ -17,6 +17,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.4.3
+  flutter_svg: ^2.3.2
   go_router: ^18.1.1
   google_sign_in: ^7.2.0
 
@@ -27,3 +28,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/figma/
