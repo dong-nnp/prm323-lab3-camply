@@ -11,6 +11,8 @@ import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/rewards_wallet.dart';
+import '../../widgets/coin_icon.dart';
+import '../../data/mock/activity_mock_data.dart';
 
 class RewardsScreen extends ConsumerWidget {
   const RewardsScreen({this.catalog = false, super.key});
@@ -19,7 +21,6 @@ class RewardsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
-    final screen = catalog ? '2083:3327' : '2083:3522';
     return EviaPage(
       header: Container(
         color: AppColors.surface,
@@ -37,38 +38,22 @@ class RewardsScreen extends ConsumerWidget {
                 'Rewards',
                 'Earn coins by attending campus events and checking in daily. Exchange available coins for rewards.',
               ),
-              icon: ActivityIcon(
-                screen,
-                catalog ? 'imgContainer14' : 'imgContainer',
-              ),
+              icon: const ActivityIcon('2083:3522', 'imgContainer'),
             ),
-            if (catalog)
-              IconButton(
-                tooltip: 'Profile',
-                onPressed: () => context.push('/'),
-                icon: const CircleAvatar(
-                  backgroundColor: AppColors.primary,
-                  child: ActivityIcon('2083:3327', 'imgContainer15'),
-                ),
-              ),
           ],
         ),
       ),
-      footer: ActivityBottomBar(
-        screen: screen,
-        start: catalog ? 16 : 12,
-        selected: 2,
-      ),
+      footer: ActivityBottomBar(screen: '2083:3522', start: 12, selected: 2),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            RewardsWallet(screen: screen),
+            const RewardsWallet(screen: '2083:3522'),
             const SizedBox(height: AppSpacing.lg),
             ActivityTabs(
-              activeColor: catalog ? AppColors.primary : AppColors.surface,
-              activeForeground: catalog ? AppColors.surface : AppColors.primary,
+              activeColor: AppColors.surface,
+              activeForeground: AppColors.primary,
               labels: const ['Earn Coins', 'Redeem Rewards'],
               selected: catalog ? 1 : 0,
               onSelected: (index) =>
@@ -190,13 +175,9 @@ class RewardsScreen extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: InkWell(
-                    onTap: () => i == 0
-                        ? context.push('/my-events/check-in')
-                        : showActivityHelp(
-                            context,
-                            'Complete Missions',
-                            'New campus missions will appear here when available.',
-                          ),
+                    onTap: () => context.push(
+                      i == 0 ? '/my-events' : '/rewards/milestones',
+                    ),
                     child: EviaCard(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       child: Row(
@@ -216,15 +197,13 @@ class RewardsScreen extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  i == 0
-                                      ? 'Attend Events'
-                                      : 'Complete Missions',
+                                  i == 0 ? 'Attend Events' : 'Event Milestones',
                                   style: EviaTheme.label,
                                 ),
                                 Text(
                                   i == 0
-                                      ? 'Check in at events to earn coins'
-                                      : 'Finish activities to earn rewards',
+                                      ? 'View your events and check-in options'
+                                      : 'Track your event attendance milestones',
                                   style: EviaTheme.caption,
                                 ),
                               ],
@@ -250,10 +229,9 @@ class _RewardCard extends ConsumerWidget {
   final CampusReward reward;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final balance = ref.watch(
-      activityViewModelProvider.select((s) => s.available),
-    );
-    final eligible = balance >= reward.catalogCost;
+    ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
+    final eligible = vm.canRedeem(reward.id);
     return Material(
       color: AppColors.surface,
       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -288,9 +266,7 @@ class _RewardCard extends ConsumerWidget {
                             const ActivityIcon('2083:3327', 'imgContainer12'),
                           Flexible(
                             child: Text(
-                              eligible
-                                  ? 'Eligible'
-                                  : 'Need ${reward.catalogCost - balance} coins',
+                              vm.rewardStatus(reward.id),
                               style: EviaTheme.caption.copyWith(
                                 color: eligible ? AppColors.success : null,
                               ),
@@ -312,7 +288,7 @@ class _RewardCard extends ConsumerWidget {
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Row(
                 children: [
-                  const ActivityIcon('2083:3327', 'imgContainer13'),
+                  const CoinIcon(),
                   const SizedBox(width: AppSpacing.xs),
                   Flexible(
                     child: Text(
@@ -330,30 +306,20 @@ class _RewardCard extends ConsumerWidget {
   }
 }
 
-class _DailyCheckIn extends ConsumerWidget {
+class _DailyCheckIn extends StatelessWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final checked = ref.watch(
-      activityViewModelProvider.select((s) => s.checkedInToday),
-    );
+  Widget build(BuildContext context) {
+    final progress = ActivityMockData.dailyCheckInPreview;
     return EviaCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
               const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Daily Check-in', style: EviaTheme.cardTitle),
-                    Text(
-                      'Check in every day to earn more coins.',
-                      style: EviaTheme.caption,
-                    ),
-                  ],
-                ),
+                child: Text('Daily Check-in', style: EviaTheme.cardTitle),
               ),
+              const SizedBox(width: AppSpacing.sm),
               Flexible(
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
@@ -368,7 +334,7 @@ class _DailyCheckIn extends ConsumerWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          checked ? '4-day streak' : '3-day streak',
+                          '${progress.day}-day streak',
                           style: EviaTheme.caption.copyWith(
                             color: AppColors.warning,
                           ),
@@ -380,75 +346,98 @@ class _DailyCheckIn extends ConsumerWidget {
               ),
             ],
           ),
+          const SizedBox(height: AppSpacing.sm),
+          const Text(
+            'Keep your streak going. Earn up to 20 coins every day!',
+            style: EviaTheme.caption,
+          ),
           const SizedBox(height: AppSpacing.xl),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (var i = 0; i < 7; i++)
-                Expanded(
-                  child: Column(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final minimum =
+                  MediaQuery.textScalerOf(context).scale(AppSpacing.xxxl) *
+                  progress.days.length;
+              final width = constraints.maxWidth > minimum
+                  ? constraints.maxWidth
+                  : minimum;
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: width,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        i == 3 ? 'Today' : 'Day ${i + 1}',
-                        style: ActivityTheme.smallLabel.copyWith(
-                          color: i == 3 ? AppColors.primary : EviaTheme.muted,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.sm),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: i < 3 || (i == 3 && checked)
-                              ? ActivityTheme.actionDark
-                              : i == 6
-                              ? AppColors.warningSurface
-                              : AppColors.primarySoft,
-                        ),
-                        child: i < 3 || (i == 3 && checked)
-                            ? const ActivityIcon('2083:3522', 'imgContainer8')
-                            : i == 3
-                            ? const ActivityIcon('2083:3522', 'imgContainer9')
-                            : i == 6
-                            ? const ActivityIcon('2083:3522', 'imgContainer10')
-                            : const Icon(
-                                Icons.circle,
-                                size: AppSpacing.xs,
-                                color: AppColors.border,
+                      for (final day in progress.days)
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                day.today ? 'Today' : 'Day ${day.day}',
+                                textAlign: TextAlign.center,
+                                style: ActivityTheme.smallLabel.copyWith(
+                                  color: day.today
+                                      ? AppColors.primary
+                                      : EviaTheme.muted,
+                                ),
                               ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        '+${[5, 5, 10, 10, 15, 15, 20][i]}',
-                        style: ActivityTheme.smallLabel.copyWith(
-                          color: EviaTheme.muted,
+                              const SizedBox(height: AppSpacing.sm),
+                              Container(
+                                width: AppSpacing.xxl,
+                                height: AppSpacing.xxl,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(AppSpacing.sm),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: day.claimed
+                                      ? ActivityTheme.actionDark
+                                      : day.today
+                                      ? AppColors.warningSurface
+                                      : AppColors.primarySoft,
+                                ),
+                                child: day.claimed
+                                    ? const ActivityIcon(
+                                        '2083:3522',
+                                        'imgContainer8',
+                                      )
+                                    : const CoinIcon(size: AppSpacing.lg),
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(
+                                '+${day.coins}',
+                                style: ActivityTheme.smallLabel.copyWith(
+                                  color: EviaTheme.muted,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          const Center(
-            child: Text(
-              'Miss a day? Your streak restarts at Day 1.',
-              textAlign: TextAlign.center,
-              style: EviaTheme.caption,
-            ),
+              );
+            },
           ),
           const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              label: checked
-                  ? 'Checked In Today · +10 coins'
-                  : 'Check In Today · +10 coins',
-              trailing: const ActivityIcon('2083:3522', 'imgContainer11'),
-              onPressed: checked
-                  ? null
-                  : ref.read(activityViewModelProvider.notifier).dailyCheckIn,
-            ),
+          Text(
+            'Today: Day ${progress.day} · +${progress.coins} coins',
+            style: EviaTheme.label,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(progress.message, style: EviaTheme.caption),
+          const SizedBox(height: AppSpacing.sm),
+          const Text(
+            'Miss a day? Restart at Day 1. Coins already earned are kept.',
+            textAlign: TextAlign.center,
+            style: EviaTheme.caption,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          AppButton(
+            label: progress.saving
+                ? 'Saving check-in...'
+                : progress.checkedInToday
+                ? 'Checked In Today · +${progress.coins} coins'
+                : 'Check In Today · +${progress.coins} coins',
+            onPressed: null,
           ),
         ],
       ),
@@ -462,6 +451,8 @@ class _MilestoneSummary extends ConsumerWidget {
     final count = ref.watch(
       activityViewModelProvider.select((s) => s.verified.length),
     );
+    final vm = ref.read(activityViewModelProvider.notifier);
+    final next = vm.nextMilestone;
     return EviaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,16 +485,18 @@ class _MilestoneSummary extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
-              Expanded(child: Text('$count of 5 events attended')),
+              Expanded(
+                child: Text('$count of ${vm.milestoneTarget} events attended'),
+              ),
               Text(
-                '${(count / 5 * 100).round()}%',
+                '${vm.milestonePercent}%',
                 style: EviaTheme.label.copyWith(color: AppColors.primary),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
           LinearProgressIndicator(
-            value: (count / 5).clamp(0, 1),
+            value: vm.milestoneFraction,
             minHeight: AppSpacing.sm,
             borderRadius: BorderRadius.circular(AppRadius.pill),
           ),
@@ -517,36 +510,42 @@ class _MilestoneSummary extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Next: Active Student',
+                      Text(
+                        next == null
+                            ? 'All milestones reached'
+                            : 'Next: ${next.milestone.title}',
                         style: EviaTheme.label,
                       ),
                       Text(
-                        'Attend ${(5 - count).clamp(0, 5)} more events',
+                        next?.description ??
+                            'You have reached every milestone.',
                         style: EviaTheme.caption,
                       ),
                     ],
                   ),
                 ),
-                const EventBadge('+150 COINS'),
+                if (next != null) EventBadge('+${next.milestone.coins} COINS'),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
-              for (final label in ['1 Event', '3 Events', '5 Events'])
+              for (final progress in vm.milestones.take(3))
                 Expanded(
                   child: Column(
                     children: [
-                      Text(label, style: EviaTheme.caption),
+                      Text(
+                        '${progress.milestone.events} ${progress.milestone.events == 1 ? 'Event' : 'Events'}',
+                        style: EviaTheme.caption,
+                      ),
                       SizedBox(height: AppSpacing.sm),
                       CircleAvatar(
                         radius: AppSpacing.md,
-                        backgroundColor: label == '5 Events'
+                        backgroundColor: !progress.reached
                             ? AppColors.primarySoft
                             : AppColors.primary,
-                        child: label == '5 Events'
+                        child: !progress.reached
                             ? const Icon(
                                 Icons.circle,
                                 size: AppSpacing.sm,
@@ -556,7 +555,11 @@ class _MilestoneSummary extends ConsumerWidget {
                       ),
                       SizedBox(height: AppSpacing.sm),
                       Text(
-                        label == '5 Events' ? 'Next Goal' : 'Claimed',
+                        progress.reached
+                            ? 'Reached'
+                            : progress.next
+                            ? 'Next Goal'
+                            : 'Locked',
                         style: EviaTheme.caption,
                       ),
                     ],

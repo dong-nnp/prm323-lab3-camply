@@ -11,6 +11,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class RewardDetailsScreen extends ConsumerWidget {
   const RewardDetailsScreen({
@@ -22,7 +23,7 @@ class RewardDetailsScreen extends ConsumerWidget {
   final bool confirm;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(activityViewModelProvider);
+    ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
     final reward = vm.reward(rewardId);
     final content = SingleChildScrollView(
@@ -66,22 +67,14 @@ class RewardDetailsScreen extends ConsumerWidget {
                       warning: true,
                     ),
                     _DetailBadge(
-                      vm.canRedeem(reward.id)
-                          ? 'Available to redeem'
-                          : state.redeemed.contains(reward.id)
-                          ? 'Already redeemed'
-                          : 'More coins needed',
+                      vm.rewardStatus(reward.id),
                       'imgContainer1',
+                      positive: vm.canRedeem(reward.id),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                Text(
-                  reward.id == 'cafe'
-                      ? 'Enjoy a drink or pastry at participating campus cafés.'
-                      : 'Exchange your available coins for this campus reward.',
-                  style: EviaTheme.caption,
-                ),
+                Text(reward.description, style: EviaTheme.caption),
               ],
             ),
           ),
@@ -92,33 +85,33 @@ class RewardDetailsScreen extends ConsumerWidget {
               children: [
                 const Text('Reward Information', style: EviaTheme.cardTitle),
                 const SizedBox(height: AppSpacing.md),
-                const _RewardInfoRow(
+                _RewardInfoRow(
                   'Validity',
-                  'Valid for 30 days after redemption',
+                  vm.validityLabel(reward),
                   'imgContainer2',
                 ),
                 const Divider(),
-                const _RewardInfoRow(
+                _RewardInfoRow(
                   'Where to use',
-                  'Participating campus cafés',
+                  reward.location,
                   'imgContainer3',
                 ),
                 const Divider(),
                 _RewardInfoRow(
                   'Terms & Conditions',
-                  'One-time use. View full terms',
+                  'View reward terms',
                   'imgContainer4',
                   onTap: () => showActivityHelp(
                     context,
                     'Terms & Conditions',
-                    'One-time use at participating campus cafés. Valid for 30 days after redemption. Present the voucher code to the cashier.',
+                    '${reward.terms} ${vm.validityLabel(reward)}.',
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          const EviaCard(
+          EviaCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -128,23 +121,16 @@ class RewardDetailsScreen extends ConsumerWidget {
                 _RedeemStep(
                   2,
                   'Find it in My Rewards',
-                  'Your voucher appears after successful redemption.',
+                  'Your reward appears after successful redemption.',
                 ),
-                _RedeemStep(
-                  3,
-                  'Use your voucher',
-                  'Present your code at a participating café.',
-                ),
+                _RedeemStep(3, 'Use your reward', reward.instructions),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
           TextButton(
-            onPressed: () => showActivityHelp(
-              context,
-              'Need help?',
-              'Ask the campus rewards team about participating cafés and voucher usage.',
-            ),
+            onPressed: () =>
+                showActivityHelp(context, 'Need help?', reward.instructions),
             child: const Text('Need help?'),
           ),
         ],
@@ -164,8 +150,10 @@ class RewardDetailsScreen extends ConsumerWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  label: 'Redeem for ${reward.redeemCost} coins',
-                  trailing: const ActivityIcon('2083:3959', 'imgContainer5'),
+                  label: vm.canRedeem(reward.id)
+                      ? 'Redeem for ${reward.redeemCost} coins'
+                      : 'Coin API not connected',
+                  trailing: const CoinIcon(),
                   onPressed: vm.canRedeem(reward.id)
                       ? () => context.push('/rewards/confirm?id=${reward.id}')
                       : null,
@@ -183,26 +171,48 @@ class RewardDetailsScreen extends ConsumerWidget {
 }
 
 class _DetailBadge extends StatelessWidget {
-  const _DetailBadge(this.label, this.asset, {this.warning = false});
+  const _DetailBadge(
+    this.label,
+    this.asset, {
+    this.warning = false,
+    this.positive = true,
+  });
   final String label, asset;
-  final bool warning;
+  final bool warning, positive;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(AppSpacing.sm),
     decoration: BoxDecoration(
-      color: warning ? AppColors.warningSurface : AppColors.successSurface,
+      color: warning
+          ? AppColors.warningSurface
+          : positive
+          ? AppColors.successSurface
+          : AppColors.surfaceMuted,
       borderRadius: BorderRadius.circular(AppRadius.pill),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ActivityIcon('2083:3959', asset),
+        if (warning)
+          const CoinIcon()
+        else if (positive)
+          ActivityIcon('2083:3959', asset)
+        else
+          const Icon(
+            Icons.info_outline,
+            size: AppSpacing.lg,
+            color: AppColors.textSecondary,
+          ),
         const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Text(
             label,
             style: EviaTheme.caption.copyWith(
-              color: warning ? AppColors.warning : AppColors.success,
+              color: warning
+                  ? AppColors.warning
+                  : positive
+                  ? AppColors.success
+                  : AppColors.textSecondary,
             ),
           ),
         ),
@@ -288,7 +298,9 @@ class _RedemptionBackdrop extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Image.asset(
-          ActivityAssets.image('2083:3865', 0),
+          reward.id == 'cafe'
+              ? ActivityAssets.image('2083:3865', 0)
+              : reward.image,
           height: ActivityTheme.detailImageHeight,
           fit: BoxFit.cover,
         ),
@@ -299,13 +311,11 @@ class _RedemptionBackdrop extends StatelessWidget {
             children: [
               Text(reward.title, style: ActivityTheme.title),
               const SizedBox(height: AppSpacing.md),
-              const Text(
-                'Enjoy your favorite drinks at participating campus café locations for specialty hot beverages, cold brews, and fresh pastries.',
-              ),
+              Text(reward.description),
               const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
-                  const ActivityIcon('2083:3865', 'imgContainer'),
+                  const CoinIcon(),
                   const SizedBox(width: AppSpacing.sm),
                   Text('${reward.redeemCost} Student Coins'),
                 ],
@@ -318,7 +328,7 @@ class _RedemptionBackdrop extends StatelessWidget {
                   Text('Redemption Locations'),
                 ],
               ),
-              const Text('Main Campus Library Level 1, Eng Quad Hub B.'),
+              Text(reward.location),
             ],
           ),
         ),
@@ -379,7 +389,7 @@ class _ConfirmRedemption extends ConsumerWidget {
                     Text(reward.category, style: EviaTheme.caption),
                     Row(
                       children: [
-                        const ActivityIcon('2083:3865', 'imgContainer3'),
+                        const CoinIcon(),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${reward.redeemCost} coins',
@@ -407,19 +417,16 @@ class _ConfirmRedemption extends ConsumerWidget {
                 'Reward Cost',
                 '−${reward.redeemCost}',
                 color: AppColors.error,
-                icon: const ActivityIcon('2083:3865', 'imgContainer5'),
+                icon: const CoinIcon(color: AppColors.error),
               ),
               const Divider(),
-              DetailRow(
-                'Remaining Balance',
-                '${state.available - reward.redeemCost} coins',
-              ),
+              DetailRow('Remaining Balance', 'Confirmed by server'),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
         ActivityInfo(
-          '${reward.redeemCost} coins will be deducted. Your ${state.deposits} coins in deposits remain unchanged.',
+          ActivityViewModel.coinServiceMessage,
           icon: const ActivityIcon('2083:3865', 'imgMargin'),
         ),
         if (state.message != null)

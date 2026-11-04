@@ -105,6 +105,27 @@ trong cả 17 capture không có mismatch. Không phải pixel-diff hoặc Andro
 sign-off. APK debug biên dịch thành công; Gradle in cảnh báo native-access/KGP
 của Firebase plugins hiện có. Chưa kiểm thử real registration/backend/camera.
 
+## Rewards UI/UX regression — 05/11/2026
+
+`test/widgets/rewards_regression_test.dart` kiểm tra tote → confirm → success →
+locker → đúng mã, nhiều receipt và chọn đúng món, mã không tồn tại, empty states,
+header/khung ví không nhảy khi chuyển tab, vùng bấm tối thiểu 48dp, Profile mở đúng
+màn hình, milestone sau check-in và lịch sử khác tháng. Có kiểm tra café/tote đã
+lưu ở cả 360/412dp, text scale 1x/2x. VM tests thêm ngưỡng 249/250 xu, debit đúng
+giá, chống đổi lặp sau khi kiếm thêm xu và lọc nhóm lịch sử theo tháng.
+
+`flutter pub get`, `dart format lib test`, `flutter analyze` đạt.
+`flutter test --concurrency=1`: **90 đạt / 5 lỗi**, các lỗi đều ở
+`evia_screens_test.dart`, cùng 5 tests đã lỗi trước sửa Rewards; không ghi toàn bộ
+suite đạt. Toàn bộ tests Rewards mới đạt.
+
+Capture riêng 9 route Rewards sau sửa: **18 tests đạt** (9 responsive và 9
+captures); đã xem đủ 9 ảnh. Capture success/locker/voucher gọi redeem café trong
+test-only state; runtime chưa có receipt thì render empty state. Không nhầm fixture
+capture với reward/backend thật. APK debug x64 đã build/cài thành công. Native smoke
+trên emulator-5554: Skip → Rewards → đổi tote 400 → số dư 20 → My Rewards → đúng
+ảnh/mã tote đã đạt. Xem [báo cáo Rewards](rewards-ui-ux-review.md) cho phạm vi và ảnh.
+
 ## Android debug build reuse regression — 04/11/2026
 
 Đổi Android host build tracking, không đổi Dart/app logic. Native checks:
@@ -125,3 +146,20 @@ của Firebase plugins hiện có. Chưa kiểm thử real registration/backend/
 
 Xem [Build performance](build-performance.md) để biết phạm vi debug không flavor,
 không split và giới hạn so sánh các lượt đo.
+
+
+## Rewards static preview - 05/11/2026
+
+Current implementation retains visible mock fixtures and removes local coin
+mutations/persistence. Check-in, redemption and deposit registration wait for API.
+Earlier transaction-flow evidence above is historical.
+
+Validation for this change:
+- flutter pub remove shared_preferences completed dependency resolution.
+- dart format lib test completed; flutter analyze: no issues.
+- 61 tests passed across rewards_regression_test, activity_screens_test,
+  registration_screens_test, activity_view_model_test and registration_view_model_test.
+- Debug x64 APK build succeeded. Full suite was not rerun.
+- git diff --check passed.
+- APK installed successfully on emulator-5554. am start -W timed out; subsequent
+  dumpsys confirmed MainActivity as topResumedActivity. No visual startup sign-off.

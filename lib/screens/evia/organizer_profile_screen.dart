@@ -10,6 +10,7 @@ import '../../viewmodels/evia_view_model.dart';
 import '../../viewmodels/profile_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class OrganizerProfileScreen extends ConsumerWidget {
   const OrganizerProfileScreen({super.key});
@@ -225,10 +226,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const ActivityIcon(
-                                          screen,
-                                          'imgContainer4',
-                                        ),
+                                        const CoinIcon(),
                                         Text(
                                           '+${events[index].coins} coins',
                                           style: EviaTheme.caption.copyWith(

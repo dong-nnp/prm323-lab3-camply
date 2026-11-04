@@ -11,6 +11,7 @@ import '../../viewmodels/registration_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
 
 class RegistrationResultScreen extends ConsumerWidget {
@@ -102,7 +103,8 @@ class RegistrationResultScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               failed
-                  ? 'Looks like you lost connection. Your information is saved — check your network and try again.'
+                  ? state.message ??
+                        'Registration service is unavailable. Please try again.'
                   : full
                   ? "Sorry, the last spots were just taken. Your registration wasn't completed."
                   : going
@@ -143,6 +145,7 @@ class RegistrationResultScreen extends ConsumerWidget {
                   screen: screen,
                   icon: 'imgContainer3',
                   title: 'Earn +80 coins after verified check-in',
+                  leading: const CoinIcon(),
                   body: 'Coins and milestone progress are credited upon scanning the event QR at the door.',
                   color: AppColors.warningSurface,
                 ),
@@ -254,16 +257,18 @@ class _ResultNotice extends StatelessWidget {
     required this.title,
     required this.body,
     this.color = AppColors.primarySoft,
+    this.leading,
   });
   final String screen, icon, title, body;
   final Color color;
+  final Widget? leading;
   @override
   Widget build(BuildContext context) => EviaCard(
     color: color,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ActivityIcon(screen, icon),
+        leading ?? ActivityIcon(screen, icon),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(

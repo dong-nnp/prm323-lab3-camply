@@ -138,27 +138,27 @@ runtime, tracking hoặc Firebase SDK calls trong View/ViewModel.
 
 ### My Events / Rewards presentation
 
-`ActivityViewModel` quản lý tab, ngày/tuần/lịch tháng, draft ngày, cancelled IDs,
-available/deposit balances, daily check-in, verified event IDs, redemption receipt,
-reward search/category và transaction filters. Models nằm trong
-`activity_models.dart`, fixtures trong `data/mock/activity_mock_data.dart`.
-User đã cho phép tiếp tục dùng mock data tách riêng; không thêm service giả trả
-thành công, Firebase calls hoặc quyền camera.
+`ActivityViewModel` manages presentation filters, calendar selections, demo
+cancellations, reward search and voucher selection. Coin balances, transactions,
+verified events and receipts are static preview fixtures in `ActivityMockData`.
 
-`MyEventsScreen` render các preset Figma và chuyển date/cancel actions cho VM.
-`MonthlyCalendar` giữ lựa chọn draft qua VM đến **Apply date**. Ticket chặn hiển
-thị QR nếu registration đã hủy. Check-in preview chỉ xác nhận mã fixture; VM
-chặn credit lặp bằng verified IDs. Daily reward và redemption được chặn lặp
-bằng state, số xu/deposit và receipt cập nhật trong cùng một state assignment.
+Check-in and redemption report unavailable without mutating financial state.
+Registration requiring a deposit also waits for the coin API. Local currency
+persistence and streak calculations are removed. Daily Check-in displays a day-8
+fixture and the proposed reward schedule only; it does not confirm real rewards.
 
-`RewardsScreen`, details/confirmation, locker/voucher/success, milestones/history
-cùng quan sát một provider nên phản ánh cùng ví xu. Clipboard copy là platform UI
-action trong widget; không gọi SDK hay HTTP. Available/deposits được tách biệt.
-Các route reference công khai phục vụ UI demo, không cấp quyền backend.
+Rewards share one provider and wallet widget. Locker opens the matching sample
+voucher, rejects unknown codes and returns to catalog on Back. Future API work
+must follow View -> ViewModel -> Repository -> Service interface -> SDK adapter;
+the backend owns balances, streaks, transactions and voucher issuance.
 
 `ActivityAssets`, `ActivityIcon` và `RewardsWallet` dùng exports theo từng Figma
 node. `ActivityTheme` chứa measurements/colors bổ sung. Font button ghi rõ Roboto
 fallback để widget render dùng cùng family với app thay vì fallback khác.
+
+`CoinIcon` là widget dùng chung cho các biểu tượng xu: một SVG đã bundle, có size
+và tint theo ngữ cảnh. Screens dùng widget này thay vì chọn riêng asset xu hoặc
+ghép các vector/ký tự, giữ cách biểu diễn tiền xu nhất quán.
 
 Override `firebaseInitializerProvider`, `authenticationServiceProvider` hoặc
 provider của từng service bằng fake trong `ProviderScope`/`ProviderContainer`.

@@ -150,7 +150,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/rewards/voucher',
-        builder: (_, _) => const RewardVoucherScreen(),
+        builder: (_, state) =>
+            RewardVoucherScreen(code: state.uri.queryParameters['code']),
       ),
       GoRoute(
         path: '/rewards/milestones',

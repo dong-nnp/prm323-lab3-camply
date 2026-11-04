@@ -9,6 +9,7 @@ import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../widgets/evia_brand.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class EviaDiscoverScreen extends ConsumerWidget {
   const EviaDiscoverScreen({this.guest = false, super.key});
@@ -55,7 +56,7 @@ class EviaDiscoverScreen extends ConsumerWidget {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    FigmaIcon('2083:456', 'imgContainer18'),
+                    CoinIcon(),
                     SizedBox(width: AppSpacing.xs),
                     Text(EviaMockData.points, style: EviaTheme.caption),
                   ],
@@ -269,7 +270,7 @@ class _FeaturedEvent extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              FigmaIcon(screen, 'imgContainer4'),
+              const CoinIcon(),
               const SizedBox(width: AppSpacing.xs),
               const Text(
                 '+120 coins',
@@ -366,7 +367,7 @@ class _RecommendedCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              FigmaIcon(screen, 'imgContainer10'),
+              const CoinIcon(),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 '+${event.coins} coins',
@@ -436,7 +437,7 @@ class _FollowingPreview extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const FigmaIcon('2083:456', 'imgContainer14'),
+                      const CoinIcon(),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         '+${event.coins} coins',
@@ -525,10 +526,7 @@ class _UpcomingCard extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        FigmaIcon(
-                          screen,
-                          guest ? 'imgContainer10' : 'imgContainer16',
-                        ),
+                        const CoinIcon(),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '+${event.coins} coins',

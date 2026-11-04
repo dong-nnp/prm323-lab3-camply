@@ -178,7 +178,7 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     if (!added) {
       state = state.copy(
         status: RegistrationStatus.failed,
-        message: 'Not enough available coins for the event deposit.',
+        message: ActivityViewModel.coinServiceMessage,
       );
       return state.status;
     }

@@ -9,6 +9,7 @@ import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/activity_widgets.dart';
 
 class EventCheckInScreen extends ConsumerWidget {
@@ -127,7 +128,7 @@ class EventCheckInScreen extends ConsumerWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                ActivityIcon('2083:1776', 'imgContainer2'),
+                                CoinIcon(),
                                 SizedBox(width: AppSpacing.xs),
                                 EventBadge(
                                   '+80 coins',
@@ -260,7 +261,7 @@ class EventCheckInScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
             const ActivityInfo(
-              "This event doesn't require a personal ticket. Scan the organizer's QR code at the venue to check in.",
+              ActivityViewModel.coinServiceMessage,
               icon: ActivityIcon('2083:1776', 'imgContainer6'),
             ),
             const SizedBox(height: AppSpacing.section),
@@ -273,7 +274,9 @@ class EventCheckInScreen extends ConsumerWidget {
                   style: EviaTheme.caption,
                 ),
                 TextButton(
-                  onPressed: () => _enterCode(context, ref),
+                  onPressed: vm.coinServiceAvailable
+                      ? () => _enterCode(context, ref)
+                      : null,
                   child: const Text('Enter code'),
                 ),
               ],

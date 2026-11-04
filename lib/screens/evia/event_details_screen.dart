@@ -15,6 +15,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
 
 class EventDetailsScreen extends ConsumerWidget {
@@ -273,14 +274,7 @@ class EventDetailsScreen extends ConsumerWidget {
                                 CircleAvatar(
                                   radius: AppSpacing.lg,
                                   backgroundColor: AppColors.warningSurface,
-                                  child: tab == 'about'
-                                      ? ActivityIcon(screen, 'imgContainer6')
-                                      : LayeredFlowCoin(
-                                          screen: screen,
-                                          symbol: tab == 'schedule'
-                                              ? '\$'
-                                              : '★',
-                                        ),
+                                  child: const CoinIcon(size: AppSpacing.lg),
                                 ),
                                 const SizedBox(width: AppSpacing.md),
                                 Expanded(

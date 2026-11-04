@@ -66,6 +66,7 @@ abstract final class EviaTheme {
   );
   static const phoneWidth = 390.0;
   static const thumbnail = 96.0;
+  static const coinIconSize = 12.5;
   static const compactThumbnail = 64.0;
   static const heroHeight = 200.0;
   static const logoWidth = 72.0;

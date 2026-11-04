@@ -13,6 +13,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
 
 class RegistrationFormScreen extends ConsumerStatefulWidget {
@@ -525,9 +526,7 @@ class _DepositSummary extends ConsumerWidget {
               CircleAvatar(
                 radius: AppSpacing.lg,
                 backgroundColor: AppColors.warningSurface,
-                child: error
-                    ? const LayeredFlowCoin(screen: '2083:5329', symbol: 'C')
-                    : ActivityIcon(screen, 'imgContainer4'),
+                child: const CoinIcon(size: AppSpacing.lg),
               ),
               const SizedBox(width: AppSpacing.md),
               const Expanded(
@@ -594,7 +593,7 @@ class _DepositSummary extends ConsumerWidget {
                 const Text('Deposit: 100', style: EviaTheme.caption),
                 const Text('•'),
                 Text(
-                  'After: ${balance - 100}',
+                  'After: confirmed by server',
                   style: EviaTheme.caption.copyWith(color: AppColors.primary),
                 ),
               ],

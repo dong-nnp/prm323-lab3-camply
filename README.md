@@ -161,21 +161,21 @@ repository, nên typography/chiều cao nội dung có thể khác bản Inter t
 | `/rewards/milestones` | Event Milestones |
 | `/rewards/history` | Coin History |
 
-Các route tham chiếu giúp xem từng thiết kế độc lập; trong app có thể đổi tab,
-chọn ngày/tuần/tháng, mở vé, giữ hoặc hủy đăng ký và rời waitlist. Hủy chỉ thay
-đổi dữ liệu demo trong phiên. Màn hình scanner dùng **ảnh mô phỏng** từ Figma,
-không gọi camera hay đèn pin thật. **Enter code** với mã `EVIA-CLUB-2026` xác nhận
-check-in demo một lần và cộng 80 xu; mã sai/nhập lặp không cộng xu.
+Mock data remains visible for UI preview: 420 available coins, 100 deposit coins,
+transaction history and a sample voucher. These are not real transactions.
 
-Daily check-in cộng 10 xu một lần trong phiên. Đổi thưởng trừ available coins,
-giữ nguyên 100 xu deposits, lưu receipt và cập nhật lịch sử. Các thao tác này
-không ghi backend hay tạo voucher dùng ngoài đời. QR/voucher code là mẫu Figma.
-UI state không được lưu qua lần khởi động app mới.
+Local coin/streak persistence and balance mutations have been removed. Check-in,
+redemption and registrations requiring a deposit wait for the coin API; they do
+not report successful transactions or change the preview balance.
 
-Figma có giá café **200 xu trong catalog**, **250 xu trong chi tiết/xác nhận**;
-source giữ riêng `catalogCost` và `redeemCost` để khớp từng frame. Đổi café dùng
-250 xu, từ 420 còn 170. Route success mở trực tiếp dùng receipt tham chiếu;
-đi từ xác nhận sẽ dùng receipt của thao tác vừa thực hiện.
+Daily Check-in previews day 8 with this schedule: days 1-2 +5, days 3-4 +10,
+days 5-6 +15, day 7 onwards +20. The backend must confirm the actual streak,
+missed days and rewards. There is no shared_preferences currency storage.
+
+Cafe pricing is consistently 250 coins. My Rewards contains a sample voucher;
+unknown codes show an empty state. Back returns to Rewards catalog. Coin icons
+share the gold CoinIcon widget. Other event filters and demo cancellation remain
+session-only presentation actions. Scanner imagery and QR codes are previews.
 
 Theme lấy màu, typography, spacing, radius và quy tắc responsive từ Camply Lab 2
 ở dự án liền kề, không sao chép data prototype. Dùng Roboto/system fallback theo

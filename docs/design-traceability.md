@@ -86,6 +86,48 @@ overflow; đây là tồn tại của nhóm trước, chưa được sửa trong
 | Evia — Event Milestones (Mobile) | `2083:4156` | `/rewards/milestones` |
 | Evia — Coin History (Refined) | `2083:4356` | `/rewards/history` |
 
+Theo yêu cầu thống nhất UI, hai tab Earn Coins và Redeem Rewards dùng chung
+`RewardsWallet` với thiết kế Earn Coins (`2083:3522`): nền mây, chồng xu bên trái
+số dư, mascot lớn và dòng `Temporarily locked`. Khung số dư trên catalog chủ động
+khác frame `2083:3327`; số xu vẫn lấy từ cùng `ActivityViewModel`.
+
+Đợt sửa UI/UX tiếp theo thống nhất giá café 250 xu ở mọi bước (override catalog
+Figma 200 xu), header/tab/bottom bar dùng cùng một kiểu, vùng bấm tab tối thiểu
+48dp. Locker/voucher/success render receipt thật của phiên demo; khi chưa có receipt
+hiển thị empty state thay cho voucher/success mẫu. Nội dung merchandise chưa có
+handoff được ghi chưa cấu hình. QR chỉ là minh họa; phần thưởng merchandise dùng
+ảnh và mã demo riêng. Các overrides này theo yêu cầu sửa lỗi UI/UX, không phải
+bằng chứng backend/fulfillment thật đã được tích hợp.
+
+Theo yêu cầu điều chỉnh More Ways to Earn: Attend Events mở `/my-events` thay vì
+scanner trực tiếp. Complete Missions đổi thành Event Milestones và mở
+`/rewards/milestones`; mô tả hai action được cập nhật theo đúng màn hình đích.
+
+Tinh chỉnh tiếp theo: bỏ avatar Profile trên header của cả hai tab Rewards vì
+đã có tab Profile ở bottom bar. Nút Check In Today/Checked In Today bỏ icon cuối,
+giữ text thể hiện trạng thái và số xu.
+
+Daily Check-in dùng vòng tròn 32dp cho cả 7 ngày, căn icon ở giữa để các icon
+check/xu/chấm/sao và dòng số xu không lệch hàng theo kích thước asset.
+
+My Rewards / Used & Expired dùng thumbnail và category từ reward fixture đã có;
+badge trạng thái căn cuối hàng, trạng thái Expired dùng warning tokens. Icon tab
+được tint theo selected state để icon trắng không bị chìm trên nền tab chưa chọn.
+
+Dòng In Deposits căn số xu về mép phải, ngay trước chevron, tách khỏi phần mô tả
+bên trái; số xu vẫn có thể xuống dòng khi tăng cỡ chữ.
+
+In Deposits mở Coin History với filter Deposits được chọn sẵn, thay bottom sheet
+giải thích. Nếu đang ở Coin History thì chỉ đổi filter, không push thêm route.
+View coin history mở filter All để không giữ nhầm filter từ lần xem deposits.
+
+Theo yêu cầu thống nhất icon xu: `CoinIcon` dùng duy nhất asset đồng xu tròn có
+dấu `$` (`2083:456/imgContainer18`, 12.5dp mặc định) ở số dư, giá Rewards, milestone,
+Discover/Following, xu sự kiện/đăng ký và saved events. Wallet dùng cùng hình ở
+32dp; màu trạng thái vẫn dùng tokens tương ứng. Các icon xu hình sao, stack ghép
+và ký tự ghép được thay bằng widget này; hình xu nằm trong minh họa mascot giữ
+nguyên asset gốc. Số dư/đơn vị dữ liệu không đổi trong yêu cầu thống nhất icon.
+
 Source: `my_events_screen.dart`, `monthly_calendar.dart`, `ticket_screen.dart`,
 `check_in_screen.dart`, `rewards_screen.dart`, `reward_details_screen.dart`,
 `reward_voucher_screen.dart`, `milestones_screen.dart`, `coin_history_screen.dart`.
@@ -106,8 +148,9 @@ Quyết định theo nguồn thiết kế:
 
 - Node `2083:273` có tên Attendance Confirmed nhưng nội dung là **All Upcoming
   Events**, gồm Registered và Waitlisted; source theo nội dung frame.
-- Café có catalog cost 200, detail/confirmation cost 250. Giữ riêng hai trường;
-  giao dịch demo dùng 250. Không âm thầm sửa một frame để khớp frame khác.
+- Café có giá 200 ở catalog Figma, 250 ở detail/confirmation. Bản đầu giữ riêng
+  hai giá; sau yêu cầu sửa UX, runtime thống nhất 250 xu ở mọi bước như override
+  đã ghi ở trên.
 - Các ngày/giờ khác nhau ở backdrop hủy và ticket được giữ theo frame tương ứng.
 - Scanner hiển thị **CAMERA PREVIEW** thay CAMERA ACTIVE vì chỉ dùng ảnh mô phỏng;
   không giả camera/flashlight hay xác minh attendance qua backend.
@@ -170,3 +213,10 @@ làm card cao hơn và nút nằm dưới vùng cuộn so với bản Inter 11�
 Đã capture/xem cả 17 frame ở 390dp và thử 360/412dp, scale 1x/2x; chưa phải
 pixel-diff hoặc native Android visual sign-off. Các badge verified/QR là mẫu,
 không biểu thị server đã xác minh. Map và Help/Settings là hướng dẫn nội bộ.
+
+
+## Rewards preview override - 05/11/2026
+
+User requested visible mock data with local currency mutation/persistence removed.
+Daily Check-in previews day 8 (+20 from day 7). Financial actions wait for API.
+CoinIcon defaults to FlowTheme.gold. My Rewards Back returns to Rewards catalog.

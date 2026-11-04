@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/activity_assets.dart';
-import '../../data/mock/activity_mock_data.dart';
+import '../../models/activity_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
@@ -11,6 +11,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class EventMilestonesScreen extends ConsumerWidget {
   const EventMilestonesScreen({super.key});
@@ -19,6 +20,7 @@ class EventMilestonesScreen extends ConsumerWidget {
     final count = ref.watch(
       activityViewModelProvider.select((s) => s.verified.length),
     );
+    final vm = ref.read(activityViewModelProvider.notifier);
     return EviaPage(
       header: const ActivityHeader(
         'Event Milestones',
@@ -51,7 +53,7 @@ class EventMilestonesScreen extends ConsumerWidget {
                       children: [
                         const EventBadge('CURRENT ACHIEVEMENT'),
                         const SizedBox(height: AppSpacing.sm),
-                        const Text('Explorer', style: ActivityTheme.title),
+                        Text(vm.currentAchievement, style: ActivityTheme.title),
                         Text(
                           '$count verified events attended',
                           style: EviaTheme.caption,
@@ -61,22 +63,23 @@ class EventMilestonesScreen extends ConsumerWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                '$count / 5 events',
+                                '$count / ${vm.milestoneTarget} events',
                                 style: EviaTheme.label,
                               ),
                             ),
-                            Text('${(count / 5 * 100).round()}%'),
+                            Text('${vm.milestonePercent}%'),
                           ],
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         LinearProgressIndicator(
-                          value: (count / 5).clamp(0, 1),
+                          value: vm.milestoneFraction,
                           minHeight: AppSpacing.sm,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
-                          'Attend ${(5 - count).clamp(0, 5)} more events to reach Active Student.',
+                          vm.nextMilestone?.description ??
+                              'All milestones reached.',
                           style: EviaTheme.caption,
                         ),
                       ],
@@ -96,12 +99,14 @@ class EventMilestonesScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            const Row(
+            Row(
               children: [
                 Expanded(
                   child: Text('Your Milestones', style: EviaTheme.section),
                 ),
-                EventBadge('2 of 5 unlocked'),
+                EventBadge(
+                  '${vm.unlockedMilestones} of ${vm.milestones.length} unlocked',
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -109,8 +114,11 @@ class EventMilestonesScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 children: [
-                  for (var i = 0; i < ActivityMockData.milestones.length; i++)
-                    _MilestoneRow(index: i),
+                  for (var i = 0; i < vm.milestones.length; i++)
+                    _MilestoneRow(
+                      progress: vm.milestones[i],
+                      last: i == vm.milestones.length - 1,
+                    ),
                 ],
               ),
             ),
@@ -130,7 +138,7 @@ class EventMilestonesScreen extends ConsumerWidget {
                   for (final rule in [
                     'Only verified event check-ins count.',
                     'Each eligible event counts once, whether walk-in or registered.',
-                    'Progress never expires; milestone rewards are awarded only once.',
+                    'Milestone progress is shown for this demo session.',
                   ])
                     Padding(
                       padding: EdgeInsets.only(bottom: AppSpacing.sm),
@@ -154,13 +162,14 @@ class EventMilestonesScreen extends ConsumerWidget {
 }
 
 class _MilestoneRow extends StatelessWidget {
-  const _MilestoneRow({required this.index});
-  final int index;
+  const _MilestoneRow({required this.progress, required this.last});
+  final MilestoneProgress progress;
+  final bool last;
   @override
   Widget build(BuildContext context) {
-    final milestone = ActivityMockData.milestones[index];
-    final claimed = index < 2;
-    final next = index == 2;
+    final milestone = progress.milestone;
+    final claimed = progress.reached;
+    final next = progress.next;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -186,7 +195,7 @@ class _MilestoneRow extends StatelessWidget {
                       : 'imgContainer6',
                 ),
               ),
-              if (index < 4)
+              if (!last)
                 Expanded(
                   child: VerticalDivider(
                     color: claimed
@@ -222,7 +231,7 @@ class _MilestoneRow extends StatelessWidget {
                       Text(
                         milestone.title,
                         style: EviaTheme.label.copyWith(
-                          color: index > 2 ? EviaTheme.muted : null,
+                          color: !claimed && !next ? EviaTheme.muted : null,
                         ),
                       ),
                       EventBadge(
@@ -236,7 +245,7 @@ class _MilestoneRow extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.xs),
                         decoration: BoxDecoration(
-                          color: index > 2
+                          color: !claimed && !next
                               ? AppColors.surfaceMuted
                               : AppColors.warningSurface,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -244,15 +253,16 @@ class _MilestoneRow extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ActivityIcon(
-                              '2083:4156',
-                              index > 2 ? 'imgContainer7' : 'imgContainer4',
+                            CoinIcon(
+                              color: !claimed && !next
+                                  ? ActivityTheme.disabled
+                                  : null,
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
                               '+${milestone.coins}',
                               style: EviaTheme.caption.copyWith(
-                                color: index > 2
+                                color: !claimed && !next
                                     ? ActivityTheme.disabled
                                     : AppColors.warning,
                               ),
@@ -269,7 +279,7 @@ class _MilestoneRow extends StatelessWidget {
                         ActivityIcon('2083:4156', 'imgContainer3'),
                         SizedBox(width: AppSpacing.xs),
                         Text(
-                          'Claimed',
+                          'Reached',
                           style: TextStyle(color: AppColors.success),
                         ),
                       ],
@@ -277,9 +287,9 @@ class _MilestoneRow extends StatelessWidget {
                   if (next) const EventBadge('NEXT GOAL'),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    milestone.description,
+                    progress.description,
                     style: EviaTheme.caption.copyWith(
-                      color: index > 2 ? ActivityTheme.disabled : null,
+                      color: !claimed && !next ? ActivityTheme.disabled : null,
                     ),
                   ),
                 ],

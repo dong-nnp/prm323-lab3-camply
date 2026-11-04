@@ -8,6 +8,7 @@ import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/status_widgets.dart';
 
 class EviaFollowingScreen extends ConsumerWidget {
@@ -341,7 +342,7 @@ class _FollowingEvent extends StatelessWidget {
               const SizedBox(height: AppSpacing.xs),
               Row(
                 children: [
-                  const FigmaIcon('2083:1582', 'imgContainer5'),
+                  const CoinIcon(),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     '+${event.coins} coins',

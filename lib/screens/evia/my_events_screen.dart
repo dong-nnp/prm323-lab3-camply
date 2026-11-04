@@ -11,6 +11,7 @@ import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 import '../../widgets/activity_widgets.dart';
 import 'monthly_calendar.dart';
 
@@ -609,10 +610,7 @@ class _RegisteredCard extends ConsumerWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                ActivityIcon(
-                                  screen,
-                                  allPast ? 'imgContainer5' : 'imgContainer4',
-                                ),
+                                const CoinIcon(),
                                 const SizedBox(width: AppSpacing.xs),
                                 Text(
                                   '+${event.coins} Coins',
