@@ -12,6 +12,10 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.obscureText = false,
     this.enabled = true,
+    this.labelWidget,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.errorWidget,
     super.key,
   });
 
@@ -23,12 +27,14 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool obscureText;
   final bool enabled;
+  final Widget? labelWidget, prefixIcon, suffixIcon, errorWidget;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: Theme.of(context).textTheme.labelMedium),
+      labelWidget ??
+          Text(label, style: Theme.of(context).textTheme.labelMedium),
       const SizedBox(height: AppSpacing.xs),
       Semantics(
         label: label,
@@ -39,7 +45,13 @@ class AppTextField extends StatelessWidget {
           obscureText: obscureText,
           enabled: enabled,
           style: Theme.of(context).textTheme.bodyLarge,
-          decoration: InputDecoration(hintText: hintText, errorText: errorText),
+          decoration: InputDecoration(
+            hintText: hintText,
+            errorText: errorWidget == null ? errorText : null,
+            error: errorWidget,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
+          ),
         ),
       ),
     ],

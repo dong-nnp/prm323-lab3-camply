@@ -178,6 +178,7 @@ abstract final class AppTheme {
     color: AppColors.textPrimary,
   );
   static const _button = TextStyle(
+    fontFamily: 'Roboto',
     fontSize: 16,
     height: 24 / 16,
     fontWeight: FontWeight.w600,

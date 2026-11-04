@@ -7,12 +7,15 @@ class AppButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.isLoading = false,
+    this.trailing,
+    this.leading,
     super.key,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final bool isLoading;
+  final Widget? trailing, leading;
 
   @override
   Widget build(BuildContext context) => FilledButton(
@@ -21,6 +24,10 @@ class AppButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: AppSpacing.sm),
+        ],
         if (isLoading) ...[
           SizedBox.square(
             dimension: AppSizes.progressIndicator,
@@ -32,6 +39,10 @@ class AppButton extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
         ],
         Flexible(child: Text(label, textAlign: TextAlign.center)),
+        if (trailing != null) ...[
+          const SizedBox(width: AppSpacing.sm),
+          trailing!,
+        ],
       ],
     ),
   );
