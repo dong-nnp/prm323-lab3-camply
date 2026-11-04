@@ -7,6 +7,10 @@ người dùng cho phép; chưa có nguồn dữ liệu sự kiện thật hoặ
 
 ## Cấu trúc
 
+Android debug build tracking nằm trong `android/app/build.gradle.kts`; chỉ tối ưu
+task graph/copy artifacts, không thay MVVM, runtime state hay logic Flutter.
+Xem [Build performance](build-performance.md) để biết phạm vi và validation.
+
 ```text
 lib/
 ├── main.dart                      # Binding + ProviderScope

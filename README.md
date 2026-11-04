@@ -7,6 +7,9 @@ Dữ liệu UI demo được tách riêng theo yêu cầu; chưa có Firebase pr
 
 ## Yêu cầu môi trường
 
+Android debug build có theo dõi input/output APK và tái sử dụng assets khi không
+đổi. Chi tiết phạm vi, số đo và kiểm tra tránh APK cũ: [Build performance](docs/build-performance.md).
+
 - Flutter **stable 3.47.8** / Dart **3.13.7** là bộ SDK đã dùng để tạo source.
   `pubspec.yaml` yêu cầu Dart `^3.13.7`; dùng Flutter stable có Dart tương thích.
 - Android Studio, Android SDK/command-line tools, JDK tương thích với Flutter

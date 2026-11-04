@@ -104,3 +104,24 @@ mismatch ngoài phạm vi. Scoped tests đợt 3 đạt sau lượt tinh chỉnh
 trong cả 17 capture không có mismatch. Không phải pixel-diff hoặc Android visual
 sign-off. APK debug biên dịch thành công; Gradle in cảnh báo native-access/KGP
 của Firebase plugins hiện có. Chưa kiểm thử real registration/backend/camera.
+
+## Android debug build reuse regression — 04/11/2026
+
+Đổi Android host build tracking, không đổi Dart/app logic. Native checks:
+
+- `flutter build apk --debug --target-platform android-x64 --no-pub` thành công.
+- Hai `flutter run -d emulator-5554 --no-resident --no-pub -v` thành công;
+  lượt warm cuối Gradle8.6s, install1.893s, sync4.1s, tổng39.739s.
+- MainActivity được xác nhận là top resumed activity. Startup vẫn có skipped
+  frames; không coi đây là runtime performance sign-off.
+- APK không đổi: task copy APK/assets UP-TO-DATE, clean hook SKIPPED.
+- APK đích thiếu: tái tạo, SHA-256 bằng bản gốc.
+- Entrypoint probe ngoài project: APK thay đổi, hash bản copy khớp packaged APK;
+  trở lại entrypoint gốc thành công. Không cài probe lên emulator.
+- Packaged APK thiếu: AGP đóng gói lại và Flutter copy đúng output.
+- Không chạy clean/xóa dependency cache/sửa SDK/tắt Defender/gỡ Firebase.
+  Không chạy lại Dart widget suite vì thay đổi chỉ ở Gradle; lỗi UI baseline
+  ghi ở các mục trước không được đánh dấu đã sửa.
+
+Xem [Build performance](build-performance.md) để biết phạm vi debug không flavor,
+không split và giới hạn so sánh các lượt đo.
