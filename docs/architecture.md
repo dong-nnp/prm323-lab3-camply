@@ -1,8 +1,9 @@
 # Kiến trúc source base
 
 Ứng dụng Android `prm393_lab03` dùng MVVM, Riverpod cho state và dependency
-injection, go_router cho navigation. Foundation chỉ kiểm tra cấu hình khởi động;
-chưa có nghiệp vụ, nguồn dữ liệu sự kiện hay luồng Lab 2.
+injection, go_router cho navigation. Foundation kiểm tra cấu hình khởi động ở
+`/foundation`; root là Evia login. Bộ 44 màn hình/trạng thái dùng presentation data demo được
+người dùng cho phép; chưa có nguồn dữ liệu sự kiện thật hoặc authentication flow.
 
 ## Cấu trúc
 
@@ -83,7 +84,7 @@ Providers là composition root duy nhất được biết concrete adapters.
 
 ## Khởi động và lỗi
 
-`main` → `LabApp` → root screen → `BootstrapViewModel` → `BootstrapRepository`
+Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `BootstrapViewModel` → `BootstrapRepository`
 → `FirebaseInitializer`.
 
 1. Mặc định `FIREBASE_ENABLED=false`: service trả `notConfigured` trước mọi SDK
@@ -101,7 +102,7 @@ Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-in
 
 ## Navigation và authentication
 
-Root `/` là route công khai duy nhất. `AuthenticationViewModel` quan sát
+Các route UI demo Evia và `/foundation` là công khai. `AuthenticationViewModel` quan sát
 `AuthenticationRepository.watchSession`; adapter pending phát trạng thái
 `unavailable`, không giả định người dùng đã đăng nhập.
 
@@ -111,7 +112,49 @@ hoặc stream lỗi; tạm quay về `/`. Danh sách protected paths hiện rỗ
 auth flow, thay fallback bằng route đăng nhập và đăng ký routes được bảo vệ;
 quy tắc backend vẫn phải được bảo vệ bằng Firebase Rules, không chỉ UI guard.
 
+## Evia presentation flow
+
+`lib/screens/evia/` render state từ `EviaViewModel` và chuyển các actions tìm kiếm,
+lọc, chọn sở thích, bookmark, follow cho ViewModel. Models ở `evia_models.dart`
+không phụ thuộc Flutter. `lib/data/mock/evia_mock_data.dart` là ngoại lệ dữ liệu
+mẫu đã được người dùng cho phép riêng cho task clone Figma; không phải adapter
+dịch vụ hoặc bằng chứng backend đã hoạt động. Không thêm repository/service
+không cần thiết để bọc dữ liệu presentation tĩnh.
+
+`EviaViewModel` được sở hữu bởi ProviderContainer và giữ state trong phiên app.
+Draft filters chỉ áp dụng sau **Apply Filters**; đóng màn hình không sửa filters
+đang dùng. Follow/bookmark dùng chung state giữa các màn hình. Các URL demo trực
+tiếp không thay đổi `AuthSession`, không vượt qua guard cho protected routes.
+
+`FigmaAssets` ánh xạ exports cục bộ, `EviaTheme` bổ sung tokens, `evia_widgets.dart`
+và `evia_brand.dart` chứa các thành phần giao diện dùng lại. Không thêm tải font
+runtime, tracking hoặc Firebase SDK calls trong View/ViewModel.
+
 ## Thay adapter và kiểm thử
+
+### My Events / Rewards presentation
+
+`ActivityViewModel` quản lý tab, ngày/tuần/lịch tháng, draft ngày, cancelled IDs,
+available/deposit balances, daily check-in, verified event IDs, redemption receipt,
+reward search/category và transaction filters. Models nằm trong
+`activity_models.dart`, fixtures trong `data/mock/activity_mock_data.dart`.
+User đã cho phép tiếp tục dùng mock data tách riêng; không thêm service giả trả
+thành công, Firebase calls hoặc quyền camera.
+
+`MyEventsScreen` render các preset Figma và chuyển date/cancel actions cho VM.
+`MonthlyCalendar` giữ lựa chọn draft qua VM đến **Apply date**. Ticket chặn hiển
+thị QR nếu registration đã hủy. Check-in preview chỉ xác nhận mã fixture; VM
+chặn credit lặp bằng verified IDs. Daily reward và redemption được chặn lặp
+bằng state, số xu/deposit và receipt cập nhật trong cùng một state assignment.
+
+`RewardsScreen`, details/confirmation, locker/voucher/success, milestones/history
+cùng quan sát một provider nên phản ánh cùng ví xu. Clipboard copy là platform UI
+action trong widget; không gọi SDK hay HTTP. Available/deposits được tách biệt.
+Các route reference công khai phục vụ UI demo, không cấp quyền backend.
+
+`ActivityAssets`, `ActivityIcon` và `RewardsWallet` dùng exports theo từng Figma
+node. `ActivityTheme` chứa measurements/colors bổ sung. Font button ghi rõ Roboto
+fallback để widget render dùng cùng family với app thay vì fallback khác.
 
 Override `firebaseInitializerProvider`, `authenticationServiceProvider` hoặc
 provider của từng service bằng fake trong `ProviderScope`/`ProviderContainer`.
@@ -123,3 +166,21 @@ dữ liệu Lab 2. Không import SDK từ `lib/firebase/`; thư mục đó chỉ
 tin cấu hình không phụ thuộc SDK. Khi mở rộng ra nền tảng khác Android, đưa
 `DefaultFirebaseOptions.currentPlatform` vào **service layer** sau khi CLI sinh
 file thật; không đưa SDK initialization vào Widget hoặc ViewModel.
+
+## Event registration / Profile presentation
+
+`RegistrationViewModel` giữ identity fields, consent, field errors, event ID,
+loading và outcome. Preset chỉ thiết lập reference state. Submit có delay inject
+được, validate trước khi xử lý, chặn duplicate pending và bỏ kết quả sau dispose
+hoặc invalidation. Thành công chuyển registration cho ActivityViewModel; activity
+cập nhật available/deposits/registrations cùng một state assignment. Failed/full
+không đổi ví. Không thêm service giả hoặc Firebase adapter.
+
+`ProfileViewModel` giữ saved IDs, filter, read-notification IDs, draft interests,
+profile fields và organizer presentation state. Save interests dùng chung
+EviaViewModel nên cập nhật feed; follow dùng cùng organizer ID `union`.
+Forms và result screens dùng shared AppButton/AppTextField, ActivityIcon và
+FlowEventSummary. FlowAssets chứa 180 exports; ActivityAssets compose map này.
+Models trong registration_models.dart vẫn thuần Dart. Static map là SVG native;
+ảnh crowd ở hai error frames được crop đúng từ source snapshot do Figma cung cấp.
+Các controls chuyển actions cho VM; không gọi HTTP, auth, camera hoặc SDK.
