@@ -1,3 +1,4 @@
+import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/viewmodels/evia_view_model.dart';
@@ -6,7 +7,9 @@ void main() {
   late ProviderContainer container;
   late EviaViewModel vm;
   setUp(() {
-    container = ProviderContainer();
+    container = ProviderContainer(
+      overrides: [hasAuthenticatedSessionProvider.overrideWithValue(true)],
+    );
     vm = container.read(eviaViewModelProvider.notifier);
   });
   tearDown(() => container.dispose());

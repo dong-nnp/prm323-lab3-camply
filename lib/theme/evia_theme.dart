@@ -72,7 +72,10 @@ abstract final class EviaTheme {
   static const logoWidth = 72.0;
   static const loginLogoWidth = 180.0;
   static const loginLogoHeight = 74.17;
+  static const authContentOffset = Offset(0, -AppSpacing.xs / 2);
+  static const compactLoginLogoWidth = 112.0;
   static const collageHeight = 204.0;
+  static const signUpCollageHeight = 120.0;
   static const cardRadius = 28.0;
   static const cardGap = AppSpacing.md;
 }

@@ -1,5 +1,67 @@
 # Design traceability — Evia
 
+## S01 Welcome — yêu cầu trực tiếp 05/11/2026
+
+Nguồn layout: `assets/EVIA_S01_Welcome_Reference.png` do người dùng cung cấp.
+Source: `welcome_screen.dart`, route `/`; Login cũ chuyển `/login`.
+Runtime chỉ dùng logo chính thức `evia-logo-lime-transparent(4).png` và
+`EVIA_Welcome_Hero.png` (giữ tỷ lệ, không thêm artwork/decorations khác).
+Reference screenshot không bundle/render. Text/buttons là Flutter components.
+Tokens bổ sung cục bộ `WelcomeTokens`: blue #1769F5, navy #17243B,
+secondary #64748B, nền trắng #FFFFFF theo tinh chỉnh tiếp theo của người dùng;
+headline 28sp, body 15sp,
+buttons minHeight 52dp và radius 12dp. Không thay theme các màn khác.
+SafeArea thật; không giả status bar/nav bar, không bottom navigation/carousel.
+Hero co theo chiều cao có giới hạn; nội dung scroll khi màn thấp/text scale lớn.
+Get Started mở `/signup` với form Create Account; adapter đăng ký vẫn pending.
+Không đánh đồng form hợp lệ hoặc chọn sở thích với tạo tài khoản thành công.
+
+## Sign Up / Create Account — 05/11/2026
+
+Nguồn: ảnh tham chiếu và yêu cầu trực tiếp, dùng Login hiện tại làm chuẩn.
+`sign_up_screen.dart` dùng EviaPage/LoginBackdrop/EviaLogo/AppButton,
+cùng text fields/theme. Theo tinh chỉnh mới nhất, Sign Up không collage nhưng
+logo 180dp và tagline “Find Events. Make Memories.” giống Login. Khi có bàn phím,
+logo thu 112dp, tagline ẩn như Login. Subtitle: “Join Evia and discover events you'll love.”
+Theo sửa thứ tự tiếp theo: bốn fields → Terms checkbox → Create Account →
+Google → Log In. Không thu nhỏ chữ/vùng bấm. Bản thử ba ảnh ngang
+trước đó không còn dùng ở Sign Up. Login và assets giữ nguyên.
+Không fake status bar, Student ID, university email hoặc phone. Bốn fields có
+show/hide password riêng, error text inline, checkbox không preselected. Terms và
+Privacy là văn bản vì chưa có URL. Fields giữ state khi mở bàn phím.
+Route `/signup` thay placeholder cũ; Log In về `/login`, Skip đến guest Discover.
+
+Tinh chỉnh chuyển màn theo yêu cầu: giữ giao diện Login cũ, Welcome → Login
+slide 6% chiều rộng từ phải vào + fade trong 280ms; Back đảo chiều trong 220ms.
+Reduced motion bỏ animation. Không thay S00, asset hoặc thêm dependency.
+
+Tinh chỉnh Login khi nhập liệu: giữ nền/collage gốc lúc bàn phím đóng. Khi bàn
+phím ảo hiện, logo từ 180dp thu về 112dp, các phần minh họa/tagline và header
+phụ collapse + fade trong 180ms. Form giữ nguyên element/controller/focus,
+vẫn scroll khi thiếu chỗ. Đóng bàn phím khôi phục hình; reduced motion bỏ tween.
+
+## S00 Splash — yêu cầu trực tiếp 05/11/2026
+
+Nguồn: PNG chính thức do người dùng cung cấp tại
+`assets/evia-logo-lime-transparent(4).png` (1952×806, RGBA), giữ nguyên bytes.
+Logo chỉ có e trắng trong vé + via navy, hai tia lime. Không vẽ lại typography.
+Theo yêu cầu sửa animation tiếp theo, thay fade toàn ảnh bằng ba lớp độc lập:
+vé (scale 0.85→1, 0–300ms), vé trượt ngang từ giữa đến vị trí cuối (300–800ms),
+via wipe trái→phải (350–800ms), hai tia lime pulse một lần (700–950ms).
+Giữ logo hoàn chỉnh đến 1200ms, không đổi ảnh/crossfade ở frame cuối.
+`tool/derive_splash_layers.py` tách connected components không đổi pixel hay
+resample, kiểm tra ghép lại trùng RGBA ảnh gốc. Canvas alpha 1690×622 dùng chung;
+vé [0,92,638,530], via [618,40,1072,539], rays [522,0,185,181] theo x/y/w/h.
+Displacement từ tâm vé đến tâm canvas được scale theo viewport, không offset
+pixel tùy ý. Bản reduced motion dùng nguyên PNG đầy đủ tĩnh.
+Nền Splash/Welcome trắng #FFFFFF theo tinh chỉnh tiếp theo; Login giữ nền và
+trang trí gốc. `AppColors.splashBackground` dùng chung màu trắng từ entryBackground.
+Logo tối đa 280dp, giữ tỷ lệ.
+Không caption, nút, spinner hoặc bottom navigation.
+Android static splash dùng cùng PNG/nền cho light/dark và Android 12+.
+Không có iOS host để xác minh native. Mapping Figma của các màn cũ bên dưới
+không phải nguồn thiết kế S00 này.
+
 Trạng thái: đã triển khai source cho 44 màn hình/trạng thái Evia. Đã đọc đủ metadata,
 high-fidelity design context và screenshot của từng node trước khi sửa source.
 Lần đầu compiler bị Windows Application Control chặn. Sau khi người dùng xử lý
@@ -29,7 +91,7 @@ File Figma: `JQtHz2tigJtvvjVBsx03kx`; page **màn hình cuối** (`2083:272`).
 
 | Tên Figma | Node | Flutter screen / route |
 |---|---|---|
-| Html → Body → Main - MobileScreenContainer | `2083:4509` | `EviaLoginScreen` / `/` |
+| Html → Body → Main - MobileScreenContainer | `2083:4509` | `EviaLoginScreen` / `/login` |
 | Evia - Discorver interests you | `2088:2` | `EviaInterestsScreen` / `/interests` |
 | Evia — Discover (Consistent Event Hierarchy) | `2083:456` | `EviaDiscoverScreen` / `/discover` |
 | Evia — Discover (Guest Mode) | `2083:1143` | `EviaDiscoverScreen(guest: true)` / `/discover/guest` |

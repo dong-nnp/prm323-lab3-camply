@@ -1,3 +1,4 @@
+import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/data/mock/activity_mock_data.dart';
@@ -8,7 +9,9 @@ void main() {
   late ProviderContainer container;
   late ActivityViewModel vm;
   setUp(() {
-    container = ProviderContainer();
+    container = ProviderContainer(
+      overrides: [hasAuthenticatedSessionProvider.overrideWithValue(true)],
+    );
     vm = container.read(activityViewModelProvider.notifier);
   });
   tearDown(() => container.dispose());

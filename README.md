@@ -29,12 +29,51 @@ flutter run -d DEVICE_ID
 ```
 
 Thay `DEVICE_ID` bằng ID từ `flutter devices`. Mặc định không cần
-`google-services.json` hay `firebase_options.dart`; app mở màn hình Evia login.
-Chọn **Skip** để xem Discover Guest; **Sign up** mở chọn sở thích và **Continue**
-mở Discover demo. Đây là điều hướng UI, không tạo tài khoản/session đăng nhập.
+`google-services.json` hay `firebase_options.dart`; app mở S00 Splash rồi S01 Welcome.
+Welcome (`/`) có đúng ba actions: **Get Started** → `/signup`, **Log In** → `/login`,
+**Explore as Guest** → `/discover/guest`. Màn Login cũ giữ tại `/login`.
+`/signup` có form Create Account dùng cùng styles, logo và tagline với Login,
+không collage, bốn fields và lỗi inline. Thứ tự: fields → Terms checkbox →
+Create Account → Google → Log In. Checkbox dùng chung cho hai cách đăng ký,
+mặc định chưa chọn. Login giữ nguyên giao diện có collage.
+Create Account gọi SignUpViewModel → AuthenticationRepository → AuthenticationService.
+**Adapter tạo tài khoản và Google vẫn pending:** form hợp lệ báo chưa khả dụng,
+không tạo tài khoản/session giả hoặc tự chuyển đến Interests. Backend có thể trả
+yêu cầu xác minh email; khi thành công, router chỉ chuyển sau session thật xuất hiện.
+Độ dài mật khẩu tối thiểu lấy từ adapter khi có; chưa cấu hình thì chỉ kiểm tra
+bắt buộc/khớp mật khẩu, không tự đặt quy tắc giả. Chưa có URL Terms/Privacy nên
+hiển thị văn bản, không tạo link hoặc trang pháp lý giả.
+Guest được duyệt/tìm kiếm/lọc sự kiện, xem details và organizer công khai.
+Lưu/follow/đăng ký/Going/check-in và các route dữ liệu cá nhân yêu cầu đăng nhập;
+ViewModel cũng chặn mutation khi session chưa rõ/unavailable/signed out/lỗi.
+Đây là điều hướng UI, không tạo tài khoản/session đăng nhập giả.
 Màn hình trạng thái Firebase và nút kiểm tra lại vẫn có ở `/foundation`.
 
-Flutter bootstrap qua `ProviderScope` → `MaterialApp.router` → Evia login.
+Flutter bootstrap qua `ProviderScope` → `MaterialApp.router` → `/splash`.
+Splash dùng artwork PNG EVIA chính thức, nền trắng #FFFFFF giống Welcome.
+Login giữ nền và trang trí gốc theo yêu cầu. Vé xuất hiện giữa màn hình
+(0–300ms), trượt trái (300–800ms) trong lúc chữ “via” được wipe từ trái sang phải
+(350–800ms); hai tia lime xuất hiện/pulse một lần (700–950ms), rồi giữ đến 1200ms.
+Các lớp trong `assets/splash/` được tách nguyên pixel từ PNG gốc bằng
+`python tool/derive_splash_layers.py` (tool phát triển cần Pillow). Script kiểm tra
+ghép lại trùng RGBA ảnh nguồn. Không vẽ lại chữ, không crossfade sang ảnh khác.
+Giảm chuyển động hiển thị PNG đầy đủ tĩnh. Chỉ điều hướng khi logo và initialization/auth
+đã sẵn sàng; initialization lỗi mở `/foundation` để Retry.
+
+Session chưa đăng nhập/unavailable/lỗi đến Welcome (`/`). Session thật đã đăng
+nhập đến `/interests` nếu chưa xử lý personalization, hoặc `/discover` nếu đã
+hoàn tất/bỏ qua. Khi session thật đăng nhập thành công trên Welcome/Login/Sign Up,
+router cũng áp dụng quy tắc này. `AuthSession.personalizationHandled` là field adapter thật cần
+cung cấp từ account profile; không suy ra từ sở thích mẫu. Continue/Skip giữ
+lựa chọn hiện có và đánh dấu theo user trong phiên, không tạo session giả.
+**Giới hạn:** chưa có adapter auth/profile thật; trạng thái này chưa được lưu lên
+backend/qua lần khởi động. Bản mặc định dùng auth unavailable nên đến Welcome.
+Android native splash dùng cùng PNG/nền, tự nhường cho frame Flutter đầu tiên.
+S01 render logo gốc và `assets/EVIA_Welcome_Hero.png` thành hai image riêng, cùng
+text/buttons Flutter thật. `assets/EVIA_S01_Welcome_Reference.png` chỉ là tài liệu
+layout, không bundle hay dùng làm background. Bố cục scroll trên màn thấp/chữ lớn.
+Repository chưa có iOS host; chưa xác minh native splash iOS.
+
 `FIREBASE_ENABLED` mặc định false, được đọc ở compile time. Nếu bật true mà thiếu
 cấu hình hợp lệ, Dart initialization error sẽ chuyển thành error state có Retry,
 không để exception SDK thoát thẳng ra màn hình. Không bật cờ trước khi hoàn tất
@@ -99,9 +138,10 @@ inject dependencies, dễ override để test. Sáu service providers hiện dù
 báo `AppException` thay vì giả thành công. Khởi tạo Firebase Core thành công
 **không tự thay** các adapter pending thành dịch vụ thật.
 
-Các route Evia và `/foundation` đều là route công khai cho bản UI demo.
-Auth session stream và guard fail closed vẫn giữ nguyên; chưa có protected route
-hoặc tích hợp đăng nhập thật. Login hiển thị validation/trạng thái chưa cấu hình.
+Welcome, Login, Sign Up, nội dung sự kiện công khai và `/foundation`
+không yêu cầu đăng nhập. Các route cá nhân/đăng ký/voucher áp dụng auth guard S01.
+Auth session stream và guard fail closed vẫn giữ nguyên; chưa tích hợp adapter
+đăng nhập/đăng ký thật. Login hiển thị validation/trạng thái chưa cấu hình.
 
 ## Bộ màn hình Evia
 
@@ -110,7 +150,9 @@ page `2083:272`. Mapping đầy đủ ở `docs/design-traceability.md`.
 
 | Route | Màn hình |
 |---|---|
-| `/` | Welcome back / Login |
+| `/` | S01 Welcome |
+| `/login` | Welcome back / Login |
+| `/signup` | Create Account form (chờ adapter auth thật) |
 | `/interests` | Discover interests you |
 | `/discover` | Discover — Consistent Event Hierarchy |
 | `/discover/guest` | Discover — Guest Mode |

@@ -8,6 +8,8 @@ import '../models/evia_models.dart';
 import '../theme/app_tokens.dart';
 import '../theme/evia_theme.dart';
 import '../viewmodels/evia_view_model.dart';
+import '../viewmodels/authentication_view_model.dart';
+import 'authenticated_action.dart';
 
 class FigmaIcon extends StatelessWidget {
   const FigmaIcon(this.screen, this.name, {super.key});
@@ -256,17 +258,21 @@ class BookmarkButton extends ConsumerWidget {
   final bool overlay;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final saved = ref.watch(
-      eviaViewModelProvider.select((s) => s.saved.contains(event.id)),
-    );
+    final saved =
+        ref.watch(hasAuthenticatedSessionProvider) &&
+        ref.watch(
+          eviaViewModelProvider.select((s) => s.saved.contains(event.id)),
+        );
     final initial = event.id == 'football' || event.id == 'mobile';
     return IconButton(
       tooltip: saved
           ? 'Remove ${event.title} from saved'
           : 'Save ${event.title}',
       isSelected: saved,
-      onPressed: () =>
-          ref.read(eviaViewModelProvider.notifier).toggleSaved(event.id),
+      onPressed: () {
+        if (!ensureAuthenticated(context, ref)) return;
+        ref.read(eviaViewModelProvider.notifier).toggleSaved(event.id);
+      },
       icon: saved == initial
           ? overlay
                 ? Container(

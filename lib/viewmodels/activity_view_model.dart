@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/activity_mock_data.dart';
 import '../models/activity_models.dart';
+import 'authentication_view_model.dart';
 
 class ActivityState {
   ActivityState({
@@ -98,6 +99,10 @@ class ActivityViewModel extends Notifier<ActivityState> {
     ...state.registrations,
   ];
   bool addRegistration(RegisteredEvent event, {int deposit = 0}) {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copy(message: 'Log in to register for events.');
+      return false;
+    }
     if (allEvents.any((existing) => existing.id == event.id)) {
       state = state.copy(cancelled: {...state.cancelled}..remove(event.id));
       return true;

@@ -1,3 +1,4 @@
+import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/models/registration_models.dart';
@@ -10,7 +11,10 @@ void main() {
   late ProviderContainer container;
   setUp(() {
     container = ProviderContainer(
-      overrides: [registrationDelayProvider.overrideWithValue(Duration.zero)],
+      overrides: [
+        hasAuthenticatedSessionProvider.overrideWithValue(true),
+        registrationDelayProvider.overrideWithValue(Duration.zero),
+      ],
     );
   });
   tearDown(() => container.dispose());

@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/evia_mock_data.dart';
 import '../models/evia_models.dart';
+import '../models/auth_session.dart';
+import '../core/constants/app_routes.dart';
+import 'authentication_view_model.dart';
 
 class EviaState {
   const EviaState({
@@ -18,8 +21,10 @@ class EviaState {
     this.organizer = 'All',
     this.message,
     this.showPassword = false,
+    this.personalizedUsers = const {},
   });
   final Set<String> interests, saved, followed;
+  final Set<String> personalizedUsers;
   final List<String> history;
   final String query, category, organizer;
   final EventFilters filters, draft;
@@ -39,6 +44,7 @@ class EviaState {
     String? organizer,
     String? message,
     bool? showPassword,
+    Set<String>? personalizedUsers,
   }) => EviaState(
     interests: interests ?? this.interests,
     saved: saved ?? this.saved,
@@ -53,6 +59,7 @@ class EviaState {
     organizer: organizer ?? this.organizer,
     message: message,
     showPassword: showPassword ?? this.showPassword,
+    personalizedUsers: personalizedUsers ?? this.personalizedUsers,
   );
 }
 
@@ -63,6 +70,21 @@ final eviaViewModelProvider = NotifierProvider<EviaViewModel, EviaState>(
 class EviaViewModel extends Notifier<EviaState> {
   @override
   EviaState build() => const EviaState();
+
+  /// Records an explicit completion/skip for the current real session only.
+  /// This UI state does not claim to save a profile to a pending backend.
+  String? finishPersonalization({bool skipped = false}) {
+    if (!skipped && !canContinue) return null;
+    final session = ref.read(authenticationViewModelProvider).asData?.value;
+    if (session?.status == AuthStatus.signedIn) {
+      state = state.copyWith(
+        personalizedUsers: {...state.personalizedUsers, session!.userId!},
+      );
+      return AppRoutes.discover;
+    }
+    return skipped ? AppRoutes.guestDiscover : AppRoutes.discover;
+  }
+
   Set<String> _toggle(Set<String> values, String value) =>
       values.contains(value)
       ? ({...values}..remove(value))
@@ -75,10 +97,22 @@ class EviaViewModel extends Notifier<EviaState> {
     return true;
   }
 
-  void toggleSaved(String id) =>
-      state = state.copyWith(saved: _toggle(state.saved, id));
-  void toggleFollowed(String id) =>
-      state = state.copyWith(followed: _toggle(state.followed, id));
+  void toggleSaved(String id) {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copyWith(message: 'Log in to save events.');
+      return;
+    }
+    state = state.copyWith(saved: _toggle(state.saved, id));
+  }
+
+  void toggleFollowed(String id) {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copyWith(message: 'Log in to follow organizers.');
+      return;
+    }
+    state = state.copyWith(followed: _toggle(state.followed, id));
+  }
+
   void removeHistory(String value) => state = state.copyWith(
     history: state.history.where((e) => e != value).toList(),
   );

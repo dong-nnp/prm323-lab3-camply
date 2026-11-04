@@ -1,3 +1,5 @@
+import '../helpers/startup_test_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +14,10 @@ Future<ProviderContainer> open(WidgetTester tester, String route) async {
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   final container = ProviderContainer(
-    overrides: [initialLocationProvider.overrideWithValue(route)],
+    overrides: [
+      signedInTestSession,
+      initialLocationProvider.overrideWithValue(route),
+    ],
   );
   addTearDown(container.dispose);
   await tester.pumpWidget(

@@ -9,7 +9,6 @@ abstract final class AuthenticationGuard {
   }) {
     if (!requiresAuthentication) return null;
     if (session?.status == AuthStatus.signedIn) return null;
-    // TODO(Lab 3): Replace with a sign-in route once the auth flow exists.
-    return AppRoutes.home;
+    return AppRoutes.login;
   }
 }

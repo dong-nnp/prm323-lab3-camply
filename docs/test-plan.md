@@ -1,5 +1,142 @@
 # Test plan — template
 
+## Sign Up branding match — 05/11/2026
+
+Logo và tagline khôi phục đúng kích thước/style Login, không thêm collage.
+Khi bàn phím hiện, thu logo và ẩn tagline. 10 Signup/Login widget tests đạt;
+analyze/diff check đạt. Đã cập nhật và xem ảnh `build/signup-review/signup-390.png`.
+
+## Sign Up action order correction — 05/11/2026
+
+Theo yêu cầu sửa tiếp theo, đặt Terms sau bốn fields và Google sau Create Account.
+Giữ header nhỏ/không collage. 7 Signup widget tests đạt, gồm kiểm tra thứ tự mới;
+ảnh `build/signup-review/signup-390.png` đã cập nhật. Diff check đạt. Các mô tả
+Google ở trên form trong mục lịch sử bên dưới không còn áp dụng.
+
+## Sign Up compact layout — 05/11/2026
+
+Bỏ collage/tagline, logo nhỏ, subtitle rút gọn, Google trước các fields. Consent
+dùng chung nằm gần Google. Không đổi font/tap target hoặc business validation.
+Signup widget/VM và Login keyboard: 18 tests đạt; analyze/diff check đạt. Capture
+mới ở 390×844 kiểm tra Google và Log In thấy được khi mở màn hình. Các mô tả
+collage ở những lượt trước bên dưới là evidence lịch sử, không phải layout hiện tại.
+
+## Sign Up horizontal collage — 05/11/2026
+
+Theo ảnh điều chỉnh tiếp theo, đổi riêng collage Sign Up sang ba ảnh ngang,
+chồng nhẹ và nghiêng; giữ Login gốc. Analyze/diff check đạt. Chạy Signup widgets
+và Login keyboard: 10 tests đạt. Đã xuất/xem lại `build/signup-review/signup-390.png`.
+
+## Sign Up / Create Account — 05/11/2026
+
+- `/signup` thay placeholder bằng form thật. ViewModel tests kiểm tra required,
+  email/confirmation/terms, policy lấy từ adapter, chống submit lặp, email conflict,
+  verification, Google và dispose khi request pending. Không dùng runtime mocks.
+- Widget tests: 360×640, 390×1200 (capture toàn form), 412×844 text 2x;
+  keyboard inset 300dp, bốn fields không mất text, collage khoảng 110–127dp,
+  không status bar giả/Student ID, checkbox chưa chọn, password toggle độc lập,
+  Log In mở màn cũ. Backend pending báo lỗi và không tự chuyển màn.
+- Hai tests dùng service fake trong tests: chỉ sau auth stream phát session thật
+  của fixture mới chuyển Interests hoặc Discover theo personalization; kết quả
+  từ hàm createAccount riêng lẻ không đủ để navigate.
+- 32 tests liên quan đã đạt: Sign Up widget/VM, Login keyboard, Welcome, Firebase
+  preparation. Sau tinh chỉnh cuối, chạy lại 15 Signup widget/VM tests đều đạt.
+  Không cộng lượt chạy lại thành case mới. Format/analyze/diff check đạt.
+- Debug APK x64 build thành công. Đã xem ảnh widget
+  `build/signup-review/signup-390.png`; không claim native smoke hay backend thật.
+- Chưa có adapter auth/Google thật, policy mật khẩu hoặc legal URL production.
+  Pending adapter ném lỗi rõ ràng, không thành công giả. Không chạy full suite.
+
+## Login keyboard layout — 05/11/2026
+
+- `login_keyboard_test.dart`: 390×844, 360×640 và reduced motion, mô phỏng
+  viewInsets.bottom=300dp. Focus đơn lẻ không collapse; mở bàn phím thu logo,
+  vùng collage cao 0, ô đang nhập vẫn trong viewport. Email Next đến Password
+  không hiện lại collage; đóng bàn phím giữ text và các field elements.
+- 15 tests đạt trong login_keyboard_test + welcome_screen_test; đã chạy thêm
+  3 tests keyboard sau bổ sung preload ảnh, tất cả đạt. Không tính lượt chạy
+  lại thành test case mới. Analyze, format và diff check đạt.
+- Đã xem `build/login-keyboard-review/login-keyboard-insets-300dp.png`; đây là
+  ảnh widget với keyboard inset mô phỏng, không phải ảnh bàn phím native thật.
+- Không chạy lại full suite/native build cho thay đổi bố cục Dart này.
+
+## Welcome → Login transition — 05/11/2026
+
+Giữ nguyên Login UI, thêm slide + fade khi push và reverse khi pop; reduced motion
+bỏ cả hai. Đã chạy format, analyze (không lỗi), `git diff --check` và toàn bộ
+`welcome_screen_test.dart`: 12 tests đạt. Hai test mới kiểm tra frame trung gian
+tiến/lùi, Welcome element được giữ lại sau Back, và reduced motion không slide.
+Không build lại native vì chỉ thay routing/animation Dart; chưa đo FPS trên thiết bị.
+
+## S01 Welcome — 05/11/2026
+
+- `welcome_screen_test.dart`: 390×844, 360×640, 412×844/360×640 với text 2x;
+  đúng hai asset riêng, ba actions thật, touch target >=48dp, scroll trên màn thấp.
+  Get Started mở Sign Up unavailable, Log In mở Login, Guest mở Discover Guest.
+  Private deep links/Follow guest đến Login, organizer công khai vẫn xem được.
+  Hai test signed-in vào `/` xác nhận bypass Welcome theo personalization.
+- `guest_access_test.dart`: không thay collections, đăng ký/Going/waitlist hoặc
+  tiền khi chưa xác nhận session. Test fixtures cho các flow cần tài khoản cũ
+  được override signed-in chỉ trong tests, không tạo session ở runtime.
+- Đã chạy 47 test liên quan Welcome/guest/S00/startup/guard/ViewModels/Rewards,
+  tất cả đạt; chạy thêm 2 test bypass Welcome trực tiếp đều đạt (49 tests tổng).
+- pub get, format, analyze và diff check đạt; không thêm dependency.
+- Đã build/cài APK debug x64 với hero asset mới. Ảnh widget đã xuất và xem tại
+  `build/welcome-review/welcome-390-844.png` và `welcome-360-640.png`.
+  Đã mở lạnh app và xem ảnh máy ảo `build/welcome-review/native-welcome.png`:
+  S00 chuyển đến S01, cả ba actions nằm trên vùng navigation hệ thống.
+  Chỉ bundle hero/logo, không bundle reference screenshot làm UI.
+- Chưa tích hợp đăng ký/đăng nhập thật hoặc profile persistence. Sign Up báo
+  unavailable rõ ràng. Auth/profile routing dùng contracts/state thật hiện có;
+  fixtures không được coi là evidence dịch vụ backend.
+- Không chạy full suite/iOS; các lỗi ListTile/overflow baseline chưa sửa trong
+  task S01. Kết quả lịch sử bên dưới giữ nguyên theo phạm vi từng lượt chạy.
+
+## S00 assembly animation — lượt sửa tiếp theo 05/11/2026
+
+Thay fade toàn ảnh bằng các lớp tách trực tiếp từ logo chính thức. Kết quả của
+lượt sửa này (không thay thế các bằng chứng lịch sử ở mục dưới):
+
+- `python tool/derive_splash_layers.py`: ghép ba lớp trùng từng pixel RGBA nguồn.
+- pub get không thêm dependency; format và analyze đạt; `git diff --check` đạt.
+- 12 tests đạt trong `splash_logo_test.dart`, `splash_screen_test.dart` và
+  `startup_view_model_test.dart`. Kiểm tra vị trí vé A→B→C thật sự dịch trái,
+  mask via tăng từ 0 đến một phần rồi 100%, vị trí cuối giữ nguyên đến 1150ms.
+  Các nhánh auth/startup và reduced motion vẫn đạt.
+- Đã xuất và xem frame A300/B600/C800/D950/D1150; ảnh ghép tại
+  `build/splash-assembly-review/assembly-frames.png`. Khung B cho thấy vé đang
+  dịch trái và chữ via chưa hiện đủ. Không dùng storyboard làm ảnh runtime.
+- APK debug x64 build/cài thành công lên emulator-5554; kiểm tra trong APK có
+  đúng ba PNG mới (bytes khớp source) và code widget assembly.
+  Không chạy lại toàn suite. Native splash và
+  routing không thay đổi trong lượt sửa animation này.
+
+## S00 Splash — 05/11/2026
+
+- `startup_view_model_test.dart`: chờ bootstrap/auth, unavailable/signed out,
+  signed in chưa/đã xử lý personalization, lỗi initialization/auth, user isolation.
+- `splash_screen_test.dart`: đúng PNG gốc, căn giữa ở 360/412dp, không text/nút,
+  chỉ điều hướng sau startup, thay route thay vì đẩy Splash vào back stack,
+  reduced motion, signed-in Interests/Discover và Skip đến Discover.
+- Auth thật và profile adapter vẫn pending. Tests dùng overrides chỉ trong tests;
+  không coi đây là xác nhận login hoặc lưu personalization backend thật.
+- Đã chạy pub get (không thêm dependency), format, analyze không lỗi. Bộ test
+  scoped 22 tests đạt: Splash/startup, auth guard, Evia ViewModel và foundation.
+- APK debug x64 đã build và cài thành công. `am start -W` timeout, nhưng
+  `topResumedActivity` là MainActivity và ảnh native sau startup đã được xem:
+  app đến Welcome. Không thấy Flutter/AndroidRuntime error trong đoạn log đã đọc.
+- Đã xem ảnh widget `build/splash-review/splash-360.png`: đúng logo, một e trong
+  vé + via, hai tia lime, nền/căn giữa đúng. Ảnh không chứng minh độ mượt native.
+- Bản sao PNG Android có SHA-256 khớp file nguồn. APK chứa cả asset Flutter,
+  PNG native, splash_icon và code splash_screen; không dựa vào APK cũ.
+- Không chạy toàn suite hoặc iOS (repository không có iOS host). Các lỗi UI
+  baseline ghi bên dưới chưa được coi là đã sửa bởi task này.
+- Chạy thêm hai flow cũ trong `evia_screens_test.dart`: validation sở thích/login
+  đạt; Skip/Search/Filters/Follow thất bại vì 3 assertions `ListTile background
+  color or ink splashes may be invisible`, thuộc lỗi UI baseline đã ghi nhận.
+  Test flow này được đặt entry Welcome rõ ràng để kiểm tra độc lập với animation
+  S00 (đã có test riêng), không bỏ qua hay che assertion.
+
 Trạng thái: có unit/widget tests cho foundation và Evia UI; chưa có E2E ARTEMIS.
 Tài liệu này là kế hoạch, không xác nhận pass/fail cho các bước chưa chạy.
 

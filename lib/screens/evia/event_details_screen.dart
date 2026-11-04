@@ -9,12 +9,14 @@ import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/flow_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
+import '../../viewmodels/authentication_view_model.dart';
 import '../../viewmodels/profile_view_model.dart';
 import '../../viewmodels/registration_view_model.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/authenticated_action.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
 
@@ -35,9 +37,11 @@ class EventDetailsScreen extends ConsumerWidget {
         : tab == 'location'
         ? '2083:5137'
         : '2083:5523';
-    final saved = ref.watch(
-      profileViewModelProvider.select((s) => s.saved.contains(event.id)),
-    );
+    final saved =
+        ref.watch(hasAuthenticatedSessionProvider) &&
+        ref.watch(
+          profileViewModelProvider.select((s) => s.saved.contains(event.id)),
+        );
     final registered = ref.watch(
       activityViewModelProvider.select(
         (s) =>
@@ -82,6 +86,7 @@ class EventDetailsScreen extends ConsumerWidget {
                 onPressed: event.past
                     ? null
                     : () {
+                        if (!ensureAuthenticated(context, ref)) return;
                         if (registered) {
                           context.go('/my-events');
                         } else if (event.walkIn) {
@@ -157,6 +162,7 @@ class EventDetailsScreen extends ConsumerWidget {
                                 : 'Save event',
                             isSelected: saved,
                             onPressed: () {
+                              if (!ensureAuthenticated(context, ref)) return;
                               ref
                                   .read(profileViewModelProvider.notifier)
                                   .toggleSaved(event.id);
@@ -446,8 +452,10 @@ class _EventOrganizer extends ConsumerWidget {
           ),
         ),
         OutlinedButton(
-          onPressed: () =>
-              ref.read(eviaViewModelProvider.notifier).toggleFollowed('union'),
+          onPressed: () {
+            if (!ensureAuthenticated(context, ref)) return;
+            ref.read(eviaViewModelProvider.notifier).toggleFollowed('union');
+          },
           child: Text(followed ? 'Following' : '+ Follow'),
         ),
       ],

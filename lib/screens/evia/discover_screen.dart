@@ -70,7 +70,7 @@ class EviaDiscoverScreen extends ConsumerWidget {
             ] else ...[
               const Spacer(),
               FilledButton(
-                onPressed: () => context.push('/'),
+                onPressed: () => context.push('/login'),
                 child: const Text('Log in'),
               ),
             ],

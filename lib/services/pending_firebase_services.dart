@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import '../core/constants/app_strings.dart';
 import '../core/errors/app_exception.dart';
 import '../models/auth_session.dart';
+import '../models/account_creation_result.dart';
 import 'analytics_service.dart';
 import 'authentication_service.dart';
 import 'crash_reporting_service.dart';
@@ -26,6 +27,17 @@ final class PendingFirebaseServices
     code: 'firebase_service_pending',
     message: AppStrings.servicePending,
   );
+
+  @override
+  int? get minimumPasswordLength => null;
+
+  @override
+  Future<AccountCreationResult> createAccount({
+    required String fullName,
+    required String email,
+    required String password,
+    required bool acceptedTerms,
+  }) async => throw _pending;
 
   @override
   Stream<AuthSession> watchSession() =>

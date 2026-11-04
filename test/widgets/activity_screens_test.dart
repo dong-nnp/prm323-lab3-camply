@@ -1,3 +1,5 @@
+import '../helpers/startup_test_auth.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -81,7 +83,10 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             key: ValueKey(viewport),
-            overrides: [initialLocationProvider.overrideWithValue(route)],
+            overrides: [
+              signedInTestSession,
+              initialLocationProvider.overrideWithValue(route),
+            ],
             child: const LabApp(),
           ),
         );
@@ -100,6 +105,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            signedInTestSession,
             initialLocationProvider.overrideWithValue('/my-events/selected'),
           ],
           child: const LabApp(),
@@ -125,6 +131,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          signedInTestSession,
           initialLocationProvider.overrideWithValue('/rewards/detail'),
         ],
         child: const LabApp(),
@@ -151,6 +158,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          signedInTestSession,
           initialLocationProvider.overrideWithValue('/rewards/catalog'),
         ],
         child: const LabApp(),
@@ -177,7 +185,10 @@ void main() {
           RepaintBoundary(
             key: boundaryKey,
             child: ProviderScope(
-              overrides: [initialLocationProvider.overrideWithValue(entry.key)],
+              overrides: [
+                signedInTestSession,
+                initialLocationProvider.overrideWithValue(entry.key),
+              ],
               child: const LabApp(),
             ),
           ),

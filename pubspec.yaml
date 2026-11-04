@@ -28,4 +28,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/EVIA_Welcome_Hero.png
+    - assets/evia-logo-lime-transparent(4).png
+    - assets/splash/
     - assets/figma/
