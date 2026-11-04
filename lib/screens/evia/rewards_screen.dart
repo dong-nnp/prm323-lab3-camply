@@ -346,11 +346,6 @@ class _DailyCheckIn extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          const Text(
-            'Keep your streak going. Earn up to 20 coins every day!',
-            style: EviaTheme.caption,
-          ),
           const SizedBox(height: AppSpacing.xl),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -418,15 +413,14 @@ class _DailyCheckIn extends StatelessWidget {
             },
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            'Today: Day ${progress.day} · +${progress.coins} coins',
+          const Text(
+            'Max reward unlocked · +20 coins daily',
+            textAlign: TextAlign.center,
             style: EviaTheme.label,
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(progress.message, style: EviaTheme.caption),
-          const SizedBox(height: AppSpacing.sm),
           const Text(
-            'Miss a day? Restart at Day 1. Coins already earned are kept.',
+            'Miss a day? Streak resets.',
             textAlign: TextAlign.center,
             style: EviaTheme.caption,
           ),
@@ -436,7 +430,7 @@ class _DailyCheckIn extends StatelessWidget {
                 ? 'Saving check-in...'
                 : progress.checkedInToday
                 ? 'Checked In Today · +${progress.coins} coins'
-                : 'Check In Today · +${progress.coins} coins',
+                : 'Check In · +${progress.coins} coins',
             onPressed: null,
           ),
         ],

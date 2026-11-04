@@ -30,7 +30,7 @@ void main() {
     expect(find.text('8-day streak'), findsOneWidget);
     expect(find.text('Day 2'), findsOneWidget);
     final button = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Check In Today \u00b7 +20 coins'),
+      find.widgetWithText(FilledButton, 'Check In \u00b7 +20 coins'),
     );
     expect(button.onPressed, isNull);
     expect(find.textContaining('Coin service'), findsNothing);
