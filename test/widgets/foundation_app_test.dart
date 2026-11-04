@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/app/app.dart';
+import 'package:prm393_lab03/app/router.dart';
 import 'package:prm393_lab03/core/constants/app_strings.dart';
 import 'package:prm393_lab03/core/errors/app_exception.dart';
 import 'package:prm393_lab03/core/providers/service_providers.dart';
@@ -29,6 +30,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              initialLocationProvider.overrideWithValue('/foundation'),
               firebaseInitializerProvider.overrideWithValue(
                 const FirebaseInitializationService(enabled: false),
               ),
@@ -56,7 +58,10 @@ void main() {
     final service = FakeFirebaseInitializer(() => pending.future);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [firebaseInitializerProvider.overrideWithValue(service)],
+        overrides: [
+          initialLocationProvider.overrideWithValue('/foundation'),
+          firebaseInitializerProvider.overrideWithValue(service),
+        ],
         child: const LabApp(),
       ),
     );
