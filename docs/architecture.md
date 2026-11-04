@@ -82,6 +82,56 @@ android/                          # Flutter-generated Android host
 
 ## MVVM và dependency flow
 
+### Inventory ViewModel hiện tại
+
+| ViewModel | Dependency hiện có | Service thực sự sử dụng | Ranh giới chưa tích hợp |
+|---|---|---|---|
+| BootstrapViewModel | BootstrapRepository | FirebaseInitializer → FirebaseInitializationService | Chỉ Core bootstrap, không phải sáu services nghiệp vụ |
+| AuthenticationViewModel | AuthenticationRepository | AuthenticationService → PendingFirebaseServices | Chỉ quan sát unavailable; login/logout thật chưa nối |
+| EviaViewModel | EviaMockData | Chưa có data service | Discover/search/follow/bookmark là demo state |
+| ActivityViewModel | ActivityMockData | Chưa có data service | Vé/check-in/daily/rewards/coin history là demo |
+| RegistrationViewModel | RegistrationMockData, ActivityViewModel | Chưa có data service | Submit/presentation state chưa gọi backend |
+| ProfileViewModel | RegistrationMockData, EviaViewModel | Chưa có data service | Profile/interests/saved/inbox chưa gọi backend |
+
+Khi tích hợp, thay nguồn mock bằng repository/service contracts theo [handoff](FRONTEND_HANDOFF.md); bảng không tuyên bố UI đã chạy qua các API backend.
+
+### Sequence bootstrap đã có trong source
+
+```mermaid
+sequenceDiagram
+    participant V as FoundationScreen
+    participant VM as BootstrapViewModel
+    participant R as BootstrapRepository
+    participant S as FirebaseInitializationService
+    participant F as Firebase Core SDK
+    V->>VM: refresh
+    VM-->>V: AppLoading
+    VM->>R: initialize
+    R->>S: initialize
+    alt FIREBASE_ENABLED false
+        S-->>R: notConfigured (không gọi SDK)
+        R-->>VM: notConfigured
+        VM-->>V: AppEmpty
+    else Firebase enabled
+        S->>F: initializeApp
+        alt thành công
+            F-->>S: FirebaseApp
+            S-->>R: ready
+            R-->>VM: ready
+            VM-->>V: AppData
+        else lỗi hoặc timeout
+            S-->>VM: exception qua repository
+            VM-->>V: AppError an toàn, cho retry
+        end
+    end
+```
+
+### Backend mới và jobs (local, chưa deploy)
+
+Hai lịch server `monthlyGiftSchedule`/`noShowSchedule` gọi `createMaintenance` → Firestore transactions; không phải route/UI action. Admin voucher kiểm custom claim và `voucher_admins` server-only trước khi mark-used. Xem [BACKEND_POLICIES.md](BACKEND_POLICIES.md). Các thay đổi local này mới hơn snapshot cloud 32 Functions.
+
+Sequence mục tiêu khi đội frontend nối đăng ký: View action → RegistrationViewModel → repository → Callable adapter → registerForEvent → transaction capacity/terms/wallet/ticket/receipt → domain result → ViewModel state. Phần từ Flutter đến adapter **chưa triển khai**, backend transaction đã được Emulator kiểm chứng.
+
 ```mermaid
 flowchart TD
     Main[main.dart / ProviderScope] --> App[MaterialApp.router]

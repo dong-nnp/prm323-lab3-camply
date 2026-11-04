@@ -1,5 +1,7 @@
 # Evia Firebase backend
 
+Readiness local 04/11/2026: [policy/jobs](../docs/BACKEND_POLICIES.md), [frontend handoff](../docs/FRONTEND_HANDOFF.md), [approved data preparation](../docs/DATA_READINESS.md). Source có 34 exports (thêm 2 scheduled Functions), **chưa deploy revision mới**; snapshot cloud vẫn 32. Suite mới 31/31 đạt trong Emulator; không phải proof Cloud Scheduler/FCM delivery thật.
+
 Node.js 22, TypeScript, Firebase Functions v2 + Admin SDK. Region:
 `asia-southeast1`. Client không trực tiếp sửa dữ liệu nghiệp vụ.
 

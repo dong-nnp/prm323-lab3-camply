@@ -63,3 +63,4 @@ app.*.map.json
 /google-services.json
 !/evidence/firebase-migration/*.log
 !/evidence/firebase-migration/**/*.log
+!/evidence/backend-readiness/*.log

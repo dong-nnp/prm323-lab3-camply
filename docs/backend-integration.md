@@ -6,6 +6,10 @@ Ngày 04/11/2026. Implementation: `functions/src/`. **Project hiện tại:
 Bằng chứng: [firebase-migration.md](firebase-migration.md).
 UI và các adapter Flutter hiện tại chưa được nối vào backend này.
 
+## Backend readiness local — API v1.1 (04/11/2026)
+
+Bản local mới có đăng ký lại sau hủy (vé mới, giữ lịch sử), admin xác nhận voucher một lần, Monthly Gift tự động và no-show forfeiture. **Chưa deploy thay đổi này**; cloud 32 Functions/evidence migration là revision cũ. Xem [handoff](FRONTEND_HANDOFF.md), [data readiness](DATA_READINESS.md) và [policy/jobs](BACKEND_POLICIES.md).
+
 ## Chạy backend độc lập với giao diện
 
 Cần Node.js **22**, Java **21+** trên PATH và Firebase CLI (đã kiểm tra với
@@ -63,9 +67,9 @@ fingerprint đúng signing key. Kiểm thử Auth Emulator không xác nhận Go
 |---|---|---|
 | `initializeUser` | `{}` | `{profile,wallet,created}`; tặng **200 xu một lần/UID**, chưa onboarding |
 | `getAccount` | `{}` | `{profile,wallet,interestOptions:[{id,label}]}` |
-| `updateProfile` | Một hoặc nhiều `displayName`, `studentId`, `universityEmail`, `phoneNumber` (nullable) | `{updated:true}`; không sửa xác minh/role |
+| `updateProfile` | Một hoặc nhiều `displayName`, `studentId`, `universityEmail` (string, không null), `phoneNumber` (string hoặc null) | `{updated:true}`; không sửa xác minh/role |
 | `saveInterests` | `{interests:[id,...]}` | Tối thiểu **3 ID khác nhau**, tối đa 50; phải tồn tại active trong `interests/`; `{interests,onboardingCompleted:true}` |
-| `getServerInfo` | `{}`; guest được gọi | API version, server time, region, timezone, cờ monthly/cashier false |
+| `getServerInfo` | `{}`; guest được gọi | API version, server time, region, timezone, cờ monthly/admin voucher true trong bản local; monthly mode automatic |
 
 Danh mục sở thích phải do chủ dự án duyệt/import; backend không tự chọn taxonomy
 từ tên minh họa Figma. Chưa import thì options rỗng và không thể hoàn tất onboarding.
@@ -120,14 +124,13 @@ owner cho mỗi event ứng viên; cần projection khi lượng sự kiện tă
 | `verifyWalkInQr` | `{qrPayload,requestId}` | Các field trên + `wallet` của sinh viên |
 | `claimDailyCheckin` | `{}` | `{dayKey,streakDay,coinsGranted,wallet}` |
 | `getOperationStatus` | `{operationKind,operationId}` | `{status:'complete',result}` hoặc `NOT_FOUND` |
-| `grantMonthlyGift` | `{}` | Luôn `POLICY_NOT_APPROVED`, không cấp xu |
+| `grantMonthlyGift` | `{}` | `AUTOMATIC_ONLY`; client không tự claim, scheduler cấp xu |
 
 Không Waitlist. Vé cuối được cấp trong transaction; full trả `EVENT_FULL` không
 đổi tiền/counter. Giá cọc/terms lệch trả `QUOTE_CHANGED`/`TERMS_CHANGED` để client
 tải lại và yêu cầu người dùng xác nhận. Mặc định đóng đăng ký tại startAt; có thể
 cấu hình `registrationClosesAt`. Hủy mất cọc, vé revoked và mở đúng một chỗ.
-Cùng UID đăng ký lại sau hủy trả `REREGISTRATION_POLICY_NOT_APPROVED`; no-show
-chưa có timer xử lý tiền, held coins có thể còn giữ đến khi chốt chính sách.
+Cùng UID được đăng ký lại sau hủy bằng requestId mới nếu còn chỗ và chưa đóng đăng ký; cọc cũ không hoàn, lần mới giữ cọc mới. Mỗi lần có ticketId mới; snapshot lần hủy chuyển vào `registrations/{id}/history/{oldTicketId}` (server-only). QR vé cũ vẫn revoked. No-show được job xử lý sau cả endAt và checkInEndAt, không hoàn cọc; xem policy/jobs.
 
 QR là token opaque ngẫu nhiên, hash nằm private; không parse token để cấp xu
 ở app. Staff phải có custom claim `staff:true` **và** active document
@@ -146,7 +149,7 @@ Không manual code, không milestone.
 
 Daily theo **Asia/Ho_Chi_Minh**: 5/10/15/30/50/70/100; ngày 8+100; nghỉ một ngày
 reset streak; cùng ngày trả receipt cũ. OperationKind: `register`, `cancel`,
-`daily`, `redeem`, `verify-ticket`, `verify-walkin`; operationId = requestId,
+`daily`, `redeem`, `verify-ticket`, `verify-walkin`, `verify-voucher`; operationId = requestId,
 riêng daily = YYYY-MM-DD. Verify-ticket receipt luôn kiểm tra lại phân công staff.
 
 ## Rewards, inbox, FCM và Storage
@@ -155,7 +158,7 @@ riêng daily = YYYY-MM-DD. Verify-ticket receipt luôn kiểm tra lại phân c�
 |---|---|---|
 | `redeemReward` | `{rewardId,requestId,expectedPriceCoins,expectedTermsVersion}` | `{redemptionId,voucherId,costCoins,expiresAt,wallet}`; voucherId null cho physical |
 | `getVoucherCode` | `{voucherId}` | `{voucherId,code,qrPayload,expiresAt}`; owner, unused, chưa hết hạn |
-| `verifyVoucher` | `{code,requestId}` | `CASHIER_POLICY_NOT_APPROVED`; chưa có thao tác mark-used |
+| `verifyVoucher` | `{code,requestId}` | `{voucherId,redemptionId,status:'used',usedAt}`; admin được cấp quyền, transaction dùng một lần |
 | `markNotificationsRead` | `{notificationIds?:[id,...],before?:ISO}` hoặc `{}` | `{updatedCount,before,hasMore}` |
 | `registerDevice` | `{installationId,token,platform}` | `{registered:true}` |
 | `unregisterDevice` | `{installationId}` | `{unregistered:true}` |
@@ -167,7 +170,7 @@ implementation tính duration N×24 giờ từ lúc redeem, bỏ trống = khôn
 Không tự lấy ví dụ 30 ngày làm chính sách. Chủ dự án phải duyệt expiry của record
 trước import; nếu muốn cutoff theo ngày lịch cần sửa contract trước phát hành.
 Code ổn định được lưu **private server-only**, không nằm trong owner-readable
-voucher/receipt/log; gọi lại được sau restart. Chưa có cơ chế cashier/rotation.
+voucher/receipt/log; gọi lại được sau restart. Admin xác nhận voucher tại nhà tài trợ qua `verifyVoucher`; phải có claim `admin:true` và server-only `voucher_admins/{uid}.active=true`, tài khoản đã init/onboard. Không tự cấp quyền từ app; rotation mã vẫn chưa triển khai. Request chỉ gửi code 43 ký tự, không gửi nguyên QR; backend tra hash private. Quyền được kiểm lại cả khi retry receipt, operationKind `verify-voucher`. Dùng lần thứ hai trả `USED`, hết hạn trả `EXPIRED`; không trừ thêm xu.
 
 Inbox tạo khi đăng ký hoặc redeem thành công; payload chỉ chứa generic text và
 allowlisted entity reference. `mark all` tối đa 100 bản ghi/lần, giữ cutoff `before`

@@ -1,5 +1,15 @@
 # Test plan — template
 
+## Backend readiness mới — 04/11/2026
+
+Lệnh `npm --prefix functions run test:emulator`, Node22.23.4 + Java21 JBR + Firebase CLI: build TypeScript và **31/31 tests đạt, 0 fail, 0 skipped**. [Log cuối](../evidence/backend-readiness/emulator-final.log). Flutter không thay đổi, không chạy lại UI/native tests trong milestone này.
+
+Ngoài coverage backend cũ, lượt này kiểm terms version import/API, empty dry-run, tìm kiếm đ/d tiếng Việt, FCM token cap, Rules không cho client đọc/ghi quyền admin, đăng ký lại/tranh slot/vé và QR cũ, admin voucher dùng một lần/revoke/expiry, monthly race/cutoff/onboarding/year rollover và no-show cutoff/idempotency/attended/cancelled event.
+
+Monthly/no-show business functions được gọi trực tiếp trong Emulator tests. Emulator không chạy Cloud Scheduler theo lịch thật; chưa deploy code mới, chưa kiểm IAM/schedule/cost hoặc FCM delivery. Các kết quả 20 tests bên dưới là lịch sử revision trước.
+
+RED→GREEN evidence: [search trước fix](../evidence/backend-readiness/emulator-before-search-fix.log), [search sau fix](../evidence/backend-readiness/search-after-fix.log), [re-registration trước implementation](../evidence/backend-readiness/reregistration-before.log), [voucher trước implementation](../evidence/backend-readiness/voucher-before.log). Không tính các lượt RED là pass.
+
 Trạng thái: có unit/widget tests cho foundation và Evia UI; chưa có E2E ARTEMIS.
 Tài liệu này là kế hoạch, không xác nhận pass/fail cho các bước chưa chạy.
 

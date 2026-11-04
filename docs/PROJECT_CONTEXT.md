@@ -8,10 +8,12 @@
 
 
 **Project:** Evia — Campus Event App, PRM393 Lab 3  
-**Document version:** 1.3 · 2026-11-04 · **Mode:** backend deployed to team project prm393-31822; Flutter integration pending  
+**Document version:** 1.4 · 2026-11-04 · **Mode:** backend deployed to team project prm393-31822; Flutter integration pending  
 **Target:** Flutter Android + Firebase · **Repository to inspect:** https://github.com/dong-nnp/prm323-lab3-camply  
 **Owner of execution:** Codex / developer. **ChatGPT role:** product analyst, technical documentation, architecture review, progress/evidence audit.  
 **Current execution:** local repository inspected and backend added in `functions/`; see [integration contract](backend-integration.md) and `evidence/backend/`. Earlier GitHub 404 was a handoff observation, not the state of local access. No replacement repository was created. Flutter UI is outside this backend task.
+
+> **Latest local policy update:** [BACKEND_POLICIES.md](BACKEND_POLICIES.md) records the owner decisions in this chat. New jobs/admin voucher code is tested locally, not part of the previous 32-function cloud deployment.
 
 ## 1. Mandatory reading order and conflict resolution
 
@@ -52,7 +54,7 @@
 - FD-06 will be corrected by the design team; no Figma edit was performed here.
 - FD-03 milestones are **removed entirely**, including progress, claims and bonus
   Coin. FD-11 is **QR-only** for now: no manual-code entry; contact staff on scan
-  failure. FD-12 cashier verification flow remains OPEN.
+  failure. FD-12 mới chốt admin xác nhận voucher tại nhà tài trợ; xem BACKEND_POLICIES.md.
 
 ## 2. Product and scope
 
@@ -72,9 +74,9 @@ Evia helps students **discover campus events**, **participate and check in**, **
 
 - **Registered event:** event-specific **deposit**, illustration **50 Coin**. The student displays **personal ticket QR**; the **organizer/staff scans it**, with event-scoped authenticated verification via backend. A successful *verified* check-in refunds the held deposit and separately awards the configured event reward (illustration **+200 Coin**), e.g. available +250 from this moment; no double credit.
 - **Walk-in event:** student attends without preregistration, scans the **organizer's QR displayed at the venue** using Evia. Backend verifies event, check-in window, user, token and uniqueness; awards the event-specific reward only once. An `I'm Going` intent does not grant coins or reserve a slot.
-- **Cancel a registered event:** forfeits the held deposit (owner-confirmed in the user-authored flow), revokes ticket, gives no attendance reward. **No-show** after event and **re-registration after cancel** are not yet approved; do NOT invent automatic forfeiture timers/changes for no-show.
+- **Cancel a registered event:** forfeits the held deposit (owner-confirmed in the user-authored flow), revokes ticket, gives no attendance reward. **No-show forfeits held deposit** after event/check-in close; **re-registration is allowed while capacity remains**, with a new ticket and a new deposit. Owner confirmed in current chat; local implementation pending cloud deployment.
 - **Daily Check-in:** per consecutive local day, **day 1–7** grants `[5, 10, 15, 30, 50, 70, 100]` Coin; **day 8 and later +100 Coin/day** while maintaining streak. Once per day per user. After missing a day, the next check-in restarts at day 1 (+5); previously earned coins remain.
-- **Monthly Gift:** **+200 Coin** per eligible month, **at most once per UID/month**. **OPEN:** automatic vs claim, exact timing, timezone and whether a new account created mid-month receives that month. Implement ledger/idempotency shape but **do not enable actual disbursement** before a decision.
+- **Monthly Gift:** **+200 Coin** per eligible month, **at most once per UID/month**. Owner confirmed automatic credit for all user accounts on day 1 monthly. Local scheduler uses 00:00 Asia/Ho_Chi_Minh; accounts initialized after the cutoff start next month. No onboarding requirement for the job. See [policy/job details](BACKEND_POLICIES.md); not deployed yet.
 - **New account bonus:** owner confirmed **200 Coin**, exactly once per UID on first account initialization. Atomic user + wallet + append-only signup ledger in `functions/src/accounts.ts`; no client-controlled grant amount.
 - **Event Milestones:** removed by the owner after Figma review. No milestone
   screen/claims/progress model or milestone Coin grants in the target app/backend.
@@ -109,9 +111,10 @@ Evia helps students **discover campus events**, **participate and check in**, **
 | Cancellation deposit | **CONFIRMED FOR CANCEL** | Forfeit held deposit, no refund, revoke ticket. |
 | Bonus on first account | **CONFIRMED** | 200 Coin once per UID, server-owned policy. |
 | Event deposit/reward values | **ILLUSTRATIVE** | 50 deposit and 200 attendance reward are examples; define per-event server-side. |
-| No-show handling | **OPEN** | No automatic rule, record policy blocker. |
-| Re-register after cancel | **OPEN** | Default safe: forbid until policy decided; don't silently allow. |
-| Monthly eligibility/schedule | **OPEN** | Database-ready but no live job until approved. |
+| No-show handling | **CONFIRMED** | Held deposit forfeited after event/check-in end, no available debit. Local hourly job, not deployed. |
+| Re-register after cancel | **CONFIRMED** | Allowed if slot still available and registration open; new requestId/ticket/deposit; retain history. |
+| Monthly eligibility/schedule | **CONFIRMED** | All initialized app accounts at month cutoff, +200 automatically on day 1, Asia/Ho_Chi_Minh. Local only until deployment. |
+| Voucher use authority | **CONFIRMED** | Voucher at sponsor, authorized admin marks used once. No separate café cashier UI in this task. |
 | Event Milestones | **REMOVED** | No milestone feature, progress, claims or extra Coin awards. |
 | Walk-in manual entry | **REMOVED FOR NOW** | QR only; no Enter code endpoint/UI; contact staff if scanning fails. |
 | Walk-in QR rotation strategy | **OPEN technical design** | Implement a secure demo approach with documented threat model; get approval before claiming real-world anti-fraud. |
@@ -152,7 +155,7 @@ Evia helps students **discover campus events**, **participate and check in**, **
 2. Security model + Firestore Rules and emulator tests → deploy to a **separate dev project** only after approval.
 3. Auth bootstrap & one-time account grant contract → guest public reads → Following/bookmarks.
 4. Registration/capacity/deposit/ticket → registered QR verifier → walk-in QR attendance.
-5. Wallet/ledger + daily claim → monthly schema (grant disabled pending policy) → reward stock/redemption/vouchers.
+5. Wallet/ledger + daily claim → monthly automatic grant (local scheduler; deploy separately) → reward stock/redemption/vouchers.
 6. Storage export + messaging + Analytics/Crashlytics/Remote Config and demo area; real screenshots.
 7. ARTEMIS, AI review, report/slides/video and evidence audit.
 

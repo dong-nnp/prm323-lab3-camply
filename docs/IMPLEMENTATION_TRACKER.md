@@ -12,29 +12,33 @@
 **Owner of updates:** Codex adds verifiable evidence; ChatGPT reviews and updates status after examining artifacts.  
 **Status convention:** `TODO`, `IN PROGRESS`, `BLOCKED`, `DONE - UNVERIFIED`, `VERIFIED` (only with evidence), `OUT OF SCOPE`.
 
+## Backend readiness mới — 04/11/2026 (local)
+
+Owner đã chốt Monthly Gift tự động ngày 1, no-show mất cọc, đăng ký lại nếu còn chỗ và admin xác nhận voucher tại nhà tài trợ. Code mới có 34 exports; **chưa deploy**, không ghi dữ liệu cloud. Emulator suite mới **31/31 PASS**; [log](../evidence/backend-readiness/emulator-final.log). [Policy](BACKEND_POLICIES.md), [handoff](FRONTEND_HANDOFF.md), [data readiness](DATA_READINESS.md), [AI review](code-review.md), [Analytics plan](analytics-plan.md). Các evidence 20/20 và nhận xét policy-blocked ở phần lịch sử bên dưới mô tả revision trước.
+
 ## 1. Stage board
 
 | ID | Work package | Current status | Completion evidence (required to mark VERIFIED) | Codex commit/PR |
 |---|---|---|---|---|
-| S0 | Inspect **existing** repo, no replacement | TODO | Repo tree/current branch, baseline setup outputs, gap report | — |
-| S1 | Align documents/source of truth | IN PROGRESS | Live Figma 44-frame review and schema v1.3 + local backend API; owner decisions recorded for FD-01…11/13; FD-12 and other policies still OPEN, UI/Figma cleanup not implemented | Local docs diff, no PR |
+| S0 | Inspect **existing** repo, no replacement | VERIFIED | Existing checkout/branch inspected, baseline 7e9c7bf, working tree tracked; no repo replacement | Local git audit |
+| S1 | Align documents/source of truth | IN PROGRESS | Live Figma 44-frame review and schema v1.3 + local backend API; owner decisions recorded for FD-01…11/13; FD-12/monthly/no-show/re-register resolved in current policy update; UI/Figma cleanup not implemented | Local docs diff, no PR |
 | S2 | Configure Firebase development/emulators | IN PROGRESS | Real project/Android config and Pixel 5 emulator available; Auth/Firestore/Functions/Storage Emulator Suite configured and tested; team project Functions/Storage deployed; native flows pending | Local diff, no PR |
 | S3 | Firestore schema, Security Rules, indexes | IN PROGRESS | Empty cloud database + deployed deny-all Rules; anonymous read HTTP 403. Rules/schema/indexes deployed to team project; 14 indexes READY, 20 Emulator tests + cloud read/denial checks pass | Local diff, no PR |
 | S4 | Google + email/password signup/sign-in/reset / account init / guest access | IN PROGRESS | Real Auth providers enabled; 200-coin initializer + Auth Emulator transport tested. Native SDK wiring/login pending | Working tree, no PR |
 | S5 | Organizer Follow/Unfollow, Bookmark | IN PROGRESS | Backend implemented/tested, no double follower count or guest follow; backend cloud deployed; Flutter integration pending | Working tree, no PR |
-| S6 | Registration, slot capacity, Event Full, deposit, ticket | IN PROGRESS | Last-seat concurrency/cancel/idempotency pass locally; backend cloud deployed; authenticated mobile integration pending | Working tree, no PR |
+| S6 | Registration, slot capacity, Event Full, deposit, ticket | IN PROGRESS | Last-seat/cancel/idempotency and re-registration with fresh ticket pass locally; new revision not deployed; mobile integration pending | Working tree, no PR |
 | S7 | Registered ticket QR scan by authorized staff | IN PROGRESS | Server role + event assignment/revocation + refund/reward pass; staff tool/native scanner pending | Working tree, no PR |
 | S8 | Walk-in student scanner / QR | IN PROGRESS | Server issuer/TTL/unique verification pass; native camera pending | Working tree, no PR |
 | S9 | Wallet + append-only ledger | IN PROGRESS | Backend transactions/reconciliation/Rules pass locally; backend cloud deployed; mobile pending | Working tree, no PR |
 | S10 | Daily Check-in | IN PROGRESS | 1-9 reward schedule, Vietnam midnight, gap/year boundary and races pass locally | Working tree, no PR |
-| S11 | Monthly Gift schema / policy | BLOCKED | +200 amount recorded, policy owner-approved before live grant | — |
-| S12 | Reward catalogue/redemption/voucher | IN PROGRESS | Atomic stock/balance/idempotency + private owner-code recovery pass; cashier policy OPEN | Working tree, no PR |
+| S11 | Monthly Gift automatic job | IN PROGRESS | Policy confirmed, local transaction/scheduler code + Emulator tests pass; cloud deployment/schedule not verified | Local milestone |
+| S12 | Reward catalogue/redemption/voucher | IN PROGRESS | Atomic stock/balance/idempotency + admin one-time sponsor voucher verification tested locally; admin UI/cloud revision pending | Working tree, no PR |
 | S13 | Cloud Storage report export/upload | IN PROGRESS | Own PDF create/read + deny cross-UID/type/size/overwrite pass locally; cloud Rules on existing bucket deployed; export UI/real upload pending | Working tree, no PR |
 | S14 | FCM + notifications inbox | IN PROGRESS | Inbox/device binding tested; generic notification trigger prepared; real-device push/deep-link pending | Working tree, no PR |
-| S15 | Analytics, Crashlytics, Remote Config | TODO | 7+ events DebugView; test crash+nonfatal; 2 live config changes | — |
+| S15 | Analytics, Crashlytics, Remote Config | IN PROGRESS | Analytics plan 17 events + RC key contract written; runtime/DebugView/crash/config evidence pending | Local docs |
 | S16 | Figma fidelity and UI states | TODO | 44-frame mapping status, 3 flows, loading/empty/error, 360/412dp | — |
 | S17 | Google ARTEMIS E2E tests | TODO | >=10 tests ×>=3 runs, traces/pass-rate and exploratory report | — |
-| S18 | AI code review & fix commits | TODO | >=5 findings, decisions, >=3 linked fix commits | — |
+| S18 | AI code review & fix commits | IN PROGRESS | Local Codex review: 5 findings/decisions, 3 separate fix commits; PR/push links + Flutter review pending | bf5ca34, ae4bfe4, bd6f39d |
 | S19 | Report/slide/video/evidence | TODO | PDF 8–12p; PDF slides 12–15p; video 5–10min; links work | — |
 | S20 | Web Admin | OUT OF SCOPE | Future project; only minimal authenticated verifier for Lab 3 | — |
 
@@ -43,14 +47,14 @@
 | ID | Pending question | Why it blocks implementation | Temporary handling |
 |---|---|---|---|
 | O-01 | RESOLVED — signup bonus 200; Daily timezone Asia/Ho_Chi_Minh | Owner confirmed in current chat | Implemented once per UID / local calendar day; no bulk live grant |
-| O-02 | No-show deposit settlement after event | Avoid indefinitely held deposits or invented forfeiture | No automatic no-show settlement until approved |
-| O-03 | Can user re-register after cancellation? | Deterministic registration ID/state machine | Reject by default until approved |
-| O-04 | Monthly Gift: automatic vs claim, who eligible, when, timezone | Scheduled/triggered credit grants | Schema + emulator only; **do not enable live grants** |
+| O-02 | RESOLVED — no-show forfeits deposit | Owner confirmed in current chat | Local hourly job after event/check-in end; not deployed |
+| O-03 | RESOLVED — re-register if capacity remains | New requestId/ticket, preserve cancelled history | Implemented/tested locally; no priority slot reservation |
+| O-04 | RESOLVED — automatic +200 day 1 for all accounts | Asia/Ho_Chi_Minh cutoff, initialized app profiles | Local scheduler + idempotent grant tested; not deployed |
 | O-05 | RESOLVED — milestones removed entirely | No milestone feature or extra Coin issuance | No progress/claim/grant models or active UI/API; existing demo cleanup pending |
 | O-06 | Technical default — walk-in TTL60s, ticket TTL120s | Replay protection, not physical presence proof | Implemented locally; native scanner/operator handoff pending |
 | O-07 | Authorized staff verifier form (CLI/mobile/minimal tool) | Demonstrating real registered check-in | Propose secure minimal verifier and seek owner/lecturer sign-off |
 | O-08 | Real event/club/reward data sources | Lab prohibits mock/hardcoded submitted build | Dev fixtures only, plan verified-source import |
-| O-09 | Firebase project ID, billing approval for Storage/Functions | Real deployment | Emulator only until owner approves cloud changes |
+| O-09 | RESOLVED — team project prm393-31822, existing Blaze | Migration deployment evidence retained | New scheduled jobs/admin revision local only, deployment is separate |
 | O-10 | Figma revisions (waitlist, coin values, rewards) | Design fidelity rubric | Maintain design deviations; don't edit Figma unrequested |
 | O-11 | Lab 2 handoff tokens and component specs | Pixel accuracy | Need `design/DESIGN.md` + `handoff/flutter-handoff.md` |
 | O-12 | Repo naming mismatch PRM323 vs PRM393 | Submission conventions | Preserve existing repo; ask lecturer before rename |
@@ -58,11 +62,11 @@
 | O-14 | RESOLVED — Café price is 200 Coin; Figma content illustrative | One server record, no hard-coded UI values | 200 applies only to the Café voucher; real event/catalog data still needs sources under O-08 |
 | O-15 | OUT OF SCOPE — ticket email/fixed reminders, feedback bonus, missions, seasonal targets, seats/VIP/tiers | Owner explicitly removed these business paths | No jobs/grants/inventory; Auth reset emails and required lab FCM remain in scope |
 | O-16 | PARTIAL — minimum 3 distinct interests mandatory, no Skip; taxonomy/ranking/search boundaries OPEN | Onboarding/preference contract decided; query details still need design | Enforce complete/save minimum 3; do not infer taxonomy or ranking from prototype labels |
-| O-17 | Voucher cashier authority, secret recovery/rotation, validity cutoff and physical pickup | One-time real voucher use | Server-only verifier data; no unrestricted mark-used API or extra Coin debit |
+| O-17 | PARTIAL RESOLVED — admin verifies voucher at sponsor | Claim + server-only admin assignment, atomic use | Local verify API tested. Per-record source/expiry + code rotation remain separate |
 
 **Resolved (binding):** Follow requires authentication (Google or email/password);
 no Waitlist; full closes registration and cancellation releases one place;
-Daily 5/10/15/30/50/70/100, day8+100; monthly amount 200 (eligibility still OPEN);
+Daily 5/10/15/30/50/70/100, day8+100; monthly 200 automatically on day 1 for all initialized accounts;
 Café voucher 200; at least 3 distinct interests mandatory; registered staff scans
 student ticket, walk-in uses QR only; cancel forfeits deposit. Milestones and
 FD-09/10 business paths removed; academic/club verification deferred.
@@ -140,3 +144,14 @@ APK debug + Pixel 5 Core startup đạt; 20 backend tests chạy lại đạt.
 Bằng chứng `evidence/firebase-migration/`, hướng dẫn `firebase-migration.md`;
 working-tree delivery, chưa commit/PR. Backend cloud setup hoàn tất, mobile UI
 services/push/login/data/E2E và các policy OPEN vẫn chưa hoàn tất.
+
+
+## Readiness evidence log — 04/11/2026
+
+- Review baseline `7e9c7bf`, fixes `bf5ca34` (CR-01), `ae4bfe4` (CR-02), `bd6f39d` (CR-03), all local.
+- Added policy implementation/tests: monthly schedule, no-show schedule, fresh ticket/history on re-registration and authorized admin voucher use.
+- `npm --prefix functions run test:emulator` with Node22.23.4/Java21 JBR/Firebase CLI: TypeScript build + **31 passed / 0 failed / 0 skipped**, log `evidence/backend-readiness/emulator-final.log`.
+- Data importer has no approved real dataset; preparation documented, no fake seed/cloud writes.
+- Flutter/UI untouched, no APK/native run, no ARTEMIS; no new cloud deploy or role grants. Cloud Scheduler execution/IAM/cost and mobile instrumentation are not verified.
+
+Policy implementation commit: `01082cd`; 31-test evidence was run against this source before commit. Documentation/evidence are recorded separately; no new cloud state claimed.

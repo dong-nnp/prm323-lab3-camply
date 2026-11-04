@@ -19,7 +19,7 @@ Nếu thông tin lịch sử trong tracker khác kết quả mới, đối chi�
 - [ ] Hoàn thiện traceability cho từng màn hình, cả 3 flow và component: route/widget/nguồn dữ liệu/trạng thái.
 - [ ] Đối chiếu đủ thiết kế Lab 2 đã duyệt: persona, success criterion, navigation, DESIGN.md và flutter-handoff.md.
 - [ ] Ghi mọi thay đổi thiết kế cùng lý do; cập nhật Figma để khớp app theo scope được duyệt.
-- [ ] Bổ sung sequence diagram một flow đầy đủ và bảng ViewModel → service vào architecture.md.
+- [x] Bổ sung sequence bootstrap thực tế và bảng ViewModel → dependencies/service vào architecture.md; business integration vẫn pending.
 - [ ] Kiểm tra toàn bộ flow thật tuân thủ View → ViewModel → Repository → Service → SDK; không business logic/SDK trong View.
 - [ ] Mỗi màn hình tải dữ liệu có state loading/empty/error/data rõ ràng, retry và dependency có thể override trong tests.
 
@@ -41,7 +41,10 @@ Tham chiếu: [design-traceability.md](design-traceability.md), [architecture.md
 - [ ] Cả 3 flow Lab 2 chạy end to end, gồm nhánh thay thế, lỗi/phục hồi và Back; mọi màn hình Final UI đều truy cập được.
 - [ ] Mỗi màn hình tải dữ liệu xử lý được offline, permission denied, empty và lỗi server bằng thông báo rõ ràng.
 - [ ] Đồng bộ UI demo với scope hiện tại: không Waitlist/milestones, walk-in chỉ QR, Café 200 xu, tối thiểu 3 sở thích không Skip.
-- [ ] Chốt chính sách còn mở trước khi bật tính năng liên quan: Monthly Gift, cashier, no-show và đăng ký lại sau hủy.
+- [x] Chốt Monthly Gift, admin voucher tại nhà tài trợ, no-show và đăng ký lại; xem [BACKEND_POLICIES.md](BACKEND_POLICIES.md).
+- [x] Triển khai/kiểm thử các policy mới trên Emulator, gồm đăng ký lại với vé mới, monthly/no-show jobs và admin voucher.
+- [ ] Deploy/kiểm chứng revision mới và Cloud Scheduler; chưa chạy jobs hoặc cấp admin quyền trên cloud.
+- [x] Chuẩn bị [quy trình dữ liệu thật](DATA_READINESS.md) và [handoff frontend](FRONTEND_HANDOFF.md); chưa có dataset được duyệt.
 
 Tham chiếu: [backend-integration.md](backend-integration.md), [firebase-migration.md](firebase-migration.md), [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md).
 
@@ -78,8 +81,8 @@ Web admin soạn/gửi notification là **phần mở rộng tương lai**, khô
 
 ## 6. Analytics, Crashlytics, Remote Config và khu demo
 
-- [ ] Viết analytics plan trước tracking: ≥7 events, map flow, trigger, product question, parameters và kiểu dữ liệu; không PII.
-- [ ] Events phủ sign-in/sign-out, search hoặc primary action, mỗi loại detail, export/upload; dùng recommended names khi phù hợp.
+- [x] Viết analytics plan 17 events, map flow/trigger/questions/typed parameters và quy tắc không PII; chưa tracking runtime.
+- [x] Plan phủ sign-in/sign-out, search, các loại detail, export/upload; dùng recommended names khi phù hợp. Evidence runtime vẫn pending.
 - [ ] Tích hợp Analytics thật, set user ID sau login và có DebugView evidence cho từng event.
 - [ ] Crashlytics nhận 1 non-fatal từ error path thật và 1 test crash, kèm user ID và ít nhất 1 custom key.
 - [ ] Lưu evidence dashboard cho cả non-fatal và test crash.
@@ -124,10 +127,11 @@ Tham chiếu: [test-plan.md](test-plan.md), [e2e_test/](../e2e_test/).
 
 ## 9. AI Code Review
 
-- [ ] Chạy ít nhất 1 AI review tool, ưu tiên review PR; lưu output thật.
-- [ ] Ghi ≥5 findings gắn file:line, thuộc ít nhất 2 nhóm vấn đề.
-- [ ] Mỗi finding có quyết định accepted/modified/rejected và lý do dựa trên yêu cầu, tác động hoặc constraint thật.
-- [ ] Sửa ≥3 findings được chấp nhận, mỗi finding trong commit riêng có ID; link commit vào record.
+- [x] Review backend local bằng Codex, [lưu output](../evidence/backend-readiness/ai-review.md); chưa review PR/Flutter.
+- [x] Ghi 5 findings gắn baseline file:line, gồm bug/validation/contract/integration gap.
+- [x] Có quyết định/lý do từng finding trong code-review.md.
+- [x] Sửa CR-01/02/03, mỗi finding một commit riêng có ID; ghi hashes local vào record.
+- [ ] Push fix commits, bổ sung links GitHub/PR truy cập được vào review record.
 - [ ] Khai báo tất cả AI tools đã dùng và mục đích sử dụng.
 
 Tham chiếu: [code-review.md](code-review.md). Checklist này không thay thế AI review record.

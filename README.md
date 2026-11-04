@@ -1,6 +1,13 @@
 # PRM393 Lab 3 — Flutter source base
 
 
+## Chuẩn bị backend không phụ thuộc UI — 04/11/2026
+
+- [Handoff cho đội frontend](docs/FRONTEND_HANDOFF.md), [chuẩn bị dữ liệu thật](docs/DATA_READINESS.md).
+- [Analytics plan](docs/analytics-plan.md), [Remote Config plan](docs/REMOTE_CONFIG_PLAN.md), [AI review](docs/code-review.md).
+- [Checklist Lab 3](docs/LAB3_CHECKLIST.md). Bản backend local mới hơn snapshot cloud bên dưới; không sửa Flutter UI.
+- [Khung report](docs/report-outline.md), chưa phải PDF nộp hoặc evidence app hoàn thành.
+
 ## Backend Firebase — 04/11/2026
 
 Backend nghiệp vụ độc lập đã được thêm vào `functions/`; **20/20 tests đạt trên
@@ -13,7 +20,7 @@ UI và các Flutter adapters demo hiện tại chưa được nối vào backend
 - [Chạy backend độc lập](functions/README.md), [kết quả kiểm thử](docs/test-plan.md).
 - Chốt 200 xu lần đầu/UID; Daily theo Asia/Ho_Chi_Minh; tiền/vé chỉ server ghi,
   chống vượt chỗ/trừ xu trùng; không Waitlist hay milestone.
-- Monthly Gift/cashier chưa chốt nên API trả lỗi rõ ràng, không cấp thành công giả.
+- Policy mới đã chốt: Monthly Gift tự cộng ngày 1, no-show mất cọc, được đăng ký lại khi còn chỗ, admin xác nhận voucher ở nhà tài trợ. **Code mới local, chưa deploy**; xem [policy/jobs](docs/BACKEND_POLICIES.md).
 - Runtime: Node22, Java21+ cho Emulator, Firebase CLI 15.30.2 đã kiểm tra.
   Backend dependencies: firebase-admin 14.5.0, firebase-functions 7.4.0, zod 4.6.7;
   build TypeScript 7.0.2, @types/node 22.20.5 (bản cài chính xác trong lockfile).

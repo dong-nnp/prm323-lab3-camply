@@ -7,13 +7,17 @@
 > Các mục về `evia-lab3-kiet-2026` bên dưới là lịch sử, không phải project để deploy tiếp.
 
 
-**Version:** 1.3 · **Date:** 2026-11-04 · **Status:** core backend in `functions/` deployed to team project `prm393-31822`; Rules/indexes cloud checks pass. Database has no seeded business records; Flutter adapters pending. Actual API v1: [backend-integration.md](backend-integration.md); proposed signatures below describe design intent, not deployed endpoints.  
+**Version:** 1.4 · **Date:** 2026-11-04 · **Status:** core backend in `functions/` deployed to team project `prm393-31822`; Rules/indexes cloud checks pass. Database has no seeded business records; Flutter adapters pending. Actual API v1: [backend-integration.md](backend-integration.md); proposed signatures below describe design intent, not deployed endpoints.  
 **Scope:** Firebase Cloud Firestore + security/index/transaction/API plan supporting Evia Mobile PRM393 Lab 3. Full Web Admin postponed.  
 **Read first:** [`PROJECT_CONTEXT.md`](./PROJECT_CONTEXT.md). **Never treat examples or OPEN policies as binding.**
 
 **Live Figma review:** [database-figma-review.md](database-figma-review.md) maps all
 44 final-page frames to data requirements. Section 1.3 defines the added field
 contracts. The earlier Figma review was documentation only. Current implementation is local backend code; no cloud migration, production seed or business deployment was performed.
+
+## Cập nhật policy v1.4 — local, chưa deploy
+
+[BACKEND_POLICIES.md](BACKEND_POLICIES.md) là hợp đồng mới nhất cho Monthly Gift tự động, no-show mất cọc, đăng ký lại và admin xác nhận voucher ở nhà tài trợ. Nó thay thế mọi ghi chú OPEN/disabled về bốn mục này trong thiết kế v1.3 bên dưới. Cấu trúc thực tế: thêm `voucher_admins/{uid}` server-only, `registrations/{id}/history/{oldTicketId}` server-only; state `no_show`, redemption `used`; ledger `monthly_gift`/`no_show_forfeit`; monthly record có scheduledAt/grantedAt/policyVersion. Không dùng các chữ ký đề xuất bên dưới thay cho [API thực tế](backend-integration.md). Cloud vẫn là revision cũ cho đến deploy riêng.
 
 ## 0. Design goals and hard limits
 
@@ -23,7 +27,7 @@ contracts. The earlier Figma review was documentation only. Current implementati
   decrements the occupied registration count **once in the same transaction**.
   It reopens one place; concurrent registrations still compete atomically. A
   failed/repeated cancellation releases no additional place. Capacity 100 is an
-  example, not a default. Same-user re-registration after cancel is still undecided.
+  example, not a default. Same-user re-registration after cancel is now allowed if capacity remains; issue a new ticket and archive the cancelled attempt.
 - Guest may read **public/published** organizers/events; **Follow/Unfollow, Register, Bookmark, Wallet and rewards are account-bound**. Support Google and email/password sign-up/sign-in/reset. The original Google flow remains supported; Follow is optional.
 - At least **3 distinct valid interest IDs** are required to complete/save
   authenticated onboarding/preferences. No onboarding Skip; guest browsing is unaffected.
@@ -32,10 +36,10 @@ contracts. The earlier Figma review was documentation only. Current implementati
 - No milestones, feedback Coin bonus, missions, seasonal targets, assigned seats,
   VIP/ticket tiers, ticket-email delivery or fixed 2–3-day attendance reminder jobs.
   Walk-in accepts QR scans only; no manual-code fallback in the current scope.
-- **Daily Coin grants:** `day 1…7 = [5,10,15,30,50,70,100]`, `day 8+ = 100/day`; missed calendar day resets next claim to day 1. **Monthly amount = 200 Coin**, at most once per eligible month, but exact eligibility/schedule is **OPEN**.
+- **Daily Coin grants:** `day 1…7 = [5,10,15,30,50,70,100]`, `day 8+ = 100/day`; missed calendar day resets next claim to day 1. **Monthly amount = 200 Coin**, at most once per eligible month, automatically on day 1 for initialized accounts at the Vietnam month cutoff; see v1.4 policy.
 - New-account Coin is **once per UID**; **200 is owner-confirmed**, once per new UID. Registration deposit **50** and attendance reward **200** in diagrams are **event-level examples**, not global hard-coded business policy.
 - No raw voucher secret, raw ticket token, service credential, staff key, registration email or student ID in public event docs, Firebase Analytics parameters, Git, README or screenshots.
-- All business timestamps: server-produced **Firestore Timestamp** (UTC instant). When calculating reward **calendar day** use an explicit product timezone config; `Asia/Ho_Chi_Minh` is **owner-confirmed for Daily Check-in**; monthly eligibility/schedule remain OPEN.
+- All business timestamps: server-produced **Firestore Timestamp** (UTC instant). When calculating reward **calendar day** use an explicit product timezone config; `Asia/Ho_Chi_Minh` is **owner-confirmed for Daily Check-in**; monthly also uses Asia/Ho_Chi_Minh under v1.4.
 - Use integer Coin units (`int` / integer-valued Firestore Number); never use floating-point amounts or calculate wallet balances on the client.
 
 ## 1. Firestore collections — authoritative proposed paths
@@ -56,7 +60,7 @@ Symbols: `S` string, `B` bool, `N` integer Number, `T` Timestamp, `A<T>` array, 
 | `wallets/{uid}` | `availableCoins:N`, `heldCoins:N`, `version:N`, `updatedAt:T` | OWN | SVC only | Materialized wallet balance |
 | `wallets/{uid}/ledger/{ledgerId}` | `type:S`, `deltaAvailable:N`, `deltaHeld:N`, `sourceType:S`, `sourceId:S`, `operationKey:S`, `createdAt:T`, `metadata:M?` | OWN | SVC only, append-only | Auditable transaction history |
 | `users/{uid}/daily_checkins/{dayKey}` | `localDate:S`, `streakDay:N`, `coinsGranted:N`, `createdAt:T`, `timezone:S`, `policyVersion:S` | OWN | SVC only | Daily exactly-once history |
-| `users/{uid}/monthly_grants/{monthKey}` | `monthKey:S`, `coinsGranted:N`, `grantedAt:T`, `policyVersion:S`, `eligibilityVersion:S` | OWN | SVC only, **disabled until policy approved** | Monthly exactly-once history |
+| `users/{uid}/monthly_grants/{monthKey}` | `monthKey:S`, `coinsGranted:N`, `scheduledAt:T`, `grantedAt:T`, `policyVersion:S` | OWN | SVC scheduled transaction, local only until deploy | Monthly exactly-once history |
 | `rewards/{rewardId}` | `title:S`, `description:S`, `category:S`, `priceCoins:N`, `stockRemaining:N`, `status:S`, `validDays:N?`, `usageLocations:A<S>`, `termsText:S`, `termsVersion:S`, `redemptionSteps:A<S>`, `fulfillmentType:S`, `redemptionInstructions:S?`, `imageUrl:S?`, `sourceRef:S?`, `updatedAt:T` | PUB/OWN as appropriate | SVC only | One authoritative price for catalog/detail/confirmation |
 | `redemptions/{redemptionId}` | `uid:S`, `rewardId:S`, `priceCoinsSnapshot:N`, `rewardTitleSnapshot:S`, `rewardSnapshot:M`, `status:S`, `voucherId:S?`, `redeemedAt:T`, `expiresAt:T?` | OWN | SVC only | Historical result keeps original terms/fulfillment details |
 | `vouchers/{voucherId}` | `uid:S`, `rewardId:S`, `redemptionId:S`, `status:S`, `expiresAt:T?`, `usedAt:T?`, `createdAt:T` | OWN **safe metadata only** | SVC only | No raw code or code hash in owner-readable document |
@@ -79,14 +83,14 @@ Symbols: `S` string, `B` bool, `N` integer Number, `T` Timestamp, `A<T>` array, 
 | `events.participationMode` | `registration`, `walk_in` (only registered mode can require deposit/ticket) |
 | `events.capacity` | `null` = unlimited, otherwise integer `>=0`; `0 <= registeredCount <= capacity` if limited |
 | `events.depositCoins`, `attendanceRewardCoins` | integers `>=0`, server source of truth, per event |
-| `registrations.state` | `registered`, `cancelled`, `attended` (no `waitlisted`; don't persist transient client loading as business state) |
+| `registrations.state` | `registered`, `cancelled`, `attended`, `no_show` (no `waitlisted`; don't persist transient client loading as business state) |
 | `registrations.depositSettlement` | `held`, `forfeited`, `refunded`, `none`; exactly one final settlement per registration |
 | `tickets.status` | `active`, `checked_in`, `revoked`, `expired` |
 | `attendance.mode` | `organizer_scanned_ticket`, `student_scanned_walkin` |
-| `redemptions.status` | `issued`, `cancelled` *(policy for cancellation OPEN; no user-cancel API until approved)* |
+| `redemptions.status` | `issued`, `used`, `cancelled` *(cancellation policy OPEN; no user-cancel API)* |
 | `vouchers.status` | `unused`, `used`, `expired`, `revoked` |
 | `wallets.*Coins` | integer `>=0`; balance never trusts client-calculated amount |
-| `ledger.type` | `signup_bonus`, `deposit_hold`, `deposit_refund`, `deposit_forfeit`, `event_reward`, `daily_checkin`, `monthly_grant`, `redeem_reward`; **no milestone, feedback or mission reward types** |
+| `ledger.type` | `signup_bonus`, `deposit_hold`, `deposit_refund`, `deposit_forfeit`, `event_reward`, `daily_checkin`, `monthly_gift`, `redeem_reward`; **no milestone, feedback or mission reward types** |
 | `daily_checkins.streakDay` | integer `>=1`; store true day number, cap **only award amount** to day-7 award (100) |
 | `notifications` | `readAt=null` until read; no client control over message payload |
 
@@ -94,7 +98,7 @@ Symbols: `S` string, `B` bool, `N` integer Number, `T` Timestamp, `A<T>` array, 
 
 - `users/{uid}`, `wallets/{uid}`: UID from **Firebase Auth**, never user-provided email/student ID.
 - `following/{organizerId}`, `bookmarks/{eventId}`: deterministic. Deleting and re-following can recreate a fresh timestamp; no Coin on Follow.
-- `registrationId`: deterministic hash of `(uid,eventId)`, e.g. SHA-256 of unambiguous canonical encoding. Blocks multiple concurrent registrations by that user. Re-registration by the same cancelled UID remains OPEN; reopening the freed place for another eligible user is confirmed.
+- `registrationId`: deterministic hash of `(uid,eventId)`, e.g. SHA-256 of unambiguous canonical encoding. Blocks multiple concurrent registrations by that user. Re-registration by the same cancelled UID is allowed; all users compete atomically for remaining capacity.
 - `attendanceId`: deterministic hash of `(uid,eventId)` (**independent of scanner type and token**), so one person cannot earn twice for same event.
 - `daily_checkins/{YYYY-MM-DD}` and `monthly_grants/{YYYY-MM}`: explicit local date/month keys (once for that UID/date or UID/month).
 - `operation_receipts/{operationKey}` and ledger IDs: deterministic from business operation and UID/event/date/reward request. Do not create random receipt IDs for a retried operation.
@@ -136,7 +140,7 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
 - **Event timing:** enforce `startAt < endAt` and `checkInStartAt < checkInEndAt`;
   `doorsOpenAt` is optional and distinct from admission/check-in windows. Event
   `timezone` is an explicit IANA identifier for display/calendar conversion; it
-  is independent of the confirmed Asia/Ho_Chi_Minh Daily policy; monthly scheduling remains OPEN.
+  is independent of the confirmed Asia/Ho_Chi_Minh Daily policy; monthly schedule is now day 1 Asia/Ho_Chi_Minh under v1.4.
 - **Event details:** `benefits` is an ordered list of `{title:S, description:S}`;
   `schedule` is an ordered list of `{id:S, title:S, startAt:T, endAt:T?,
   description:S?, locationLabel:S?}`. Entries must be chronological and consistent
@@ -193,7 +197,7 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
   secret in public documents or local fixtures as a real code. The backend must
   retain/recover or securely regenerate an owner's code across restarts; a hash
   alone cannot implement `getVoucherCode`. Final secret storage/signing/rotation
-  design and cashier role are OPEN. Authorized redemption verification atomically
+  rotation remains OPEN; admin authority is confirmed in v1.4. Authorized verification atomically
   marks a voucher used once, without deducting coins again.
 - **Notifications/devices:** active proposed types are `registration_confirmed`,
   `new_event`, `schedule_update`; Figma's `event_reminder` is excluded with FD-09,
@@ -236,7 +240,7 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
 | Same registered check-in reward | `+attendanceRewardCoins` | 0 | `event_reward` | SAME attendance operation, second ledger row |
 | Verified walk-in check-in | `+attendanceRewardCoins` | 0 | `event_reward` | `attendance:{uid}:{eventId}` |
 | Daily claim | `+dailyReward(streakDay)` | 0 | `daily_checkin` | `daily:{uid}:{YYYY-MM-DD}` |
-| Eligible monthly grant | `+200` | 0 | `monthly_grant` | `monthly:{uid}:{YYYY-MM}` (disabled pending policy) |
+| Eligible monthly grant | `+200` | 0 | `monthly_gift` | `monthly:{uid}:{YYYY-MM}` (local scheduler, not deployed) |
 | Redeem reward | `-priceCoinsSnapshot` | 0 | `redeem_reward` | `redeem:{uid}:{requestId}` |
 
 **Deposit semantics:** holding a deposit **moves existing Coin** from `available` to `held` (not an extra debit from total wallet); refund reverses the hold and rewards grant a separate addition. For example, starting `available=200, held=0`, register `50` -> `available=150, held=50`; verified attendance with `200` reward -> `available=400, held=0`. Cancel instead -> `available=150, held=0` (50 forfeited). These are **illustrative event/config values**.
@@ -258,9 +262,9 @@ transaction: create daily receipt + daily doc + ledger, update wallet and streak
 - Day 7 = +100, Day 8 = +100, Day 30 = +100 if uninterrupted; if a day missed, next claim day 1 = +5. One claim per calendar day.
 - Recommend server-maintained `users/{uid}/reward_state/daily` (`lastLocalDate:S`, `streakDay:N`) for O(1) computations; it is an optional additional document, **server-only write**. If omitted, read latest daily check-in safely inside transaction.
 
-### 2.4. Monthly gift contract (amount confirmed; policy OPEN)
+### 2.4. Monthly gift contract (v1.4 confirmed; local scheduler)
 
-Prepare model and an **idempotent** grant service contract `grantMonthlyGift(uid, monthKey)`; **do not schedule/call it on live accounts** until owner approves: claim vs automatic grant, eligibility, account creation mid-month, timezone and retries. Once approved, one monthly document + receipt + ledger ensures exactly one `+200` grant per UID/month. Simulate in emulator only with explicit test fixtures and a fake eligibility policy.
+`maintenance.grantMonthly(scheduleTime)` grants 200 once per UID/month in one wallet/grant/ledger transaction. Scheduled at 00:00 day 1 Asia/Ho_Chi_Minh, all app profiles initialized at cutoff, no onboarding requirement. Callable grantMonthlyGift returns AUTOMATIC_ONLY. Retry keeps original scheduled month. See BACKEND_POLICIES.md; no cloud job was deployed in this update.
 
 ### 2.5. Removed features
 
@@ -284,11 +288,11 @@ All write endpoints: Firebase Authentication required; staff endpoints also requ
 | `verifyRegisteredTicket` | authenticated staff; `qrPayload`, `requestId` | validate staff assignment, ticket, time; create attendance, refund hold + grant reward, mark ticket | `FORBIDDEN_STAFF`, `WRONG_EVENT`, `QR_INVALID`, `OUTSIDE_CHECKIN_WINDOW`, `ALREADY_CHECKED_IN` |
 | `verifyWalkInQr` | signed-in; scanned `qrPayload`, `requestId` | validate event/venue QR, auth and window; create attendance + award; no registration/ticket or manual-code entry. Verified-only events deferred with FD-08 | `QR_INVALID`, `WRONG_EVENT`, `OUTSIDE_CHECKIN_WINDOW`, `ALREADY_CHECKED_IN` |
 | `claimDailyCheckin` | signed-in; `requestId` | calculate server day/streak; create daily + ledger + wallet + receipt | `ALREADY_CLAIMED`, `UNAUTHENTICATED` |
-| `grantMonthlyGift` | server/scheduler **only, OFF by default** | when policy approved, create monthly + ledger + wallet + receipt | `POLICY_NOT_APPROVED`, `ALREADY_GRANTED`, `NOT_ELIGIBLE` |
+| `grantMonthlyGift` | authenticated callable retained for explicit error | Client cannot claim; monthlyGiftSchedule performs grant/wallet/ledger transaction | `AUTOMATIC_ONLY` |
 | `redeemReward` | signed-in; `rewardId`, `requestId`, `expectedPriceCoins`, `expectedTermsVersion` | compare quote/terms to server; atomically stock--, wallet--, redemption + voucher + ledger + receipt; return actual resulting balances | `PRICE_CHANGED`, `TERMS_CHANGED`, `OUT_OF_STOCK`, `INSUFFICIENT_COINS`, `REWARD_INACTIVE`, `DUPLICATE_CONFLICT` |
 | `getOperationStatus` | signed-in; `requestId`, `operationKind` | read outcome for retry reconciliation; authorize owner, reveal no other user data | `NOT_FOUND`, `FORBIDDEN` |
 | `getVoucherCode` | authenticated voucher owner; `voucherId` | return only own usable voucher secret (if valid) | `NOT_OWNER`, `EXPIRED`, `USED` |
-| `verifyVoucher` | authenticated authorized cashier/operator; `code`, `requestId` | verify private token and expiry; mark voucher used exactly once; no second Coin debit. Operator scope/secret protocol pending approval | `FORBIDDEN_OPERATOR`, `INVALID_CODE`, `EXPIRED`, `USED` |
+| `verifyVoucher` | admin claim + active voucher_admins document; `code`, `requestId` | Verify private code/expiry; atomically mark voucher/redemption used, record usedBy/usedAt; no second Coin debit | `FORBIDDEN_ADMIN`, `VOUCHER_UNAVAILABLE`, `EXPIRED`, `USED` |
 | `markNotificationsRead` | signed-in; optional own notification IDs or mark-all | owner-scoped update of `readAt`; all uses server cutoff; cannot alter payload/UID/target | `UNAUTHENTICATED`, `NOT_FOUND`, `FORBIDDEN` |
 | `registerDevice` / `unregisterDevice` | signed-in; own `installationId`, token for register | private FCM delivery binding; UID from auth; unlink on sign-out | `UNAUTHENTICATED`, `VALIDATION_FAILED` |
 
@@ -427,7 +431,7 @@ Tests must show commands, logs and commit references; all results are **NOT RUN*
 | QR-02 | Student walk-in QR scan grants once; invalid/expired/revoked/outside window scans do not grant. |
 | DAILY-01 | Simulate seven consecutive product days: credits exactly `[5,10,15,30,50,70,100]`. |
 | DAILY-02 | Day 8 and 9 grant +100 each; day gap resets next grant to +5; duplicate same-day claim does not recredit. |
-| MONTH-01 | Monthly schema/receipt rejects duplicate same-month grants in emulator; **live grant disabled** until eligibility approved. |
+| MONTH-01 | Monthly transaction rejects duplicate same-month grants; cutoff, onboarding-independent eligibility and year rollover tested locally; cloud Scheduler not deployed. |
 | REW-01 | Concurrent redemptions with stock=1 give exactly one successful voucher; no negative stock or wallet. |
 | REW-02 | Insufficient balance, inactive reward or repeated requestId has no double debit. |
 | TIME-01 | Calendar-day boundary & year/month rollover correctly evaluated in configured product timezone. |
@@ -494,9 +498,7 @@ Expected PR/files (adapt to actual repo naming, don't overwrite working implemen
   Voucher private document stores code for owner recovery; never expose via Rules.
 - Catalog import is create-only/dry-run by default. Interests, prices, stock,
   dates and event rewards are approved server data, not Figma constants.
-- Monthly grant and cashier use explicitly return policy-not-approved. No-show
-  settlement, same-user re-registration, voucher rotation and eligibility remain
-  unimplemented. No manual walk-in code, milestone or Waitlist.
+- Historical v1.3 policy blockers are superseded by BACKEND_POLICIES.md: monthly/no-show jobs, same-user re-registration and admin voucher use are implemented locally. Voucher rotation remains unimplemented. No manual walk-in code, milestone or Waitlist.
 - `validDays` means N times 24 hours from redemption, not a local end-of-day
   cutoff. Require approved per-record expiry before live import.
 - Queries use bounded candidate pagination; filtered pages can be empty with a
