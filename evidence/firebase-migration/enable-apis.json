@@ -1,0 +1,13 @@
+{
+  "project": "prm393-31822",
+  "serviceIds": [
+    "cloudfunctions.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "run.googleapis.com",
+    "eventarc.googleapis.com",
+    "pubsub.googleapis.com"
+  ],
+  "operation": "operations/acf.p2-465411217120-0f9337c8-0702-4e32-b364-bb8378994454",
+  "done": false
+}

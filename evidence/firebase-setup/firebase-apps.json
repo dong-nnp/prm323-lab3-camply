@@ -1,0 +1,17 @@
+- Preparing the list of your Firebase apps
+√ Preparing the list of your Firebase apps
+{
+  "status": "success",
+  "result": [
+    {
+      "name": "projects/evia-lab3-kiet-2026/androidApps/1:197044882486:android:84a4f0d4523df15c989c97",
+      "displayName": "prm393_lab03 (android)",
+      "platform": "ANDROID",
+      "appId": "1:197044882486:android:84a4f0d4523df15c989c97",
+      "namespace": "com.example.prm393_lab03",
+      "apiKeyId": "e5782a7c-a748-496c-a599-07645806c2e8",
+      "state": "ACTIVE",
+      "expireTime": "1970-01-01T00:00:00Z"
+    }
+  ]
+}

@@ -1,9 +1,58 @@
 # PRM393 Lab 3 — Flutter source base
 
+
+## Backend Firebase — 04/11/2026
+
+Backend nghiệp vụ độc lập đã được thêm vào `functions/`; **20/20 tests đạt trên
+Firebase Emulator**. Project hiện tại là **`prm393-31822` (evia, Blaze)**;
+**32 Functions đã deploy**, Rules/Storage đã release và 14 indexes READY.
+Cloud smoke đạt; xem [migration](docs/firebase-migration.md) cho evidence.
+UI và các Flutter adapters demo hiện tại chưa được nối vào backend này.
+
+- [Hợp đồng API và hướng dẫn đội giao diện tích hợp](docs/backend-integration.md).
+- [Chạy backend độc lập](functions/README.md), [kết quả kiểm thử](docs/test-plan.md).
+- Chốt 200 xu lần đầu/UID; Daily theo Asia/Ho_Chi_Minh; tiền/vé chỉ server ghi,
+  chống vượt chỗ/trừ xu trùng; không Waitlist hay milestone.
+- Monthly Gift/cashier chưa chốt nên API trả lỗi rõ ràng, không cấp thành công giả.
+- Runtime: Node22, Java21+ cho Emulator, Firebase CLI 15.30.2 đã kiểm tra.
+  Backend dependencies: firebase-admin 14.5.0, firebase-functions 7.4.0, zod 4.6.7;
+  build TypeScript 7.0.2, @types/node 22.20.5 (bản cài chính xác trong lockfile).
+- Không dùng Figma làm production seed. Catalog/sở thích phải có nguồn được duyệt.
+  Billing đã có ở project nhóm; Google login/FCM thật trong app vẫn chưa kiểm chứng.
+
+Các mục demo Flutter bên dưới ghi lại implementation UI trước đó, không phải
+backend production. Các ví dụ waitlist/coin cũ trong UI cần đội frontend thay bằng
+contract đã chốt khi tích hợp. Task backend không sửa màn hình.
+
+
 Repository ban đầu: `prm323-lab3-camply`. Tên Flutter package: `prm393_lab03`.
 Android app dùng Flutter stable, Dart null safety, MVVM, Riverpod và go_router.
 Source hiện có 44 màn hình/trạng thái Evia từ Figma, bên cạnh foundation và Firebase contracts.
 Dữ liệu UI demo được tách riêng theo yêu cầu; chưa có Firebase production integration.
+
+## Firebase development ban đầu — lịch sử 04/11/2026
+
+Đã tạo project `evia-lab3-kiet-2026` và Android app
+`com.example.prm393_lab03` bằng Firebase/FlutterFire CLI. Firestore mặc định
+ở `asia-southeast1` dùng Rules deny-all; chưa có dữ liệu nghiệp vụ.
+Xem [cấu hình, lệnh chạy và giới hạn](docs/firebase-setup.md).
+Thiết kế database đã được [đối chiếu trực tiếp với 44 frame Figma](docs/database-figma-review.md);
+xem [schema v1.2](docs/DATABASE_DESIGN.md), chưa triển khai dữ liệu nghiệp vụ.
+
+Owner đã làm rõ scope sau review: không Waitlist (hủy vé trả lại chỗ), Café
+voucher 200 xu từ server data, Google + email/password auth, tối thiểu 3 sở thích
+bắt buộc. Bỏ milestones/nhập mã walk-in và các nghiệp vụ FD-09/10; verification
+sinh viên/CLB tạm hoãn. Đây là yêu cầu cho implementation tiếp theo; UI demo
+và mô tả prototype phía dưới chưa được đổi hành vi trong task tài liệu này.
+SDK riêng trên máy hiện tại: `F:\Mobile_Programing\flutter_evia_lab3`
+(Flutter 3.47.9 / Dart 3.13.7); không cần thay SDK constraints của app.
+
+```powershell
+& 'F:\Mobile_Programing\flutter_evia_lab3\bin\flutter.bat' run -d emulator-5554 --route=/foundation --dart-define=FIREBASE_ENABLED=true
+```
+
+Lệnh trên mở màn kiểm tra Firebase Core. Các màn Evia vẫn dùng dữ liệu demo;
+Google Sign-In và sáu service adapters chưa được tích hợp thật.
 
 ## Yêu cầu môi trường
 
@@ -222,7 +271,8 @@ hiện các bước sau bằng tài khoản và project thật được cấp qu
      SHA-1/SHA-256 của signing certificate thực tế, tải/cập nhật config nếu cần;
      triển khai Google Sign-In → Firebase credential trong service, trả AuthSession.
    - **Storage:** khởi tạo bucket theo project thật. `firebase/storage.rules`
-     hiện **deny all**; chưa deploy. Khi dùng Firebase CLI, chọn đúng project và
+     trước đây **deny all**. Backend hiện có Rules own-user đã deploy lên project nhóm;
+     xem `docs/firebase-migration.md`. Khi dùng Firebase CLI, chọn đúng project và
      trỏ storage rules path tới file này. Viết rules theo quyền và test trước khi
      mở truy cập; không thay bằng public allow-all để demo.
    - **Messaging:** triển khai token, permission và message handlers trong service

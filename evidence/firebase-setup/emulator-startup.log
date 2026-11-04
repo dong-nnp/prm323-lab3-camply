@@ -1,0 +1,4 @@
+--------- beginning of main
+11-04 19:02:04.205  5301  5301 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+11-04 19:02:05.160  5301  5301 I FirebaseInitProvider: FirebaseApp initialization successful
+11-04 19:02:11.424  5301  5439 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).

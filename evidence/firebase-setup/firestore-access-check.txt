@@ -1,0 +1,1 @@
+Anonymous Firestore document read: HTTP 403 (denied)

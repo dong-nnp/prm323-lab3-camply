@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-11-04T15:24:08.782Z",
+  "project": "prm393-31822",
+  "checks": [
+    {
+      "name": "getServerInfo",
+      "status": 200,
+      "expected": 200,
+      "durationMs": 971,
+      "result": {
+        "apiVersion": 1,
+        "serverTime": "2026-11-04T15:24:05.920Z",
+        "region": "asia-southeast1",
+        "timezone": "Asia/Ho_Chi_Minh",
+        "monthlyGiftEnabled": false,
+        "cashierVerificationEnabled": false
+      }
+    },
+    {
+      "name": "getPublicCatalog",
+      "status": 200,
+      "expected": 200,
+      "durationMs": 3449,
+      "itemCount": 0
+    },
+    {
+      "name": "getAccount",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 305,
+      "error": "UNAUTHENTICATED"
+    },
+    {
+      "name": "initializeUser",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 424,
+      "error": "UNAUTHENTICATED"
+    }
+  ]
+}

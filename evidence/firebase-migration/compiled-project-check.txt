@@ -1,0 +1,2 @@
+6:    <string name="google_app_id" translatable="false">1:465411217120:android:fdc0b89aaa5078e3286285</string>
+9:    <string name="project_id" translatable="false">prm393-31822</string>

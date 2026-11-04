@@ -1,0 +1,29 @@
+Resolving dependencies...
+Downloading packages...
+  crypto 3.0.7 (3.0.8 available)
+  cupertino_ui 1.1.4 (1.1.6 available)
+  go_router 18.1.1 (18.1.2 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.10.0 available)
+  meta 1.18.3 (1.19.0 available)
+  petitparser 7.0.2 (7.1.0 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+10 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/services/firebase_preparation_test.dart
+00:00 +0: D:/project/prm323-lab3/prm323-lab3-camply/test/services/firebase_preparation_test.dart: disabled initialization works without any native Firebase plugin
+00:00 +1: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: loading becomes empty when Firebase is not configured
+00:00 +2: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: loading becomes empty when Firebase is not configured
+00:00 +3: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: configured Firebase becomes data
+00:00 +4: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: safe error is preserved and retry can recover
+00:00 +5: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: concurrent refresh does not start a duplicate initialization
+00:00 +6: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: completion after disposal does not update disposed state
+00:01 +7: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/foundation_app_test.dart: unconfigured app fits 360.0dp at text scale 1.0
+00:02 +8: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/foundation_app_test.dart: unconfigured app fits 360.0dp at text scale 2.0
+00:03 +9: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/foundation_app_test.dart: unconfigured app fits 412.0dp at text scale 1.0
+00:03 +10: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/foundation_app_test.dart: unconfigured app fits 412.0dp at text scale 2.0
+00:03 +11: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/foundation_app_test.dart: loading, failure and retry are driven by the ViewModel
+00:03 +12: All tests passed!

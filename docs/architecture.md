@@ -1,5 +1,43 @@
 # Kiến trúc source base
 
+> **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
+> App đã chuyển bằng FlutterFire; 32 Functions + Rules đã deploy, 14 indexes READY.
+> API smoke cloud + 20 Emulator tests + APK/startup Core đạt; [evidence](firebase-migration.md).
+> UI, Google login/push thật và dữ liệu catalog chưa tích hợp.
+> Các mục về `evia-lab3-kiet-2026` bên dưới là lịch sử, không phải project để deploy tiếp.
+
+
+## Backend nghiệp vụ độc lập — 04/11/2026
+
+`functions/src/index.ts` nhận HTTPS Callable với Firebase Auth context →
+`backend.ts` validate/dispatch → accounts/events/rewards/queries → Admin SDK
+Firestore transactions. Monetary writes dùng receipt + ledger atomic; callable
+không tin UID/role/giá trị tiền từ client. Rules từ chối mọi client mutation.
+`catalog.ts` + create-only importer quản lý dữ liệu được duyệt, không seed giả.
+
+Flutter vẫn giữ View → ViewModel → Repository → Service interface → SDK adapter.
+Task này **không sửa Dart/UI**, không thay pending providers hoặc giả rằng UI đã
+đăng nhập/gọi backend. Khi frontend sẵn sàng, thêm service adapter dùng callable
+region asia-southeast1 và domain models theo [API v1](backend-integration.md),
+đồng thời test state/error/auth guard. Auth credentials thuộc Firebase Auth SDK.
+
+`firebase.json` cấu hình Auth/Firestore/Functions/Storage Emulators; tests chỉ
+project demo loopback. Rules/indexes đã deploy lên project nhóm; Functions theo trạng thái migration. FCM trigger
+chuẩn bị gửi inbox notifications thật, bỏ qua rõ ràng trên Emulator. Analytics,
+Crashlytics, Remote Config app-side không đổi.
+
+Thư mục thêm: `functions/src/`, `functions/test/`, `functions/scripts/`,
+`evidence/backend/`. Xem `functions/README.md` để chạy không cần UI.
+
+
+## Cập nhật Firebase development 04/11/2026
+
+Android đã được FlutterFire cấu hình cho `evia-lab3-kiet-2026`; xem
+[firebase-setup.md](firebase-setup.md). Firestore cloud đã tạo với Rules deny-all,
+chưa có adapter/data model nghiệp vụ trong app. Dependency flow và sáu
+`PendingFirebaseServices` giữ nguyên; Firebase Core ready chỉ xác nhận bootstrap.
+`FIREBASE_ENABLED` tiếp tục mặc định false, có thể mở `/foundation` để kiểm tra.
+
 Ứng dụng Android `prm393_lab03` dùng MVVM, Riverpod cho state và dependency
 injection, go_router cho navigation. Foundation kiểm tra cấu hình khởi động ở
 `/foundation`; root là Evia login. Bộ 44 màn hình/trạng thái dùng presentation data demo được
@@ -36,7 +74,7 @@ test/
 └── widgets/
 e2e_test/                          # Chỉ README chuẩn bị ARTEMIS
 firebase/
-├── storage.rules                  # Deny all; chưa deploy
+├── storage.rules                  # Own create-only PDF reports; local only
 └── remote-config-defaults.json     # {} chờ xác định keys; chưa tải vào SDK
 docs/                             # Architecture + các template kế hoạch
 android/                          # Flutter-generated Android host

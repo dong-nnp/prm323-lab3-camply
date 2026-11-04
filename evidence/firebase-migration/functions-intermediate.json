@@ -1,0 +1,197 @@
+{
+  "functions": [
+    {
+      "name": "verifyWalkInQr",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "claimDailyCheckin",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getAccount",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "deliverNotification",
+      "state": "FAILED"
+    },
+    {
+      "name": "markNotificationsRead",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getVoucherCode",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getTicket",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "listMyEvents",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getServerInfo",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getTicketQr",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "initializeUser",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "setWalkInGoing",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "setBookmark",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "unfollowOrganizer",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getReward",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "followOrganizer",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "updateProfile",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "grantMonthlyGift",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "registerForEvent",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "redeemReward",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getOrganizer",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "saveInterests",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "cancelRegistration",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getPublicCatalog",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "listOwned",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "registerDevice",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "getEvent",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    },
+    {
+      "name": "unregisterDevice",
+      "state": "ACTIVE",
+      "cpu": "0.1666",
+      "concurrency": 1
+    }
+  ],
+  "pending": [
+    "deliverNotification"
+  ]
+}

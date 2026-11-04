@@ -1,5 +1,22 @@
 # Design traceability — Evia
 
+## Database review trực tiếp — 04/11/2026
+
+Đã đọc lại 44/44 frame trên page `2083:272` qua Figma, 1.342 visible text nodes,
+và xem ảnh 6 frame đại diện. Xem [mapping dữ liệu và conflict registry](database-figma-review.md)
+và [schema v1.2](DATABASE_DESIGN.md). Đây là schema proposal, chưa thay đổi UI,
+Figma, dữ liệu Firebase hoặc Rules đã deploy.
+
+Các quyết định giữ riêng 200/250 Coin và Waitlist trong UI demo được ghi ở phần
+lịch sử bên dưới **không phải backend policy**. Schema production chỉ có một giá
+chuẩn **200 xu cho Café voucher**, không có Waitlist; Daily rewards theo PROJECT_CONTEXT.
+Owner đã bỏ toàn bộ milestones, ticket email/fixed reminders, feedback bonus,
+missions, seasonal targets và assigned seats/VIP/tiers. Walk-in chỉ QR, không
+nhập mã; auth mở rộng Google + email/password; tối thiểu 3 sở thích bắt buộc,
+không Skip. Student/club verification tạm hoãn; FD-12 cashier flow chưa chốt.
+Các quyết định này là target hiện tại; source UI demo/lịch sử bên dưới chưa
+được sửa theo task cập nhật database. FD-06 do design team dự kiến sửa.
+
 Trạng thái: đã triển khai source cho 44 màn hình/trạng thái Evia. Đã đọc đủ metadata,
 high-fidelity design context và screenshot của từng node trước khi sửa source.
 Lần đầu compiler bị Windows Application Control chặn. Sau khi người dùng xử lý
@@ -170,3 +187,11 @@ làm card cao hơn và nút nằm dưới vùng cuộn so với bản Inter 11�
 Đã capture/xem cả 17 frame ở 390dp và thử 360/412dp, scale 1x/2x; chưa phải
 pixel-diff hoặc native Android visual sign-off. Các badge verified/QR là mẫu,
 không biểu thị server đã xác minh. Map và Help/Settings là hướng dẫn nội bộ.
+
+## Backend handoff — 04/11/2026
+
+Backend API hiện có trong [backend-integration.md](backend-integration.md);
+không sửa màn hình/Figma ở task backend. UI demo cũ có thể còn Waitlist, milestone,
+coin minh họa và auth giả: đội frontend cần chuyển theo owner decisions và bind
+services thay demo data. Không coi 20 backend Emulator tests là visual/native
+acceptance của 44 frames. Các nghiệp vụ chưa chốt vẫn bị backend khóa.

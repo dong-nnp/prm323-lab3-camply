@@ -1,0 +1,62 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "prm393-31822",
+          "appId": "1:465411217120:android:fdc0b89aaa5078e3286285",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "prm393-31822",
+          "configurations": {
+            "android": "1:465411217120:android:fdc0b89aaa5078e3286285"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firebase/firestore.rules",
+    "indexes": "firebase/firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "codebase": "evia",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "runtime": "nodejs22",
+      "source": "functions"
+    }
+  ],
+  "storage": {
+    "rules": "firebase/storage.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080,
+      "host": "127.0.0.1"
+    },
+    "ui": {
+      "port": 4000,
+      "enabled": true,
+      "host": "127.0.0.1"
+    },
+    "singleProjectMode": true,
+    "auth": {
+      "port": 9099,
+      "host": "127.0.0.1"
+    },
+    "functions": {
+      "port": 5001,
+      "host": "127.0.0.1"
+    },
+    "storage": {
+      "port": 9199,
+      "host": "127.0.0.1"
+    }
+  }
+}

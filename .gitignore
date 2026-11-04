@@ -51,7 +51,15 @@ app.*.map.json
 /lib/firebase_options.dart
 /android/app/google-services.json
 /.firebaserc
-/firebase.json
+!/evidence/firebase-setup/*.log
 *.jks
 *.keystore
 /android/key.properties
+**/node_modules/
+/.firebase/
+!/evidence/backend/*.log
+
+# Team-supplied local Firebase config
+/google-services.json
+!/evidence/firebase-migration/*.log
+!/evidence/firebase-migration/**/*.log

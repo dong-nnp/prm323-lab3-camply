@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function privateOwner() { return request.auth != null && resource.data.uid == request.auth.uid; }
+    match /events/{id} { allow read: if resource.data.status == 'published' && resource.data.visibility == 'public'; }
+    match /organizers/{id} { allow read: if resource.data.published == true; }
+    match /rewards/{id} { allow read: if resource.data.status == 'active'; }
+    match /interests/{id} { allow read: if resource.data.status == 'active'; }
+    match /users/{uid} {
+      allow read: if owner(uid);
+      match /{collection}/{id} {
+        allow read: if owner(uid) && collection in ['following', 'bookmarks', 'event_intents', 'daily_checkins', 'monthly_grants', 'reward_state'];
+      }
+    }
+    match /wallets/{uid} {
+      allow read: if owner(uid);
+      match /ledger/{entry} { allow read: if owner(uid); }
+    }
+    match /registrations/{id} { allow read: if privateOwner(); }
+    match /tickets/{id} { allow read: if privateOwner(); }
+    match /attendance/{id} { allow read: if privateOwner(); }
+    match /redemptions/{id} { allow read: if privateOwner(); }
+    match /vouchers/{id} { allow read: if privateOwner(); }
+    match /notifications/{id} { allow read: if privateOwner(); }
+    match /export_jobs/{id} { allow read: if privateOwner(); }
+    // All mutations use authenticated, validated callables. Secrets/staff/receipts stay server-only.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

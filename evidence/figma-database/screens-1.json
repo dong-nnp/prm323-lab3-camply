@@ -1,0 +1,1501 @@
+{
+  "fileKey": "JQtHz2tigJtvvjVBsx03kx",
+  "pageId": "2083:272",
+  "sessionId": "f20f719b-09e9-45a8-ab15-f9ee786c0737",
+  "reviewDate": "2026-11-04",
+  "group": 1,
+  "frames": [
+    {
+      "id": "2083:456",
+      "name": "Evia — Discover (Consistent Event Hierarchy)",
+      "texts": [
+        {
+          "id": "2083:463",
+          "text": "Search events, organizers..."
+        },
+        {
+          "id": "2083:472",
+          "text": "FEATURED"
+        },
+        {
+          "id": "2083:474",
+          "text": "MUSIC"
+        },
+        {
+          "id": "2083:481",
+          "text": "Campus Music Night"
+        },
+        {
+          "id": "2083:487",
+          "text": "Oct 26 · 18:00"
+        },
+        {
+          "id": "2083:489",
+          "text": "•"
+        },
+        {
+          "id": "2083:494",
+          "text": "Main Stadium"
+        },
+        {
+          "id": "2083:496",
+          "text": "•"
+        },
+        {
+          "id": "2083:501",
+          "text": "+120 coins"
+        },
+        {
+          "id": "2083:505",
+          "text": "View event"
+        },
+        {
+          "id": "2083:518",
+          "text": "Recommended for You"
+        },
+        {
+          "id": "2083:520",
+          "text": "See all"
+        },
+        {
+          "id": "2083:522",
+          "text": "Based on your interests in Technology & Arts"
+        },
+        {
+          "id": "2083:532",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:534",
+          "text": "AI & Future Careers\nWorkshop"
+        },
+        {
+          "id": "2083:540",
+          "text": "Nov 2 · 14:00"
+        },
+        {
+          "id": "2083:545",
+          "text": "Tech Center"
+        },
+        {
+          "id": "2083:550",
+          "text": "CS Students Only"
+        },
+        {
+          "id": "2083:554",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:559",
+          "text": "+50 coins"
+        },
+        {
+          "id": "2083:568",
+          "text": "ARTS"
+        },
+        {
+          "id": "2083:570",
+          "text": "Autumn Photography\nWalk"
+        },
+        {
+          "id": "2083:576",
+          "text": "Nov 5 · 10:00"
+        },
+        {
+          "id": "2083:581",
+          "text": "Memorial Courtyard"
+        },
+        {
+          "id": "2083:586",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:590",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:595",
+          "text": "+30 coins"
+        },
+        {
+          "id": "2083:601",
+          "text": "From Your Following"
+        },
+        {
+          "id": "2083:604",
+          "text": "See all"
+        },
+        {
+          "id": "2083:609",
+          "text": "Events from organizers you follow"
+        },
+        {
+          "id": "2083:616",
+          "text": "SU"
+        },
+        {
+          "id": "2083:618",
+          "text": "Student Union"
+        },
+        {
+          "id": "2083:627",
+          "text": "CLUB"
+        },
+        {
+          "id": "2083:630",
+          "text": "Campus Club Fair"
+        },
+        {
+          "id": "2083:635",
+          "text": "Nov 10, 2026 · 10:00"
+        },
+        {
+          "id": "2083:640",
+          "text": "+80 coins"
+        },
+        {
+          "id": "2083:645",
+          "text": "PC"
+        },
+        {
+          "id": "2083:647",
+          "text": "Photography Club"
+        },
+        {
+          "id": "2083:656",
+          "text": "ARTS"
+        },
+        {
+          "id": "2083:659",
+          "text": "Creative Photography\nMeetup"
+        },
+        {
+          "id": "2083:664",
+          "text": "Nov 14, 2026 · 14:00"
+        },
+        {
+          "id": "2083:669",
+          "text": "+50 coins"
+        },
+        {
+          "id": "2083:674",
+          "text": "Happening Soon"
+        },
+        {
+          "id": "2083:676",
+          "text": "See all"
+        },
+        {
+          "id": "2083:679",
+          "text": "Upcoming events on campus"
+        },
+        {
+          "id": "2083:685",
+          "text": "SPORTS"
+        },
+        {
+          "id": "2083:690",
+          "text": "Football Tournament Finals"
+        },
+        {
+          "id": "2083:699",
+          "text": "Oct 28 · 16:00"
+        },
+        {
+          "id": "2083:704",
+          "text": "Campus Sports Field"
+        },
+        {
+          "id": "2083:708",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:713",
+          "text": "+80 coins"
+        },
+        {
+          "id": "2083:718",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:723",
+          "text": "University Robotics Exhibition"
+        },
+        {
+          "id": "2083:732",
+          "text": "Oct 30 · 11:00"
+        },
+        {
+          "id": "2083:737",
+          "text": "Engineering Hall B"
+        },
+        {
+          "id": "2083:741",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:746",
+          "text": "+100 coins"
+        },
+        {
+          "id": "2083:751",
+          "text": "MUSIC"
+        },
+        {
+          "id": "2083:756",
+          "text": "Acoustic Open Mic Night"
+        },
+        {
+          "id": "2083:765",
+          "text": "Nov 1 · 19:00"
+        },
+        {
+          "id": "2083:770",
+          "text": "Student Union Lounge"
+        },
+        {
+          "id": "2083:774",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:779",
+          "text": "+40 coins"
+        },
+        {
+          "id": "2083:786",
+          "text": "Hey Alex!"
+        },
+        {
+          "id": "2083:788",
+          "text": "👋"
+        },
+        {
+          "id": "2083:794",
+          "text": "350 pts"
+        },
+        {
+          "id": "2083:806",
+          "text": "Discover"
+        },
+        {
+          "id": "2083:813",
+          "text": "Events"
+        },
+        {
+          "id": "2083:818",
+          "text": "Rewards"
+        },
+        {
+          "id": "2083:823",
+          "text": "Profile"
+        }
+      ]
+    },
+    {
+      "id": "2083:826",
+      "name": "S02 V4 — Explore Search Results",
+      "texts": [
+        {
+          "id": "2083:836",
+          "text": "Search & Explore"
+        },
+        {
+          "id": "2083:843",
+          "text": "workshop"
+        },
+        {
+          "id": "2083:858",
+          "text": "All"
+        },
+        {
+          "id": "2083:860",
+          "text": "Technology"
+        },
+        {
+          "id": "2083:862",
+          "text": "Music"
+        },
+        {
+          "id": "2083:864",
+          "text": "Sports"
+        },
+        {
+          "id": "2083:866",
+          "text": "Arts"
+        },
+        {
+          "id": "2083:870",
+          "text": "Next week"
+        },
+        {
+          "id": "2083:876",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:881",
+          "text": "Clear all"
+        },
+        {
+          "id": "2083:884",
+          "text": "3 events found"
+        },
+        {
+          "id": "2083:887",
+          "text": "Sort: Soonest"
+        },
+        {
+          "id": "2083:895",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:900",
+          "text": "AI & Future Careers\nWorkshop"
+        },
+        {
+          "id": "2083:910",
+          "text": "Nov 2 · 14:00"
+        },
+        {
+          "id": "2083:915",
+          "text": "Innovation Hub"
+        },
+        {
+          "id": "2083:920",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:924",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:929",
+          "text": "ARTS"
+        },
+        {
+          "id": "2083:934",
+          "text": "Design Thinking\nBootcamp"
+        },
+        {
+          "id": "2083:944",
+          "text": "Nov 4 · 09:00"
+        },
+        {
+          "id": "2083:949",
+          "text": "Room A203"
+        },
+        {
+          "id": "2083:954",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:958",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:963",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:968",
+          "text": "Mobile App\nDevelopment Workshop"
+        },
+        {
+          "id": "2083:978",
+          "text": "Nov 6 · 13:30"
+        },
+        {
+          "id": "2083:983",
+          "text": "Computer Lab B"
+        },
+        {
+          "id": "2083:988",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:992",
+          "text": "Waitlist available"
+        }
+      ]
+    },
+    {
+      "id": "2083:993",
+      "name": "T08 — Explore Idle Search State",
+      "texts": [
+        {
+          "id": "2083:1002",
+          "text": "Search & Explore"
+        },
+        {
+          "id": "2083:1008",
+          "text": "Search events, organizers..."
+        },
+        {
+          "id": "2083:1020",
+          "text": "Recent Searches"
+        },
+        {
+          "id": "2083:1022",
+          "text": "Clear all"
+        },
+        {
+          "id": "2083:1029",
+          "text": "campus music night"
+        },
+        {
+          "id": "2083:1038",
+          "text": "football tournament"
+        },
+        {
+          "id": "2083:1047",
+          "text": "hackathon"
+        },
+        {
+          "id": "2083:1057",
+          "text": "All"
+        },
+        {
+          "id": "2083:1059",
+          "text": "Music"
+        },
+        {
+          "id": "2083:1061",
+          "text": "Technology"
+        },
+        {
+          "id": "2083:1063",
+          "text": "Sports"
+        },
+        {
+          "id": "2083:1065",
+          "text": "Arts"
+        },
+        {
+          "id": "2083:1071",
+          "text": "Suggested Events"
+        },
+        {
+          "id": "2083:1078",
+          "text": "MUSIC"
+        },
+        {
+          "id": "2083:1082",
+          "text": "Campus Music Night"
+        },
+        {
+          "id": "2083:1091",
+          "text": "Oct 26 · 18:00"
+        },
+        {
+          "id": "2083:1096",
+          "text": "Main Stadium"
+        },
+        {
+          "id": "2083:1101",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:1105",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:1107",
+          "text": "120 spots left"
+        },
+        {
+          "id": "2083:1113",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:1117",
+          "text": "AI & Future Careers\nWorkshop"
+        },
+        {
+          "id": "2083:1126",
+          "text": "Nov 2 · 14:00"
+        },
+        {
+          "id": "2083:1131",
+          "text": "Innovation Hub"
+        },
+        {
+          "id": "2083:1136",
+          "text": "Open to Public"
+        },
+        {
+          "id": "2083:1140",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:1142",
+          "text": "Free admission"
+        }
+      ]
+    },
+    {
+      "id": "2083:1143",
+      "name": "Evia — Discover (Guest Mode)",
+      "texts": [
+        {
+          "id": "2083:1150",
+          "text": "Search events, organizers..."
+        },
+        {
+          "id": "2083:1159",
+          "text": "FEATURED"
+        },
+        {
+          "id": "2083:1161",
+          "text": "MUSIC"
+        },
+        {
+          "id": "2083:1167",
+          "text": "Campus Music Night"
+        },
+        {
+          "id": "2083:1173",
+          "text": "Oct 26 · 18:00"
+        },
+        {
+          "id": "2083:1175",
+          "text": "•"
+        },
+        {
+          "id": "2083:1180",
+          "text": "Main Stadium"
+        },
+        {
+          "id": "2083:1182",
+          "text": "•"
+        },
+        {
+          "id": "2083:1187",
+          "text": "+120 coins"
+        },
+        {
+          "id": "2083:1191",
+          "text": "View event"
+        },
+        {
+          "id": "2083:1203",
+          "text": "Popular Events"
+        },
+        {
+          "id": "2083:1205",
+          "text": "See all"
+        },
+        {
+          "id": "2083:1208",
+          "text": "Trending on campus"
+        },
+        {
+          "id": "2083:1215",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:1220",
+          "text": "AI & Future Careers\nWorkshop"
+        },
+        {
+          "id": "2083:1226",
+          "text": "Nov 2 · 14:00"
+        },
+        {
+          "id": "2083:1231",
+          "text": "Tech Center"
+        },
+        {
+          "id": "2083:1236",
+          "text": "CS Students Only"
+        },
+        {
+          "id": "2083:1240",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:1245",
+          "text": "+50 coins"
+        },
+        {
+          "id": "2083:1251",
+          "text": "ARTS"
+        },
+        {
+          "id": "2083:1256",
+          "text": "Autumn Photography\nWalk"
+        },
+        {
+          "id": "2083:1262",
+          "text": "Nov 5 · 10:00"
+        },
+        {
+          "id": "2083:1267",
+          "text": "Memorial Courtyard"
+        },
+        {
+          "id": "2083:1272",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:1276",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:1281",
+          "text": "+30 coins"
+        },
+        {
+          "id": "2083:1286",
+          "text": "Happening Soon"
+        },
+        {
+          "id": "2083:1288",
+          "text": "See all"
+        },
+        {
+          "id": "2083:1291",
+          "text": "Upcoming events on campus"
+        },
+        {
+          "id": "2083:1297",
+          "text": "SPORTS"
+        },
+        {
+          "id": "2083:1302",
+          "text": "Football Tournament Finals"
+        },
+        {
+          "id": "2083:1311",
+          "text": "Oct 28 · 16:00"
+        },
+        {
+          "id": "2083:1316",
+          "text": "Campus Sports Field"
+        },
+        {
+          "id": "2083:1321",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:1325",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:1330",
+          "text": "+80 coins"
+        },
+        {
+          "id": "2083:1335",
+          "text": "TECHNOLOGY"
+        },
+        {
+          "id": "2083:1340",
+          "text": "University Robotics…"
+        },
+        {
+          "id": "2083:1349",
+          "text": "Oct 30 · 11:00"
+        },
+        {
+          "id": "2083:1354",
+          "text": "Engineering Hall B"
+        },
+        {
+          "id": "2083:1359",
+          "text": "Open to Public"
+        },
+        {
+          "id": "2083:1363",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:1368",
+          "text": "+100 coins"
+        },
+        {
+          "id": "2083:1373",
+          "text": "MUSIC"
+        },
+        {
+          "id": "2083:1378",
+          "text": "Acoustic Open Mic Night"
+        },
+        {
+          "id": "2083:1387",
+          "text": "Nov 1 · 19:00"
+        },
+        {
+          "id": "2083:1392",
+          "text": "Student Union Lounge"
+        },
+        {
+          "id": "2083:1397",
+          "text": "University Students"
+        },
+        {
+          "id": "2083:1401",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:1406",
+          "text": "+40 coins"
+        },
+        {
+          "id": "2083:1411",
+          "text": "Log in"
+        },
+        {
+          "id": "2083:1418",
+          "text": "Discover"
+        },
+        {
+          "id": "2083:1425",
+          "text": "Events"
+        },
+        {
+          "id": "2083:1430",
+          "text": "Rewards"
+        },
+        {
+          "id": "2083:1435",
+          "text": "Profile"
+        }
+      ]
+    },
+    {
+      "id": "2083:1438",
+      "name": "S04 — Advanced Event Filters",
+      "texts": [
+        {
+          "id": "2083:1444",
+          "text": "Category"
+        },
+        {
+          "id": "2083:1447",
+          "text": "All"
+        },
+        {
+          "id": "2083:1449",
+          "text": "Music"
+        },
+        {
+          "id": "2083:1451",
+          "text": "Workshop"
+        },
+        {
+          "id": "2083:1453",
+          "text": "Sports"
+        },
+        {
+          "id": "2083:1455",
+          "text": "Arts"
+        },
+        {
+          "id": "2083:1457",
+          "text": "Seminar"
+        },
+        {
+          "id": "2083:1459",
+          "text": "Volunteer"
+        },
+        {
+          "id": "2083:1461",
+          "text": "Competition"
+        },
+        {
+          "id": "2083:1463",
+          "text": "Career"
+        },
+        {
+          "id": "2083:1465",
+          "text": "Social"
+        },
+        {
+          "id": "2083:1467",
+          "text": "Other"
+        },
+        {
+          "id": "2083:1471",
+          "text": "Date"
+        },
+        {
+          "id": "2083:1474",
+          "text": "Any date"
+        },
+        {
+          "id": "2083:1476",
+          "text": "This week"
+        },
+        {
+          "id": "2083:1478",
+          "text": "This month"
+        },
+        {
+          "id": "2083:1480",
+          "text": "Next month"
+        },
+        {
+          "id": "2083:1482",
+          "text": "Custom range"
+        },
+        {
+          "id": "2083:1486",
+          "text": "Time"
+        },
+        {
+          "id": "2083:1489",
+          "text": "Event start time"
+        },
+        {
+          "id": "2083:1492",
+          "text": "Any time"
+        },
+        {
+          "id": "2083:1494",
+          "text": "Morning"
+        },
+        {
+          "id": "2083:1496",
+          "text": "Afternoon"
+        },
+        {
+          "id": "2083:1498",
+          "text": "Evening"
+        },
+        {
+          "id": "2083:1502",
+          "text": "Duration"
+        },
+        {
+          "id": "2083:1505",
+          "text": "Any duration"
+        },
+        {
+          "id": "2083:1507",
+          "text": "Under 1 hour"
+        },
+        {
+          "id": "2083:1509",
+          "text": "1–3 hours"
+        },
+        {
+          "id": "2083:1511",
+          "text": "Over 3 hours"
+        },
+        {
+          "id": "2083:1515",
+          "text": "Audience"
+        },
+        {
+          "id": "2083:1518",
+          "text": "Who is allowed to attend?"
+        },
+        {
+          "id": "2083:1522",
+          "text": "Any audience"
+        },
+        {
+          "id": "2083:1524",
+          "text": "Open to Everyone"
+        },
+        {
+          "id": "2083:1526",
+          "text": "Students from Any University"
+        },
+        {
+          "id": "2083:1528",
+          "text": "Host University Only"
+        },
+        {
+          "id": "2083:1530",
+          "text": "Faculty Restricted"
+        },
+        {
+          "id": "2083:1532",
+          "text": "Club Members Only"
+        },
+        {
+          "id": "2083:1536",
+          "text": "Only events I'm eligible for"
+        },
+        {
+          "id": "2083:1539",
+          "text": "Based on your verified student and club\ninformation."
+        },
+        {
+          "id": "2083:1545",
+          "text": "Registration Policy"
+        },
+        {
+          "id": "2083:1548",
+          "text": "Any"
+        },
+        {
+          "id": "2083:1550",
+          "text": "Registration Required"
+        },
+        {
+          "id": "2083:1552",
+          "text": "Walk-in Allowed"
+        },
+        {
+          "id": "2083:1556",
+          "text": "Availability"
+        },
+        {
+          "id": "2083:1559",
+          "text": "Any"
+        },
+        {
+          "id": "2083:1561",
+          "text": "Spots Available"
+        },
+        {
+          "id": "2083:1563",
+          "text": "Full"
+        },
+        {
+          "id": "2083:1565",
+          "text": "Waitlist Available"
+        },
+        {
+          "id": "2083:1567",
+          "text": "Unlimited Registration"
+        },
+        {
+          "id": "2083:1575",
+          "text": "Reset"
+        },
+        {
+          "id": "2083:1577",
+          "text": "Filter Events"
+        },
+        {
+          "id": "2083:1581",
+          "text": "Apply Filters"
+        }
+      ]
+    },
+    {
+      "id": "2083:1582",
+      "name": "Following — Their Events",
+      "texts": [
+        {
+          "id": "2083:1588",
+          "text": "Their Events"
+        },
+        {
+          "id": "2083:1590",
+          "text": "Organizers"
+        },
+        {
+          "id": "2083:1596",
+          "text": "All"
+        },
+        {
+          "id": "2083:1600",
+          "text": "Student Union"
+        },
+        {
+          "id": "2083:1604",
+          "text": "Photography Club"
+        },
+        {
+          "id": "2083:1608",
+          "text": "Robotics Society"
+        },
+        {
+          "id": "2083:1612",
+          "text": "Upcoming Events"
+        },
+        {
+          "id": "2083:1616",
+          "text": "Date: Soonest"
+        },
+        {
+          "id": "2083:1624",
+          "text": "CLUB"
+        },
+        {
+          "id": "2083:1628",
+          "text": "Campus Club Fair"
+        },
+        {
+          "id": "2083:1637",
+          "text": "Student Union"
+        },
+        {
+          "id": "2083:1643",
+          "text": "Nov 10, 2026 · 10:00"
+        },
+        {
+          "id": "2083:1645",
+          "text": "•"
+        },
+        {
+          "id": "2083:1647",
+          "text": "Central Plaza"
+        },
+        {
+          "id": "2083:1653",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:1658",
+          "text": "+80 coins"
+        },
+        {
+          "id": "2083:1663",
+          "text": "ARTS"
+        },
+        {
+          "id": "2083:1668",
+          "text": "Creative Photography\nMeetup"
+        },
+        {
+          "id": "2083:1677",
+          "text": "Photography Club"
+        },
+        {
+          "id": "2083:1683",
+          "text": "Nov 14, 2026 · 14:00"
+        },
+        {
+          "id": "2083:1685",
+          "text": "•"
+        },
+        {
+          "id": "2083:1687",
+          "text": "Arts Studio"
+        },
+        {
+          "id": "2083:1692",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:1697",
+          "text": "+50 coins"
+        },
+        {
+          "id": "2083:1701",
+          "text": "You've reached the end"
+        },
+        {
+          "id": "2083:1708",
+          "text": "Recommended Organizers"
+        },
+        {
+          "id": "2083:1711",
+          "text": "See all"
+        },
+        {
+          "id": "2083:1721",
+          "text": "Drama Club"
+        },
+        {
+          "id": "2083:1724",
+          "text": "Performing Arts"
+        },
+        {
+          "id": "2083:1730",
+          "text": "Follow"
+        },
+        {
+          "id": "2083:1737",
+          "text": "Gaming Club"
+        },
+        {
+          "id": "2083:1740",
+          "text": "Gaming"
+        },
+        {
+          "id": "2083:1746",
+          "text": "Follow"
+        },
+        {
+          "id": "2083:1753",
+          "text": "Environmental…"
+        },
+        {
+          "id": "2083:1756",
+          "text": "Environment"
+        },
+        {
+          "id": "2083:1762",
+          "text": "Follow"
+        },
+        {
+          "id": "2083:1771",
+          "text": "Following"
+        },
+        {
+          "id": "2083:1773",
+          "text": "Events and organizers you follow"
+        }
+      ]
+    },
+    {
+      "id": "2083:1873",
+      "name": "Following — Organizers",
+      "texts": [
+        {
+          "id": "2083:1881",
+          "text": "Their Events"
+        },
+        {
+          "id": "2083:1885",
+          "text": "Organizers"
+        },
+        {
+          "id": "2083:1892",
+          "text": "Following Organizers"
+        },
+        {
+          "id": "2083:1894",
+          "text": "2 Active"
+        },
+        {
+          "id": "2083:1896",
+          "text": "Manage the campus organizers you follow"
+        },
+        {
+          "id": "2083:1913",
+          "text": "Student Union"
+        },
+        {
+          "id": "2083:1917",
+          "text": "Official Campus Student Life"
+        },
+        {
+          "id": "2083:1922",
+          "text": "1 upcoming\nevent"
+        },
+        {
+          "id": "2083:1926",
+          "text": "2.4k"
+        },
+        {
+          "id": "2083:1931",
+          "text": "Following"
+        },
+        {
+          "id": "2083:1943",
+          "text": "Photography Club"
+        },
+        {
+          "id": "2083:1945",
+          "text": "CLUB"
+        },
+        {
+          "id": "2083:1947",
+          "text": "Arts & Creative Media"
+        },
+        {
+          "id": "2083:1952",
+          "text": "1 upcoming\nevent"
+        },
+        {
+          "id": "2083:1956",
+          "text": "840"
+        },
+        {
+          "id": "2083:1961",
+          "text": "Following"
+        },
+        {
+          "id": "2083:1969",
+          "text": "Suggested for you"
+        },
+        {
+          "id": "2083:1971",
+          "text": "RECOMMENDED"
+        },
+        {
+          "id": "2083:1979",
+          "text": "GDSC Campus Chapter"
+        },
+        {
+          "id": "2083:1981",
+          "text": "Tech & Hackathons • 3 upcoming"
+        },
+        {
+          "id": "2083:1986",
+          "text": "Follow"
+        },
+        {
+          "id": "2083:1995",
+          "text": "Stay in the loop"
+        },
+        {
+          "id": "2083:1997",
+          "text": "Following organizers notifies you of newly\npublished events and pins them to your\n“From Your Following” Discover feed."
+        },
+        {
+          "id": "2083:2005",
+          "text": "Followed Organizers"
+        },
+        {
+          "id": "2083:2007",
+          "text": "Events and organizers you follow"
+        }
+      ]
+    },
+    {
+      "id": "2083:4509",
+      "name": "Html → Body → Main - MobileScreenContainer",
+      "texts": [
+        {
+          "id": "2083:4519",
+          "text": "9:41"
+        },
+        {
+          "id": "2083:4538",
+          "text": "Skip"
+        },
+        {
+          "id": "2083:4544",
+          "text": "Find Events.\nMake Memories."
+        },
+        {
+          "id": "2083:4567",
+          "text": "Welcome back!"
+        },
+        {
+          "id": "2083:4576",
+          "text": "Discover events and experiences you'll love."
+        },
+        {
+          "id": "2083:4581",
+          "text": "Email address"
+        },
+        {
+          "id": "2083:4589",
+          "text": "Password"
+        },
+        {
+          "id": "2083:4600",
+          "text": "Forgot password?"
+        },
+        {
+          "id": "2083:4603",
+          "text": "Log in"
+        },
+        {
+          "id": "2083:4612",
+          "text": "or continue with"
+        },
+        {
+          "id": "2083:4622",
+          "text": "Continue with Google"
+        },
+        {
+          "id": "2083:4625",
+          "text": "Don't have an account? Sign up"
+        }
+      ]
+    },
+    {
+      "id": "2088:2",
+      "name": "Evia - Discorver interests you",
+      "texts": [
+        {
+          "id": "2088:9",
+          "text": "Skip"
+        },
+        {
+          "id": "2088:16",
+          "text": "PERSONALIZE YOUR FEED"
+        },
+        {
+          "id": "2088:19",
+          "text": "What interests you?"
+        },
+        {
+          "id": "2088:22",
+          "text": "Choose the topics you enjoy so we can recommend\nevents you’ll actually want to join."
+        },
+        {
+          "id": "2088:27",
+          "text": "Nice! You’ve selected enough to continue."
+        },
+        {
+          "id": "2088:39",
+          "text": "Technology"
+        },
+        {
+          "id": "2088:41",
+          "text": "Hackathons, AI, coding"
+        },
+        {
+          "id": "2088:52",
+          "text": "Music & Gigs"
+        },
+        {
+          "id": "2088:54",
+          "text": "Live shows, jam sessions"
+        },
+        {
+          "id": "2088:65",
+          "text": "Arts & Culture"
+        },
+        {
+          "id": "2088:67",
+          "text": "Film, theatre, exhibits"
+        },
+        {
+          "id": "2088:78",
+          "text": "Sports & Fitness"
+        },
+        {
+          "id": "2088:80",
+          "text": "Tournaments, intramural"
+        },
+        {
+          "id": "2088:91",
+          "text": "Photography"
+        },
+        {
+          "id": "2088:93",
+          "text": "Walks, visual arts"
+        },
+        {
+          "id": "2088:104",
+          "text": "Career & Skills"
+        },
+        {
+          "id": "2088:106",
+          "text": "Networking, portfolios"
+        },
+        {
+          "id": "2088:117",
+          "text": "Volunteering"
+        },
+        {
+          "id": "2088:119",
+          "text": "Community, impact"
+        },
+        {
+          "id": "2088:130",
+          "text": "Startups & Pitch"
+        },
+        {
+          "id": "2088:132",
+          "text": "Founders, demo days"
+        },
+        {
+          "id": "2088:140",
+          "text": "3 interests selected"
+        },
+        {
+          "id": "2088:142",
+          "text": "Ready to continue"
+        },
+        {
+          "id": "2088:144",
+          "text": "Pick as many as you like"
+        },
+        {
+          "id": "2088:150",
+          "text": "Continue"
+        }
+      ]
+    },
+    {
+      "id": "2083:6080",
+      "name": "Evia — Organizer Profile (Student Union)",
+      "texts": [
+        {
+          "id": "2083:6097",
+          "text": "Following"
+        },
+        {
+          "id": "2083:6101",
+          "text": "Student Union"
+        },
+        {
+          "id": "2083:6103",
+          "text": "STUDENT ORGANIZATION"
+        },
+        {
+          "id": "2083:6106",
+          "text": "The official governing student body advocating for\ncampus life, hosting university-wide fairs, forums, and…"
+        },
+        {
+          "id": "2083:6108",
+          "text": "Read more"
+        },
+        {
+          "id": "2083:6114",
+          "text": "Events"
+        },
+        {
+          "id": "2083:6119",
+          "text": "Upcoming"
+        },
+        {
+          "id": "2083:6121",
+          "text": "2"
+        },
+        {
+          "id": "2083:6124",
+          "text": "Past"
+        },
+        {
+          "id": "2083:6126",
+          "text": "1"
+        },
+        {
+          "id": "2083:6132",
+          "text": "CLUB"
+        },
+        {
+          "id": "2083:6136",
+          "text": "Campus Club Fair"
+        },
+        {
+          "id": "2083:6141",
+          "text": "Tue, Nov 10, 2026 · 10:00"
+        },
+        {
+          "id": "2083:6146",
+          "text": "Central Plaza"
+        },
+        {
+          "id": "2083:6150",
+          "text": "Walk-in allowed"
+        },
+        {
+          "id": "2083:6154",
+          "text": "+80 coins"
+        },
+        {
+          "id": "2083:6162",
+          "text": "ACADEMIC"
+        },
+        {
+          "id": "2083:6166",
+          "text": "Student Leadership Workshop"
+        },
+        {
+          "id": "2083:6171",
+          "text": "Wed, Nov 18, 2026 · 14:30"
+        },
+        {
+          "id": "2083:6176",
+          "text": "Union Hall B, 2nd Floor"
+        },
+        {
+          "id": "2083:6181",
+          "text": "Registration required"
+        },
+        {
+          "id": "2083:6185",
+          "text": "+60 coins"
+        },
+        {
+          "id": "2083:6196",
+          "text": "Organizer Profile"
+        }
+      ]
+    }
+  ]
+}
