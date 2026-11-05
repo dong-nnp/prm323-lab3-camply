@@ -58,17 +58,18 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
   int _generation = 0;
   @override
   RegistrationState build() {
+    ref.watch(
+      authenticationViewModelProvider.select(
+        (auth) => auth.asData?.value.userId,
+      ),
+    );
     ref.onDispose(() => _generation++);
     return const RegistrationState();
   }
 
-  EventPresentation event(String id) => [
-    RegistrationMockData.music,
-    RegistrationMockData.club,
-    RegistrationMockData.innovation,
-    RegistrationMockData.arts,
-    RegistrationMockData.leadership,
-  ].firstWhere((e) => e.id == id, orElse: () => RegistrationMockData.music);
+  EventPresentation? findEvent(String id) => RegistrationMockData.findEvent(id);
+  EventPresentation event(String id) =>
+      findEvent(id) ?? RegistrationMockData.music;
   void preset(String view, String eventId) {
     if (view == 'legacy-error') {
       state = RegistrationState(
@@ -156,7 +157,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     }
     if (state.status == RegistrationStatus.loading) return state.status;
     if (!validate()) return RegistrationStatus.idle;
-    final selected = event(state.eventId);
+    final selected = findEvent(state.eventId);
+    if (selected == null) {
+      state = state.copy(
+        status: RegistrationStatus.failed,
+        message: 'Event not found.',
+      );
+      return state.status;
+    }
     final generation = _generation;
     state = state.copy(status: RegistrationStatus.loading);
     await Future<void>.delayed(ref.read(registrationDelayProvider));
@@ -174,12 +182,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     final added = activity.addRegistration(
       RegisteredEvent(
         id: selected.id,
+        detailKey: state.eventId,
         title: selected.title,
         category: selected.category,
         dateLabel: '${selected.date} · ${selected.time}',
         venue: selected.venue,
         start: selected.start,
         coins: selected.coins,
+        image: selected.image,
       ),
       deposit: selected.deposit,
     );
@@ -195,14 +205,16 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
   }
 
   void backToForm() => state = state.copy(status: RegistrationStatus.idle);
-  void markGoing() {
+  void markGoing([String eventId = 'club-live']) {
     if (!ref.read(hasAuthenticatedSessionProvider)) return;
-    final selected = RegistrationMockData.club;
+    final selected = findEvent(eventId);
+    if (selected == null || !selected.walkIn) return;
     ref
         .read(activityViewModelProvider.notifier)
         .addRegistration(
           RegisteredEvent(
             id: selected.id,
+            detailKey: eventId,
             title: selected.title,
             category: selected.category,
             dateLabel: '${selected.date} · ${selected.time}',
@@ -213,7 +225,7 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
             walkIn: true,
           ),
         );
-    state = state.copy(status: RegistrationStatus.going, eventId: selected.id);
+    state = state.copy(status: RegistrationStatus.going, eventId: eventId);
   }
 
   void joinWaitlist() {

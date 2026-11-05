@@ -50,6 +50,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final auth = ref.read(authenticationViewModelProvider);
       final session = auth.isLoading ? null : auth.asData?.value;
+      if (!auth.isLoading &&
+          state.uri.path == AppRoutes.discover &&
+          session?.status != AuthStatus.signedIn) {
+        return AppRoutes.guestDiscover;
+      }
       if (session?.status == AuthStatus.signedIn &&
           [
             AppRoutes.home,

@@ -11,8 +11,10 @@ class RegisteredEvent {
     this.walkIn = false,
     this.image,
     this.coins = 0,
-  });
+    String? detailKey,
+  }) : detailKey = detailKey ?? id;
   final String id, title, category, dateLabel, venue;
+  final String detailKey;
   final DateTime start;
   final bool attended, waitlisted, walkIn;
   final String? image;

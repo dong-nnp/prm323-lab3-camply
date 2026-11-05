@@ -10,7 +10,6 @@ abstract final class EviaMockData {
     'Arts & Culture',
   };
   static const initialSaved = {'football', 'mobile'};
-  static const initialFollowed = {'union', 'photography'};
   static const recentSearches = [
     'campus music night',
     'football tournament',
@@ -26,12 +25,14 @@ abstract final class EviaMockData {
     category: 'Music',
     date: 'Oct 26 · 18:00',
     location: 'Main Stadium',
+    organizer: 'Student Union',
     coins: 120,
     note: '120 spots left',
     image: FigmaAssets.path('2083:993', 'imgCampusMusicNight'),
   );
   static const recommendedAi = CampusEvent(
     id: 'ai',
+    detailKey: 'ai-recommended',
     title: 'AI & Future Careers Workshop',
     category: 'Technology',
     date: 'Nov 2 · 14:00',
@@ -45,11 +46,13 @@ abstract final class EviaMockData {
     category: 'Arts',
     date: 'Nov 5 · 10:00',
     location: 'Memorial Courtyard',
+    organizer: 'Photography Club',
     policy: 'Walk-in allowed',
     coins: 30,
   );
   static final suggestedAi = CampusEvent(
     id: 'ai',
+    detailKey: 'ai-suggested',
     title: 'AI & Future Careers Workshop',
     category: 'Technology',
     date: 'Nov 2 · 14:00',
@@ -137,6 +140,26 @@ abstract final class EviaMockData {
       image: FigmaAssets.path('2083:456', 'imgCreativePhotographyMeetup'),
     ),
   ];
+  static final catalog = <CampusEvent>[
+    music,
+    photoWalk,
+    ...upcoming,
+    ...followingEvents,
+    ...searchEvents,
+  ];
+
+  static DateTime startOf(CampusEvent event) {
+    final date = RegExp(r'^(Oct|Nov) (\d+)').firstMatch(event.date)!;
+    final time = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(event.date)!;
+    return DateTime(
+      2026,
+      date[1] == 'Oct' ? 10 : 11,
+      int.parse(date[2]!),
+      int.parse(time[1]!),
+      int.parse(time[2]!),
+    );
+  }
+
   static const topics = <InterestTopic>[
     InterestTopic('Technology', 'Hackathons, AI, coding', 'imgContainer1'),
     InterestTopic('Music & Gigs', 'Live shows, jam sessions', 'imgContainer3'),

@@ -93,9 +93,19 @@ final activityViewModelProvider =
 
 class ActivityViewModel extends Notifier<ActivityState> {
   @override
-  ActivityState build() => ActivityState();
+  ActivityState build() {
+    ref.watch(
+      authenticationViewModelProvider.select(
+        (auth) => auth.asData?.value.userId,
+      ),
+    );
+    return ActivityState();
+  }
+
   List<RegisteredEvent> get allEvents => [
-    ...ActivityMockData.events,
+    ...ActivityMockData.events.where(
+      (event) => !state.registrations.any((entry) => entry.id == event.id),
+    ),
     ...state.registrations,
   ];
   bool addRegistration(RegisteredEvent event, {int deposit = 0}) {
@@ -103,7 +113,7 @@ class ActivityViewModel extends Notifier<ActivityState> {
       state = state.copy(message: 'Log in to register for events.');
       return false;
     }
-    if (allEvents.any((existing) => existing.id == event.id)) {
+    if (state.registrations.any((existing) => existing.id == event.id)) {
       state = state.copy(cancelled: {...state.cancelled}..remove(event.id));
       return true;
     }
@@ -111,7 +121,10 @@ class ActivityViewModel extends Notifier<ActivityState> {
       state = state.copy(message: coinServiceMessage);
       return false;
     }
-    state = state.copy(registrations: [...state.registrations, event]);
+    state = state.copy(
+      registrations: [...state.registrations, event],
+      cancelled: {...state.cancelled}..remove(event.id),
+    );
     return true;
   }
 

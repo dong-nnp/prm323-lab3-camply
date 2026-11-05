@@ -1,8 +1,41 @@
 import '../../core/constants/flow_assets.dart';
 import '../../models/registration_models.dart';
+import 'evia_mock_data.dart';
 
 /// Figma fixtures only. No real registration or verified-account assertion.
 abstract final class RegistrationMockData {
+  static EventPresentation? findEvent(String key) {
+    final id = key == 'club' ? club.id : key;
+    for (final event in [music, club, innovation, arts, leadership]) {
+      if (event.id == id) return event;
+    }
+    for (final event in [
+      ...EviaMockData.catalog,
+      EviaMockData.recommendedAi,
+      EviaMockData.suggestedAi,
+    ]) {
+      if (event.detailKey != key) continue;
+      return EventPresentation(
+        id: event.id == 'music' ? music.id : event.id,
+        title: event.title,
+        category: event.category,
+        date: event.date.split(' · ').first,
+        time: event.date.split(' · ').last,
+        venue: event.location,
+        organizer: event.organizer ?? '',
+        start: EviaMockData.startOf(event),
+        coins: event.coins,
+        deposit: event.id == 'music' ? music.deposit : 0,
+        walkIn: event.policy == 'Walk-in allowed',
+        audience: event.audience,
+        policy: event.policy,
+        image: event.image,
+        spots: event.id == 'music' ? music.spots : null,
+      );
+    }
+    return null;
+  }
+
   static const name = 'Alex Morgan';
   static const studentId = 'STU-849201';
   static const profileStudentId = 'STU-842901';
@@ -20,6 +53,7 @@ abstract final class RegistrationMockData {
     start: DateTime(2026, 11, 7, 18),
     coins: 120,
     deposit: 100,
+    spots: 120,
   );
   static final club = EventPresentation(
     id: 'club-live',
@@ -32,6 +66,7 @@ abstract final class RegistrationMockData {
     start: DateTime(2026, 11, 10, 10),
     coins: 80,
     walkIn: true,
+    policy: 'Walk-in allowed',
     image: FlowAssets.image('2083:5861', 1),
   );
   static final innovation = EventPresentation(
