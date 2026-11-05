@@ -13,11 +13,13 @@ class CampusEvent {
     this.organizer,
     this.note,
     this.keywords = '',
-  });
+    String? detailKey,
+  }) : detailKey = detailKey ?? id;
   final String id, title, category, date, location, audience, policy;
   final int coins;
   final String? image, organizer, note;
   final String keywords;
+  final String detailKey;
 }
 
 class CampusOrganizer {

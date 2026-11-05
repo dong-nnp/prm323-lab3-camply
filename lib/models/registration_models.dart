@@ -17,11 +17,15 @@ class EventPresentation {
     this.walkIn = false,
     this.past = false,
     this.image,
-    this.spots = 120,
+    this.spots,
+    this.audience = 'All Students',
+    this.policy = 'Registration required',
   });
   final String id, title, category, date, time, venue, organizer;
   final DateTime start;
-  final int coins, deposit, spots;
+  final int coins, deposit;
+  final int? spots;
+  final String audience, policy;
   final bool walkIn, past;
   final String? image;
 }

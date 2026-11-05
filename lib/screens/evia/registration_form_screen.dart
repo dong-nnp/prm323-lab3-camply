@@ -90,7 +90,14 @@ class _RegistrationFormScreenState
         : errors
         ? '2083:5329'
         : '2083:5709';
-    final event = vm.event(state.eventId);
+    final event = vm.findEvent(widget.resume ? state.eventId : widget.eventId);
+    if (event == null) {
+      return const EviaPage(
+        header: ActivityHeader('Event Registration'),
+        child: Center(child: Text('Event not found.')),
+      );
+    }
+    final hasDeposit = event.deposit > 0;
     final data = {
       'name': state.name,
       'studentId': state.studentId,
@@ -145,12 +152,16 @@ class _RegistrationFormScreenState
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
-          if (!legacy) ...[
+          if (!legacy && hasDeposit) ...[
             _DepositSummary(screen: screen),
             const SizedBox(height: AppSpacing.lg),
           ],
           if (widget.view != 'loading') ...[
-            _RegistrationNotice(screen: screen, legacy: legacy),
+            _RegistrationNotice(
+              screen: screen,
+              legacy: legacy,
+              hasDeposit: hasDeposit,
+            ),
             const SizedBox(height: AppSpacing.lg),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +169,9 @@ class _RegistrationFormScreenState
                 if (screen == '2083:5709')
                   Semantics(
                     checked: state.agreed,
-                    label: 'Accept registration and deposit terms',
+                    label: hasDeposit
+                        ? 'Accept registration and deposit terms'
+                        : 'Accept registration terms',
                     child: InkWell(
                       onTap: loading ? null : () => vm.agree(!state.agreed),
                       child: SizedBox.square(
@@ -213,10 +226,12 @@ class _RegistrationFormScreenState
                             children: [
                               const Text('I agree to the '),
                               InkWell(
-                                onTap: () => _terms(context),
-                                child: const Text(
-                                  'event registration and deposit terms.',
-                                  style: TextStyle(
+                                onTap: () => _terms(context, hasDeposit),
+                                child: Text(
+                                  hasDeposit
+                                      ? 'event registration and deposit terms.'
+                                      : 'event registration terms.',
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     decoration: TextDecoration.underline,
                                   ),
@@ -339,10 +354,12 @@ class _RegistrationFormScreenState
   }
 }
 
-void _terms(BuildContext context) => showActivityHelp(
+void _terms(BuildContext context, bool hasDeposit) => showActivityHelp(
   context,
-  'Registration and deposit terms',
-  'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Refunds and cancellations follow the event deposit policy.',
+  hasDeposit ? 'Registration and deposit terms' : 'Registration terms',
+  hasDeposit
+      ? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Refunds and cancellations follow the event deposit policy.'
+      : 'Review your registration information and cancel your registration if you cannot attend.',
 );
 
 class _RegistrationField extends ConsumerWidget {
@@ -606,9 +623,13 @@ class _DepositSummary extends ConsumerWidget {
 }
 
 class _RegistrationNotice extends StatelessWidget {
-  const _RegistrationNotice({required this.screen, required this.legacy});
+  const _RegistrationNotice({
+    required this.screen,
+    required this.legacy,
+    required this.hasDeposit,
+  });
   final String screen;
-  final bool legacy;
+  final bool legacy, hasDeposit;
   @override
   Widget build(BuildContext context) => EviaCard(
     color: AppColors.primarySoft,
@@ -636,7 +657,9 @@ class _RegistrationNotice extends StatelessWidget {
               Text(
                 legacy
                     ? "We'll ask you to confirm your attendance 2–3 days before the event."
-                    : "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Refunds and cancellations follow the event's deposit policy.",
+                    : hasDeposit
+                    ? "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Refunds and cancellations follow the event's deposit policy."
+                    : 'Review your information before confirming your registration.',
                 style: FlowTheme.helpText,
               ),
               if (legacy) ...[
@@ -647,8 +670,12 @@ class _RegistrationNotice extends StatelessWidget {
                 ),
               ] else
                 TextButton(
-                  onPressed: () => _terms(context),
-                  child: const Text('View deposit & cancellation policy →'),
+                  onPressed: () => _terms(context, hasDeposit),
+                  child: Text(
+                    hasDeposit
+                        ? 'View deposit & cancellation policy →'
+                        : 'View registration terms →',
+                  ),
                 ),
             ],
           ),

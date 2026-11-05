@@ -300,3 +300,16 @@ Validation for this change:
 - git diff --check passed.
 - APK installed successfully on emulator-5554. am start -W timed out; subsequent
   dumpsys confirmed MainActivity as topResumedActivity. No visual startup sign-off.
+
+## Luồng Discover, Search và Following — 05/11/2026
+
+Đã kiểm tra Skip mở Discover Guest, Search & Explore mở cùng route, Filter
+mở riêng và Apply giữ truy vấn. Mở kết quả sang Schedule, đổi Location và
+quay lại giữ đúng danh sách. Their Events lấy đăng ký xác nhận trong phiên.
+Organizers lấy trạng thái Follow. Guest được chuyển tới Login khi mở Following.
+Đã kiểm tra đổi tài khoản và màn hình ở 360/412dp với cỡ chữ 1x/2x.
+
+Full suite đạt 132 test trước khi siết danh sách Their Events để chỉ nhận
+đăng ký xác nhận. Sau thay đổi cuối, 31 test liên quan Evia và Registration
+đạt, gồm kiểm tra Going không xuất hiện trong Their Events. Analyze sạch.
+Các ca đăng nhập dùng phiên kiểm thử, không xác nhận tích hợp auth/backend thật.

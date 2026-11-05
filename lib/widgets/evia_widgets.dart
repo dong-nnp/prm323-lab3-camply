@@ -58,11 +58,13 @@ class EviaCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(AppSpacing.lg),
     this.color = AppColors.surface,
+    this.onTap,
     super.key,
   });
   final Widget child;
   final EdgeInsetsGeometry padding;
   final Color color;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) => Container(
     padding: padding,
@@ -72,7 +74,10 @@ class EviaCard extends StatelessWidget {
       border: Border.all(color: AppColors.border),
       boxShadow: EviaTheme.cardShadow,
     ),
-    child: child,
+    child: Material(
+      type: MaterialType.transparency,
+      child: onTap == null ? child : InkWell(onTap: onTap, child: child),
+    ),
   );
 }
 
@@ -292,40 +297,12 @@ class BookmarkButton extends ConsumerWidget {
   }
 }
 
-void showEvent(BuildContext context, CampusEvent event) {
-  if (event.id == 'music' || event.id == 'club') {
-    context.push(
-      '/event/about?event=${event.id == 'club' ? 'club-live' : 'music-live'}',
-    );
-    return;
-  }
-  showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (context) => SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              event.title,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text('${event.date}\n${event.location}\n${event.audience}'),
-            const SizedBox(height: AppSpacing.lg),
-            EventBadge(event.policy),
-            const SizedBox(height: AppSpacing.lg),
-            const Text('Registration is currently unavailable.'),
-          ],
-        ),
-      ),
-    ),
-  );
-}
+void showEvent(BuildContext context, CampusEvent event) => context.push(
+  Uri(
+    path: '/event/schedule',
+    queryParameters: {'event': event.detailKey},
+  ).toString(),
+);
 
 class SearchEventCard extends StatelessWidget {
   const SearchEventCard({required this.event, this.idle = false, super.key});
@@ -335,6 +312,7 @@ class SearchEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final screen = idle ? '2083:993' : '2083:826';
     return EviaCard(
+      onTap: () => showEvent(context, event),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -351,13 +329,7 @@ class SearchEventCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: InkWell(
-                            onTap: () => showEvent(context, event),
-                            child: Text(
-                              event.title,
-                              style: EviaTheme.cardTitle,
-                            ),
-                          ),
+                          child: Text(event.title, style: EviaTheme.cardTitle),
                         ),
                         BookmarkButton(
                           event: event,

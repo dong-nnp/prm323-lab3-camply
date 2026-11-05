@@ -9,6 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/app/app.dart';
 import 'package:prm393_lab03/app/router.dart';
 import 'package:prm393_lab03/viewmodels/evia_view_model.dart';
+import 'package:prm393_lab03/viewmodels/activity_view_model.dart';
+import 'package:prm393_lab03/viewmodels/registration_view_model.dart';
+
+import '../helpers/startup_test_auth.dart';
 
 const screens = <String, double>{
   '/': 844,
@@ -42,7 +46,11 @@ void main() {
           await tester.pumpWidget(
             ProviderScope(
               key: ValueKey(route),
-              overrides: [initialLocationProvider.overrideWithValue(route)],
+              overrides: [
+                initialLocationProvider.overrideWithValue(route),
+                if (route == '/discover' || route.startsWith('/following/'))
+                  signedInTestSession,
+              ],
               child: const LabApp(),
             ),
           );
@@ -55,7 +63,7 @@ void main() {
   }
 
   testWidgets(
-    'skip, search, filters and follow actions update the visible UI',
+    'guest searches inline, filters results and opens the selected schedule',
     (tester) async {
       tester.view.physicalSize = const Size(390, 884);
       tester.view.devicePixelRatio = 1;
@@ -71,14 +79,27 @@ void main() {
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
       expect(find.text('Popular Events'), findsOneWidget);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LabApp)),
+      );
+      final router = container.read(routerProvider);
       await tester.tap(find.text('Search events, organizers...'));
       await tester.pumpAndSettle();
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/discover/guest',
+      );
+      expect(find.text('Recent Searches'), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'workshop');
       await tester.testTextInput.receiveAction(TextInputAction.search);
       await tester.pumpAndSettle();
       expect(find.text('3 events found'), findsOneWidget);
       await tester.tap(find.byTooltip('Filter events'));
       await tester.pumpAndSettle();
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/filters',
+      );
       await tester.tap(find.text('Music').first);
       await tester.tap(find.text('Apply Filters'));
       await tester.pumpAndSettle();
@@ -86,13 +107,102 @@ void main() {
       await tester.tap(find.text('Clear all'));
       await tester.pumpAndSettle();
       expect(find.text('3 events found'), findsOneWidget);
-      final context = tester.element(find.byType(LabApp));
-      final container = ProviderScope.containerOf(context);
-      container.read(routerProvider).go('/following/organizers');
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/discover/guest',
+      );
+      final result = find.text('Design Thinking Bootcamp').first;
+      await tester.ensureVisible(result);
+      await tester.tap(result);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Following').first);
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/event/schedule',
+      );
+      expect(find.text('Room A203'), findsOneWidget);
+      expect(find.text('Main Stadium, University Campus'), findsNothing);
+      await tester.ensureVisible(find.text('Location'));
+      await tester.tap(find.text('Location'));
+      await tester.pumpAndSettle();
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/event/location',
+      );
+      router.pop();
+      await tester.pumpAndSettle();
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/discover/guest',
+      );
+      expect(find.text('3 events found'), findsOneWidget);
+      router.go('/following/organizers');
+      await tester.pumpAndSettle();
+      expect(
+        router.routerDelegate.currentConfiguration.last.matchedLocation,
+        '/login',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'Following separates confirmed registrations from followed organizers',
+    (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            initialLocationProvider.overrideWithValue(
+              '/event/schedule?event=ai-recommended',
+            ),
+            signedInTestSession,
+          ],
+          child: const LabApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Tech Center'), findsOneWidget);
+      expect(find.text('CS Students Only'), findsOneWidget);
+      await tester.tap(find.text('Register Now'));
+      await tester.pumpAndSettle();
+      final terms = find.text('View registration terms →');
+      await tester.ensureVisible(terms);
+      await tester.tap(terms);
+      await tester.pumpAndSettle();
+      expect(find.text('Registration terms'), findsOneWidget);
+      Navigator.of(tester.element(find.text('Registration terms'))).pop();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirm Registration'));
+      await tester.pumpAndSettle(const Duration(milliseconds: 800));
+      expect(find.text('Registration Successful!'), findsOneWidget);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LabApp)),
+      );
+      final router = container.read(routerProvider);
+      router.go('/event/schedule?event=ai');
+      await tester.pumpAndSettle();
+      expect(find.text('Register Now'), findsOneWidget);
+      container.read(registrationViewModelProvider.notifier).markGoing();
+      router.go('/following/events');
+      await tester.pumpAndSettle();
+      expect(find.text('AI & Future Careers Workshop'), findsOneWidget);
+      expect(find.text('Tech Center'), findsOneWidget);
+      expect(find.text('Registered'), findsOneWidget);
+      expect(find.text('Campus Club Fair'), findsNothing);
+      await tester.tap(find.text('Organizers'));
+      await tester.pumpAndSettle();
+      expect(find.text('0 Active'), findsOneWidget);
+      final follow = find.widgetWithText(FilledButton, 'Follow').first;
+      await tester.ensureVisible(follow);
+      await tester.tap(follow);
       await tester.pumpAndSettle();
       expect(find.text('1 Active'), findsOneWidget);
+      expect(find.text('AI & Future Careers Workshop'), findsNothing);
+      container
+          .read(activityViewModelProvider.notifier)
+          .cancelRegistration('ai-recommended');
+      router.go('/following/events');
+      await tester.pumpAndSettle();
+      expect(find.text('No registered events'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -159,7 +269,12 @@ void main() {
             key: boundaryKey,
             child: ProviderScope(
               key: ValueKey(entry.key),
-              overrides: [initialLocationProvider.overrideWithValue(entry.key)],
+              overrides: [
+                initialLocationProvider.overrideWithValue(entry.key),
+                if (entry.key == '/discover' ||
+                    entry.key.startsWith('/following/'))
+                  signedInTestSession,
+              ],
               child: const LabApp(),
             ),
           ),

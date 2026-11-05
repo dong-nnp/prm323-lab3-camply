@@ -265,10 +265,9 @@ không dùng Image.asset decoder cho SVG.
 
 Giữ nội dung khác nhau giữa các frame: legacy Oct 26, modern Nov 7; profile
 STU-842901, registration STU-849201; Saved Music venue Main Auditorium trong khi
-chi tiết là Main Stadium. About frame lặp Sat Nov 7 tại cả date/time/location;
-reference music giữ nguyên lỗi nguồn, các tab Schedule/Location có metadata đúng.
-Organizer follow dùng state shared: ban đầu Following theo organizer/following
-frames, thay cho + Follow trong detail snapshot để tương tác nhất quán.
+chi tiết là Main Stadium. About frame lặp Sat Nov 7 tại cả date/time/location.
+Luồng chi tiết dùng ngày, giờ và địa điểm riêng của sự kiện được chọn ở cả ba tab.
+Nút Follow trong chi tiết phản ánh danh sách Follow của phiên đăng nhập.
 
 Cỡ body 14sp, touch target 48dp, font Roboto fallback và text wrap/scroll có thể
 làm card cao hơn và nút nằm dưới vùng cuộn so với bản Inter 11–13px/nowrap.

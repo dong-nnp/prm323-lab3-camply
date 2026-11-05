@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/flow_assets.dart';
 import '../../data/mock/registration_mock_data.dart';
+import '../../data/mock/evia_mock_data.dart';
 import '../../models/registration_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
@@ -31,37 +32,49 @@ class EventDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref
         .read(registrationViewModelProvider.notifier)
-        .event(eventId);
+        .findEvent(eventId);
+    final authenticated = ref.watch(hasAuthenticatedSessionProvider);
+    if (event == null) {
+      return const EviaPage(
+        header: ActivityHeader('Event Details'),
+        child: Center(child: Text('Event not found.')),
+      );
+    }
+    final music = event.id == 'music' || event.id == 'music-live';
     final screen = tab == 'schedule'
         ? '2083:4752'
         : tab == 'location'
         ? '2083:5137'
         : '2083:5523';
     final saved =
-        ref.watch(hasAuthenticatedSessionProvider) &&
+        authenticated &&
         ref.watch(
           profileViewModelProvider.select((s) => s.saved.contains(event.id)),
         );
-    final registered = ref.watch(
-      activityViewModelProvider.select(
-        (s) =>
-            s.registrations.any((e) => e.id == event.id) &&
-            !s.cancelled.contains(event.id),
-      ),
-    );
+    final registered =
+        authenticated &&
+        ref.watch(
+          activityViewModelProvider.select(
+            (s) =>
+                s.registrations.any((e) => e.id == event.id && !e.waitlisted) &&
+                !s.cancelled.contains(event.id),
+          ),
+        );
     return EviaPage(
       footer: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         color: AppColors.surface,
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('FREE ADMISSION', style: FlowTheme.footnote),
-                  Text('120 spots remaining', style: EviaTheme.label),
+                  if (event.spots case final spots?)
+                    Text('$spots spots remaining', style: EviaTheme.label)
+                  else
+                    Text(event.policy, style: EviaTheme.label),
                 ],
               ),
             ),
@@ -92,10 +105,15 @@ class EventDetailsScreen extends ConsumerWidget {
                         } else if (event.walkIn) {
                           ref
                               .read(registrationViewModelProvider.notifier)
-                              .markGoing();
+                              .markGoing(eventId);
                           context.push('/registration/going');
                         } else {
-                          context.push('/registration?event=${event.id}');
+                          context.push(
+                            Uri(
+                              path: '/registration',
+                              queryParameters: {'event': eventId},
+                            ).toString(),
+                          );
                         }
                       },
               ),
@@ -112,19 +130,20 @@ class EventDetailsScreen extends ConsumerWidget {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.asset(
-                      event.id == 'music-live'
-                          ? FlowAssets.image(screen, 0)
-                          : event.image ??
-                                RegistrationMockData.saved
-                                    .firstWhere(
-                                      (e) => e.event.id == event.id,
-                                      orElse: () =>
-                                          RegistrationMockData.saved.first,
-                                    )
-                                    .image,
-                      fit: BoxFit.cover,
-                    ),
+                    child: switch (music
+                        ? FlowAssets.image(screen, 0)
+                        : event.image) {
+                      final image? => Image.asset(image, fit: BoxFit.cover),
+                      null => const ColoredBox(
+                        color: AppColors.primarySoft,
+                        child: Center(
+                          child: Icon(
+                            Icons.event_outlined,
+                            size: AppSizes.statusIcon,
+                          ),
+                        ),
+                      ),
+                    },
                   ),
                   const Positioned(
                     left: 0,
@@ -149,7 +168,11 @@ class EventDetailsScreen extends ConsumerWidget {
                             tooltip: 'Back',
                             onPressed: () => context.canPop()
                                 ? context.pop()
-                                : context.go('/discover'),
+                                : context.go(
+                                    authenticated
+                                        ? '/discover'
+                                        : '/discover/guest',
+                                  ),
                             icon: ActivityIcon(screen, 'imgContainer'),
                           ),
                         ),
@@ -196,7 +219,9 @@ class EventDetailsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            spacing: AppSpacing.sm,
+                            runSpacing: AppSpacing.xs,
                             children: [
                               EventBadge(
                                 event.category.toUpperCase(),
@@ -204,8 +229,8 @@ class EventDetailsScreen extends ConsumerWidget {
                                 color: AppColors.accent,
                                 foreground: AppColors.textPrimary,
                               ),
-                              const Spacer(),
-                              EventBadge('${event.spots} spots left'),
+                              if (event.spots case final spots?)
+                                EventBadge('$spots spots left'),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.lg),
@@ -219,29 +244,29 @@ class EventDetailsScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          _EventOrganizer(screen: screen),
+                          if (event.organizer.isNotEmpty)
+                            _EventOrganizer(
+                              screen: screen,
+                              name: event.organizer,
+                            ),
                           const Divider(height: AppSpacing.xl),
                           FlowMeta(
-                            event.id == 'music-live'
-                                ? 'Sat, Nov 7, 2026'
-                                : event.date,
-                            subtitle: 'Fall Semester Showcase',
+                            event.date,
+                            subtitle: music ? 'Fall Semester Showcase' : null,
                             screen: screen,
                             asset: 'imgContainer3',
                           ),
                           FlowMeta(
-                            tab == 'about' && event.id == 'music-live'
-                                ? 'Sat, Nov 7, 2026'
-                                : event.time,
-                            subtitle: 'Doors open: 17:30',
+                            event.time,
+                            subtitle: music ? 'Doors open: 17:30' : null,
                             screen: screen,
                             asset: 'imgContainer4',
                           ),
                           FlowMeta(
-                            tab == 'about' && event.id == 'music-live'
-                                ? 'Sat, Nov 7, 2026'
-                                : event.venue,
-                            subtitle: 'West Campus Lawn • Gate 4 Entrance',
+                            event.venue,
+                            subtitle: music
+                                ? 'West Campus Lawn • Gate 4 Entrance'
+                                : null,
                             screen: screen,
                             asset: 'imgContainer5',
                           ),
@@ -257,100 +282,98 @@ class EventDetailsScreen extends ConsumerWidget {
                             spacing: AppSpacing.sm,
                             runSpacing: AppSpacing.sm,
                             children: [
-                              const EventBadge(
-                                'All Students',
+                              EventBadge(
+                                event.audience,
                                 color: AppColors.surfaceMuted,
                                 foreground: AppColors.textSecondary,
                               ),
                               EventBadge(
-                                event.walkIn
-                                    ? 'Walk-in allowed'
-                                    : 'Registration Required',
+                                event.walkIn ? 'Walk-in allowed' : event.policy,
                                 color: AppColors.surfaceMuted,
                                 foreground: AppColors.textSecondary,
                               ),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          EviaCard(
-                            color: AppColors.primarySoft,
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: AppSpacing.lg,
-                                  backgroundColor: AppColors.warningSurface,
-                                  child: const CoinIcon(size: AppSpacing.lg),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Wrap(
-                                        spacing: AppSpacing.sm,
-                                        runSpacing: AppSpacing.xs,
-                                        children: [
-                                          Text(
-                                            'Earn +${event.coins} coins',
-                                            style: EviaTheme.label,
-                                          ),
-                                          const EventBadge(
-                                            'Special Reward',
-                                            color: AppColors.warningSurface,
-                                            foreground: AppColors.warning,
-                                          ),
-                                        ],
-                                      ),
-                                      const Text(
-                                        'After verified event check-in',
-                                        style: EviaTheme.caption,
-                                      ),
-                                    ],
+                          if (event.coins > 0)
+                            EviaCard(
+                              color: AppColors.primarySoft,
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: AppSpacing.lg,
+                                    backgroundColor: AppColors.warningSurface,
+                                    child: const CoinIcon(size: AppSpacing.lg),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Wrap(
+                                          spacing: AppSpacing.sm,
+                                          runSpacing: AppSpacing.xs,
+                                          children: [
+                                            Text(
+                                              'Earn +${event.coins} coins',
+                                              style: EviaTheme.label,
+                                            ),
+                                            const EventBadge(
+                                              'Special Reward',
+                                              color: AppColors.warningSurface,
+                                              foreground: AppColors.warning,
+                                            ),
+                                          ],
+                                        ),
+                                        const Text(
+                                          'After verified event check-in',
+                                          style: EviaTheme.caption,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
                           const SizedBox(height: AppSpacing.lg),
-                          EviaCard(
-                            color: AppColors.warningSurface,
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: AppSpacing.lg,
-                                  backgroundColor: FlowTheme.coin,
-                                  child: ActivityIcon(
-                                    screen,
-                                    tab == 'about'
-                                        ? 'imgContainer7'
-                                        : 'imgContainer6',
+                          if (event.deposit > 0)
+                            EviaCard(
+                              color: AppColors.warningSurface,
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: AppSpacing.lg,
+                                    backgroundColor: FlowTheme.coin,
+                                    child: ActivityIcon(
+                                      screen,
+                                      tab == 'about'
+                                          ? 'imgContainer7'
+                                          : 'imgContainer6',
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        event.walkIn
-                                            ? 'No deposit required'
-                                            : '${event.deposit}-coin deposit required',
-                                        style: EviaTheme.label,
-                                      ),
-                                      const Text(
-                                        'Held during registration · Refund subject to event policy',
-                                        style: EviaTheme.caption,
-                                      ),
-                                    ],
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${event.deposit}-coin deposit required',
+                                          style: EviaTheme.label,
+                                        ),
+                                        const Text(
+                                          'Held during registration · Refund subject to event policy',
+                                          style: EviaTheme.caption,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -368,8 +391,11 @@ class EventDetailsScreen extends ConsumerWidget {
                               ])
                                 Expanded(
                                   child: TextButton(
-                                    onPressed: () => context.go(
-                                      '/event/$section?event=${event.id}',
+                                    onPressed: () => context.replace(
+                                      Uri(
+                                        path: '/event/$section',
+                                        queryParameters: {'event': eventId},
+                                      ).toString(),
                                     ),
                                     style: TextButton.styleFrom(
                                       foregroundColor: tab == section
@@ -396,11 +422,26 @@ class EventDetailsScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: AppSpacing.lg),
                           if (tab == 'about')
-                            const _AboutPanel()
+                            music
+                                ? const _AboutPanel()
+                                : Text(
+                                    '${event.title}\n${event.audience}',
+                                    style: EviaTheme.caption,
+                                  )
                           else if (tab == 'schedule')
-                            _SchedulePanel(screen: screen, event: event)
+                            _SchedulePanel(
+                              screen: screen,
+                              event: event,
+                              music: music,
+                            )
                           else
-                            const _LocationPanel(),
+                            music
+                                ? const _LocationPanel()
+                                : FlowMeta(
+                                    event.venue,
+                                    screen: screen,
+                                    asset: 'imgContainer5',
+                                  ),
                         ],
                       ),
                     ),
@@ -416,48 +457,59 @@ class EventDetailsScreen extends ConsumerWidget {
 }
 
 class _EventOrganizer extends ConsumerWidget {
-  const _EventOrganizer({required this.screen});
-  final String screen;
+  const _EventOrganizer({required this.screen, required this.name});
+  final String screen, name;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final organizerId = EviaMockData.organizers
+        .where((o) => o.name == name)
+        .firstOrNull
+        ?.id;
     final followed = ref.watch(
-      eviaViewModelProvider.select((s) => s.followed.contains('union')),
+      eviaViewModelProvider.select((s) => s.followed.contains(organizerId)),
     );
     return Row(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: AppSpacing.lg,
           backgroundColor: AppColors.primarySoft,
-          child: Text('SU', style: TextStyle(color: AppColors.primary)),
+          child: Text(
+            name.split(' ').take(2).map((word) => word[0]).join(),
+            style: const TextStyle(color: AppColors.primary),
+          ),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: InkWell(
-            onTap: () => context.push('/organizer'),
+            onTap: organizerId == 'union'
+                ? () => context.push('/organizer')
+                : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Organized by', style: EviaTheme.caption),
                 Row(
                   children: [
-                    const Flexible(
-                      child: Text('Student Union', style: EviaTheme.label),
-                    ),
+                    Flexible(child: Text(name, style: EviaTheme.label)),
                     const SizedBox(width: AppSpacing.xs),
-                    ActivityIcon(screen, 'imgContainer2'),
+                    if (organizerId == 'union')
+                      ActivityIcon(screen, 'imgContainer2'),
                   ],
                 ),
               ],
             ),
           ),
         ),
-        OutlinedButton(
-          onPressed: () {
-            if (!ensureAuthenticated(context, ref)) return;
-            ref.read(eviaViewModelProvider.notifier).toggleFollowed('union');
-          },
-          child: Text(followed ? 'Following' : '+ Follow'),
-        ),
+        if (organizerId != null)
+          OutlinedButton(
+            onPressed: () {
+              if (!ensureAuthenticated(context, ref)) return;
+              ref
+                  .read(eviaViewModelProvider.notifier)
+                  .toggleFollowed(organizerId);
+            },
+            child: Text(followed ? 'Following' : '+ Follow'),
+          ),
       ],
     );
   }
@@ -526,18 +578,33 @@ class _AboutPanel extends StatelessWidget {
 }
 
 class _SchedulePanel extends StatelessWidget {
-  const _SchedulePanel({required this.screen, required this.event});
+  const _SchedulePanel({
+    required this.screen,
+    required this.event,
+    required this.music,
+  });
   final String screen;
   final EventPresentation event;
+  final bool music;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(event.title, style: EviaTheme.section),
       const SizedBox(height: AppSpacing.lg),
-      _EventOrganizer(screen: screen),
+      if (event.organizer.isNotEmpty)
+        _EventOrganizer(screen: screen, name: event.organizer),
       const SizedBox(height: AppSpacing.lg),
-      for (final item in RegistrationMockData.agenda) ...[
+      for (final item
+          in music
+              ? RegistrationMockData.agenda
+              : [
+                  EventAgendaItem(
+                    event.time,
+                    'Event starts',
+                    '${event.date} · ${event.venue}',
+                  ),
+                ]) ...[
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -565,10 +632,11 @@ class _SchedulePanel extends StatelessWidget {
         ),
         const Divider(height: AppSpacing.xl),
       ],
-      const Text(
-        'Schedule subject to minor changes. Final artist lineup confirmed upon check-in.',
-        style: EviaTheme.caption,
-      ),
+      if (music)
+        const Text(
+          'Schedule subject to minor changes. Final artist lineup confirmed upon check-in.',
+          style: EviaTheme.caption,
+        ),
     ],
   );
 }
