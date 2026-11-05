@@ -1,10 +1,20 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Flow 3 — 06/11/2026:** nối ví/history, Daily, nhận thành tựu, catalog/đổi quà,
+> My Rewards và QR voucher vào các màn gốc. API `getAccount.daily` đã deploy;
+> 213/213 Flutter và 62/62 backend tests đạt. Chỉ sửa co giãn chữ theo owner
+> cho phép, không đổi dialog gốc. [Contract/demo](docs/FLOW3_INTEGRATION.md) ·
+> [Evidence và giới hạn](evidence/flow3-api-only/).
+
+> **Push demo một lệnh:** dùng `functions/scripts/send-demo-notification.mjs`
+> để tạo thông báo riêng cho UID demo và gửi qua FCM đang triển khai.
+> [Cách chạy](docs/DEMO_PUSH.md); không cần nhập từng field trong Console.
+
 > **Flow 2 — 05/11/2026:** nối My Events/lịch/hủy, check-in walk-in và inbox +
 > Firebase Cloud Messaging vào màn hiện có. Owner cho phép nút demo nhỏ trên vé
 > trong debug, server giới hạn account/event demo. 59 backend + 190 Flutter tests
 > đạt; 14/14 ảnh same-data trùng RGBA; 7 API mới/cập nhật READY.
-> [Evidence và giới hạn native](evidence/flow2-api-only/). Flow 3 chưa tích hợp.
+> [Evidence và giới hạn native](evidence/flow2-api-only/). Flow 3 xem cập nhật mới ở trên.
 
 > **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
 > đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;

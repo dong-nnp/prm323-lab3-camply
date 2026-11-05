@@ -1,0 +1,14 @@
+{
+  "project": "prm393-31822",
+  "name": "projects/prm393-31822/locations/asia-southeast1/functions/getAccount",
+  "state": "ACTIVE",
+  "updateTime": "2026-11-05T17:33:02.125625329Z",
+  "revision": "getaccount-00005-lob",
+  "service": "projects/prm393-31822/locations/asia-southeast1/services/getaccount",
+  "runtime": "nodejs22",
+  "sourceHash": "110d762a65c102169b9146eaebdf6ad100f3aca7",
+  "uri": "https://getaccount-mohnhzr27a-as.a.run.app",
+  "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getaccount/revisions/getaccount-00005-lob",
+  "latestCreatedRevision": "projects/prm393-31822/locations/asia-southeast1/services/getaccount/revisions/getaccount-00005-lob",
+  "ready": true
+}

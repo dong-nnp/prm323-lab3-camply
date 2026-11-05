@@ -1,5 +1,12 @@
 # Backend Evia — hướng dẫn tích hợp
 
+> **Flow 3 — 06/11/2026:** các màn Rewards đã nối API thật.
+> `getAccount` bổ sung `daily: {dayKey,streakDay,coins,alreadyClaimed,serverTime,
+> timezone}`; không đổi contract profile/wallet cũ. Server quyết định ngày Việt
+> Nam và số xu. Chỉ Function này được deploy lại trong task; các mutation/owner
+> query có sẵn được dùng lại. [Contract/call chain](FLOW3_INTEGRATION.md) ·
+> [Evidence](../evidence/flow3-api-only/).
+
 > **Flow 2 — 05/11/2026:** `verifyWalkInQr`/`verifyWalkInCode` bổ sung
 > `expectedEventId?:string` tương thích caller cũ; khác event lỗi
 > `QR_EVENT_MISMATCH`, không ghi attendance/wallet. `demoConfirmAttendance`

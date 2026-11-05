@@ -17,7 +17,8 @@ class EventMilestonesScreen extends ConsumerWidget {
   const EventMilestonesScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(activityViewModelProvider).verified.length;
+    ref.watch(activityViewModelProvider);
+    final count = ref.read(activityViewModelProvider.notifier).verifiedCount;
     final vm = ref.read(activityViewModelProvider.notifier);
     return EviaPage(
       header: const ActivityHeader(
@@ -102,8 +103,10 @@ class EventMilestonesScreen extends ConsumerWidget {
                 Expanded(
                   child: Text('Your Milestones', style: EviaTheme.section),
                 ),
-                EventBadge(
-                  '${vm.unlockedMilestones} of ${vm.milestones.length} unlocked',
+                Flexible(
+                  child: EventBadge(
+                    '${vm.unlockedMilestones} of ${vm.milestones.length} unlocked',
+                  ),
                 ),
               ],
             ),
@@ -129,14 +132,16 @@ class EventMilestonesScreen extends ConsumerWidget {
                     children: [
                       ActivityIcon('2083:4156', 'imgContainer8'),
                       SizedBox(width: AppSpacing.sm),
-                      Text('How it works', style: EviaTheme.cardTitle),
+                      Flexible(
+                        child: Text('How it works', style: EviaTheme.cardTitle),
+                      ),
                     ],
                   ),
                   SizedBox(height: AppSpacing.md),
                   for (final rule in [
                     'Only verified event check-ins count.',
                     'Each eligible event counts once, whether walk-in or registered.',
-                    'Milestone progress is shown for this demo session.',
+                    'Progress is saved to your account. Claim each milestone once.',
                   ])
                     Padding(
                       padding: EdgeInsets.only(bottom: AppSpacing.sm),

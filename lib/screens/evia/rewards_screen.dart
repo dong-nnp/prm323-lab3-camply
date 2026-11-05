@@ -246,7 +246,11 @@ class _RewardCard extends ConsumerWidget {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.asset(reward.image, fit: BoxFit.cover),
+                    child: catalogImage(
+                      reward.image,
+                      ActivityMockData.rewards.first.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Positioned(
                     left: AppSpacing.sm,
@@ -309,9 +313,9 @@ class _RewardCard extends ConsumerWidget {
 class _DailyCheckIn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(activityViewModelProvider);
+    ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
-    final progress = ActivityMockData.dailyCheckInPreview;
+    final progress = vm.dailyProgress;
     return EviaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -387,7 +391,7 @@ class _DailyCheckIn extends ConsumerWidget {
                                   shape: BoxShape.circle,
                                   color:
                                       (day.claimed ||
-                                          (day.today && state.dailyClaimed))
+                                          (day.today && vm.dailyClaimed))
                                       ? ActivityTheme.actionDark
                                       : day.today
                                       ? AppColors.warningSurface
@@ -395,7 +399,7 @@ class _DailyCheckIn extends ConsumerWidget {
                                 ),
                                 child:
                                     (day.claimed ||
-                                        (day.today && state.dailyClaimed))
+                                        (day.today && vm.dailyClaimed))
                                     ? const ActivityIcon(
                                         '2083:3522',
                                         'imgContainer8',
@@ -419,8 +423,8 @@ class _DailyCheckIn extends ConsumerWidget {
             },
           ),
           const SizedBox(height: AppSpacing.lg),
-          const Text(
-            'Max reward unlocked · +100 coins daily',
+          Text(
+            progress.message,
             textAlign: TextAlign.center,
             style: EviaTheme.label,
           ),
@@ -434,11 +438,21 @@ class _DailyCheckIn extends ConsumerWidget {
           AppButton(
             label: progress.saving
                 ? 'Saving check-in...'
-                : state.dailyClaimed
+                : vm.dailyClaimed
                 ? 'Checked In Today · +${progress.coins} coins'
                 : 'Check In · +${progress.coins} coins',
-            onPressed: vm.demoAvailable && !state.dailyClaimed
-                ? vm.claimDaily
+            isLoading: vm.dailySaving,
+            onPressed:
+                (vm.rewardsLive || vm.demoAvailable) &&
+                    !vm.dailyClaimed &&
+                    !vm.rewardsBusy
+                ? () async {
+                    if (vm.rewardsLive) {
+                      await vm.claimDailyRemote();
+                    } else {
+                      vm.claimDaily();
+                    }
+                  }
                 : null,
           ),
         ],
@@ -450,9 +464,8 @@ class _DailyCheckIn extends ConsumerWidget {
 class _MilestoneSummary extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(
-      activityViewModelProvider.select((s) => s.verified.length),
-    );
+    ref.watch(activityViewModelProvider);
+    final count = ref.read(activityViewModelProvider.notifier).verifiedCount;
     final vm = ref.read(activityViewModelProvider.notifier);
     final next = vm.nextMilestone;
     return EviaCard(
@@ -478,9 +491,11 @@ class _MilestoneSummary extends ConsumerWidget {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: () => context.push('/rewards/milestones'),
-                child: const Text('View all'),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => context.push('/rewards/milestones'),
+                  child: const Text('View all'),
+                ),
               ),
             ],
           ),
@@ -526,7 +541,8 @@ class _MilestoneSummary extends ConsumerWidget {
                     ],
                   ),
                 ),
-                if (next != null) EventBadge('+${next.milestone.coins} COINS'),
+                if (next != null)
+                  Flexible(child: EventBadge('+${next.milestone.coins} COINS')),
               ],
             ),
           ),

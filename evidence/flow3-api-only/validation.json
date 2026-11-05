@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-11-05T17:48:51.3823538Z",
+  "flutterTests": 213,
+  "backendTests": 62,
+  "analyze": "No issues found",
+  "format": "148 files, 0 changed",
+  "apkBuild": "debug android-arm64 FIREBASE_ENABLED=true DEMO_AUTH=false",
+  "apkSha256": "1643BB5F44B25057EFD6ABA82564F22C22826E829366B5247C3790E5B162629B",
+  "device": "SM-G996N",
+  "firebaseProject": "prm393-31822",
+  "firebaseRegion": "asia-southeast1",
+  "rawLogs": "ignored .local/flow3-*",
+  "nativeTransactionsOnOwnerAccount": false,
+  "liveTransactions": "Seeded demo operator via callable HTTPS; see live-smoke.json",
+  "widgetRendering": "8 live routes at 360/412dp and 2x text",
+  "commitOrPushPerformed": false,
+  "nativeInstall": "Success; launched existing signed-in session; Rewards and milestones read from Firebase"
+}

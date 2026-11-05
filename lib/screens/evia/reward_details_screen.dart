@@ -25,6 +25,13 @@ class RewardDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
+    if (vm.rewardsLive &&
+        !vm.rewardsData!.rewards.any((r) => r.id == rewardId)) {
+      return const EviaPage(
+        header: ActivityHeader('Reward Details'),
+        child: Center(child: Text('Reward unavailable.')),
+      );
+    }
     final reward = vm.reward(rewardId);
     final content = SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -33,12 +40,13 @@ class RewardDetailsScreen extends ConsumerWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.large),
-            child: Image.asset(
+            child: catalogImage(
               confirm
                   ? ActivityAssets.image('2083:3865', 0)
                   : reward.id == 'cafe'
                   ? ActivityAssets.image('2083:3959', 0)
                   : reward.image,
+              ActivityAssets.image('2083:3959', 0),
               height: ActivityTheme.detailImageHeight,
               fit: BoxFit.cover,
             ),
@@ -152,7 +160,7 @@ class RewardDetailsScreen extends ConsumerWidget {
                 child: AppButton(
                   label: vm.canRedeem(reward.id)
                       ? 'Redeem for ${reward.redeemCost} coins'
-                      : vm.demoAvailable
+                      : vm.demoAvailable || vm.rewardsLive
                       ? vm.rewardStatus(reward.id)
                       : 'Coin API not connected',
                   trailing: const CoinIcon(),
@@ -299,10 +307,11 @@ class _RedemptionBackdrop extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Image.asset(
+        catalogImage(
           reward.id == 'cafe'
               ? ActivityAssets.image('2083:3865', 0)
               : reward.image,
+          ActivityAssets.image('2083:3865', 0),
           height: ActivityTheme.detailImageHeight,
           fit: BoxFit.cover,
         ),
@@ -319,7 +328,7 @@ class _RedemptionBackdrop extends StatelessWidget {
                 children: [
                   const CoinIcon(),
                   const SizedBox(width: AppSpacing.sm),
-                  Text('${reward.redeemCost} Student Coins'),
+                  Flexible(child: Text('${reward.redeemCost} Student Coins')),
                 ],
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -327,7 +336,7 @@ class _RedemptionBackdrop extends StatelessWidget {
                 children: [
                   ActivityIcon('2083:3865', 'imgContainer1'),
                   SizedBox(width: AppSpacing.sm),
-                  Text('Redemption Locations'),
+                  Flexible(child: Text('Redemption Locations')),
                 ],
               ),
               Text(reward.location),
@@ -373,10 +382,11 @@ class _ConfirmRedemption extends ConsumerWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.small),
-                child: Image.asset(
+                child: catalogImage(
                   reward.id == 'cafe'
                       ? ActivityAssets.image('2083:3865', 1)
                       : reward.image,
+                  ActivityAssets.image('2083:3959', 0),
                   width: EviaTheme.compactThumbnail,
                   height: EviaTheme.compactThumbnail,
                   fit: BoxFit.cover,
@@ -393,9 +403,11 @@ class _ConfirmRedemption extends ConsumerWidget {
                       children: [
                         const CoinIcon(),
                         const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '${reward.redeemCost} coins',
-                          style: EviaTheme.label,
+                        Flexible(
+                          child: Text(
+                            '${reward.redeemCost} coins',
+                            style: EviaTheme.label,
+                          ),
                         ),
                       ],
                     ),
@@ -412,7 +424,7 @@ class _ConfirmRedemption extends ConsumerWidget {
             children: [
               DetailRow(
                 'Available Coins',
-                '${state.available}',
+                '${vm.rewardAvailable}',
                 icon: const ActivityIcon('2083:3865', 'imgContainer4'),
               ),
               DetailRow(
@@ -428,7 +440,9 @@ class _ConfirmRedemption extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
         ActivityInfo(
-          vm.demoAvailable
+          vm.rewardsLive
+              ? 'Redemption is confirmed by the server.'
+              : vm.demoAvailable
               ? 'Demo only · coins and rewards reset when the app restarts.'
               : ActivityViewModel.coinServiceMessage,
           icon: const ActivityIcon('2083:3865', 'imgMargin'),
@@ -442,13 +456,22 @@ class _ConfirmRedemption extends ConsumerWidget {
         AppButton(
           label: 'Confirm Redemption',
           trailing: const ActivityIcon('2083:3865', 'imgContainer6'),
+          isLoading: vm.rewardsBusy,
           onPressed: vm.canRedeem(reward.id)
-              ? () {
-                  if (vm.redeem(reward.id)) context.go('/rewards/success');
+              ? () async {
+                  final success = vm.rewardsLive
+                      ? await vm.redeemRemote(reward.id)
+                      : vm.redeem(reward.id);
+                  if (success && context.mounted) {
+                    context.go('/rewards/success');
+                  }
                 }
               : null,
         ),
-        TextButton(onPressed: close, child: const Text('Cancel')),
+        TextButton(
+          onPressed: vm.rewardsBusy ? null : close,
+          child: const Text('Cancel'),
+        ),
       ],
     );
   }
