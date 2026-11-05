@@ -356,7 +356,7 @@ class _RegistrationFormScreenState
 
 void _terms(BuildContext context, bool hasDeposit) => showActivityHelp(
   context,
-  'Registration and deposit terms',
+  hasDeposit ? 'Registration and deposit terms' : 'Registration terms',
   hasDeposit
       ? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Refunds and cancellations follow the event deposit policy.'
       : 'Review your registration information and cancel your registration if you cannot attend.',

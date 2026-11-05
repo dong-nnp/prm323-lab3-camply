@@ -139,7 +139,10 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       errors['phone'] = 'Please enter a valid phone number.';
     }
     if (!state.agreed) {
-      errors['terms'] = 'Please accept the registration and deposit terms.';
+      final deposit = findEvent(state.eventId)?.deposit ?? 0;
+      errors['terms'] = deposit > 0
+          ? 'Please accept the registration and deposit terms.'
+          : 'Please accept the registration terms.';
     }
     state = state.copy(errors: errors);
     return errors.isEmpty;
@@ -230,12 +233,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
 
   void joinWaitlist() {
     if (!ref.read(hasAuthenticatedSessionProvider)) return;
-    final selected = event(state.eventId);
+    final selected = findEvent(state.eventId);
+    if (selected == null) return;
     ref
         .read(activityViewModelProvider.notifier)
         .addRegistration(
           RegisteredEvent(
             id: '${selected.id}-waitlist',
+            detailKey: state.eventId,
             title: selected.title,
             category: selected.category,
             dateLabel: '${selected.date} · ${selected.time}',

@@ -164,6 +164,13 @@ void main() {
       expect(find.text('CS Students Only'), findsOneWidget);
       await tester.tap(find.text('Register Now'));
       await tester.pumpAndSettle();
+      final terms = find.text('View registration terms →');
+      await tester.ensureVisible(terms);
+      await tester.tap(terms);
+      await tester.pumpAndSettle();
+      expect(find.text('Registration terms'), findsOneWidget);
+      Navigator.of(tester.element(find.text('Registration terms'))).pop();
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Confirm Registration'));
       await tester.pumpAndSettle(const Duration(milliseconds: 800));
       expect(find.text('Registration Successful!'), findsOneWidget);
@@ -171,6 +178,9 @@ void main() {
         tester.element(find.byType(LabApp)),
       );
       final router = container.read(routerProvider);
+      router.go('/event/schedule?event=ai');
+      await tester.pumpAndSettle();
+      expect(find.text('Register Now'), findsOneWidget);
       container.read(registrationViewModelProvider.notifier).markGoing();
       router.go('/following/events');
       await tester.pumpAndSettle();
@@ -189,7 +199,7 @@ void main() {
       expect(find.text('AI & Future Careers Workshop'), findsNothing);
       container
           .read(activityViewModelProvider.notifier)
-          .cancelRegistration('ai');
+          .cancelRegistration('ai-recommended');
       router.go('/following/events');
       await tester.pumpAndSettle();
       expect(find.text('No registered events'), findsOneWidget);

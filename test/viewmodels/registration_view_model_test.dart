@@ -19,6 +19,42 @@ void main() {
   });
   tearDown(() => container.dispose());
   test(
+    'AI variants have independent registration and cancellation keys',
+    () async {
+      final vm = container.read(registrationViewModelProvider.notifier);
+      vm.preset('default', 'ai-recommended');
+      vm.agree(false);
+      expect(vm.validate(), isFalse);
+      expect(
+        container.read(registrationViewModelProvider).errors['terms'],
+        'Please accept the registration terms.',
+      );
+      vm.agree(true);
+      expect(await vm.submit(), RegistrationStatus.success);
+      expect(await vm.submit(), RegistrationStatus.success);
+      vm.preset('default', 'ai');
+      expect(await vm.submit(), RegistrationStatus.success);
+      vm.markGoing('ai-suggested');
+      final activity = container.read(activityViewModelProvider.notifier);
+      expect(
+        container
+            .read(activityViewModelProvider)
+            .registrations
+            .map((e) => e.id),
+        ['ai-recommended', 'ai', 'ai-suggested'],
+      );
+      activity.cancelRegistration('ai-recommended');
+      expect(
+        activity.visibleEvents.map((e) => e.id),
+        containsAll(['ai', 'ai-suggested']),
+      );
+      expect(
+        activity.visibleEvents.map((e) => e.id),
+        isNot(contains('ai-recommended')),
+      );
+    },
+  );
+  test(
     'validation rejects invalid identity and terms without moving wallet',
     () async {
       final vm = container.read(registrationViewModelProvider.notifier);

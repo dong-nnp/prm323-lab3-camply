@@ -16,7 +16,7 @@ abstract final class RegistrationMockData {
     ]) {
       if (event.detailKey != key) continue;
       return EventPresentation(
-        id: event.id == 'music' ? music.id : event.id,
+        id: event.id == 'music' ? music.id : event.detailKey,
         title: event.title,
         category: event.category,
         date: event.date.split(' · ').first,
