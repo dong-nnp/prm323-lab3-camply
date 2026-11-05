@@ -1,5 +1,12 @@
 # Test plan — template
 
+> **Evia Admin web.** Kiểm tra tạo, sửa, xuất bản sự kiện và mẫu voucher
+> bằng Firestore Emulator. Bộ test bao gồm từ chối user thiếu claim, xung
+> đột khi tồn kho thay đổi và giữ các điều kiện của Remote Config. Đã đăng
+> nhập trên trình duyệt và tạo, kích hoạt mẫu voucher từ web. Cần nghiệm
+> thu FCM, Remote Config, GA4 và Crashlytics BigQuery trên dự án thật.
+> [Các bước chạy và nghiệm thu](../admin/README.md).
+
 > **Ticket cache fix — 05/11/2026:** 195/195 Flutter tests đạt; tái hiện vé tồn
 > tại nhưng My Events cache rỗng, refresh error có previous data, vé revoked,
 > event bị xóa và cancel route không có đăng ký. 14 same-data render comparisons

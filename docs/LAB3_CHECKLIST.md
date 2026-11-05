@@ -80,6 +80,9 @@ Tham chiếu: [backend-integration.md](backend-integration.md), [firebase-migrat
 
 Web admin soạn/gửi notification là **phần mở rộng tương lai**, không phải điều kiện bắt buộc của Lab 3. Checklist này không yêu cầu xây web admin.
 
+Xem [phạm vi admin web](ADMIN_WEB_PLAN.md) và [hướng dẫn chạy](../admin/README.md).
+Checklist nghiệm thu ở đó áp dụng khi đội triển khai phần mở rộng này.
+
 ## 6. Analytics, Crashlytics, Remote Config và khu demo
 
 - [x] Viết analytics plan 17 events, map flow/trigger/questions/typed parameters và quy tắc không PII; chưa tracking runtime.

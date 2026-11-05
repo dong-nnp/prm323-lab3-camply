@@ -1,5 +1,9 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Evia Admin web.** Chạy từ thư mục gốc với `npm --prefix admin ci` và
+> `npm --prefix admin run dev`. Xem [hướng dẫn cấu hình và chạy](admin/README.md)
+> và [phạm vi MVP](docs/ADMIN_WEB_PLAN.md).
+
 > **Flow 2 — 05/11/2026:** nối My Events/lịch/hủy, check-in walk-in và inbox +
 > Firebase Cloud Messaging vào màn hiện có. Owner cho phép nút demo nhỏ trên vé
 > trong debug, server giới hạn account/event demo. 59 backend + 190 Flutter tests
@@ -247,13 +251,14 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
 | firebase_analytics | 13.0.1 | Chuẩn bị Analytics, chưa tracking |
 | firebase_crashlytics | 6.0.1 | Chuẩn bị Crashlytics, chưa handlers |
-| firebase_remote_config | 7.0.1 | Chuẩn bị Remote Config |
+| firebase_remote_config | 7.0.1 | Remote Config cho Event Milestones |
 | flutter_test | Flutter SDK | Unit/widget tests |
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |
 
 Flow 1 dùng callable thay vì Firestore SDK/HTTP client trực tiếp. Chưa thêm
-ARTEMIS dependency hay automation. Storage/Messaging/Analytics/Crashlytics/
-Remote Config app-side vẫn dùng pending adapters.
+ARTEMIS dependency hay automation. Remote Config đã nối hai tham số Event
+Milestones cho chế độ Firebase live.
+Xem [hướng dẫn admin](admin/README.md) để bật thu thập crash trên Android debug QA.
 
 ## Cấu trúc và quy tắc
 
