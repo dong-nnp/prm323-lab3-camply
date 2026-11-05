@@ -10,7 +10,6 @@ export default defineConfig({
       allow: [
         fromAdmin('./'),
         fromAdmin('../functions/src/catalog.ts'),
-        fromAdmin('../firebase/remote-config-defaults.json'),
       ],
     },
   },

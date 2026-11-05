@@ -45,6 +45,55 @@ class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
     }
   }
 
+  ({
+    int day,
+    int coins,
+    int lastDayCoins,
+    bool checkedInToday,
+    bool saving,
+    List<({int day, int coins, bool today, bool claimed})> days,
+  })?
+  get dailyProgress {
+    final data = state.asData?.value;
+    final rawDaily = data?.account?['daily'];
+    if (rawDaily is! Map) return null;
+    final daily = jsonMap(rawDaily);
+    final rewards = daily['rewards'];
+    final day = daily['streakDay'];
+    final coins = daily['coins'];
+    if (rewards is! List ||
+        rewards.length != 7 ||
+        rewards.any((value) => value is! num) ||
+        day is! num ||
+        day < 1 ||
+        coins is! num) {
+      return null;
+    }
+    final currentDay = min(day.toInt(), 7);
+    final claimed = daily['alreadyClaimed'] == true;
+    return (
+      day: day.toInt(),
+      coins: coins.toInt(),
+      lastDayCoins: (rewards.last as num).toInt(),
+      checkedInToday: claimed,
+      saving: data?.busy ?? false,
+      days: [
+        for (var index = 1; index <= 7; index++)
+          (
+            day: index,
+            coins: index == currentDay
+                ? coins.toInt()
+                : (rewards[index - 1] as num).toInt(),
+            today: index == currentDay,
+            claimed: index < currentDay || (index == currentDay && claimed),
+          ),
+      ],
+    );
+  }
+
+  Future<bool> claimDaily() =>
+      _action(() => ref.read(flow1RepositoryProvider).claimDaily());
+
   void selectInterest(String id) {
     if (_busy || !state.hasValue) return;
     final data = state.requireValue;

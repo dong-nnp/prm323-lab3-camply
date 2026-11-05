@@ -1,11 +1,12 @@
 import { Firestore, Timestamp, FieldPath } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import { Actor, authenticated, activeUser, empty, fail, id, key, ledger, required, walletData } from './shared.js';
-import { SIGNUP_BONUS_COINS, dailyGrant, PRODUCT_TIMEZONE } from './policy.js';
+import { SIGNUP_BONUS_COINS, dailyGrant, dailyRewardPolicy, DailyState, defaultDailyRewards, PRODUCT_TIMEZONE } from './policy.js';
 import { changeWallet, operation } from './shared.js';
 import { emailAddress, fptStudentId } from './identity.js';
 
 export function accounts(db: Firestore, clock: () => Date) {
+  const dailyPolicy = dailyRewardPolicy(db);
   return {
     initializeUser: async (actor: Actor | null, raw: unknown) => {
       empty.parse(raw);
@@ -47,12 +48,13 @@ export function accounts(db: Firestore, clock: () => Date) {
       const uid = authenticated(actor), now = Timestamp.fromDate(clock()), today = dailyGrant(now.toDate(), null).dayKey;
       return operation(db, uid, 'daily', today, {}, now, async (tx, op) => {
         const stateRef = db.doc(`users/${uid}/reward_state/daily`), walletRef = db.doc(`wallets/${uid}`);
-        const [state, wallet] = await tx.getAll(stateRef, walletRef);
-        const grant = dailyGrant(now.toDate(), state.exists ? state.data() as { lastLocalDate: string; streakDay: number } : null);
+        const [state, wallet, policy] = await tx.getAll(stateRef, walletRef, dailyPolicy);
+        const grant = dailyGrant(now.toDate(), (state.data() as DailyState | undefined) ?? null, policy.get('rewards'));
         if (grant.alreadyClaimed) fail('DAILY_INTEGRITY_ERROR', 'internal');
         const balance = changeWallet(tx, walletRef, walletData(wallet.data()), grant.coins, 0, now);
         tx.set(stateRef, { lastLocalDate: today, streakDay: grant.streakDay });
-        tx.create(db.doc(`users/${uid}/daily_checkins/${today}`), { localDate: today, streakDay: grant.streakDay, coinsGranted: grant.coins, timezone: PRODUCT_TIMEZONE, policyVersion: 'daily-v1', createdAt: now });
+        const version = policy.get('version');
+        tx.create(db.doc(`users/${uid}/daily_checkins/${today}`), { localDate: today, streakDay: grant.streakDay, coinsGranted: grant.coins, timezone: PRODUCT_TIMEZONE, policyVersion: version == null ? 'daily-v1' : `daily-rc-${version}`, createdAt: now });
         ledger(tx, db, uid, op, 'daily_checkin', grant.coins, 0, today, now);
         return { dayKey: today, streakDay: grant.streakDay, coinsGranted: grant.coins, wallet: balance };
       });
@@ -103,11 +105,21 @@ export function accounts(db: Firestore, clock: () => Date) {
     },
     getAccount: async (actor: Actor | null, raw: unknown) => {
       empty.parse(raw); const uid = authenticated(actor);
-      const [user, wallet] = await db.getAll(db.doc(`users/${uid}`), db.doc(`wallets/${uid}`));
+      const now = clock(), { dayKey } = dailyGrant(now, null);
+      const [user, wallet, daily, policy, receipt] = await db.getAll(
+        db.doc(`users/${uid}`), db.doc(`wallets/${uid}`), db.doc(`users/${uid}/reward_state/daily`),
+        dailyPolicy, db.doc(`users/${uid}/daily_checkins/${dayKey}`),
+      );
       const profile = required(user.data(), 'ACCOUNT_NOT_INITIALIZED');
       if (profile.accountStatus !== 'active') fail('ACCOUNT_DISABLED', 'permission-denied');
       const interests = await db.collection('interests').where('status', '==', 'active').orderBy(FieldPath.documentId()).limit(100).get();
-      return { profile, wallet: walletData(wallet.data()), interestOptions: interests.docs.map(d => ({ id: d.id, label: d.get('label') })) };
+      const rewards = policy.get('rewards') ?? defaultDailyRewards;
+      const grant = dailyGrant(now, (daily.data() as DailyState | undefined) ?? null, rewards);
+      return {
+        profile, wallet: walletData(wallet.data()),
+        daily: { ...grant, coins: receipt.get('coinsGranted') ?? grant.coins, rewards, serverTime: now.toISOString(), timezone: PRODUCT_TIMEZONE },
+        interestOptions: interests.docs.map(d => ({ id: d.id, label: d.get('label') })),
+      };
     },
   };
 }

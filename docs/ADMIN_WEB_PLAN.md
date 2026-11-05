@@ -8,7 +8,7 @@ Admin web dùng Firebase Authentication. Các callable quản trị kiểm tra c
 | Sự kiện | Xem mọi trạng thái, tạo bản nháp, sửa, xuất bản | `listAdminEvents`, `getAdminEvent`, `createEvent`, `updateEvent`, `publishEvent` |
 | Voucher | Xem danh sách và chi tiết phần thưởng, tạo voucher đang tắt, sửa và đổi trạng thái voucher | `listAdminRewards`, `getAdminReward`, `createReward`, `updateReward` |
 | Thông báo | Xuất bản sự kiện công khai hoặc cập nhật lịch | `eventNotifications` tạo inbox và `deliverNotification` gửi FCM theo điều kiện hiện có |
-| Remote Config | Đọc, xem trước và xuất bản hai giá trị mặc định Event Milestones | `getAdminRemoteConfig`, `publishAdminRemoteConfig` |
+| Remote Config | Chỉnh xu thưởng từng ngày trong chuỗi Daily Check-in | `getAdminRemoteConfig`, `publishAdminRemoteConfig` |
 | Analytics | Xem 25 sự kiện có lượt ghi nhận cao nhất trong 7 hoặc 30 ngày | `getAdminAnalyticsReport` đọc GA4 Data API |
 | Crashlytics | Kiểm thử crash trên Android QA và xem 25 mục lỗi gần nhất trong 7 hoặc 30 ngày | `getAdminCrashlyticsReport` truy vấn BigQuery Crashlytics export |
 
@@ -23,11 +23,11 @@ Khi thay nội dung điều khoản, cập nhật phiên bản điều khoản. 
 được đọc từ dữ liệu lưu lúc đổi. Mobile Rewards vẫn cần nối các API catalog
 và đổi thưởng hiện có để hiện mẫu thật trong luồng đó.
 
-Backend chỉ cho web xuất bản mặc định của `event_milestones_enabled` và
-`event_milestones_intro`. Nếu template đã được cập nhật sau lần tải,
-web yêu cầu tải lại. Các nhóm, điều kiện và giá trị theo điều kiện được giữ
-trong template. Flutter áp dụng cấu hình khi mở Event Milestones trong chế
-độ Firebase live. [Kế hoạch Remote Config](REMOTE_CONFIG_PLAN.md)
+Web chỉnh từng mục của `daily_checkin_rewards` với ETag. Backend áp dụng
+lịch đã xuất bản vào Firestore để mobile đọc qua `getAccount` và cộng xu qua
+`claimDailyCheckin`. Từ ngày 7 trở đi dùng mức của ngày 7. Nếu bước áp dụng
+lỗi, tải lại và bấm xuất bản với cùng giá trị để đồng bộ.
+[Kế hoạch Remote Config](REMOTE_CONFIG_PLAN.md)
 
 Crash QA dùng WebUSB và ADB trên Android debug có serial đã cấu hình.
 Web xác minh tiến trình dừng và log fatal đúng package/PID. Báo cáo xuất hiện

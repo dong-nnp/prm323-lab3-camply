@@ -86,9 +86,10 @@ và Crashlytics báo cần dự án Firebase thật khi web nối Emulator.
 - **Voucher.** Tạo mẫu mới, mở **Chi tiết → Sửa** để cập nhật và bật/tắt mẫu.
   Nếu bản ghi thay đổi trong lúc chỉnh sửa, tải lại chi tiết để lấy tồn kho
   hiện tại trước khi lưu.
-- **Remote Config.** Sửa và xuất bản trong trang Remote Config. Kiểm tra
-  phiên bản hiển thị trên web, rồi mở lại Event Milestones trên cùng bản
-  APK live để kiểm tra thay đổi sau khi client tải cấu hình.
+- **Remote Config.** Chọn một ngày từ **Today (Ngày 1)** đến **Ngày 7**, nhập
+  số xu và bấm **Xuất bản và áp dụng**. Mở lại **Rewards → Daily Check-in**
+  trên mobile và kiểm tra lịch mới cùng số xu cộng vào ví khi điểm danh.
+  Từ ngày 8 trở đi, mức thưởng bằng Ngày 7.
 - **Analytics.** Thực hiện thao tác trên admin web, chọn khoảng ngày và
   tải báo cáo khi GA4 đã xử lý dữ liệu. Báo cáo xếp theo lượt ghi nhận.
 - **Crashlytics.** Đặt `VITE_QA_ANDROID_SERIAL`, cài bản debug Firebase QA,

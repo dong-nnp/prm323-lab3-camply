@@ -37,7 +37,6 @@
         <p class="nav-label">VẬN HÀNH</p>
         <a href="#overview" data-route="overview"><span data-icon="grid"></span>Tổng quan</a>
         <a href="#events" data-route="events"><span data-icon="calendar"></span>Sự kiện</a>
-        <a href="#notifications" data-route="notifications"><span data-icon="bell"></span>Thông báo</a>
         <a href="#vouchers" data-route="vouchers"><span data-icon="ticket"></span>Voucher</a>
         <p class="nav-label">FIREBASE</p>
         <a href="#analytics" data-route="analytics"><span data-icon="chart"></span>Analytics</a>
@@ -58,17 +57,16 @@
             <div class="hero-copy"><p class="eyebrow">EVIA CONTROL CENTER</p><h1 id="overview-title">Điều hành Evia.</h1><p>Quản lý sự kiện, voucher và các luồng Firebase từ một không gian làm việc.</p><button type="button" class="button ink" data-create="events"><span data-icon="plus"></span>Tạo sự kiện</button></div>
             <div class="hero-art" aria-hidden="true"><span class="hero-ring"></span><span class="hero-ring inner"></span><span class="hero-sparkle">✦</span><div class="hero-ticket"><span data-icon="ticket"></span><strong>EVIA<br>ACCESS</strong><i></i></div></div>
           </div>
-          <div class="section-heading"><div><p class="eyebrow">CATALOG &amp; THÔNG BÁO</p><h2>Vận hành nội dung</h2></div></div>
+          <div class="section-heading"><div><p class="eyebrow">CATALOG</p><h2>Vận hành nội dung</h2></div></div>
           <div class="card-grid">
             <a class="action-card" href="#events"><span class="card-icon" data-icon="calendar"></span><span class="card-arrow" data-icon="arrow"></span><h3>Sự kiện</h3><p>Tạo, sửa và xuất bản sự kiện.</p></a>
-            <a class="action-card" href="#notifications"><span class="card-icon blue" data-icon="bell"></span><span class="card-arrow" data-icon="arrow"></span><h3>Thông báo mobile</h3><p>Xem luồng gửi push khi xuất bản hoặc đổi lịch.</p></a>
             <a class="action-card" href="#vouchers"><span class="card-icon lilac" data-icon="ticket"></span><span class="card-arrow" data-icon="arrow"></span><h3>Voucher</h3><p>Xem danh sách phần thưởng và quản lý voucher.</p></a>
           </div>
           <div class="section-heading"><div><p class="eyebrow">CÔNG CỤ FIREBASE</p><h2>Theo dõi và kiểm thử</h2></div></div>
           <div class="tool-list">
             <a href="#analytics"><span class="card-icon blue" data-icon="chart"></span><span><strong>Firebase Analytics</strong><small>Theo dõi thao tác trên admin web</small></span><span data-icon="arrow"></span></a>
             <a href="#crashlytics"><span class="card-icon lilac" data-icon="activity"></span><span><strong>Firebase Crashlytics</strong><small>Kiểm thử và đối chiếu crash Android QA</small></span><span data-icon="arrow"></span></a>
-            <a href="#config"><span class="card-icon" data-icon="sliders"></span><span><strong>Firebase Remote Config</strong><small>Xem trước cấu hình Event Milestones</small></span><span data-icon="arrow"></span></a>
+            <a href="#config"><span class="card-icon" data-icon="sliders"></span><span><strong>Firebase Remote Config</strong><small>Chỉnh xu thưởng Daily Check-in</small></span><span data-icon="arrow"></span></a>
           </div>
         </section>
 
@@ -80,24 +78,6 @@
             <div class="table-wrap" id="events-table"></div>
             <div class="panel-actions"><button class="button secondary" data-more="events" hidden>Tải thêm</button></div>
           </div>
-        </section>
-
-        <section id="notifications" aria-labelledby="notifications-title" hidden>
-          <div class="page-heading"><div><p class="eyebrow">FIREBASE CLOUD MESSAGING</p><h1 id="notifications-title">Thông báo mobile</h1><p>Thông báo được gửi theo trạng thái và lịch của sự kiện.</p></div></div>
-          <div class="card-grid notification-cards">
-            <article class="action-card"><span class="card-icon" data-icon="bell"></span><h3>Xuất bản sự kiện</h3><p>Sự kiện công khai sắp diễn ra gửi thông báo tới người đã theo dõi ban tổ chức.</p></article>
-            <article class="action-card"><span class="card-icon blue" data-icon="calendar"></span><h3>Cập nhật lịch</h3><p>Thay đổi lịch hoặc địa điểm gửi cho người đã đăng ký hoặc chọn Going.</p></article>
-            <article class="action-card"><span class="card-icon lilac" data-icon="activity"></span><h3>Nhắc lịch</h3><p>Scheduler hiện có gửi nhắc theo điều kiện của sự kiện.</p></article>
-          </div>
-          <article class="panel instructions">
-            <h2>Xuất bản và kiểm tra push</h2>
-            <ol>
-              <li>Trên Android, đăng nhập bằng tài khoản người dùng đang hoạt động, theo dõi ban tổ chức, rồi mở Thông báo và cho phép ứng dụng gửi thông báo.</li>
-              <li>Trên web, tạo sự kiện công khai có ngày bắt đầu trong tương lai. Thao tác tạo lưu bản nháp. Mở chi tiết và bấm Xuất bản để kích hoạt luồng gửi.</li>
-              <li>Đưa ứng dụng Android xuống nền trước khi xuất bản để kiểm tra thông báo hệ thống. Mở lại ứng dụng để kiểm tra thông báo trong hộp thư.</li>
-            </ol>
-            <a class="button secondary" href="#events">Mở danh sách sự kiện</a>
-          </article>
         </section>
 
         <section id="vouchers" aria-labelledby="vouchers-title" hidden>
@@ -122,8 +102,17 @@
         </section>
 
         <section id="config" aria-labelledby="config-title" hidden>
-          <div class="page-heading"><div><p class="eyebrow">FIREBASE</p><h1 id="config-title">Remote Config</h1><p>Đọc và xuất bản giá trị mặc định cho Event Milestones.</p></div></div>
-          <article class="panel instructions"><div class="panel-head inline"><h2>Event Milestones</h2><button id="fetch-config" class="button secondary"><span data-icon="refresh"></span>Tải cấu hình</button></div><p id="config-status" class="status" role="status"></p><form id="config-form" class="form-grid"><label>Bật Event Milestones <select name="enabled" disabled><option value="true">Bật</option><option value="false">Tắt</option></select></label><label class="wide">Nội dung giới thiệu <textarea name="intro" rows="3" maxlength="500" required disabled></textarea></label><div class="wide"><button id="publish-config" class="button primary" type="submit" disabled>Xuất bản cấu hình</button></div></form><div id="config-preview" class="config-preview"><span class="card-icon" data-icon="sparkle"></span><div><strong>Event Milestones</strong><p id="config-preview-intro"></p></div></div><p id="config-hidden" class="muted" hidden>Phần giới thiệu đang được ẩn.</p></article>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE</p><h1 id="config-title">Remote Config</h1><p>Chỉnh số xu thưởng theo ngày trong chuỗi Daily Check-in.</p></div></div>
+          <article class="panel instructions">
+            <div class="panel-head inline"><h2>Xu thưởng Daily Check-in</h2><button id="fetch-config" class="button secondary"><span data-icon="refresh"></span>Tải cấu hình</button></div>
+            <p>Mức thưởng Ngày 7 áp dụng cho tất cả các ngày tiếp theo.</p>
+            <p id="config-status" class="status" role="status"></p>
+            <form id="config-form" class="form-grid">
+              <label>Ngày <select name="rewardDay" disabled><option value="1">Today (Ngày 1)</option><option value="2">Ngày 2</option><option value="3">Ngày 3</option><option value="4">Ngày 4</option><option value="5">Ngày 5</option><option value="6">Ngày 6</option><option value="7">Ngày 7</option></select></label>
+              <label>Số xu thưởng <input type="number" name="rewardCoins" min="0" max="1000000000" step="1" required disabled></label>
+              <div class="wide"><button id="publish-config" class="button primary" type="submit" disabled>Xuất bản và áp dụng</button></div>
+            </form>
+          </article>
         </section>
         <p id="workspace-status" class="status" role="status"></p>
         <footer class="main-footer">EVIA ADMIN <span aria-hidden="true">·</span> Campus event operations</footer>

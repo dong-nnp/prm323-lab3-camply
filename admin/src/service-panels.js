@@ -1,5 +1,3 @@
-import { milestoneDefaults } from './firebase.js';
-
 const $ = id => document.getElementById(id);
 
 export function adminErrorMessage(error) {
@@ -16,6 +14,7 @@ export function adminErrorMessage(error) {
     TERMS_VERSION_REQUIRED: 'Hãy tăng phiên bản điều khoản khi sửa nội dung điều khoản.',
     REMOTE_CONFIG_CHANGED: 'Cấu hình đã thay đổi. Tải lại trước khi xuất bản.',
     REMOTE_CONFIG_ACCESS_DENIED: 'Backend chưa có quyền quản lý Firebase Remote Config.',
+    REMOTE_CONFIG_REWARD_INVALID: 'Lịch xu đã xuất bản không hợp lệ. Kiểm tra daily_checkin_rewards trong Firebase.',
     ANALYTICS_NOT_CONFIGURED: 'Backend chưa có GA4 Property ID hợp lệ.',
     ANALYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền xem GA4 property.',
     CRASHLYTICS_NOT_CONFIGURED: 'Backend chưa có bảng BigQuery xuất từ Crashlytics.',
@@ -32,8 +31,8 @@ export function adminErrorMessage(error) {
 
 export function setupServicePanels({ firebase, session, status, text, formatDate, track }) {
   const form = $('config-form');
-  const enabled = form.elements.enabled;
-  const intro = form.elements.intro;
+  const day = form.elements.rewardDay;
+  const coins = form.elements.rewardCoins;
   const reload = $('fetch-config');
   const publish = $('publish-config');
   let config;
@@ -41,44 +40,43 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
   let configBusy = false;
   const requestedReports = new Set();
 
-  function preview() {
-    const visible = enabled.value === 'true';
-    $('config-preview').hidden = !visible;
-    $('config-preview-intro').textContent = intro.value;
-    $('config-hidden').hidden = visible;
+  function showSelectedReward() {
+    coins.value = config?.rewards[Number(day.value) - 1] ?? '';
   }
 
   function setConfig(value) {
     config = value;
-    enabled.value = value?.enabled === 'true' || (value?.enabled == null && milestoneDefaults.enabled) ? 'true' : 'false';
-    intro.value = value?.intro ?? milestoneDefaults.intro;
-    preview();
+    showSelectedReward();
   }
 
   function syncConfigControls() {
     reload.disabled = configBusy;
-    publish.disabled = enabled.disabled = intro.disabled = configBusy || !config;
+    publish.disabled = day.disabled = coins.disabled = configBusy || !config;
   }
 
   async function runConfig(saving) {
     const current = session();
     if (!current || configBusy || (saving && !config)) return;
     configRequested = true;
-    const input = saving ? { etag: config.etag, enabled: enabled.value === 'true', intro: intro.value } : null;
+    const input = saving ? { etag: config.etag, day: Number(day.value), coins: coins.valueAsNumber } : null;
     configBusy = true;
     syncConfigControls();
     status('config-status', saving ? 'Đang xuất bản…' : 'Đang tải cấu hình…');
     try {
       const value = await (saving ? firebase.publishRemoteConfig(input) : firebase.getRemoteConfig());
       if (session() !== current) return;
+      if (!Array.isArray(value.rewards) || !Array.isArray(value.appliedRewards)) {
+        throw new Error('Backend chưa hỗ trợ lịch Daily Check-in. Cập nhật Cloud Functions rồi tải lại.');
+      }
       setConfig(value);
       if (saving) void track('admin_remote_config_published');
-      const message = saving ? 'Đã xuất bản' : 'Đã tải giá trị mặc định';
-      status('config-status', message + (value.version ? ' · Phiên bản ' + value.version : '') +
-        (value.hasConditions ? ' · Các giá trị theo điều kiện vẫn được áp dụng.' : ''));
+      const message = saving ? 'Đã áp dụng mức thưởng Daily Check-in.' : 'Đã tải cấu hình.';
+      const pending = value.rewards.some((coins, index) => coins !== value.appliedRewards[index])
+        ? ' Lịch đã xuất bản chưa đồng bộ. Bấm Xuất bản và áp dụng để đồng bộ.' : '';
+      status('config-status', message + pending);
     } catch (error) {
       if (session() !== current) return;
-      if (!saving || error.details?.code === 'REMOTE_CONFIG_CHANGED') config = undefined;
+      setConfig(undefined);
       status('config-status', adminErrorMessage(error), true);
     } finally {
       if (session() === current) {
@@ -129,10 +127,10 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     }
   }
 
-  form.addEventListener('input', preview);
+  day.addEventListener('change', showSelectedReward);
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (config && window.confirm('Xuất bản giá trị mặc định mới cho Event Milestones?')) void runConfig(true);
+    if (config && window.confirm('Xuất bản và áp dụng mức thưởng cho ngày đã chọn?')) void runConfig(true);
   });
   reload.addEventListener('click', () => void runConfig(false));
   for (const kind of ['analytics', 'crashlytics']) {

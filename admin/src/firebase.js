@@ -3,14 +3,6 @@ import {
   browserSessionPersistence, connectAuthEmulator, initializeAuth, onIdTokenChanged, signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
-import defaults from '../../firebase/remote-config-defaults.json';
-
-export const milestoneDefaults = {
-  enabled: defaults.event_milestones_enabled,
-  intro: defaults.event_milestones_intro,
-  source: 'Mặc định',
-};
-
 export function createFirebase(env) {
   const emulator = env.VITE_FIREBASE_EMULATORS === 'true';
   const options = emulator
