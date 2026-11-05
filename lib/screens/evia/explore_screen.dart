@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/mock/evia_mock_data.dart';
+import '../../core/providers/service_providers.dart';
+import '../../core/utils/exception_mapper.dart';
+import '../../viewmodels/flow1_view_model.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
@@ -57,7 +60,23 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
         selection: TextSelection.collapsed(offset: queryValue.length),
       );
     }
-    final events = vm.searchResults;
+    final live = ref.watch(realBackendEnabledProvider);
+    final input = (
+      query: state.query,
+      category: state.category,
+      filters: state.filters,
+    );
+    final remote = live ? ref.watch(flow1SearchProvider(input)) : null;
+    final events = live
+        ? (remote?.asData?.value
+                  .map(
+                    (event) => event.card(
+                      vm.catalog!.organizerName(event.organizerId),
+                    ),
+                  )
+                  .toList() ??
+              [])
+        : vm.searchResults;
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -146,7 +165,9 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
           child: Row(
             children: [
               for (final category
-                  in (results
+                  in (live
+                      ? vm.categories
+                      : results
                       ? ['All', 'Technology', 'Music', 'Sports', 'Arts']
                       : ['All', 'Music', 'Technology', 'Sports', 'Arts']))
                 Padding(
@@ -218,7 +239,15 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
               ),
             ],
           ),
-          if (events.isEmpty)
+          if (remote?.isLoading == true) const AppLoadingWidget(),
+          if (remote?.hasError == true)
+            AppErrorWidget(
+              message: ExceptionMapper.map(remote!.error!).message,
+              onRetry: () => ref.invalidate(flow1SearchProvider(input)),
+            ),
+          if (events.isEmpty &&
+              remote?.isLoading != true &&
+              remote?.hasError != true)
             const AppEmptyWidget(
               title: 'No events found',
               message: 'No events match your search. Try another topic or clear the filters.',
@@ -254,14 +283,17 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
                 children: [
                   for (var i = 0; i < state.history.length; i++) ...[
                     if (i != 0) const Divider(height: 1),
-                    ListTile(
-                      leading: const FigmaIcon('2083:993', 'imgContainer2'),
-                      title: Text(state.history[i]),
-                      onTap: () => vm.submitSearch(state.history[i]),
-                      trailing: IconButton(
-                        tooltip: 'Remove ${state.history[i]} from history',
-                        onPressed: () => vm.removeHistory(state.history[i]),
-                        icon: const FigmaIcon('2083:993', 'imgContainer3'),
+                    Material(
+                      color: AppColors.surface,
+                      child: ListTile(
+                        leading: const FigmaIcon('2083:993', 'imgContainer2'),
+                        title: Text(state.history[i]),
+                        onTap: () => vm.submitSearch(state.history[i]),
+                        trailing: IconButton(
+                          tooltip: 'Remove ${state.history[i]} from history',
+                          onPressed: () => vm.removeHistory(state.history[i]),
+                          icon: const FigmaIcon('2083:993', 'imgContainer3'),
+                        ),
                       ),
                     ),
                   ],
@@ -269,7 +301,10 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
               ),
             ),
           const SectionHeading('Suggested Events'),
-          for (final event in [EviaMockData.music, EviaMockData.suggestedAi])
+          for (final event
+              in (live
+                  ? vm.events.take(2)
+                  : [EviaMockData.music, EviaMockData.suggestedAi]))
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: SearchEventCard(event: event, idle: true),

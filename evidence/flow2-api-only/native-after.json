@@ -1,0 +1,56 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T14:55:33.772Z",
+  "uid": "evia-demo-staff-v1",
+  "demoAttendanceEnabled": true,
+  "wallet": {
+    "heldCoins": 0,
+    "version": 7,
+    "availableCoins": 245,
+    "updatedAt": "2026-11-05T14:55:17.855Z"
+  },
+  "events": [
+    {
+      "eventId": "demo-mobile-workshop",
+      "state": "cancelled",
+      "going": false,
+      "attendance": null
+    },
+    {
+      "eventId": "demo-career-talk",
+      "state": "attended",
+      "going": false,
+      "attendance": {
+        "isDemo": true,
+        "method": "debug_demo_button",
+        "coins": 80
+      }
+    }
+  ],
+  "notifications": [
+    {
+      "id": "2b52b4c49eaf587961e9f032443d971b688cdd6c1121d7199a51c2512bb8e4e2",
+      "type": "registration_confirmed",
+      "read": false,
+      "title": "Đăng ký thành công"
+    },
+    {
+      "id": "flow2-fcm-native-20261105",
+      "type": "demo_fcm_smoke",
+      "read": false,
+      "title": "[DEMO] FCM Evia đã kết nối"
+    },
+    {
+      "id": "fb80dd4fc185982255b1d6187c3d7edd53ef04b9d38d7fa93a3ed938a728b41d",
+      "type": "registration_confirmed",
+      "read": true,
+      "title": "Đăng ký thành công"
+    },
+    {
+      "id": "5ea82e8a2de4406604b6cbe96b1beb5227dcc82e9d7943c911b5a13e5aad0695",
+      "type": "registration_confirmed",
+      "read": true,
+      "title": "Đăng ký thành công"
+    }
+  ]
+}

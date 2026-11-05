@@ -1,0 +1,4 @@
+{
+  "status": "error",
+  "error": "Failed to create SHA certificate hash for Android app 1:465411217120:android:fdc0b89aaa5078e3286285. See firebase-debug.log for more info."
+}

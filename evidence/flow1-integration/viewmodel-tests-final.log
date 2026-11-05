@@ -1,0 +1,14 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart
+00:00 +0: pagination continues after an empty filtered page; nullable capacity remains unlimited
+00:00 +1: repeated cursor fails instead of looping indefinitely
+00:00 +2: date range is inclusive by Vietnam day and filters use server keys
+00:00 +3: follow blocks duplicate taps and changes only after server success
+00:00 +4: failed bookmark keeps prior data and supports a real retry
+00:00 +5: onboarding waits for server and uses interest IDs
+00:00 +6: invalid FPT identity or missing terms never sends registration
+00:00 +7: timeout recovers receipt before any retry debit and blocks duplicate taps
+00:00 +8: missing receipt retries exactly the original payload and request ID
+00:00 +9: price change requires terms confirmation again and a fresh request
+00:00 +10: registration requests belong to one event, including uncertain retries
+00:00 +11: switching accounts clears uncertain requests and ignores late actions from the old UID
+00:00 +12: All tests passed!

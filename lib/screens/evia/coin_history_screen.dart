@@ -87,7 +87,8 @@ class _CoinEntryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deposit = entry.kind == CoinKind.deposit;
-    final earned = entry.kind == CoinKind.earned;
+    final earned =
+        entry.kind == CoinKind.earned || entry.kind == CoinKind.refund;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

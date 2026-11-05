@@ -1,0 +1,44 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T06:07:58.3481132Z",
+  "device": "SM-G996N / R3CR60CT0WZ",
+  "mode": "APK debug, FIREBASE_ENABLED=true, DEMO_AUTH=false",
+  "apkSha256": "b0aec3c5999655424a602c3cc6abdf61dd5b0adfa936670c4ed26c2c08fec5f8",
+  "method": "ADB input and UI hierarchy observed; independent callable reads before/after",
+  "steps": [
+    "guest catalog from server",
+    "email/password login with existing demo staff account",
+    "search Flutter returns 2 real catalog results",
+    "bookmark demo-mobile-workshop",
+    "follow demo-tech-club",
+    "register with SE123456 and server terms; deposit held",
+    "view personal ticket and QR",
+    "reinstall/restart restores account, wallet, bookmark, following and registration",
+    "logout and login automatically return to Discover on latest APK",
+    "My Events reopens same active ticket and fresh QR"
+  ],
+  "checks": {
+    "initialAvailable200": true,
+    "initialHeldZero": true,
+    "available150": true,
+    "held50": true,
+    "oneRegistration": true,
+    "oneDepositHold": true,
+    "activeTicket": true,
+    "followedOrganizer": true,
+    "bookmarkedEvent": true,
+    "reopenedTicketLabel": true,
+    "personalQrVisible": true
+  },
+  "limitations": [
+    "Google account login, account creation and password-reset delivery not tested natively",
+    "first-time onboarding verified in widget tests, operator profile was already onboarded",
+    "no staff scan, attendance, cancellation, reward claim, redemption, push or ARTEMIS run"
+  ],
+  "cloudSideEffects": [
+    "1 active demo event registration and ticket",
+    "1 deposit_hold ledger entry",
+    "1 followed organizer and 1 bookmark",
+    "short-lived ticket QR/code records, no attendance created"
+  ]
+}

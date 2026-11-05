@@ -1,0 +1,10 @@
+Computing fixes in prm323-lab3-camply...
+Applying fixes...
+
+lib\screens\evia\profile_screens.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+test\viewmodels\flow2_view_model_test.dart
+  curly_braces_in_flow_control_structures - 4 fixes
+
+5 fixes made in 2 files.

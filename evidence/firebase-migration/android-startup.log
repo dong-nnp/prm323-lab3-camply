@@ -1,0 +1,34 @@
+Launching lib\main.dart on sdk gphone64 x86 64 in debug mode...
+Running Gradle task 'assembleDebug'...                          
+WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): firebase_analytics, firebase_auth, firebase_core, firebase_crashlytics, firebase_remote_config, firebase_storage
+Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
+
+Please check the changelogs of these plugins and upgrade to a version that supports Built-in Kotlin.
+If no such version exists, report the issue to the plugin. If necessary, here is a guide on filing
+an issue against a plugin: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-app-developers#report-incompatible-kotlin-gradle-plugin-usage-to-plugin-authors
+
+If you are a plugin author, please migrate your plugin to Built-in Kotlin using this guide: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+Running Gradle task 'assembleDebug'...                             83.2s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           6.4s
+I/FlutterActivityAndFragmentDelegate( 4611): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI( 4611): Beginning load of flutter...
+D/FlutterJNI( 4611): flutter (null) was loaded normally!
+I/flutter ( 4611): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+Syncing files to device sdk gphone64 x86 64...                  
+W/le.prm393_lab03( 4611): Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (unsupported,test-api, reflection, allowed)
+W/le.prm393_lab03( 4611): Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (unsupported, reflection, allowed)
+W/le.prm393_lab03( 4611): Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (unsupported, reflection, allowed)
+W/le.prm393_lab03( 4611): Accessing hidden method Landroid/util/LongArray;->get(I)J (unsupported, reflection, allowed)
+D/AccessibilityBridge( 4611): Setting not found: accessibility_display_inversion_enabled, using default: 0
+D/FlutterRenderer( 4611): Width is zero. 0,0
+D/FirebaseSessions( 4611): App foregrounded on com.example.prm393_lab03
+D/FirebaseSessions( 4611): Session f48402131a6141c1802dbb202745d2bf has not backgrounded yet
+D/FirebaseSessions( 4611): Process com.example.prm393_lab03 is stale
+W/HWUI    ( 4611): Unknown dataspace 0
+D/FirebaseSessions( 4611): Session f48402131a6141c1802dbb202745d2bf has not backgrounded yet
+D/FirebaseSessions( 4611): Cold app start detected
+D/FirebaseSessions( 4611): Process com.example.prm393_lab03 is stale
+D/FirebaseSessions( 4611): Sessions SDK disabled through data collection. Events will not be sent.
+D/FirebaseSessions( 4611): Notified CRASHLYTICS of new session 6b3b81c09cfa40d8be065f1bc1bb3cba
+Syncing files to device sdk gphone64 x86 64...                     340ms

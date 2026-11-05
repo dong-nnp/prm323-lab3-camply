@@ -1,0 +1,46 @@
+// One-time release of the five owner-approved policies and two presentation keys.
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { readFile, writeFile } from 'node:fs/promises';
+import { catalogSchema } from '../../functions/lib/catalog.js';
+const require = createRequire(import.meta.url);
+const cli = 'C:/Users/toila/AppData/Roaming/npm/node_modules/firebase-tools/lib/';
+const auth = require(cli + 'auth.js');
+const { requireAuth } = require(cli + 'requireAuth.js');
+const { Client } = require(cli + 'apiv2.js');
+const project = 'prm393-31822', options = { project, nonInteractive: true };
+const account = auth.getAllAccounts().find(a => a.user.email === 'toilakiet24@gmail.com');
+assert(account, 'Previously authorized CLI account is required');
+auth.setActiveAccount(options, account);
+await requireAuth(options);
+const fs = new Client({ urlPrefix: 'https://firestore.googleapis.com', apiVersion: 'v1' });
+const rc = new Client({ urlPrefix: 'https://firebaseremoteconfig.googleapis.com', apiVersion: 'v1' });
+const root = `projects/${project}/databases/(default)/documents`;
+const rows = catalogSchema.parse(JSON.parse(await readFile(new URL('../../firebase/event-milestones.json', import.meta.url), 'utf8'))).milestones;
+assert.deepEqual(rows.map(r => [r.requiredEvents, r.rewardCoins]), [[1,50],[3,100],[5,150],[10,300],[20,500]]);
+const before = await fs.get(`${root}/milestones`, { queryParams: { pageSize: 100 } });
+assert(!before.body.nextPageToken && !(before.body.documents?.length), 'Create-only release requires an empty milestone catalog');
+const oldRc = await rc.get(`projects/${project}/remoteConfig`);
+await writeFile(new URL('policy-config-before.json', import.meta.url), JSON.stringify({ project, capturedAt: new Date().toISOString(), milestoneDocuments: before.body.documents ?? [], remoteConfig: oldRc.body, etag: oldRc.response.headers.get('etag') }, null, 2));
+const encode = value => typeof value === 'boolean' ? { booleanValue: value } : typeof value === 'number' ? { integerValue: String(value) } : { stringValue: value };
+const writes = rows.map(({ id, ...fields }) => ({ update: { name: `${root}/milestones/${id}`, fields: Object.fromEntries(Object.entries({ ...fields, version: 1 }).map(([k,v]) => [k, encode(v)])) }, currentDocument: { exists: false }, updateTransforms: [{ fieldPath: 'createdAt', setToServerValue: 'REQUEST_TIME' }, { fieldPath: 'updatedAt', setToServerValue: 'REQUEST_TIME' }] }));
+const committed = await fs.post(`${root}:commit`, { writes });
+assert.equal(committed.body.writeResults.length, 5);
+const defaults = JSON.parse(await readFile(new URL('../../firebase/remote-config-defaults.json', import.meta.url), 'utf8'));
+const template = structuredClone(oldRc.body);
+delete template.version;
+template.parameters ??= {};
+for (const [key, value] of Object.entries(defaults)) {
+  assert(!template.parameters[key], `Do not overwrite an existing parameter: ${key}`);
+  assert(!Object.values(template.parameterGroups ?? {}).some(g => g.parameters?.[key]), 'Do not shadow a grouped parameter');
+  template.parameters[key] = { defaultValue: { value: String(value) }, valueType: typeof value === 'boolean' ? 'BOOLEAN' : 'STRING', description: 'Event Milestones presentation only; grants are validated by the backend.' };
+}
+const etag = oldRc.response.headers.get('etag');
+assert(etag);
+await rc.put(`projects/${project}/remoteConfig`, template, { queryParams: { validate_only: true }, headers: { 'If-Match': etag } });
+const published = await rc.put(`projects/${project}/remoteConfig`, template, { headers: { 'If-Match': etag } });
+const latest = await rc.get(`projects/${project}/remoteConfig`);
+for (const [key, value] of Object.entries(defaults)) assert.equal(latest.body.parameters[key].defaultValue.value, String(value));
+const result = { project, publishedAt: new Date().toISOString(), policyCount: 5, commitTime: committed.body.commitTime, milestones: rows.map(({id,requiredEvents,rewardCoins}) => ({id,requiredEvents,rewardCoins})), remoteConfigVersion: published.body.version, parameters: Object.fromEntries(Object.keys(defaults).map(k => [k, latest.body.parameters[k]])) };
+await writeFile(new URL('published.json', import.meta.url), JSON.stringify(result, null, 2));
+console.log(JSON.stringify(result));

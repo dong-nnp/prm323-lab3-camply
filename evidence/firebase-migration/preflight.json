@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-11-04T14:33:43.071Z",
+  "project": "prm393-31822",
+  "providers": {
+    "providers": [
+      {
+        "name": "projects/465411217120/defaultSupportedIdpConfigs/google.com",
+        "enabled": true
+      }
+    ]
+  },
+  "billing": {
+    "billingEnabled": true
+  },
+  "auth": {
+    "emailPasswordEnabled": false,
+    "anonymousEnabled": false
+  },
+  "collections": {
+    "error": "NOT_FOUND"
+  },
+  "buckets": {
+    "buckets": [
+      {
+        "name": "prm393-31822.firebasestorage.app",
+        "location": "US-EAST1",
+        "storageClass": "REGIONAL"
+      }
+    ]
+  },
+  "databases": {
+    "databases": []
+  },
+  "rules": {
+    "releases": [
+      {
+        "name": "projects/prm393-31822/releases/firebase.storage/prm393-31822.firebasestorage.app",
+        "rulesetName": "projects/prm393-31822/rulesets/e3151522-ced4-41b9-912d-7db76af57aa5",
+        "createTime": "2026-11-03T17:40:02.596875Z",
+        "updateTime": "2026-11-03T17:40:02.596875Z"
+      }
+    ]
+  }
+}

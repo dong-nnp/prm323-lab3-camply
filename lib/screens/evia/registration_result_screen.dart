@@ -13,10 +13,15 @@ import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
+import '../../viewmodels/flow1_view_model.dart';
+import '../../core/providers/service_providers.dart';
+import '../../core/utils/exception_mapper.dart';
+import '../../widgets/status_widgets.dart';
 
 class RegistrationResultScreen extends ConsumerWidget {
-  const RegistrationResultScreen({required this.view, super.key});
+  const RegistrationResultScreen({required this.view, this.eventId, super.key});
   final String view;
+  final String? eventId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final going = view == 'going',
@@ -31,19 +36,42 @@ class RegistrationResultScreen extends ConsumerWidget {
         : '2083:4961';
     final vm = ref.read(registrationViewModelProvider.notifier);
     final state = ref.watch(registrationViewModelProvider);
-    final event = going && state.status != RegistrationStatus.going
+    final live = ref.watch(realBackendEnabledProvider);
+    final id = eventId ?? state.eventId;
+    final ticket = live && !going && !failed && !full
+        ? ref.watch(flow1TicketProvider(id))
+        : null;
+    if (ticket != null && !ticket.hasValue) {
+      return EviaPage(
+        child: Center(
+          child: ticket.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(ticket.error!).message,
+                  onRetry: () => ref.invalidate(flow1TicketProvider(id)),
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final event = going && !live && state.status != RegistrationStatus.going
         ? RegistrationMockData.club
-        : vm.event(state.eventId);
+        : vm.event(id);
     void back() {
       vm.backToForm();
-      context.go('/registration?resume=true');
+      context.go(
+        live
+            ? '/registration?resume=true&event=$id'
+            : '/registration?resume=true',
+      );
     }
 
     Future<void> retry() async {
       final status = await vm.submit();
       if (!context.mounted) return;
       if (status == RegistrationStatus.success) {
-        context.go('/registration/success');
+        context.go(
+          live ? '/registration/success?event=$id' : '/registration/success',
+        );
       } else if (status == RegistrationStatus.idle) {
         back();
       } else if (status == RegistrationStatus.failed) {
@@ -173,7 +201,7 @@ class RegistrationResultScreen extends ConsumerWidget {
                     screen: screen,
                     icon: 'imgContainer2',
                     title: '',
-                    body: 'You can join the waitlist and get notified if a spot becomes available.',
+                    body: 'Registration is full. You can try again if another attendee cancels and a place opens.',
                   ),
                 )
               else ...[
@@ -197,7 +225,7 @@ class RegistrationResultScreen extends ConsumerWidget {
                 label: going
                     ? 'View My Events'
                     : full
-                    ? 'Join Waitlist'
+                    ? 'Explore Other Events'
                     : 'View My Digital Ticket',
                 leading: going || full
                     ? null
@@ -210,8 +238,7 @@ class RegistrationResultScreen extends ConsumerWidget {
                     : ActivityIcon(screen, 'imgContainer5'),
                 onPressed: () {
                   if (full) {
-                    vm.joinWaitlist();
-                    context.go('/my-events');
+                    context.go('/explore');
                   } else {
                     context.go(
                       going

@@ -32,7 +32,7 @@ void main() {
     String? confirmation,
   }) => vm.createAccount(
     fullName: ' Alex Example ',
-    email: ' alex@example.com ',
+    email: ' alex@fpt.edu.vn ',
     password: password,
     confirmation: confirmation ?? password,
   );
@@ -86,7 +86,7 @@ void main() {
       expect(service.createCalls, 1);
       expect(c.read(signUpViewModelProvider).isBusy, isTrue);
       expect(service.submittedName, 'Alex Example');
-      expect(service.submittedEmail, 'alex@example.com');
+      expect(service.submittedEmail, 'alex@fpt.edu.vn');
       expect(service.submittedTerms, isTrue);
       pending.complete(AccountCreationResult.signedIn);
       await first;
@@ -157,7 +157,7 @@ void main() {
       await expectLater(
         pending.createAccount(
           fullName: 'Alex',
-          email: 'alex@example.com',
+          email: 'alex@fpt.edu.vn',
           password: 'example',
           acceptedTerms: true,
         ),

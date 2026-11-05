@@ -86,7 +86,7 @@ abstract final class EviaMockData {
       category: 'Technology',
       date: 'Nov 6 · 13:30',
       location: 'Computer Lab B',
-      policy: 'Waitlist available',
+      policy: 'Registration required',
     ),
   ];
   static const upcoming = <CampusEvent>[
@@ -235,20 +235,12 @@ abstract final class EviaMockData {
     ],
     'Time': ['Any time', 'Morning', 'Afternoon', 'Evening'],
     'Duration': ['Any duration', 'Under 1 hour', '1–3 hours', 'Over 3 hours'],
-    'Audience': [
-      'Any audience',
-      'Open to Everyone',
-      'Students from Any University',
-      'Host University Only',
-      'Faculty Restricted',
-      'Club Members Only',
-    ],
+    'Audience': ['Any audience', 'Open to Everyone'],
     'Registration Policy': ['Any', 'Registration Required', 'Walk-in Allowed'],
     'Availability': [
       'Any',
       'Spots Available',
       'Full',
-      'Waitlist Available',
       'Unlimited Registration',
     ],
   };

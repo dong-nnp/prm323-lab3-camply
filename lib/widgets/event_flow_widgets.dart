@@ -93,7 +93,11 @@ class FlowEventSummary extends StatelessWidget {
                   if (event.id != 'music-live' && event.id != 'club-live')
                     Positioned.fill(
                       child: switch (event.image) {
-                        final image? => Image.asset(image, fit: BoxFit.cover),
+                        final image? => catalogImage(
+                          image,
+                          FlowAssets.image(screen, 0),
+                          fit: BoxFit.cover,
+                        ),
                         null => const ColoredBox(
                           color: AppColors.primarySoft,
                           child: Icon(Icons.event_outlined),
@@ -106,7 +110,8 @@ class FlowEventSummary extends StatelessWidget {
                       top: -73,
                       width: 334,
                       height: 715.5,
-                      child: Image.asset(
+                      child: catalogImage(
+                        event.image,
                         FlowAssets.image(screen, 0),
                         fit: BoxFit.fill,
                       ),

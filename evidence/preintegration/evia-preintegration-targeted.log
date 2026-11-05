@@ -1,0 +1,10 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart
+00:00 +0: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: milestone claim waits for the server, rejects double taps and uses the server wallet
+00:00 +1: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: unavailable backend cannot finish onboarding or claim milestone money
+00:00 +2: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: cancelling forfeits the held deposit without crediting available coins
+00:00 +3: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: daily policy, Cafe price and available filters match confirmed scope
+00:00 +4: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: registration accepts FPT identity and rejects other school domains
+00:00 +5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/preintegration_policy_screens_test.dart: onboarding has no Skip and cannot navigate on an unavailable save
+00:01 +6: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/preintegration_policy_screens_test.dart: full event offers browsing rather than a waitlist or fake registration
+00:02 +7: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/preintegration_policy_screens_test.dart: unsupported verification filters are hidden and milestone claims are distinct from unlocked progress
+00:02 +8: All tests passed!

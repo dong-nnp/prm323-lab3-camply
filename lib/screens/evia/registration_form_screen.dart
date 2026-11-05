@@ -15,6 +15,9 @@ import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
+import '../../viewmodels/flow1_view_model.dart';
+import '../../core/utils/exception_mapper.dart';
+import '../../widgets/status_widgets.dart';
 
 class RegistrationFormScreen extends ConsumerStatefulWidget {
   const RegistrationFormScreen({
@@ -40,7 +43,10 @@ class _RegistrationFormScreenState
   void initState() {
     super.initState();
     Future.microtask(() {
-      if (mounted && !widget.resume) {
+      if (mounted &&
+          (!widget.resume ||
+              ref.read(registrationViewModelProvider).eventId !=
+                  widget.eventId)) {
         ref
             .read(registrationViewModelProvider.notifier)
             .preset(widget.view, widget.eventId);
@@ -61,13 +67,17 @@ class _RegistrationFormScreenState
         .read(registrationViewModelProvider.notifier)
         .submit();
     if (!mounted) return;
+    final vm = ref.read(registrationViewModelProvider.notifier);
+    final suffix = vm.live
+        ? '?event=${ref.read(registrationViewModelProvider).eventId}'
+        : '';
     switch (status) {
       case RegistrationStatus.success:
-        context.go('/registration/success');
+        context.go('/registration/success$suffix');
       case RegistrationStatus.failed:
-        context.push('/registration/failed');
+        context.push('/registration/failed$suffix');
       case RegistrationStatus.full:
-        context.go('/registration/full');
+        context.go('/registration/full$suffix');
       default:
         break;
     }
@@ -90,7 +100,24 @@ class _RegistrationFormScreenState
         : errors
         ? '2083:5329'
         : '2083:5709';
-    final event = vm.findEvent(widget.resume ? state.eventId : widget.eventId);
+    final id = widget.resume ? state.eventId : widget.eventId;
+    if (vm.live && state.eventId != widget.eventId) {
+      return const EviaPage(child: Center(child: AppLoadingWidget()));
+    }
+    final remote = vm.live ? ref.watch(flow1EventProvider(id)) : null;
+    if (remote != null && !remote.hasValue) {
+      return EviaPage(
+        child: Center(
+          child: remote.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(remote.error!).message,
+                  onRetry: () => ref.invalidate(flow1EventProvider(id)),
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final event = vm.findEvent(id);
     if (event == null) {
       return const EviaPage(
         header: ActivityHeader('Event Registration'),
@@ -98,6 +125,7 @@ class _RegistrationFormScreenState
       );
     }
     final hasDeposit = event.deposit > 0;
+
     final data = {
       'name': state.name,
       'studentId': state.studentId,
@@ -173,7 +201,9 @@ class _RegistrationFormScreenState
                         ? 'Accept registration and deposit terms'
                         : 'Accept registration terms',
                     child: InkWell(
-                      onTap: loading ? null : () => vm.agree(!state.agreed),
+                      onTap: loading || vm.pendingConfirmation
+                          ? null
+                          : () => vm.agree(!state.agreed),
                       child: SizedBox.square(
                         dimension: AppSizes.minimumTouchTarget,
                         child: Center(
@@ -205,7 +235,7 @@ class _RegistrationFormScreenState
                 else
                   Checkbox(
                     value: state.agreed,
-                    onChanged: loading
+                    onChanged: loading || vm.pendingConfirmation
                         ? null
                         : (value) => vm.agree(value ?? false),
                     side: BorderSide(
@@ -226,7 +256,14 @@ class _RegistrationFormScreenState
                             children: [
                               const Text('I agree to the '),
                               InkWell(
-                                onTap: () => _terms(context, hasDeposit),
+                                onTap: () => _terms(
+                                  context,
+                                  hasDeposit,
+                                  vm.live
+                                      ? (vm.remoteEvent(id).terms?['text']
+                                            as String?)
+                                      : null,
+                                ),
                                 child: Text(
                                   hasDeposit
                                       ? 'event registration and deposit terms.'
@@ -354,12 +391,17 @@ class _RegistrationFormScreenState
   }
 }
 
-void _terms(BuildContext context, bool hasDeposit) => showActivityHelp(
+void _terms(
+  BuildContext context,
+  bool hasDeposit, [
+  String? serverTerms,
+]) => showActivityHelp(
   context,
   hasDeposit ? 'Registration and deposit terms' : 'Registration terms',
-  hasDeposit
-      ? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Refunds and cancellations follow the event deposit policy.'
-      : 'Review your registration information and cancel your registration if you cannot attend.',
+  serverTerms ??
+      (hasDeposit
+          ? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit.'
+          : 'Review your registration information and cancel your registration if you cannot attend.'),
 );
 
 class _RegistrationField extends ConsumerWidget {
@@ -379,12 +421,7 @@ class _RegistrationField extends ConsumerWidget {
     final state = ref.watch(registrationViewModelProvider);
     final vm = ref.read(registrationViewModelProvider.notifier);
     final field = ['name', 'studentId', 'email', 'phone'][index];
-    final label = [
-      'Full Name',
-      'Student ID',
-      legacy && screen != '2083:4627' ? 'Email' : 'University Email',
-      'Phone Number',
-    ][index];
+    final label = ['Full Name', 'Student ID', 'Email', 'Phone Number'][index];
     final error = state.errors[field];
     final loadingReference = screen == '2083:5987';
     final leading = legacy
@@ -403,6 +440,9 @@ class _RegistrationField extends ConsumerWidget {
           label: label,
           controller: controller,
           onChanged: (value) => vm.edit(field, value),
+          enabled:
+              state.status != RegistrationStatus.loading &&
+              !vm.pendingConfirmation,
           keyboardType: index == 2
               ? TextInputType.emailAddress
               : index == 3
@@ -410,8 +450,8 @@ class _RegistrationField extends ConsumerWidget {
               : TextInputType.text,
           hintText: [
             'e.g. Alex Morgan',
-            'e.g. STU-2024-890',
-            'e.g. alex.m@university.edu',
+            'e.g. SE123456',
+            'e.g. alex.m@fpt.edu.vn',
             'e.g., +1 (555) 019-2834',
           ][index],
           labelWidget: Row(
@@ -432,7 +472,8 @@ class _RegistrationField extends ConsumerWidget {
                   style: FlowTheme.fieldLabel,
                 ),
               ),
-              if (!legacy &&
+              if (!vm.live &&
+                  !legacy &&
                   !errors &&
                   index == 1 &&
                   state.studentId == RegistrationMockData.studentId)
@@ -529,6 +570,8 @@ class _DepositSummary extends ConsumerWidget {
     final balance = ref.watch(
       activityViewModelProvider.select((s) => s.available),
     );
+    final vm = ref.read(registrationViewModelProvider.notifier);
+    final event = vm.event(ref.watch(registrationViewModelProvider).eventId);
     final error = screen == '2083:5329';
     return EviaCard(
       child: Column(
@@ -558,9 +601,9 @@ class _DepositSummary extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Flexible(
+              Flexible(
                 child: Text(
-                  '+120 coins',
+                  vm.live ? '+${event.coins} coins' : '+120 coins',
                   textAlign: TextAlign.right,
                   style: TextStyle(color: AppColors.warning),
                 ),
@@ -591,7 +634,12 @@ class _DepositSummary extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Flexible(child: Text('100 coins', style: EviaTheme.label)),
+              Flexible(
+                child: Text(
+                  vm.live ? '${event.deposit} coins' : '100 coins',
+                  style: EviaTheme.label,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -607,7 +655,10 @@ class _DepositSummary extends ConsumerWidget {
               children: [
                 Text('Available Coins: $balance', style: EviaTheme.caption),
                 const Text('•'),
-                const Text('Deposit: 100', style: EviaTheme.caption),
+                Text(
+                  vm.live ? 'Deposit: ${event.deposit}' : 'Deposit: 100',
+                  style: EviaTheme.caption,
+                ),
                 const Text('•'),
                 Text(
                   'After: confirmed by server',
@@ -622,7 +673,7 @@ class _DepositSummary extends ConsumerWidget {
   }
 }
 
-class _RegistrationNotice extends StatelessWidget {
+class _RegistrationNotice extends ConsumerWidget {
   const _RegistrationNotice({
     required this.screen,
     required this.legacy,
@@ -631,56 +682,64 @@ class _RegistrationNotice extends StatelessWidget {
   final String screen;
   final bool legacy, hasDeposit;
   @override
-  Widget build(BuildContext context) => EviaCard(
-    color: AppColors.primarySoft,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (screen != '2083:5987')
-          ActivityIcon(
-            screen,
-            legacy
-                ? screen == '2083:4627'
-                      ? 'imgSvg5'
-                      : 'imgSvg'
-                : screen == '2083:5329'
-                ? 'imgSvg10'
-                : 'imgContainer6',
-          ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Before You Register', style: EviaTheme.label),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                legacy
-                    ? "We'll ask you to confirm your attendance 2–3 days before the event."
-                    : hasDeposit
-                    ? "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Refunds and cancellations follow the event's deposit policy."
-                    : 'Review your information before confirming your registration.',
-                style: FlowTheme.helpText,
-              ),
-              if (legacy) ...[
+  Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.read(registrationViewModelProvider.notifier);
+    final id = ref.watch(registrationViewModelProvider).eventId;
+    final text = vm.live
+        ? (vm.remoteEvent(id).terms?['text'] as String?)
+        : null;
+    return EviaCard(
+      color: AppColors.primarySoft,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (screen != '2083:5987')
+            ActivityIcon(
+              screen,
+              legacy
+                  ? screen == '2083:4627'
+                        ? 'imgSvg5'
+                        : 'imgSvg'
+                  : screen == '2083:5329'
+                  ? 'imgSvg10'
+                  : 'imgContainer6',
+            ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Before You Register', style: EviaTheme.label),
                 const SizedBox(height: AppSpacing.sm),
-                const Text(
-                  "If you can't attend, please cancel to free up your spot. Your ticket stays valid even if you miss the reminder.",
+                Text(
+                  text ??
+                      (legacy
+                          ? "We'll ask you to confirm your attendance 2–3 days before the event."
+                          : hasDeposit
+                          ? "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit."
+                          : "Review your information before confirming your registration."),
                   style: FlowTheme.helpText,
                 ),
-              ] else
-                TextButton(
-                  onPressed: () => _terms(context, hasDeposit),
-                  child: Text(
-                    hasDeposit
-                        ? 'View deposit & cancellation policy →'
-                        : 'View registration terms →',
+                if (legacy) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  const Text(
+                    "If you can't attend, please cancel to free up your spot. Your ticket stays valid even if you miss the reminder.",
+                    style: FlowTheme.helpText,
                   ),
-                ),
-            ],
+                ] else
+                  TextButton(
+                    onPressed: () => _terms(context, hasDeposit, text),
+                    child: Text(
+                      hasDeposit
+                          ? 'View deposit & cancellation policy →'
+                          : 'View registration terms →',
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

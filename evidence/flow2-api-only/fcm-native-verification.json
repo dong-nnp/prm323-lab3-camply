@@ -1,0 +1,14 @@
+{
+  "project": "prm393-31822",
+  "uid": "evia-demo-staff-v1",
+  "notificationId": "flow2-fcm-native-20261105",
+  "permissionDialogObserved": true,
+  "registeredDeviceCount": 1,
+  "androidApi": 34,
+  "systemNotificationKey": "0|com.example.prm393_lab03|0|flow2-fcm-native-20261105|10313",
+  "observedTitle": "[DEMO] FCM Evia da ket noi",
+  "openedEventId": "demo-career-talk",
+  "permissionScreenshotSha256": "c7d9ef1d62daa5c428097628680f27911a2d64ae05e13b036ce9f21d2d7bc1d9",
+  "openedEventScreenshotSha256": "aa835f2edff959a999c274260062732f253ffeff889c5a5874efe3bfc82027cb",
+  "scope": "Observed permission prompt, Android tray delivery and tap opening expected event; no broadcast"
+}

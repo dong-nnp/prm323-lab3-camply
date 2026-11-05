@@ -25,6 +25,11 @@ class EviaFiltersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filters = ref.watch(eviaViewModelProvider.select((s) => s.draft));
     final vm = ref.read(eviaViewModelProvider.notifier);
+    final groups = {
+      ...EviaMockData.filterGroups,
+      if (vm.live) 'Category': vm.categories,
+    };
+    final today = !vm.live ? EviaMockData.referenceDate : DateTime.now();
     return EviaPage(
       header: Container(
         color: AppColors.surface,
@@ -71,7 +76,7 @@ class EviaFiltersScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final entry in EviaMockData.filterGroups.entries) ...[
+            for (final entry in groups.entries) ...[
               if (entry.key != 'Category')
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
@@ -100,9 +105,13 @@ class EviaFiltersScreen extends ConsumerWidget {
                         if (entry.key == 'Date' && value == 'Custom range') {
                           final range = await showDateRangePicker(
                             context: context,
-                            firstDate: DateTime(2026),
-                            lastDate: DateTime(2030),
-                            currentDate: EviaMockData.referenceDate,
+                            firstDate: !vm.live
+                                ? DateTime(2026)
+                                : DateTime(today.year - 1),
+                            lastDate: !vm.live
+                                ? DateTime(2030)
+                                : DateTime(today.year + 5),
+                            currentDate: today,
                             initialDateRange:
                                 filters.rangeStart != null &&
                                     filters.rangeEnd != null
@@ -132,35 +141,6 @@ class EviaFiltersScreen extends ConsumerWidget {
                     style: EviaTheme.caption,
                   ),
                 ),
-              if (entry.key == 'Audience') ...[
-                const SizedBox(height: AppSpacing.lg),
-                EviaCard(
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Only events I'm eligible for",
-                              style: EviaTheme.label,
-                            ),
-                            SizedBox(height: AppSpacing.xs),
-                            Text(
-                              'Based on your verified student and club information.',
-                              style: EviaTheme.caption,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: filters.eligibleOnly,
-                        onChanged: vm.setEligible,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ],
             const SizedBox(height: AppSpacing.section),
           ],

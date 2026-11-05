@@ -1,0 +1,40 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T13:32:26.375Z",
+  "uid": "evia-demo-staff-v1",
+  "demoAttendanceEnabled": true,
+  "wallet": {
+    "heldCoins": 50,
+    "availableCoins": 150,
+    "version": 3,
+    "updatedAt": "2026-11-05T09:23:47.176Z"
+  },
+  "events": [
+    {
+      "eventId": "demo-mobile-workshop",
+      "state": "registered",
+      "going": false,
+      "attendance": null
+    },
+    {
+      "eventId": "demo-career-talk",
+      "state": "registered",
+      "going": false,
+      "attendance": null
+    }
+  ],
+  "notifications": [
+    {
+      "id": "fb80dd4fc185982255b1d6187c3d7edd53ef04b9d38d7fa93a3ed938a728b41d",
+      "type": "registration_confirmed",
+      "read": false,
+      "title": "Đăng ký thành công"
+    },
+    {
+      "id": "5ea82e8a2de4406604b6cbe96b1beb5227dcc82e9d7943c911b5a13e5aad0695",
+      "type": "registration_confirmed",
+      "read": false,
+      "title": "Đăng ký thành công"
+    }
+  ]
+}

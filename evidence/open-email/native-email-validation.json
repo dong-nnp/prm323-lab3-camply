@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-11-05T10:04:01.2482385Z",
+  "device": "SM-G996N / R3CR60CT0WZ",
+  "apkSha256": "0cebcfae77d842d730ce24e293cdef89682fa7f36c4cadbf5c8dca74bf5deee6",
+  "scope": "Negative login with reserved example.org domain",
+  "observed": "Firebase credential error instead of email domain validation rejection",
+  "accountCreated": false,
+  "emailSent": false,
+  "positiveExternalAccountLoginTested": false
+}

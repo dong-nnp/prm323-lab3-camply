@@ -1,0 +1,13 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow1_screens_test.dart
+00:00 +0: live catalog keeps the original Discover and its cards
+00:01 +1: pushed Login returns to the original event after a session update
+00:01 +2: original eight interest cards wait for the server and send canonical IDs
+00:02 +3: failed onboarding keeps the original error text and supports retry
+00:02 +4: original full event disables Register and offers no Waitlist
+00:02 +5: original form loading result and ticket wait for a server receipt
+00:03 +6: opening success directly does not fabricate a registration
+00:03 +7: original filters send canonical category to API
+00:03 +8: catalog network error uses the existing retry component
+00:04 +9: old registration VM preserves receipt retry without fake coins
+00:04 +10: new interests keep unseen server IDs and failed save never changes the catalog
+00:04 +11: All tests passed!

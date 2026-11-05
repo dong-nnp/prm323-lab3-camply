@@ -1,0 +1,391 @@
+i  emulators: Starting emulators: auth, functions, firestore, storage
+i  emulators: Detected demo project ID "demo-evia-backend", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
++  firestore: Firestore Emulator was started in standard edition.
++  firestore: Firestore Emulator UI websocket is running on 9150.
+i  functions: Watching "D:\project\prm323-lab3\prm323-lab3-camply\functions" for Cloud Functions...
++  functions: Using node@22 from host.
+Serving at port 8074
+
+!!  functions: Failed to load function definition from source: FirebaseError: User code failed to load. Cannot determine backend specification. Timeout after 10000. See https://firebase.google.com/docs/functions/tips#avoid_deployment_timeouts_during_initialization'
+i  Running script: npm --prefix functions test
+
+> evia-backend@0.1.0 test
+> node --test --test-timeout=120000 --test-concurrency=1 test/*.test.mjs
+
+TAP version 13
+# Subtest: FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+ok 1 - FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+  ---
+  duration_ms: 3254.9678
+  type: 'test'
+  ...
+# Subtest: manual walk-in code shares QR attendance protection, expiry and retry receipts
+ok 2 - manual walk-in code shares QR attendance protection, expiry and retry receipts
+  ---
+  duration_ms: 4479.7041
+  type: 'test'
+  ...
+# Subtest: manual registered code requires event-scoped staff and cannot become a student self-check-in
+ok 3 - manual registered code requires event-scoped staff and cannot become a student self-check-in
+  ---
+  duration_ms: 997.3589
+  type: 'test'
+  ...
+# Subtest: manual code guessing is limited per authenticated account across process restarts
+ok 4 - manual code guessing is limited per authenticated account across process restarts
+  ---
+  duration_ms: 901.1543
+  type: 'test'
+  ...
+# Subtest: signup bonus is once per UID and interests cannot be forged/duplicated
+ok 5 - signup bonus is once per UID and interests cannot be forged/duplicated
+  ---
+  duration_ms: 483.1882
+  type: 'test'
+  ...
+# Subtest: last seat race has one winner, full event has no monetary side effects
+ok 6 - last seat race has one winner, full event has no monetary side effects
+  ---
+  duration_ms: 3754.4135
+  type: 'test'
+  ...
+# Subtest: cancel refunds 30 percent once and opens exactly one place to another user
+ok 7 - cancel refunds 30 percent once and opens exactly one place to another user
+  ---
+  duration_ms: 3587.2114
+  type: 'test'
+  ...
+# Subtest: cancellation rounds down, uses the original held deposit and never grants attendance
+ok 8 - cancellation rounds down, uses the original held deposit and never grants attendance
+  ---
+  duration_ms: 1378.5847
+  type: 'test'
+  ...
+# Subtest: cancellation racing check-in settles the deposit by exactly one path
+ok 9 - cancellation racing check-in settles the deposit by exactly one path
+  ---
+  duration_ms: 578.9578
+  type: 'test'
+  ...
+# Subtest: stale terms/deposit and requestId conflicts do not change wallet
+ok 10 - stale terms/deposit and requestId conflicts do not change wallet
+  ---
+  duration_ms: 458.1703
+  type: 'test'
+  ...
+# Subtest: scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+ok 11 - scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+  ---
+  duration_ms: 976.4094
+  type: 'test'
+  ...
+# Subtest: walk-in Going is only an intent and QR verification is unique/window-bound
+ok 12 - walk-in Going is only an intent and QR verification is unique/window-bound
+  ---
+  duration_ms: 3846.6224
+  type: 'test'
+  ...
+# Subtest: daily race grants once; Vietnam midnight advances; gap resets streak
+ok 13 - daily race grants once; Vietnam midnight advances; gap resets streak
+  ---
+  duration_ms: 3665.0143
+  type: 'test'
+  ...
+# Subtest: stock=1 concurrent redemption yields one voucher, no double debit on retry
+ok 14 - stock=1 concurrent redemption yields one voucher, no double debit on retry
+  ---
+  duration_ms: 3619.0189
+  type: 'test'
+  ...
+# Subtest: stale reward price/terms and insufficient balance leave stock unchanged
+ok 15 - stale reward price/terms and insufficient balance leave stock unchanged
+  ---
+  duration_ms: 415.8985
+  type: 'test'
+  ...
+# Subtest: follow/unfollow races keep counters correct and do not imply membership
+ok 16 - follow/unfollow races keep counters correct and do not imply membership
+  ---
+  duration_ms: 6912.1725
+  type: 'test'
+  ...
+# Subtest: notification read scope and mark-all cutoff are enforced
+ok 17 - notification read scope and mark-all cutoff are enforced
+  ---
+  duration_ms: 387.8903
+  type: 'test'
+  ...
+# Subtest: Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+ok 18 - Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+  ---
+  duration_ms: 1128.1058
+  type: 'test'
+  ...
+# Subtest: Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+ok 19 - Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+  ---
+  duration_ms: 605.8346
+  type: 'test'
+  ...
+# Subtest: catalog feeds and cursors preserve public scope and owner event union
+ok 20 - catalog feeds and cursors preserve public scope and owner event union
+  ---
+  duration_ms: 694.4751
+  type: 'test'
+  ...
+# Subtest: FCM token reassignment and rotation remove the previous account binding
+ok 21 - FCM token reassignment and rotation remove the previous account binding
+  ---
+  duration_ms: 482.9227
+  type: 'test'
+  ...
+# Subtest: FCM device cap rejects an extra installation without deleting registered tokens
+ok 22 - FCM device cap rejects an extra installation without deleting registered tokens
+  ---
+  duration_ms: 883.02
+  type: 'test'
+  ...
+# Subtest: Vietnamese search matches d-stroke and diacritics without losing accents
+ok 23 - Vietnamese search matches d-stroke and diacritics without losing accents
+  ---
+  duration_ms: 280.0941
+  type: 'test'
+  ...
+# Subtest: cancelled owner can compete for the reopened seat with a new ticket
+ok 24 - cancelled owner can compete for the reopened seat with a new ticket
+  ---
+  duration_ms: 3509.3761
+  type: 'test'
+  ...
+# Subtest: reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+ok 25 - reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+  ---
+  duration_ms: 701.2559
+  type: 'test'
+  ...
+# Subtest: only authorized admins consume a sponsor voucher once without another debit
+ok 26 - only authorized admins consume a sponsor voucher once without another debit
+  ---
+  duration_ms: 3382.736
+  type: 'test'
+  ...
+# Subtest: voucher verification rejects expired codes and forged admin permissions
+ok 27 - voucher verification rejects expired codes and forged admin permissions
+  ---
+  duration_ms: 507.1682
+  type: 'test'
+  ...
+# Subtest: physical reward creates no voucher; expired voucher code is denied
+ok 28 - physical reward creates no voucher; expired voucher code is denied
+  ---
+  duration_ms: 408.5734
+  type: 'test'
+  ...
+# Subtest: real callable transport validates Firebase Auth and returns stable error contract
+not ok 29 - real callable transport validates Firebase Auth and returns stable error contract
+  ---
+  duration_ms: 329.3893
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\backend.test.mjs:425:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    404 !== 401
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 401
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/backend.test.mjs:428:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: verified registration QR unlocks a milestone and manual claim adds only its bonus
+ok 30 - verified registration QR unlocks a milestone and manual claim adds only its bonus
+  ---
+  duration_ms: 946.3482
+  type: 'test'
+  ...
+# Subtest: imported terms versions fit registration and redemption requests
+ok 31 - imported terms versions fit registration and redemption requests
+  ---
+  duration_ms: 32.2985
+  type: 'test'
+  ...
+# Subtest: catalog rejects duplicate IDs, invented counters and restricted audience
+ok 32 - catalog rejects duplicate IDs, invented counters and restricted audience
+  ---
+  duration_ms: 2.314
+  type: 'test'
+  ...
+# Subtest: import dry-run validates input without initializing Firebase or writing documents
+ok 33 - import dry-run validates input without initializing Firebase or writing documents
+  ---
+  duration_ms: 611.3939
+  type: 'test'
+  ...
+# Subtest: import dry-run rejects an empty catalog before any Firebase access
+ok 34 - import dry-run rejects an empty catalog before any Firebase access
+  ---
+  duration_ms: 788.0758
+  type: 'test'
+  ...
+# Subtest: milestone catalog rejects unsafe earning policies and unknown metric types
+ok 35 - milestone catalog rejects unsafe earning policies and unknown metric types
+  ---
+  duration_ms: 1.5857
+  type: 'test'
+  ...
+# Subtest: generated catalog uses valid references/taxonomy and includes only disclosed demo content
+ok 36 - generated catalog uses valid references/taxonomy and includes only disclosed demo content
+  ---
+  duration_ms: 36.4314
+  type: 'test'
+  ...
+# Subtest: live windows permit registration and walk-in while full/last-ticket fixtures need no invented users
+ok 37 - live windows permit registration and walk-in while full/last-ticket fixtures need no invented users
+  ---
+  duration_ms: 5.1205
+  type: 'test'
+  ...
+# Subtest: seed command defaults to a dry run without SDK credentials, role grants or network
+ok 38 - seed command defaults to a dry run without SDK credentials, role grants or network
+  ---
+  duration_ms: 792.001
+  type: 'test'
+  ...
+# Subtest: publication notifies active followers once and does not broadcast to every user
+ok 39 - publication notifies active followers once and does not broadcast to every user
+  ---
+  duration_ms: 3860.9197
+  type: 'test'
+  ...
+# Subtest: schedule updates target current registrants and Going users with idempotent receipts
+ok 40 - schedule updates target current registrants and Going users with idempotent receipts
+  ---
+  duration_ms: 311.2776
+  type: 'test'
+  ...
+# Subtest: out-of-order event updates cannot notify users with stale schedules
+ok 41 - out-of-order event updates cannot notify users with stale schedules
+  ---
+  duration_ms: 389.5176
+  type: 'test'
+  ...
+# Subtest: three-day reminder uses a 72-hour cutoff and cannot duplicate on overlapping job runs
+ok 42 - three-day reminder uses a 72-hour cutoff and cannot duplicate on overlapping job runs
+  ---
+  duration_ms: 3916.3758
+  type: 'test'
+  ...
+# Subtest: reminders exclude cancelled and late-joining participation
+ok 43 - reminders exclude cancelled and late-joining participation
+  ---
+  duration_ms: 325.4456
+  type: 'test'
+  ...
+# Subtest: disabled users and ended events receive no new notifications or reminders
+ok 44 - disabled users and ended events receive no new notifications or reminders
+  ---
+  duration_ms: 252.9626
+  type: 'test'
+  ...
+# Subtest: monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+ok 45 - monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+  ---
+  duration_ms: 4063.8327
+  type: 'test'
+  ...
+# Subtest: no-show settlement forfeits only held deposit once after both event and check-in end
+ok 46 - no-show settlement forfeits only held deposit once after both event and check-in end
+  ---
+  duration_ms: 3057.2864
+  type: 'test'
+  ...
+# Subtest: no-show job leaves cancelled events and already attended registrations untouched
+ok 47 - no-show job leaves cancelled events and already attended registrations untouched
+  ---
+  duration_ms: 121.3856
+  type: 'test'
+  ...
+# Subtest: approved five milestone policies are preserved as data, not a fixed-size runtime list
+ok 48 - approved five milestone policies are preserved as data, not a fixed-size runtime list
+  ---
+  duration_ms: 742.7905
+  type: 'test'
+  ...
+# Subtest: progress includes historical verified attendance, excludes registration/Going/daily and other users
+ok 49 - progress includes historical verified attendance, excludes registration/Going/daily and other users
+  ---
+  duration_ms: 502.3943
+  type: 'test'
+  ...
+# Subtest: unearned/client-forged claims do not create money or claim records
+ok 50 - unearned/client-forged claims do not create money or claim records
+  ---
+  duration_ms: 365.5151
+  type: 'test'
+  ...
+# Subtest: concurrent retries and restarts award a milestone only once with ledger and receipt
+ok 51 - concurrent retries and restarts award a milestone only once with ledger and receipt
+  ---
+  duration_ms: 3424.6012
+  type: 'test'
+  ...
+# Subtest: all five manual claims total 1100 coins and never auto-grant from progress reads
+ok 52 - all five manual claims total 1100 coins and never auto-grant from progress reads
+  ---
+  duration_ms: 855.2666
+  type: 'test'
+  ...
+# Subtest: admin adds/edits goals with version guards; claimed history never pays a second time
+ok 53 - admin adds/edits goals with version guards; claimed history never pays a second time
+  ---
+  duration_ms: 942.2133
+  type: 'test'
+  ...
+# Subtest: disabled and malformed server policies cannot award coins
+ok 54 - disabled and malformed server policies cannot award coins
+  ---
+  duration_ms: 461.6801
+  type: 'test'
+  ...
+# Subtest: Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+ok 55 - Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+  ---
+  duration_ms: 484.063
+  type: 'test'
+  ...
+# Subtest: daily rewards follow local calendar days, cap award, and reset after gaps
+ok 56 - daily rewards follow local calendar days, cap award, and reset after gaps
+  ---
+  duration_ms: 16.5999
+  type: 'test'
+  ...
+1..56
+# tests 56
+# suites 0
+# pass 55
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 83541.4897
+!  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  firestore: Stopping Firestore Emulator
+!  Firestore Emulator has exited upon receiving signal: SIGINT
+i  auth: Stopping Authentication Emulator
+i  storage: Stopping Storage Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "npm --prefix functions test" exited with code 1

@@ -1,0 +1,770 @@
+
+> evia-backend@0.1.0 test:emulator
+> npm run build && cd .. && firebase emulators:exec --project demo-evia-backend --only auth,firestore,functions,storage "npm --prefix functions test"
+
+
+> evia-backend@0.1.0 build
+> tsc
+
+i  emulators: Starting emulators: auth, functions, firestore, storage
+i  emulators: Detected demo project ID "demo-evia-backend", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
++  firestore: Firestore Emulator was started in standard edition.
++  firestore: Firestore Emulator UI websocket is running on 9150.
+i  functions: Watching "D:\project\prm323-lab3\prm323-lab3-camply\functions" for Cloud Functions...
++  functions: Using node@22 from host.
+Serving at port 8886
+
++  functions: Loaded functions definitions from source: cancelRegistration, claimDailyCheckin, claimEventMilestone, deliverNotification, eventNotifications, eventReminderSchedule, followOrganizer, getAccount, getEvent, getEventMilestones, getOperationStatus, getOrganizer, getPublicCatalog, getReward, getServerInfo, getTicket, getTicketQr, getVoucherCode, grantMonthlyGift, initializeUser, issueWalkInQr, listMyEvents, listOwned, markNotificationsRead, monthlyGiftSchedule, noShowSchedule, redeemReward, registerDevice, registerForEvent, saveInterests, setBookmark, setWalkInGoing, unfollowOrganizer, unregisterDevice, updateProfile, upsertEventMilestone, verifyRegisteredCode, verifyRegisteredTicket, verifyVoucher, verifyWalkInCode, verifyWalkInQr.
++  functions[asia-southeast1-cancelRegistration]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/cancelRegistration).
++  functions[asia-southeast1-claimDailyCheckin]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/claimDailyCheckin).
++  functions[asia-southeast1-claimEventMilestone]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/claimEventMilestone).
++  functions[asia-southeast1-deliverNotification]: firestore function initialized.
++  functions[asia-southeast1-eventNotifications]: firestore function initialized.
+i  functions[asia-southeast1-eventReminderSchedule]: function ignored because the pubsub emulator does not exist or is not running.
++  functions[asia-southeast1-followOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/followOrganizer).
++  functions[asia-southeast1-getAccount]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getAccount).
++  functions[asia-southeast1-getEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getEvent).
++  functions[asia-southeast1-getEventMilestones]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getEventMilestones).
++  functions[asia-southeast1-getOperationStatus]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOperationStatus).
++  functions[asia-southeast1-getOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOrganizer).
++  functions[asia-southeast1-getPublicCatalog]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getPublicCatalog).
++  functions[asia-southeast1-getReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getReward).
++  functions[asia-southeast1-getServerInfo]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getServerInfo).
++  functions[asia-southeast1-getTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicket).
++  functions[asia-southeast1-getTicketQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicketQr).
++  functions[asia-southeast1-getVoucherCode]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getVoucherCode).
++  functions[asia-southeast1-grantMonthlyGift]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/grantMonthlyGift).
++  functions[asia-southeast1-initializeUser]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/initializeUser).
++  functions[asia-southeast1-issueWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/issueWalkInQr).
++  functions[asia-southeast1-listMyEvents]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listMyEvents).
++  functions[asia-southeast1-listOwned]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listOwned).
++  functions[asia-southeast1-markNotificationsRead]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/markNotificationsRead).
+i  functions[asia-southeast1-monthlyGiftSchedule]: function ignored because the pubsub emulator does not exist or is not running.
+i  functions[asia-southeast1-noShowSchedule]: function ignored because the pubsub emulator does not exist or is not running.
++  functions[asia-southeast1-redeemReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/redeemReward).
++  functions[asia-southeast1-registerDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerDevice).
++  functions[asia-southeast1-registerForEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerForEvent).
++  functions[asia-southeast1-saveInterests]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/saveInterests).
++  functions[asia-southeast1-setBookmark]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setBookmark).
++  functions[asia-southeast1-setWalkInGoing]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setWalkInGoing).
++  functions[asia-southeast1-unfollowOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unfollowOrganizer).
++  functions[asia-southeast1-unregisterDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unregisterDevice).
++  functions[asia-southeast1-updateProfile]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/updateProfile).
++  functions[asia-southeast1-upsertEventMilestone]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/upsertEventMilestone).
++  functions[asia-southeast1-verifyRegisteredCode]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyRegisteredCode).
++  functions[asia-southeast1-verifyRegisteredTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyRegisteredTicket).
++  functions[asia-southeast1-verifyVoucher]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyVoucher).
++  functions[asia-southeast1-verifyWalkInCode]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyWalkInCode).
++  functions[asia-southeast1-verifyWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyWalkInQr).
+i  Running script: npm --prefix functions test
+
+> evia-backend@0.1.0 test
+> node --test --test-timeout=120000 --test-concurrency=1 test/*.test.mjs
+
+TAP version 13
+# (node:27840) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+ok 1 - FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+  ---
+  duration_ms: 3973.41
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 21.6817ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 9.3343ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 7.6593ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 9.836ms
+# Subtest: manual walk-in code shares QR attendance protection, expiry and retry receipts
+ok 2 - manual walk-in code shares QR attendance protection, expiry and retry receipts
+  ---
+  duration_ms: 5028.6618
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.1611ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.2082ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.4462ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5012ms
+# Subtest: manual registered code requires event-scoped staff and cannot become a student self-check-in
+ok 3 - manual registered code requires event-scoped staff and cannot become a student self-check-in
+  ---
+  duration_ms: 892.9298
+  type: 'test'
+  ...
+# Subtest: manual code guessing is limited per authenticated account across process restarts
+ok 4 - manual code guessing is limited per authenticated account across process restarts
+  ---
+  duration_ms: 749.6317
+  type: 'test'
+  ...
+# Subtest: signup bonus is once per UID and interests cannot be forged/duplicated
+ok 5 - signup bonus is once per UID and interests cannot be forged/duplicated
+  ---
+  duration_ms: 364.3695
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 14.3481ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.7277ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.6955ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.9953ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.5833ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.501ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.4012ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.9041ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.1813ms
+# Subtest: last seat race has one winner, full event has no monetary side effects
+ok 6 - last seat race has one winner, full event has no monetary side effects
+  ---
+  duration_ms: 3242.8717
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8842ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 6.8375ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.0765ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 5.6138ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.4385ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.8309ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.1177ms
+# Subtest: cancel forfeits once and opens exactly one place to another user
+ok 7 - cancel forfeits once and opens exactly one place to another user
+  ---
+  duration_ms: 3753.6631
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 7.3624ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.1572ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.4062ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.9481ms
+# Subtest: stale terms/deposit and requestId conflicts do not change wallet
+ok 8 - stale terms/deposit and requestId conflicts do not change wallet
+  ---
+  duration_ms: 507.6744
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.0143ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5829ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.3971ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.9755ms
+# Subtest: scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+ok 9 - scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+  ---
+  duration_ms: 1118.3276
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.2277ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.3464ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8947ms
+# Subtest: walk-in Going is only an intent and QR verification is unique/window-bound
+ok 10 - walk-in Going is only an intent and QR verification is unique/window-bound
+  ---
+  duration_ms: 3751.8598
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.3296ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.9085ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.8015ms
+# Subtest: daily race grants once; Vietnam midnight advances; gap resets streak
+ok 11 - daily race grants once; Vietnam midnight advances; gap resets streak
+  ---
+  duration_ms: 4046.0451
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.7064ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.386ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 5.1563ms
+# Subtest: stock=1 concurrent redemption yields one voucher, no double debit on retry
+ok 12 - stock=1 concurrent redemption yields one voucher, no double debit on retry
+  ---
+  duration_ms: 3868.5057
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.4423ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.7653ms
+# Subtest: stale reward price/terms and insufficient balance leave stock unchanged
+ok 13 - stale reward price/terms and insufficient balance leave stock unchanged
+  ---
+  duration_ms: 414.1372
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.95ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.3986ms
+# Subtest: follow/unfollow races keep counters correct and do not imply membership
+ok 14 - follow/unfollow races keep counters correct and do not imply membership
+  ---
+  duration_ms: 6672.5935
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 6.0139ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.4773ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.7754ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.7042ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.9455ms
+# Subtest: notification read scope and mark-all cutoff are enforced
+ok 15 - notification read scope and mark-all cutoff are enforced
+  ---
+  duration_ms: 421.268
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.2408ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 27.1895ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.6362ms
+# Subtest: Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+ok 16 - Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+  ---
+  duration_ms: 689.0656
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.0343ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.3083ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 9.0479ms
+# Subtest: Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+ok 17 - Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+  ---
+  duration_ms: 601.9095
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 16.4018ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.558ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 1 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 228.6535ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 6.2108ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.2075ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.3577ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.3971ms
+# Subtest: catalog feeds and cursors preserve public scope and owner event union
+ok 18 - catalog feeds and cursors preserve public scope and owner event union
+  ---
+  duration_ms: 691.5329
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.31ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8356ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.5242ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.3297ms
+# Subtest: FCM token reassignment and rotation remove the previous account binding
+ok 19 - FCM token reassignment and rotation remove the previous account binding
+  ---
+  duration_ms: 556.137
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.6125ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.0046ms
+# Subtest: FCM device cap rejects an extra installation without deleting registered tokens
+ok 20 - FCM device cap rejects an extra installation without deleting registered tokens
+  ---
+  duration_ms: 957.4309
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.1803ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.6863ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+# Subtest: Vietnamese search matches d-stroke and diacritics without losing accents
+ok 21 - Vietnamese search matches d-stroke and diacritics without losing accents
+  ---
+  duration_ms: 294.247
+  type: 'test'
+  ...
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.9347ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.2168ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5033ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.5546ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.1746ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.5659ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.4905ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8982ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.1704ms
+# Subtest: cancelled owner can compete for the reopened seat with a new ticket
+ok 22 - cancelled owner can compete for the reopened seat with a new ticket
+  ---
+  duration_ms: 641.5731
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5031ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.7744ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.7322ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 1.886ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.2944ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 6.049ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.5089ms
+# Subtest: reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+ok 23 - reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+  ---
+  duration_ms: 741.1952
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.1872ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.6167ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.105ms
+# Subtest: only authorized admins consume a sponsor voucher once without another debit
+ok 24 - only authorized admins consume a sponsor voucher once without another debit
+  ---
+  duration_ms: 4062.4539
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.0394ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.2974ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.0448ms
+# Subtest: voucher verification rejects expired codes and forged admin permissions
+ok 25 - voucher verification rejects expired codes and forged admin permissions
+  ---
+  duration_ms: 521.4954
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.4148ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.9855ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.5815ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+# Subtest: physical reward creates no voucher; expired voucher code is denied
+ok 26 - physical reward creates no voucher; expired voucher code is denied
+  ---
+  duration_ms: 461.3841
+  type: 'test'
+  ...
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.6387ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.4254ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5639ms
+i  functions: Beginning execution of "asia-southeast1-getAccount"
+>  {"verifications":{"app":"MISSING","auth":"MISSING"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+i  functions: Finished "asia-southeast1-getAccount" in 23.5335ms
+i  functions: Beginning execution of "asia-southeast1-initializeUser"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+i  functions: Finished "asia-southeast1-initializeUser" in 237.562ms
+# Subtest: real callable transport validates Firebase Auth and returns stable error contract
+ok 27 - real callable transport validates Firebase Auth and returns stable error contract
+  ---
+  duration_ms: 4114.7735
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.5442ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.0595ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 5.0652ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.5486ms
+# Subtest: verified registration QR unlocks a milestone and manual claim adds only its bonus
+ok 28 - verified registration QR unlocks a milestone and manual claim adds only its bonus
+  ---
+  duration_ms: 777.3507
+  type: 'test'
+  ...
+# Subtest: imported terms versions fit registration and redemption requests
+ok 29 - imported terms versions fit registration and redemption requests
+  ---
+  duration_ms: 32.3116
+  type: 'test'
+  ...
+# Subtest: catalog rejects duplicate IDs, invented counters and restricted audience
+ok 30 - catalog rejects duplicate IDs, invented counters and restricted audience
+  ---
+  duration_ms: 5.3723
+  type: 'test'
+  ...
+# Subtest: import dry-run validates input without initializing Firebase or writing documents
+ok 31 - import dry-run validates input without initializing Firebase or writing documents
+  ---
+  duration_ms: 590.5149
+  type: 'test'
+  ...
+# Subtest: import dry-run rejects an empty catalog before any Firebase access
+ok 32 - import dry-run rejects an empty catalog before any Firebase access
+  ---
+  duration_ms: 561.2475
+  type: 'test'
+  ...
+# Subtest: milestone catalog rejects unsafe earning policies and unknown metric types
+ok 33 - milestone catalog rejects unsafe earning policies and unknown metric types
+  ---
+  duration_ms: 1.4077
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.1971ms
+# (node:29968) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.4586ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 6.7349ms
+# Subtest: publication notifies active followers once and does not broadcast to every user
+ok 34 - publication notifies active followers once and does not broadcast to every user
+  ---
+  duration_ms: 6530.3746
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8081ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.0573ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.0135ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.4683ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.1666ms
+# Subtest: schedule updates target current registrants and Going users with idempotent receipts
+ok 35 - schedule updates target current registrants and Going users with idempotent receipts
+  ---
+  duration_ms: 369.3282
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8718ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.1614ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.5981ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.7339ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.2285ms
+# Subtest: out-of-order event updates cannot notify users with stale schedules
+ok 36 - out-of-order event updates cannot notify users with stale schedules
+  ---
+  duration_ms: 298.3853
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 5.1463ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.9326ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.7641ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 7.0586ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.7524ms
+# Subtest: three-day reminder uses a 72-hour cutoff and cannot duplicate on overlapping job runs
+ok 37 - three-day reminder uses a 72-hour cutoff and cannot duplicate on overlapping job runs
+  ---
+  duration_ms: 5814.3947
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5333ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.8585ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.6762ms
+# Subtest: reminders exclude cancelled and late-joining participation
+ok 38 - reminders exclude cancelled and late-joining participation
+  ---
+  duration_ms: 311.6601
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.9717ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5254ms
+# Subtest: disabled users and ended events receive no new notifications or reminders
+ok 39 - disabled users and ended events receive no new notifications or reminders
+  ---
+  duration_ms: 310.3439
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.1135ms
+# (node:28412) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+ok 40 - monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+  ---
+  duration_ms: 6176.1258
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 4.8548ms
+# Subtest: no-show settlement forfeits only held deposit once after both event and check-in end
+ok 41 - no-show settlement forfeits only held deposit once after both event and check-in end
+  ---
+  duration_ms: 3466.5051
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.2247ms
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 2.8686ms
+# Subtest: no-show job leaves cancelled events and already attended registrations untouched
+ok 42 - no-show job leaves cancelled events and already attended registrations untouched
+  ---
+  duration_ms: 94.7613
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-eventNotifications"
+>  Event notifications prepared { createdCount: 0 }
+i  functions: Finished "asia-southeast1-eventNotifications" in 3.5074ms
+# (node:30032) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: approved five milestone policies are preserved as data, not a fixed-size runtime list
+ok 43 - approved five milestone policies are preserved as data, not a fixed-size runtime list
+  ---
+  duration_ms: 3441.3485
+  type: 'test'
+  ...
+# Subtest: progress includes historical verified attendance, excludes registration/Going/daily and other users
+ok 44 - progress includes historical verified attendance, excludes registration/Going/daily and other users
+  ---
+  duration_ms: 495.1773
+  type: 'test'
+  ...
+# Subtest: unearned/client-forged claims do not create money or claim records
+ok 45 - unearned/client-forged claims do not create money or claim records
+  ---
+  duration_ms: 368.4663
+  type: 'test'
+  ...
+# Subtest: concurrent retries and restarts award a milestone only once with ledger and receipt
+ok 46 - concurrent retries and restarts award a milestone only once with ledger and receipt
+  ---
+  duration_ms: 3172.0179
+  type: 'test'
+  ...
+# Subtest: all five manual claims total 1100 coins and never auto-grant from progress reads
+ok 47 - all five manual claims total 1100 coins and never auto-grant from progress reads
+  ---
+  duration_ms: 909.8683
+  type: 'test'
+  ...
+# Subtest: admin adds/edits goals with version guards; claimed history never pays a second time
+ok 48 - admin adds/edits goals with version guards; claimed history never pays a second time
+  ---
+  duration_ms: 796.3226
+  type: 'test'
+  ...
+# Subtest: disabled and malformed server policies cannot award coins
+ok 49 - disabled and malformed server policies cannot award coins
+  ---
+  duration_ms: 442.4412
+  type: 'test'
+  ...
+# Subtest: Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+ok 50 - Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+  ---
+  duration_ms: 472.2915
+  type: 'test'
+  ...
+# Subtest: daily rewards follow local calendar days, cap award, and reset after gaps
+ok 51 - daily rewards follow local calendar days, cap award, and reset after gaps
+  ---
+  duration_ms: 19.6472
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91593.6198
++  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  firestore: Stopping Firestore Emulator
+!  Firestore Emulator has exited upon receiving signal: SIGINT
+i  auth: Stopping Authentication Emulator
+i  storage: Stopping Storage Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

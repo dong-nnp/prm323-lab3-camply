@@ -1,0 +1,11 @@
+{
+  "project": "prm393-31822",
+  "functions": [
+    "getOperationStatus",
+    "getEventMilestones",
+    "claimEventMilestone",
+    "upsertEventMilestone"
+  ],
+  "success": true,
+  "completedAt": "2026-11-05T10:12:03.6228812Z"
+}

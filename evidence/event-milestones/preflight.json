@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-11-05T03:15:00.108Z",
+  "project": "prm393-31822",
+  "functionCount": 34,
+  "functions": [
+    {
+      "name": "verifyWalkInQr",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "claimDailyCheckin",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getAccount",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "deliverNotification",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "markNotificationsRead",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getVoucherCode",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "noShowSchedule",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getTicket",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "listMyEvents",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getServerInfo",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getTicketQr",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "initializeUser",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "setWalkInGoing",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "setBookmark",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "unfollowOrganizer",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getReward",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "followOrganizer",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "updateProfile",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "grantMonthlyGift",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "registerForEvent",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "redeemReward",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getOrganizer",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "saveInterests",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "monthlyGiftSchedule",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "cancelRegistration",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getPublicCatalog",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "listOwned",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "registerDevice",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "getEvent",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "unregisterDevice",
+      "state": "ACTIVE"
+    }
+  ],
+  "remoteConfigKeys": [],
+  "remoteConfigVersion": null,
+  "remoteConfigEtag": "etag-465411217120-0"
+}

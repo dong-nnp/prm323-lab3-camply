@@ -235,7 +235,7 @@ void main() {
       await tester.ensureVisible(login);
       await tester.tap(login);
       await tester.pumpAndSettle();
-      expect(find.text('Please enter a valid email address.'), findsOneWidget);
+      expect(find.text('Enter a valid email address.'), findsOneWidget);
       expect(container.read(eviaViewModelProvider).results, isFalse);
     },
   );

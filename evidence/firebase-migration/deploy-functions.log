@@ -1,0 +1,256 @@
+
+=== Deploying to 'prm393-31822'...
+
+i  deploying functions
+Running command: npm --prefix "$RESOURCE_DIR" run build
+
+> evia-backend@0.1.0 build
+> tsc
+
++  functions: Finished running predeploy script.
+i  functions: preparing codebase evia for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
+i  functions: Loading and analyzing source code for codebase evia to determine what to deploy
+Serving at port 8648
+
+i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled...
+i  functions: preparing functions directory for uploading...
+i  functions: packaged D:\project\prm323-lab3\prm323-lab3-camply\functions (99.83 KB) for uploading
+i  functions: ensuring required API run.googleapis.com is enabled...
+i  functions: ensuring required API eventarc.googleapis.com is enabled...
+i  functions: ensuring required API pubsub.googleapis.com is enabled...
+i  functions: ensuring required API storage.googleapis.com is enabled...
+i  functions: generating the service identity for pubsub.googleapis.com...
+i  functions: generating the service identity for eventarc.googleapis.com...
+!  functions: The following functions will newly be retried in case of failure: evia:deliverNotification(asia-southeast1). Retried executions are billed as any other execution, and functions are retried repeatedly until they either successfully execute or the maximum retry period has elapsed, which can be up to 7 days. For safety, you might want to ensure that your functions are idempotent; see https://firebase.google.com/docs/functions/retries to learn more.
++  functions: functions source uploaded successfully
+i  functions: creating Node.js 22 (2nd Gen) function evia:deliverNotification(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:cancelRegistration(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:claimDailyCheckin(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:followOrganizer(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getAccount(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getEvent(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getOperationStatus(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getOrganizer(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getPublicCatalog(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getReward(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getServerInfo(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getTicket(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getTicketQr(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:getVoucherCode(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:grantMonthlyGift(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:initializeUser(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:issueWalkInQr(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:listMyEvents(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:listOwned(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:markNotificationsRead(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:redeemReward(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:registerDevice(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:registerForEvent(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:saveInterests(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:setBookmark(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:setWalkInGoing(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:unfollowOrganizer(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:unregisterDevice(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:updateProfile(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:verifyRegisteredTicket(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:verifyVoucher(asia-southeast1)...
+i  functions: updating Node.js 22 (2nd Gen) function evia:verifyWalkInQr(asia-southeast1)...
+Could not create or update Cloud Run service delivernotification, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/delivernotification/revision_name/delivernotification-00001-pef&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22delivernotification%22%0Aresource.labels.revision_name%3D%22delivernotification-00001-pef%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service claimdailycheckin, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/claimdailycheckin/revision_name/claimdailycheckin-00002-jif&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22claimdailycheckin%22%0Aresource.labels.revision_name%3D%22claimdailycheckin-00002-jif%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getticket, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getticket/revision_name/getticket-00002-qoj&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getticket%22%0Aresource.labels.revision_name%3D%22getticket-00002-qoj%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getpubliccatalog, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getpubliccatalog/revision_name/getpubliccatalog-00002-caf&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getpubliccatalog%22%0Aresource.labels.revision_name%3D%22getpubliccatalog-00002-caf%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service cancelregistration, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/cancelregistration/revision_name/cancelregistration-00002-xox&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22cancelregistration%22%0Aresource.labels.revision_name%3D%22cancelregistration-00002-xox%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service registerdevice, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/registerdevice/revision_name/registerdevice-00002-dac&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22registerdevice%22%0Aresource.labels.revision_name%3D%22registerdevice-00002-dac%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service redeemreward, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/redeemreward/revision_name/redeemreward-00002-fah&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22redeemreward%22%0Aresource.labels.revision_name%3D%22redeemreward-00002-fah%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getticketqr, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getticketqr/revision_name/getticketqr-00002-vit&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getticketqr%22%0Aresource.labels.revision_name%3D%22getticketqr-00002-vit%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service grantmonthlygift, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/grantmonthlygift/revision_name/grantmonthlygift-00002-xet&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22grantmonthlygift%22%0Aresource.labels.revision_name%3D%22grantmonthlygift-00002-xet%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service initializeuser, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/initializeuser/revision_name/initializeuser-00001-yiq&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22initializeuser%22%0Aresource.labels.revision_name%3D%22initializeuser-00001-yiq%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service listowned, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/listowned/revision_name/listowned-00002-jej&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22listowned%22%0Aresource.labels.revision_name%3D%22listowned-00002-jej%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service issuewalkinqr, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/issuewalkinqr/revision_name/issuewalkinqr-00002-mub&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22issuewalkinqr%22%0Aresource.labels.revision_name%3D%22issuewalkinqr-00002-mub%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service listmyevents, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/listmyevents/revision_name/listmyevents-00002-sow&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22listmyevents%22%0Aresource.labels.revision_name%3D%22listmyevents-00002-sow%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getreward, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getreward/revision_name/getreward-00002-mat&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getreward%22%0Aresource.labels.revision_name%3D%22getreward-00002-mat%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service updateprofile, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/updateprofile/revision_name/updateprofile-00002-zot&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22updateprofile%22%0Aresource.labels.revision_name%3D%22updateprofile-00002-zot%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getvouchercode, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getvouchercode/revision_name/getvouchercode-00001-wuj&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getvouchercode%22%0Aresource.labels.revision_name%3D%22getvouchercode-00001-wuj%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service registerforevent, Container Healthcheck failed. Revision 'registerforevent-00002-wim' is not ready and cannot serve traffic. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/registerforevent/revision_name/registerforevent-00002-wim&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22registerforevent%22%0Aresource.labels.revision_name%3D%22registerforevent-00002-wim%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getorganizer, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getorganizer/revision_name/getorganizer-00002-cal&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getorganizer%22%0Aresource.labels.revision_name%3D%22getorganizer-00002-cal%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service setwalkingoing, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/setwalkingoing/revision_name/setwalkingoing-00002-til&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22setwalkingoing%22%0Aresource.labels.revision_name%3D%22setwalkingoing-00002-til%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service followorganizer, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/followorganizer/revision_name/followorganizer-00002-cad&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22followorganizer%22%0Aresource.labels.revision_name%3D%22followorganizer-00002-cad%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getoperationstatus, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getoperationstatus/revision_name/getoperationstatus-00002-rem&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getoperationstatus%22%0Aresource.labels.revision_name%3D%22getoperationstatus-00002-rem%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service saveinterests, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/saveinterests/revision_name/saveinterests-00002-jam&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22saveinterests%22%0Aresource.labels.revision_name%3D%22saveinterests-00002-jam%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service verifywalkinqr, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/verifywalkinqr/revision_name/verifywalkinqr-00002-gag&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22verifywalkinqr%22%0Aresource.labels.revision_name%3D%22verifywalkinqr-00002-gag%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getaccount, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getaccount/revision_name/getaccount-00002-huc&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getaccount%22%0Aresource.labels.revision_name%3D%22getaccount-00002-huc%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getevent, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getevent/revision_name/getevent-00002-qig&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getevent%22%0Aresource.labels.revision_name%3D%22getevent-00002-qig%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service verifyvoucher, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/verifyvoucher/revision_name/verifyvoucher-00002-qok&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22verifyvoucher%22%0Aresource.labels.revision_name%3D%22verifyvoucher-00002-qok%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service marknotificationsread, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/marknotificationsread/revision_name/marknotificationsread-00002-wor&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22marknotificationsread%22%0Aresource.labels.revision_name%3D%22marknotificationsread-00002-wor%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service unregisterdevice, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/unregisterdevice/revision_name/unregisterdevice-00001-ker&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22unregisterdevice%22%0Aresource.labels.revision_name%3D%22unregisterdevice-00001-ker%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service setbookmark, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/setbookmark/revision_name/setbookmark-00002-xok&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22setbookmark%22%0Aresource.labels.revision_name%3D%22setbookmark-00002-xok%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getserverinfo, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getserverinfo/revision_name/getserverinfo-00002-jim&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getserverinfo%22%0Aresource.labels.revision_name%3D%22getserverinfo-00002-jim%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service verifyregisteredticket, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/verifyregisteredticket/revision_name/verifyregisteredticket-00002-sij&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22verifyregisteredticket%22%0Aresource.labels.revision_name%3D%22verifyregisteredticket-00002-sij%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service unfolloworganizer, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/unfolloworganizer/revision_name/unfolloworganizer-00002-kec&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22unfolloworganizer%22%0Aresource.labels.revision_name%3D%22unfolloworganizer-00002-kec%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+!  functions: Deploys failed. Skipping deletes.
+
+Functions deploy had errors with the following functions:
+	evia:cancelRegistration(asia-southeast1)
+	evia:claimDailyCheckin(asia-southeast1)
+	evia:deliverNotification(asia-southeast1)
+	evia:followOrganizer(asia-southeast1)
+	evia:getAccount(asia-southeast1)
+	evia:getEvent(asia-southeast1)
+	evia:getOperationStatus(asia-southeast1)
+	evia:getOrganizer(asia-southeast1)
+	evia:getPublicCatalog(asia-southeast1)
+	evia:getReward(asia-southeast1)
+	evia:getServerInfo(asia-southeast1)
+	evia:getTicket(asia-southeast1)
+	evia:getTicketQr(asia-southeast1)
+	evia:getVoucherCode(asia-southeast1)
+	evia:grantMonthlyGift(asia-southeast1)
+	evia:initializeUser(asia-southeast1)
+	evia:issueWalkInQr(asia-southeast1)
+	evia:listMyEvents(asia-southeast1)
+	evia:listOwned(asia-southeast1)
+	evia:markNotificationsRead(asia-southeast1)
+	evia:redeemReward(asia-southeast1)
+	evia:registerDevice(asia-southeast1)
+	evia:registerForEvent(asia-southeast1)
+	evia:saveInterests(asia-southeast1)
+	evia:setBookmark(asia-southeast1)
+	evia:setWalkInGoing(asia-southeast1)
+	evia:unfollowOrganizer(asia-southeast1)
+	evia:unregisterDevice(asia-southeast1)
+	evia:updateProfile(asia-southeast1)
+	evia:verifyRegisteredTicket(asia-southeast1)
+	evia:verifyVoucher(asia-southeast1)
+	evia:verifyWalkInQr(asia-southeast1)
+Error: There was an error deploying functions:
+- Error Failed to create function deliverNotification in region asia-southeast1
+- Error Failed to update function cancelRegistration in region asia-southeast1
+- Error Failed to update function claimDailyCheckin in region asia-southeast1
+- Error Failed to update function followOrganizer in region asia-southeast1
+- Error Failed to update function getAccount in region asia-southeast1
+- Error Failed to update function getEvent in region asia-southeast1
+- Error Failed to update function getOperationStatus in region asia-southeast1
+- Error Failed to update function getOrganizer in region asia-southeast1
+- Error Failed to update function getPublicCatalog in region asia-southeast1
+- Error Failed to update function getReward in region asia-southeast1
+- Error Failed to update function getServerInfo in region asia-southeast1
+- Error Failed to update function getTicket in region asia-southeast1
+- Error Failed to update function getTicketQr in region asia-southeast1
+- Error Failed to update function getVoucherCode in region asia-southeast1
+- Error Failed to update function grantMonthlyGift in region asia-southeast1
+- Error Failed to update function initializeUser in region asia-southeast1
+- Error Failed to update function issueWalkInQr in region asia-southeast1
+- Error Failed to update function listMyEvents in region asia-southeast1
+- Error Failed to update function listOwned in region asia-southeast1
+- Error Failed to update function markNotificationsRead in region asia-southeast1
+- Error Failed to update function redeemReward in region asia-southeast1
+- Error Failed to update function registerDevice in region asia-southeast1
+- Error Failed to update function registerForEvent in region asia-southeast1
+- Error Failed to update function saveInterests in region asia-southeast1
+- Error Failed to update function setBookmark in region asia-southeast1
+- Error Failed to update function setWalkInGoing in region asia-southeast1
+- Error Failed to update function unfollowOrganizer in region asia-southeast1
+- Error Failed to update function unregisterDevice in region asia-southeast1
+- Error Failed to update function updateProfile in region asia-southeast1
+- Error Failed to update function verifyRegisteredTicket in region asia-southeast1
+- Error Failed to update function verifyVoucher in region asia-southeast1
+- Error Failed to update function verifyWalkInQr in region asia-southeast1

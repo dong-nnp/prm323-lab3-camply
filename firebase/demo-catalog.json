@@ -1,0 +1,1040 @@
+{
+  "organizers": [
+    {
+      "id": "demo-tech-club",
+      "name": "[DEMO] CLB Công nghệ Evia",
+      "description": "Workshop lập trình và chia sẻ công nghệ. Đây là CLB giả lập phục vụ Lab 3, không đại diện tổ chức thật.",
+      "tagline": "Dữ liệu demo do chủ dự án cho phép tạo",
+      "kind": "demo_student_club",
+      "tags": [
+        "technology"
+      ],
+      "published": true,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-music-club",
+      "name": "[DEMO] CLB Âm nhạc Evia",
+      "description": "Giao lưu âm nhạc và biểu diễn sinh viên. Đây là CLB giả lập phục vụ Lab 3, không đại diện tổ chức thật.",
+      "tagline": "Dữ liệu demo do chủ dự án cho phép tạo",
+      "kind": "demo_student_club",
+      "tags": [
+        "music"
+      ],
+      "published": true,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-creative-club",
+      "name": "[DEMO] CLB Sáng tạo Evia",
+      "description": "Thiết kế, nghệ thuật và nhiếp ảnh. Đây là CLB giả lập phục vụ Lab 3, không đại diện tổ chức thật.",
+      "tagline": "Dữ liệu demo do chủ dự án cho phép tạo",
+      "kind": "demo_student_club",
+      "tags": [
+        "arts"
+      ],
+      "published": true,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-sports-club",
+      "name": "[DEMO] CLB Thể thao Evia",
+      "description": "Hoạt động rèn luyện sức khỏe và thể thao. Đây là CLB giả lập phục vụ Lab 3, không đại diện tổ chức thật.",
+      "tagline": "Dữ liệu demo do chủ dự án cho phép tạo",
+      "kind": "demo_student_club",
+      "tags": [
+        "sports"
+      ],
+      "published": true,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-student-union",
+      "name": "[DEMO] Đội Hoạt động Sinh viên Evia",
+      "description": "Kết nối cộng đồng và hoạt động campus. Đây là CLB giả lập phục vụ Lab 3, không đại diện tổ chức thật.",
+      "tagline": "Dữ liệu demo do chủ dự án cho phép tạo",
+      "kind": "demo_student_club",
+      "tags": [
+        "volunteer"
+      ],
+      "published": true,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    }
+  ],
+  "events": [
+    {
+      "id": "demo-live-registration",
+      "organizerId": "demo-tech-club",
+      "title": "[DEMO] Workshop Flutter đang mở check-in",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Workshop Flutter đang mở check-in. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "technology",
+      "tags": [
+        "technology"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-05T05:55:24.671Z",
+      "endAt": "2026-11-05T07:55:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-05T05:25:24.671Z",
+      "registrationClosesAt": "2026-11-05T05:55:24.671Z",
+      "checkInStartAt": "2026-11-05T04:55:24.671Z",
+      "checkInEndAt": "2026-11-05T07:25:24.671Z",
+      "venue": {
+        "name": "[DEMO] Phòng Lab A",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-05T05:55:24.671Z",
+          "endAt": "2026-11-05T06:10:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-05T06:10:24.671Z",
+          "endAt": "2026-11-05T07:55:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": true,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 30,
+      "depositCoins": 50,
+      "attendanceRewardCoins": 100,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-live-walkin",
+      "organizerId": "demo-student-union",
+      "title": "[DEMO] Ngày hội kết nối CLB",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Ngày hội kết nối CLB. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "volunteer",
+      "tags": [
+        "volunteer"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-05T04:40:24.671Z",
+      "endAt": "2026-11-05T06:40:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-05T04:10:24.671Z",
+      "checkInStartAt": "2026-11-05T04:10:24.671Z",
+      "checkInEndAt": "2026-11-05T06:10:24.671Z",
+      "venue": {
+        "name": "[DEMO] Sảnh sinh viên",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Quét QR hoặc nhập mã walk-in do staff demo cấp tại sự kiện.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 80 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-05T04:40:24.671Z",
+          "endAt": "2026-11-05T04:55:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-05T04:55:24.671Z",
+          "endAt": "2026-11-05T06:40:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Walk-in; Going không giữ chỗ hoặc cấp vé.",
+      "participationMode": "walk_in",
+      "capacity": null,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 80,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-mobile-workshop",
+      "organizerId": "demo-tech-club",
+      "title": "[DEMO] Flutter và Firebase từ cơ bản",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Flutter và Firebase từ cơ bản. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "technology",
+      "tags": [
+        "technology"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-06T07:10:24.671Z",
+      "endAt": "2026-11-06T09:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-06T06:40:24.671Z",
+      "registrationClosesAt": "2026-11-06T07:10:24.671Z",
+      "checkInStartAt": "2026-11-06T06:40:24.671Z",
+      "checkInEndAt": "2026-11-06T08:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Phòng Lab A",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-06T07:10:24.671Z",
+          "endAt": "2026-11-06T07:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-06T07:25:24.671Z",
+          "endAt": "2026-11-06T09:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": true,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 100,
+      "depositCoins": 50,
+      "attendanceRewardCoins": 100,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-career-talk",
+      "organizerId": "demo-tech-club",
+      "title": "[DEMO] Định hướng nghề nghiệp lập trình",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Định hướng nghề nghiệp lập trình. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "career",
+      "tags": [
+        "career",
+        "technology"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-08T06:10:24.671Z",
+      "endAt": "2026-11-08T08:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-08T05:40:24.671Z",
+      "registrationClosesAt": "2026-11-08T06:10:24.671Z",
+      "checkInStartAt": "2026-11-08T05:40:24.671Z",
+      "checkInEndAt": "2026-11-08T07:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Phòng Lab A",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 80 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-08T06:10:24.671Z",
+          "endAt": "2026-11-08T06:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-08T06:25:24.671Z",
+          "endAt": "2026-11-08T08:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 80 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 80,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 80,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-music-night",
+      "organizerId": "demo-music-club",
+      "title": "[DEMO] Đêm nhạc sinh viên Evia",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Đêm nhạc sinh viên Evia. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "music",
+      "tags": [
+        "music"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-10T09:10:24.671Z",
+      "endAt": "2026-11-10T11:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-10T08:40:24.671Z",
+      "registrationClosesAt": "2026-11-10T09:10:24.671Z",
+      "checkInStartAt": "2026-11-10T08:40:24.671Z",
+      "checkInEndAt": "2026-11-10T10:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Sân khấu campus",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 150 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-10T09:10:24.671Z",
+          "endAt": "2026-11-10T09:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-10T09:25:24.671Z",
+          "endAt": "2026-11-10T11:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": true,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 100 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 150 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 100,
+      "depositCoins": 100,
+      "attendanceRewardCoins": 150,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-photo-walk",
+      "organizerId": "demo-creative-club",
+      "title": "[DEMO] Dạo campus cùng máy ảnh",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Dạo campus cùng máy ảnh. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "photography",
+      "tags": [
+        "photography",
+        "arts"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-11T06:10:24.671Z",
+      "endAt": "2026-11-11T08:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-11T05:40:24.671Z",
+      "checkInStartAt": "2026-11-11T05:40:24.671Z",
+      "checkInEndAt": "2026-11-11T07:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Xưởng sáng tạo",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Quét QR hoặc nhập mã walk-in do staff demo cấp tại sự kiện.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 70 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-11T06:10:24.671Z",
+          "endAt": "2026-11-11T06:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-11T06:25:24.671Z",
+          "endAt": "2026-11-11T08:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Walk-in; Going không giữ chỗ hoặc cấp vé.",
+      "participationMode": "walk_in",
+      "capacity": null,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 70,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-badminton",
+      "organizerId": "demo-sports-club",
+      "title": "[DEMO] Giao lưu cầu lông",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Giao lưu cầu lông. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "sports",
+      "tags": [
+        "sports"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-12T06:10:24.671Z",
+      "endAt": "2026-11-12T08:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-12T05:40:24.671Z",
+      "registrationClosesAt": "2026-11-12T06:10:24.671Z",
+      "checkInStartAt": "2026-11-12T05:40:24.671Z",
+      "checkInEndAt": "2026-11-12T07:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Nhà thi đấu",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 60 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-12T06:10:24.671Z",
+          "endAt": "2026-11-12T06:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-12T06:25:24.671Z",
+          "endAt": "2026-11-12T08:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 30 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 60 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 40,
+      "depositCoins": 30,
+      "attendanceRewardCoins": 60,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-green-campus",
+      "organizerId": "demo-student-union",
+      "title": "[DEMO] Một ngày campus xanh",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Một ngày campus xanh. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "environment",
+      "tags": [
+        "environment",
+        "volunteer"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-13T06:10:24.671Z",
+      "endAt": "2026-11-13T08:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-13T05:40:24.671Z",
+      "checkInStartAt": "2026-11-13T05:40:24.671Z",
+      "checkInEndAt": "2026-11-13T07:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Sảnh sinh viên",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Quét QR hoặc nhập mã walk-in do staff demo cấp tại sự kiện.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-13T06:10:24.671Z",
+          "endAt": "2026-11-13T06:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-13T06:25:24.671Z",
+          "endAt": "2026-11-13T08:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Walk-in; Going không giữ chỗ hoặc cấp vé.",
+      "participationMode": "walk_in",
+      "capacity": null,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 100,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-design-thinking",
+      "organizerId": "demo-creative-club",
+      "title": "[DEMO] Workshop tư duy thiết kế",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Workshop tư duy thiết kế. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "arts",
+      "tags": [
+        "arts"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-14T09:10:24.671Z",
+      "endAt": "2026-11-14T11:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-14T08:40:24.671Z",
+      "registrationClosesAt": "2026-11-14T09:10:24.671Z",
+      "checkInStartAt": "2026-11-14T08:40:24.671Z",
+      "checkInEndAt": "2026-11-14T10:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Xưởng sáng tạo",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-14T09:10:24.671Z",
+          "endAt": "2026-11-14T09:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-14T09:25:24.671Z",
+          "endAt": "2026-11-14T11:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 60,
+      "depositCoins": 50,
+      "attendanceRewardCoins": 100,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-full-event",
+      "organizerId": "demo-tech-club",
+      "title": "[DEMO] Workshop đã đóng số lượng vé",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Workshop đã đóng số lượng vé. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "technology",
+      "tags": [
+        "technology"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-15T09:10:24.671Z",
+      "endAt": "2026-11-15T11:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-15T08:40:24.671Z",
+      "registrationClosesAt": "2026-11-15T09:10:24.671Z",
+      "checkInStartAt": "2026-11-15T08:40:24.671Z",
+      "checkInEndAt": "2026-11-15T10:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Phòng Lab A",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 50 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-15T09:10:24.671Z",
+          "endAt": "2026-11-15T09:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-15T09:25:24.671Z",
+          "endAt": "2026-11-15T11:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 0,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 50,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-last-ticket",
+      "organizerId": "demo-sports-club",
+      "title": "[DEMO] Giao lưu thể thao — một vé cuối",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Giao lưu thể thao — một vé cuối. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "sports",
+      "tags": [
+        "sports"
+      ],
+      "status": "published",
+      "visibility": "public",
+      "startAt": "2026-11-16T09:10:24.671Z",
+      "endAt": "2026-11-16T11:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-16T08:40:24.671Z",
+      "registrationClosesAt": "2026-11-16T09:10:24.671Z",
+      "checkInStartAt": "2026-11-16T08:40:24.671Z",
+      "checkInEndAt": "2026-11-16T10:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Nhà thi đấu",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Xuất trình QR hoặc mã vé cho staff demo được phân công.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 50 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-16T09:10:24.671Z",
+          "endAt": "2026-11-16T09:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-16T09:25:24.671Z",
+          "endAt": "2026-11-16T11:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Vé giới hạn theo capacity; không bán vé bằng tiền thật.",
+      "registrationTerms": {
+        "version": "demo-refund30-v2",
+        "text": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật."
+      },
+      "participationMode": "registration",
+      "capacity": 1,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 50,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-past-event",
+      "organizerId": "demo-student-union",
+      "title": "[DEMO] Buổi giao lưu campus đã kết thúc",
+      "subtitle": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia",
+      "description": "Buổi giao lưu campus đã kết thúc. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật.",
+      "category": "volunteer",
+      "tags": [
+        "volunteer"
+      ],
+      "status": "completed",
+      "visibility": "public",
+      "startAt": "2026-11-03T05:10:24.671Z",
+      "endAt": "2026-11-03T07:10:24.671Z",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "doorsOpenAt": "2026-11-03T04:40:24.671Z",
+      "checkInStartAt": "2026-11-03T04:40:24.671Z",
+      "checkInEndAt": "2026-11-03T06:40:24.671Z",
+      "venue": {
+        "name": "[DEMO] Sảnh sinh viên",
+        "address": "Khuôn viên Evia giả lập — địa điểm minh họa",
+        "entranceLabel": "Cổng demo",
+        "checkInInstructions": "Quét QR hoặc nhập mã walk-in do staff demo cấp tại sự kiện.",
+        "accessibilityNotes": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế.",
+        "transitNotes": "Không dùng địa chỉ demo để di chuyển."
+      },
+      "audience": {
+        "scope": "everyone"
+      },
+      "benefits": [
+        {
+          "title": "Thử nghiệm flow tham dự",
+          "description": "Check-in hợp lệ nhận 80 Evia Coin trong môi trường demo."
+        }
+      ],
+      "participantRequirements": [
+        "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng.",
+        "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+      ],
+      "schedule": [
+        {
+          "id": "welcome",
+          "title": "Đón người tham dự",
+          "startAt": "2026-11-03T05:10:24.671Z",
+          "endAt": "2026-11-03T05:25:24.671Z",
+          "locationLabel": "Địa điểm demo"
+        },
+        {
+          "id": "main",
+          "title": "Hoạt động chính",
+          "startAt": "2026-11-03T05:25:24.671Z",
+          "endAt": "2026-11-03T07:10:24.671Z"
+        }
+      ],
+      "scheduleNote": "Lịch demo có thể được chủ dự án sửa sau.",
+      "featured": false,
+      "admissionNote": "Walk-in; Going không giữ chỗ hoặc cấp vé.",
+      "participationMode": "walk_in",
+      "capacity": null,
+      "depositCoins": 0,
+      "attendanceRewardCoins": 80,
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    }
+  ],
+  "rewards": [
+    {
+      "id": "demo-cafe",
+      "title": "[DEMO] Voucher Café Evia",
+      "description": "Voucher Café Evia của nhà tài trợ giả lập Evia Demo Sponsor. Không có quà, dịch vụ hoặc giá trị thanh toán ngoài đời thực.",
+      "category": "food_drinks",
+      "priceCoins": 200,
+      "stockRemaining": 100,
+      "status": "active",
+      "validDays": 30,
+      "usageLocations": [
+        "[DEMO] Quầy Evia Demo Sponsor trong khuôn viên giả lập"
+      ],
+      "termsText": "Chỉ thử nghiệm Lab 3. Không phải cam kết của nhà tài trợ thật, không đổi tiền hoặc nhận quà thật. Mỗi lượt đổi trừ xu theo giá server. Voucher dùng một lần, admin demo xác nhận; quà vật lý chưa có flow xác nhận giao hàng.",
+      "termsVersion": "demo-v1",
+      "redemptionSteps": [
+        "Xác nhận dùng Evia Coin trong app.",
+        "Đưa QR/mã voucher cho admin demo xác nhận."
+      ],
+      "fulfillmentType": "voucher",
+      "redemptionInstructions": "Admin demo xác nhận đã sử dụng voucher trong môi trường thử nghiệm.",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-snack",
+      "title": "[DEMO] Combo nước và bánh",
+      "description": "Combo nước và bánh của nhà tài trợ giả lập Evia Demo Sponsor. Không có quà, dịch vụ hoặc giá trị thanh toán ngoài đời thực.",
+      "category": "food_drinks",
+      "priceCoins": 100,
+      "stockRemaining": 100,
+      "status": "active",
+      "validDays": 14,
+      "usageLocations": [
+        "[DEMO] Quầy Evia Demo Sponsor trong khuôn viên giả lập"
+      ],
+      "termsText": "Chỉ thử nghiệm Lab 3. Không phải cam kết của nhà tài trợ thật, không đổi tiền hoặc nhận quà thật. Mỗi lượt đổi trừ xu theo giá server. Voucher dùng một lần, admin demo xác nhận; quà vật lý chưa có flow xác nhận giao hàng.",
+      "termsVersion": "demo-v1",
+      "redemptionSteps": [
+        "Xác nhận dùng Evia Coin trong app.",
+        "Đưa QR/mã voucher cho admin demo xác nhận."
+      ],
+      "fulfillmentType": "voucher",
+      "redemptionInstructions": "Admin demo xác nhận đã sử dụng voucher trong môi trường thử nghiệm.",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-tote",
+      "title": "[DEMO] Túi vải Evia",
+      "description": "Túi vải Evia của nhà tài trợ giả lập Evia Demo Sponsor. Không có quà, dịch vụ hoặc giá trị thanh toán ngoài đời thực.",
+      "category": "merchandise",
+      "priceCoins": 400,
+      "stockRemaining": 30,
+      "status": "active",
+      "validDays": 30,
+      "usageLocations": [
+        "[DEMO] Quầy Evia Demo Sponsor trong khuôn viên giả lập"
+      ],
+      "termsText": "Chỉ thử nghiệm Lab 3. Không phải cam kết của nhà tài trợ thật, không đổi tiền hoặc nhận quà thật. Mỗi lượt đổi trừ xu theo giá server. Voucher dùng một lần, admin demo xác nhận; quà vật lý chưa có flow xác nhận giao hàng.",
+      "termsVersion": "demo-v1",
+      "redemptionSteps": [
+        "Xác nhận dùng Evia Coin trong app.",
+        "Lưu mã giao dịch demo để thử màn chi tiết quà."
+      ],
+      "fulfillmentType": "physical",
+      "redemptionInstructions": "Quà vật lý giả lập; chưa có giao nhận hoặc API xác nhận đã nhận.",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-cinema",
+      "title": "[DEMO] Vé xem phim campus",
+      "description": "Vé xem phim campus của nhà tài trợ giả lập Evia Demo Sponsor. Không có quà, dịch vụ hoặc giá trị thanh toán ngoài đời thực.",
+      "category": "experiences",
+      "priceCoins": 500,
+      "stockRemaining": 30,
+      "status": "active",
+      "validDays": 30,
+      "usageLocations": [
+        "[DEMO] Quầy Evia Demo Sponsor trong khuôn viên giả lập"
+      ],
+      "termsText": "Chỉ thử nghiệm Lab 3. Không phải cam kết của nhà tài trợ thật, không đổi tiền hoặc nhận quà thật. Mỗi lượt đổi trừ xu theo giá server. Voucher dùng một lần, admin demo xác nhận; quà vật lý chưa có flow xác nhận giao hàng.",
+      "termsVersion": "demo-v1",
+      "redemptionSteps": [
+        "Xác nhận dùng Evia Coin trong app.",
+        "Đưa QR/mã voucher cho admin demo xác nhận."
+      ],
+      "fulfillmentType": "voucher",
+      "redemptionInstructions": "Admin demo xác nhận đã sử dụng voucher trong môi trường thử nghiệm.",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "demo-hoodie",
+      "title": "[DEMO] Áo hoodie Evia",
+      "description": "Áo hoodie Evia của nhà tài trợ giả lập Evia Demo Sponsor. Không có quà, dịch vụ hoặc giá trị thanh toán ngoài đời thực.",
+      "category": "merchandise",
+      "priceCoins": 800,
+      "stockRemaining": 20,
+      "status": "active",
+      "validDays": 30,
+      "usageLocations": [
+        "[DEMO] Quầy Evia Demo Sponsor trong khuôn viên giả lập"
+      ],
+      "termsText": "Chỉ thử nghiệm Lab 3. Không phải cam kết của nhà tài trợ thật, không đổi tiền hoặc nhận quà thật. Mỗi lượt đổi trừ xu theo giá server. Voucher dùng một lần, admin demo xác nhận; quà vật lý chưa có flow xác nhận giao hàng.",
+      "termsVersion": "demo-v1",
+      "redemptionSteps": [
+        "Xác nhận dùng Evia Coin trong app.",
+        "Lưu mã giao dịch demo để thử màn chi tiết quà."
+      ],
+      "fulfillmentType": "physical",
+      "redemptionInstructions": "Quà vật lý giả lập; chưa có giao nhận hoặc API xác nhận đã nhận.",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    }
+  ],
+  "interests": [
+    {
+      "id": "technology",
+      "label": "Công nghệ",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "music",
+      "label": "Âm nhạc",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "arts",
+      "label": "Nghệ thuật",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "sports",
+      "label": "Thể thao",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "volunteer",
+      "label": "Tình nguyện",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "career",
+      "label": "Nghề nghiệp",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "business",
+      "label": "Kinh doanh",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "gaming",
+      "label": "Trò chơi",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "photography",
+      "label": "Nhiếp ảnh",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    },
+    {
+      "id": "environment",
+      "label": "Môi trường",
+      "status": "active",
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+    }
+  ],
+  "milestones": []
+}

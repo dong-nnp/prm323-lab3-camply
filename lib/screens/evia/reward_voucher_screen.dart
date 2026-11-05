@@ -455,8 +455,10 @@ class RedemptionSuccessScreen extends ConsumerWidget {
               style: EviaTheme.heading,
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
-              'Preview result only. The coin API is not connected.',
+            Text(
+              ref.read(activityViewModelProvider.notifier).demoAvailable
+                  ? 'Demo redemption complete. No real reward was issued.'
+                  : 'Preview result only. The coin API is not connected.',
               textAlign: TextAlign.center,
               style: EviaTheme.caption,
             ),

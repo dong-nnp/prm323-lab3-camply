@@ -1,0 +1,21 @@
+{
+  "projectId": "prm393-31822",
+  "storageBucket": "prm393-31822.firebasestorage.app",
+  "androidApps": [
+    {
+      "appId": "1:465411217120:android:61c59fb51b988f44286285",
+      "packageName": "com.android.application",
+      "oauthClientTypes": [
+        3
+      ]
+    },
+    {
+      "appId": "1:465411217120:android:fdc0b89aaa5078e3286285",
+      "packageName": "com.example.prm393_lab03",
+      "oauthClientTypes": [
+        1,
+        3
+      ]
+    }
+  ]
+}

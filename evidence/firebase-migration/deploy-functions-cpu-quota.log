@@ -1,0 +1,159 @@
+
+=== Deploying to 'prm393-31822'...
+
+i  deploying functions
+Running command: npm --prefix "$RESOURCE_DIR" run build
+
+> evia-backend@0.1.0 build
+> tsc
+
++  functions: Finished running predeploy script.
+i  functions: preparing codebase evia for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
+i  functions: Loading and analyzing source code for codebase evia to determine what to deploy
+Serving at port 8017
+
+i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled...
+i  functions: preparing functions directory for uploading...
+i  functions: packaged D:\project\prm323-lab3\prm323-lab3-camply\functions (99.64 KB) for uploading
+i  functions: ensuring required API run.googleapis.com is enabled...
+i  functions: ensuring required API eventarc.googleapis.com is enabled...
+i  functions: ensuring required API pubsub.googleapis.com is enabled...
+i  functions: ensuring required API storage.googleapis.com is enabled...
+i  functions: generating the service identity for pubsub.googleapis.com...
+i  functions: generating the service identity for eventarc.googleapis.com...
+!  functions: The following functions will newly be retried in case of failure: evia:deliverNotification(asia-southeast1). Retried executions are billed as any other execution, and functions are retried repeatedly until they either successfully execute or the maximum retry period has elapsed, which can be up to 7 days. For safety, you might want to ensure that your functions are idempotent; see https://firebase.google.com/docs/functions/retries to learn more.
++  functions: functions source uploaded successfully
+i  functions: creating Node.js 22 (2nd Gen) function evia:cancelRegistration(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:claimDailyCheckin(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:deliverNotification(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:followOrganizer(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getAccount(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getEvent(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getOperationStatus(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getOrganizer(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getPublicCatalog(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getReward(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getServerInfo(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getTicket(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getTicketQr(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:getVoucherCode(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:grantMonthlyGift(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:initializeUser(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:issueWalkInQr(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:listMyEvents(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:listOwned(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:markNotificationsRead(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:redeemReward(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:registerDevice(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:registerForEvent(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:saveInterests(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:setBookmark(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:setWalkInGoing(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:unfollowOrganizer(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:unregisterDevice(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:updateProfile(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:verifyRegisteredTicket(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:verifyVoucher(asia-southeast1)...
+i  functions: creating Node.js 22 (2nd Gen) function evia:verifyWalkInQr(asia-southeast1)...
+Could not create or update Cloud Run service getaccount, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getaccount/revision_name/getaccount-00001-qis&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getaccount%22%0Aresource.labels.revision_name%3D%22getaccount-00001-qis%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service getreward, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getreward/revision_name/getreward-00001-sag&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getreward%22%0Aresource.labels.revision_name%3D%22getreward-00001-sag%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service verifyregisteredticket, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/verifyregisteredticket/revision_name/verifyregisteredticket-00001-wev&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22verifyregisteredticket%22%0Aresource.labels.revision_name%3D%22verifyregisteredticket-00001-wev%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service listmyevents, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/listmyevents/revision_name/listmyevents-00001-doq&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22listmyevents%22%0Aresource.labels.revision_name%3D%22listmyevents-00001-doq%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service updateprofile, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/updateprofile/revision_name/updateprofile-00001-miv&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22updateprofile%22%0Aresource.labels.revision_name%3D%22updateprofile-00001-miv%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service registerdevice, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/registerdevice/revision_name/registerdevice-00001-zaq&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22registerdevice%22%0Aresource.labels.revision_name%3D%22registerdevice-00001-zaq%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service setwalkingoing, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/setwalkingoing/revision_name/setwalkingoing-00001-web&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22setwalkingoing%22%0Aresource.labels.revision_name%3D%22setwalkingoing-00001-web%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service verifywalkinqr, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/verifywalkinqr/revision_name/verifywalkinqr-00001-juz&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22verifywalkinqr%22%0Aresource.labels.revision_name%3D%22verifywalkinqr-00001-juz%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+!  functions: Request to https://cloudfunctions.googleapis.com/v2/projects/prm393-31822/locations/asia-southeast1/functions?functionId=deliverNotification had HTTP Error: 400, Validation failed for trigger projects/prm393-31822/locations/asia-southeast1/triggers/delivernotification-627028: Invalid resource state for "": Permission denied while using the Eventarc Service Agent. If you recently started to use Eventarc, it may take a few minutes before all necessary permissions are propagated to the Service Agent. Otherwise, verify that it has Eventarc Service Agent role.
+!  functions: Since this is your first time using 2nd gen functions, we need a little bit longer to finish setting everything up. Retry the deployment in a few minutes.
+!  functions:  failed to create function projects/prm393-31822/locations/asia-southeast1/functions/deliverNotification
+Failed to create function projects/prm393-31822/locations/asia-southeast1/functions/deliverNotification
+Could not create or update Cloud Run service getvouchercode, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/getvouchercode/revision_name/getvouchercode-00001-gib&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22getvouchercode%22%0Aresource.labels.revision_name%3D%22getvouchercode-00001-gib%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+Could not create or update Cloud Run service initializeuser, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/initializeuser/revision_name/initializeuser-00001-but&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22initializeuser%22%0Aresource.labels.revision_name%3D%22initializeuser-00001-but%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
++  functions[evia:claimDailyCheckin(asia-southeast1)] Successful create operation.
+Could not create or update Cloud Run service unregisterdevice, Container Healthcheck failed. Quota exceeded for total allowable CPU per project per region.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=prm393-31822&resource=cloud_run_revision/service_name/unregisterdevice/revision_name/unregisterdevice-00001-vaq&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22unregisterdevice%22%0Aresource.labels.revision_name%3D%22unregisterdevice-00001-vaq%22 
+For more troubleshooting guidance, see https://docs.cloud.google.com/run/docs/troubleshooting#container-failed-to-start
++  functions[evia:followOrganizer(asia-southeast1)] Successful create operation.
++  functions[evia:cancelRegistration(asia-southeast1)] Successful create operation.
++  functions[evia:issueWalkInQr(asia-southeast1)] Successful create operation.
++  functions[evia:getPublicCatalog(asia-southeast1)] Successful create operation.
++  functions[evia:getOrganizer(asia-southeast1)] Successful create operation.
++  functions[evia:unfollowOrganizer(asia-southeast1)] Successful create operation.
++  functions[evia:getTicket(asia-southeast1)] Successful create operation.
++  functions[evia:grantMonthlyGift(asia-southeast1)] Successful create operation.
++  functions[evia:getEvent(asia-southeast1)] Successful create operation.
++  functions[evia:getOperationStatus(asia-southeast1)] Successful create operation.
++  functions[evia:registerForEvent(asia-southeast1)] Successful create operation.
++  functions[evia:listOwned(asia-southeast1)] Successful create operation.
++  functions[evia:verifyVoucher(asia-southeast1)] Successful create operation.
++  functions[evia:getServerInfo(asia-southeast1)] Successful create operation.
++  functions[evia:redeemReward(asia-southeast1)] Successful create operation.
++  functions[evia:saveInterests(asia-southeast1)] Successful create operation.
++  functions[evia:setBookmark(asia-southeast1)] Successful create operation.
++  functions[evia:markNotificationsRead(asia-southeast1)] Successful create operation.
++  functions[evia:getTicketQr(asia-southeast1)] Successful create operation.
+!  functions: Deploys failed. Skipping deletes.
+
+Functions deploy had errors with the following functions:
+	evia:deliverNotification(asia-southeast1)
+	evia:getAccount(asia-southeast1)
+	evia:getReward(asia-southeast1)
+	evia:getVoucherCode(asia-southeast1)
+	evia:initializeUser(asia-southeast1)
+	evia:listMyEvents(asia-southeast1)
+	evia:registerDevice(asia-southeast1)
+	evia:setWalkInGoing(asia-southeast1)
+	evia:unregisterDevice(asia-southeast1)
+	evia:updateProfile(asia-southeast1)
+	evia:verifyRegisteredTicket(asia-southeast1)
+	evia:verifyWalkInQr(asia-southeast1)
+!  functions: No cleanup policy detected for repositories in asia-southeast1. This may result in a small monthly bill as container images accumulate over time.
+i  functions: Configuring cleanup policy for repository in asia-southeast1. Images older than 1 days will be automatically deleted.
+i  functions: Configured cleanup policy for repository in asia-southeast1.
+Error: There was an error deploying functions:
+- Error Failed to create function deliverNotification in region asia-southeast1
+- Error Failed to create function getAccount in region asia-southeast1
+- Error Failed to create function getReward in region asia-southeast1
+- Error Failed to create function getVoucherCode in region asia-southeast1
+- Error Failed to create function initializeUser in region asia-southeast1
+- Error Failed to create function listMyEvents in region asia-southeast1
+- Error Failed to create function registerDevice in region asia-southeast1
+- Error Failed to create function setWalkInGoing in region asia-southeast1
+- Error Failed to create function unregisterDevice in region asia-southeast1
+- Error Failed to create function updateProfile in region asia-southeast1
+- Error Failed to create function verifyRegisteredTicket in region asia-southeast1
+- Error Failed to create function verifyWalkInQr in region asia-southeast1

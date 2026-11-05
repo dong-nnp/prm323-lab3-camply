@@ -39,28 +39,25 @@ void main() {
       reason: 'Unknown duration must not claim a match',
     );
   });
-  test(
-    'search, category and waitlist filters combine; reset restores results',
-    () {
-      vm.showSearch(referenceResults: true);
-      expect(vm.searchResults.length, 3);
-      vm.selectCategory('Technology');
-      expect(vm.searchResults.length, 2);
-      vm.beginFilters();
-      vm.selectFilter('Availability', 'Waitlist Available');
-      expect(
-        vm.searchResults.length,
-        2,
-        reason: 'Draft must not apply before confirmation',
-      );
-      vm.applyFilters();
-      expect(vm.searchResults.single.id, 'mobile');
-      vm.clearFilters();
-      expect(vm.searchResults.length, 3);
-      vm.submitSearch('zzzz');
-      expect(vm.searchResults, isEmpty);
-    },
-  );
+  test('search, category and participation filters combine; reset restores results', () {
+    vm.showSearch(referenceResults: true);
+    expect(vm.searchResults.length, 3);
+    vm.selectCategory('Technology');
+    expect(vm.searchResults.length, 2);
+    vm.beginFilters();
+    vm.selectFilter('Registration Policy', 'Walk-in allowed');
+    expect(
+      vm.searchResults.length,
+      2,
+      reason: 'Draft must not apply before confirmation',
+    );
+    vm.applyFilters();
+    expect(vm.searchResults, isEmpty);
+    vm.clearFilters();
+    expect(vm.searchResults.length, 3);
+    vm.submitSearch('zzzz');
+    expect(vm.searchResults, isEmpty);
+  });
   test('search history deduplicates and bookmark/follow state is shared', () {
     vm.submitSearch('hackathon');
     expect(

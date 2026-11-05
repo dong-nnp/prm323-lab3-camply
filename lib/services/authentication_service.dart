@@ -15,6 +15,8 @@ abstract interface class AuthenticationService {
     required String password,
     required bool acceptedTerms,
   });
+  Future<void> signInWithEmailPassword(String email, String password);
   Future<void> signInWithGoogle();
+  Future<void> resetPassword(String email);
   Future<void> signOut();
 }

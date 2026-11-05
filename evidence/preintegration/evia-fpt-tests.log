@@ -1,0 +1,383 @@
+
+> evia-backend@0.1.0 test:emulator
+> npm run build && cd .. && firebase emulators:exec --project demo-evia-backend --only auth,firestore,functions,storage "npm --prefix functions test"
+
+
+> evia-backend@0.1.0 build
+> tsc
+
+i  emulators: Starting emulators: auth, functions, firestore, storage
+i  emulators: Detected demo project ID "demo-evia-backend", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
++  firestore: Firestore Emulator was started in standard edition.
++  firestore: Firestore Emulator UI websocket is running on 9150.
+i  functions: Watching "D:\project\prm323-lab3\prm323-lab3-camply\functions" for Cloud Functions...
++  functions: Using node@22 from host.
+Serving at port 8972
+
++  functions: Loaded functions definitions from source: cancelRegistration, claimDailyCheckin, claimEventMilestone, deliverNotification, followOrganizer, getAccount, getEvent, getEventMilestones, getOperationStatus, getOrganizer, getPublicCatalog, getReward, getServerInfo, getTicket, getTicketQr, getVoucherCode, grantMonthlyGift, initializeUser, issueWalkInQr, listMyEvents, listOwned, markNotificationsRead, monthlyGiftSchedule, noShowSchedule, redeemReward, registerDevice, registerForEvent, saveInterests, setBookmark, setWalkInGoing, unfollowOrganizer, unregisterDevice, updateProfile, upsertEventMilestone, verifyRegisteredTicket, verifyVoucher, verifyWalkInQr.
++  functions[asia-southeast1-cancelRegistration]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/cancelRegistration).
++  functions[asia-southeast1-claimDailyCheckin]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/claimDailyCheckin).
++  functions[asia-southeast1-claimEventMilestone]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/claimEventMilestone).
++  functions[asia-southeast1-deliverNotification]: firestore function initialized.
++  functions[asia-southeast1-followOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/followOrganizer).
++  functions[asia-southeast1-getAccount]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getAccount).
++  functions[asia-southeast1-getEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getEvent).
++  functions[asia-southeast1-getEventMilestones]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getEventMilestones).
++  functions[asia-southeast1-getOperationStatus]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOperationStatus).
++  functions[asia-southeast1-getOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOrganizer).
++  functions[asia-southeast1-getPublicCatalog]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getPublicCatalog).
++  functions[asia-southeast1-getReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getReward).
++  functions[asia-southeast1-getServerInfo]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getServerInfo).
++  functions[asia-southeast1-getTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicket).
++  functions[asia-southeast1-getTicketQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicketQr).
++  functions[asia-southeast1-getVoucherCode]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getVoucherCode).
++  functions[asia-southeast1-grantMonthlyGift]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/grantMonthlyGift).
++  functions[asia-southeast1-initializeUser]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/initializeUser).
++  functions[asia-southeast1-issueWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/issueWalkInQr).
++  functions[asia-southeast1-listMyEvents]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listMyEvents).
++  functions[asia-southeast1-listOwned]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listOwned).
++  functions[asia-southeast1-markNotificationsRead]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/markNotificationsRead).
+i  functions[asia-southeast1-monthlyGiftSchedule]: function ignored because the pubsub emulator does not exist or is not running.
+i  functions[asia-southeast1-noShowSchedule]: function ignored because the pubsub emulator does not exist or is not running.
++  functions[asia-southeast1-redeemReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/redeemReward).
++  functions[asia-southeast1-registerDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerDevice).
++  functions[asia-southeast1-registerForEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerForEvent).
++  functions[asia-southeast1-saveInterests]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/saveInterests).
++  functions[asia-southeast1-setBookmark]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setBookmark).
++  functions[asia-southeast1-setWalkInGoing]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setWalkInGoing).
++  functions[asia-southeast1-unfollowOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unfollowOrganizer).
++  functions[asia-southeast1-unregisterDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unregisterDevice).
++  functions[asia-southeast1-updateProfile]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/updateProfile).
++  functions[asia-southeast1-upsertEventMilestone]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/upsertEventMilestone).
++  functions[asia-southeast1-verifyRegisteredTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyRegisteredTicket).
++  functions[asia-southeast1-verifyVoucher]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyVoucher).
++  functions[asia-southeast1-verifyWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyWalkInQr).
+i  Running script: npm --prefix functions test
+
+> evia-backend@0.1.0 test
+> node --test --test-timeout=120000 --test-concurrency=1 test/*.test.mjs
+
+TAP version 13
+# (node:26620) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+ok 1 - FPT policy rejects outsider accounts and enforces the same identity on profile and registration
+  ---
+  duration_ms: 4225.2325
+  type: 'test'
+  ...
+# Subtest: signup bonus is once per UID and interests cannot be forged/duplicated
+ok 2 - signup bonus is once per UID and interests cannot be forged/duplicated
+  ---
+  duration_ms: 626.2301
+  type: 'test'
+  ...
+# Subtest: last seat race has one winner, full event has no monetary side effects
+ok 3 - last seat race has one winner, full event has no monetary side effects
+  ---
+  duration_ms: 3602.9546
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 12.1707ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.0002ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.0548ms
+# Subtest: cancel forfeits once and opens exactly one place to another user
+ok 4 - cancel forfeits once and opens exactly one place to another user
+  ---
+  duration_ms: 4223.4663
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.9107ms
+# Subtest: stale terms/deposit and requestId conflicts do not change wallet
+ok 5 - stale terms/deposit and requestId conflicts do not change wallet
+  ---
+  duration_ms: 538.886
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.1877ms
+# Subtest: scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+ok 6 - scoped staff verifies a ticket, refunds and rewards once, rejects student/replay
+  ---
+  duration_ms: 1125.2662
+  type: 'test'
+  ...
+# Subtest: walk-in Going is only an intent and QR verification is unique/window-bound
+ok 7 - walk-in Going is only an intent and QR verification is unique/window-bound
+  ---
+  duration_ms: 3605.9233
+  type: 'test'
+  ...
+# Subtest: daily race grants once; Vietnam midnight advances; gap resets streak
+ok 8 - daily race grants once; Vietnam midnight advances; gap resets streak
+  ---
+  duration_ms: 3725.9005
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.2764ms
+# Subtest: stock=1 concurrent redemption yields one voucher, no double debit on retry
+ok 9 - stock=1 concurrent redemption yields one voucher, no double debit on retry
+  ---
+  duration_ms: 3872.4605
+  type: 'test'
+  ...
+# Subtest: stale reward price/terms and insufficient balance leave stock unchanged
+ok 10 - stale reward price/terms and insufficient balance leave stock unchanged
+  ---
+  duration_ms: 413.1228
+  type: 'test'
+  ...
+# Subtest: follow/unfollow races keep counters correct and do not imply membership
+ok 11 - follow/unfollow races keep counters correct and do not imply membership
+  ---
+  duration_ms: 10782.0298
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 7.8791ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 6.6251ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 7.5873ms
+# Subtest: notification read scope and mark-all cutoff are enforced
+ok 12 - notification read scope and mark-all cutoff are enforced
+  ---
+  duration_ms: 449.3162
+  type: 'test'
+  ...
+# Subtest: Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+ok 13 - Rules allow own reads and published public queries, deny cross-UID and all direct mutations
+  ---
+  duration_ms: 805.5038
+  type: 'test'
+  ...
+# Subtest: Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+ok 14 - Storage permits owner PDF creation/read only; rejects cross-user/type/size/overwrite
+  ---
+  duration_ms: 600.7438
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 5.5474ms
+# Subtest: catalog feeds and cursors preserve public scope and owner event union
+ok 15 - catalog feeds and cursors preserve public scope and owner event union
+  ---
+  duration_ms: 687.9847
+  type: 'test'
+  ...
+# Subtest: FCM token reassignment and rotation remove the previous account binding
+ok 16 - FCM token reassignment and rotation remove the previous account binding
+  ---
+  duration_ms: 526.9319
+  type: 'test'
+  ...
+# Subtest: FCM device cap rejects an extra installation without deleting registered tokens
+ok 17 - FCM device cap rejects an extra installation without deleting registered tokens
+  ---
+  duration_ms: 967.2003
+  type: 'test'
+  ...
+# Subtest: Vietnamese search matches d-stroke and diacritics without losing accents
+ok 18 - Vietnamese search matches d-stroke and diacritics without losing accents
+  ---
+  duration_ms: 303.8237
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 6.8924ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+# Subtest: cancelled owner can compete for the reopened seat with a new ticket
+ok 19 - cancelled owner can compete for the reopened seat with a new ticket
+  ---
+  duration_ms: 3420.8773
+  type: 'test'
+  ...
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.3355ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.7642ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 2.5841ms
+# Subtest: reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+ok 20 - reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt
+  ---
+  duration_ms: 691.0034
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.7218ms
+# Subtest: only authorized admins consume a sponsor voucher once without another debit
+ok 21 - only authorized admins consume a sponsor voucher once without another debit
+  ---
+  duration_ms: 11732.2538
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 3.0655ms
+# Subtest: voucher verification rejects expired codes and forged admin permissions
+ok 22 - voucher verification rejects expired codes and forged admin permissions
+  ---
+  duration_ms: 526.3874
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.6013ms
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+# Subtest: physical reward creates no voucher; expired voucher code is denied
+ok 23 - physical reward creates no voucher; expired voucher code is denied
+  ---
+  duration_ms: 395.7608
+  type: 'test'
+  ...
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.6813ms
+i  functions: Beginning execution of "asia-southeast1-getAccount"
+>  {"verifications":{"app":"MISSING","auth":"MISSING"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+i  functions: Finished "asia-southeast1-getAccount" in 14.2009ms
+i  functions: Beginning execution of "asia-southeast1-initializeUser"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+i  functions: Finished "asia-southeast1-initializeUser" in 184.9597ms
+# Subtest: real callable transport validates Firebase Auth and returns stable error contract
+ok 24 - real callable transport validates Firebase Auth and returns stable error contract
+  ---
+  duration_ms: 4495.1119
+  type: 'test'
+  ...
+i  functions: Beginning execution of "asia-southeast1-deliverNotification"
+i  functions: Finished "asia-southeast1-deliverNotification" in 4.4324ms
+# Subtest: verified registration QR unlocks a milestone and manual claim adds only its bonus
+ok 25 - verified registration QR unlocks a milestone and manual claim adds only its bonus
+  ---
+  duration_ms: 744.5305
+  type: 'test'
+  ...
+# Subtest: imported terms versions fit registration and redemption requests
+ok 26 - imported terms versions fit registration and redemption requests
+  ---
+  duration_ms: 24.9113
+  type: 'test'
+  ...
+# Subtest: catalog rejects duplicate IDs, invented counters and restricted audience
+ok 27 - catalog rejects duplicate IDs, invented counters and restricted audience
+  ---
+  duration_ms: 2.3618
+  type: 'test'
+  ...
+# Subtest: import dry-run validates input without initializing Firebase or writing documents
+ok 28 - import dry-run validates input without initializing Firebase or writing documents
+  ---
+  duration_ms: 593.9022
+  type: 'test'
+  ...
+# Subtest: import dry-run rejects an empty catalog before any Firebase access
+ok 29 - import dry-run rejects an empty catalog before any Firebase access
+  ---
+  duration_ms: 538.6496
+  type: 'test'
+  ...
+# Subtest: milestone catalog rejects unsafe earning policies and unknown metric types
+ok 30 - milestone catalog rejects unsafe earning policies and unknown metric types
+  ---
+  duration_ms: 3.1384
+  type: 'test'
+  ...
+# (node:9708) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+ok 31 - monthly job grants all initialized accounts once per Vietnam month, even before onboarding
+  ---
+  duration_ms: 6780.407
+  type: 'test'
+  ...
+# Subtest: no-show settlement forfeits only held deposit once after both event and check-in end
+ok 32 - no-show settlement forfeits only held deposit once after both event and check-in end
+  ---
+  duration_ms: 3467.5653
+  type: 'test'
+  ...
+# Subtest: no-show job leaves cancelled events and already attended registrations untouched
+ok 33 - no-show job leaves cancelled events and already attended registrations untouched
+  ---
+  duration_ms: 110.5075
+  type: 'test'
+  ...
+# (node:27556) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: approved five milestone policies are preserved as data, not a fixed-size runtime list
+ok 34 - approved five milestone policies are preserved as data, not a fixed-size runtime list
+  ---
+  duration_ms: 3511.9124
+  type: 'test'
+  ...
+# Subtest: progress includes historical verified attendance, excludes registration/Going/daily and other users
+ok 35 - progress includes historical verified attendance, excludes registration/Going/daily and other users
+  ---
+  duration_ms: 540.6911
+  type: 'test'
+  ...
+# Subtest: unearned/client-forged claims do not create money or claim records
+ok 36 - unearned/client-forged claims do not create money or claim records
+  ---
+  duration_ms: 375.9313
+  type: 'test'
+  ...
+# Subtest: concurrent retries and restarts award a milestone only once with ledger and receipt
+ok 37 - concurrent retries and restarts award a milestone only once with ledger and receipt
+  ---
+  duration_ms: 3891.2005
+  type: 'test'
+  ...
+# Subtest: all five manual claims total 1100 coins and never auto-grant from progress reads
+ok 38 - all five manual claims total 1100 coins and never auto-grant from progress reads
+  ---
+  duration_ms: 763.1105
+  type: 'test'
+  ...
+# Subtest: admin adds/edits goals with version guards; claimed history never pays a second time
+ok 39 - admin adds/edits goals with version guards; claimed history never pays a second time
+  ---
+  duration_ms: 920.5797
+  type: 'test'
+  ...
+# Subtest: disabled and malformed server policies cannot award coins
+ok 40 - disabled and malformed server policies cannot award coins
+  ---
+  duration_ms: 484.6025
+  type: 'test'
+  ...
+# Subtest: Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+ok 41 - Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+  ---
+  duration_ms: 496.27
+  type: 'test'
+  ...
+# Subtest: daily rewards follow local calendar days, cap award, and reset after gaps
+ok 42 - daily rewards follow local calendar days, cap award, and reset after gaps
+  ---
+  duration_ms: 19.1558
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88003.6429
++  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  firestore: Stopping Firestore Emulator
+!  Firestore Emulator has exited upon receiving signal: SIGINT
+i  auth: Stopping Authentication Emulator
+i  storage: Stopping Storage Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

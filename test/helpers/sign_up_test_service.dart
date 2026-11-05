@@ -41,6 +41,10 @@ class SignUpTestService implements AuthenticationService {
   }
 
   @override
+  Future<void> signInWithEmailPassword(String email, String password) async =>
+      throw UnimplementedError();
+
+  @override
   Future<void> signInWithGoogle() async {
     googleCalls++;
     await google?.call();
@@ -48,5 +52,7 @@ class SignUpTestService implements AuthenticationService {
 
   @override
   Future<void> signOut() async => publish(const AuthSession.signedOut());
+  @override
+  Future<void> resetPassword(String email) async => throw UnimplementedError();
   Future<void> close() => _sessions.close();
 }

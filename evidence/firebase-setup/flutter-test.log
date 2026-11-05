@@ -1,0 +1,409 @@
+Resolving dependencies...
+Downloading packages...
+  crypto 3.0.7 (3.0.8 available)
+  cupertino_ui 1.1.4 (1.1.6 available)
+  go_router 18.1.1 (18.1.2 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.10.0 available)
+  meta 1.18.3 (1.19.0 available)
+  petitparser 7.0.2 (7.1.0 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+10 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart
+00:00 +0: D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart: public foundation remains accessible before authentication
+00:00 +1: D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart: unknown, unavailable and signed-out sessions cannot enter private UI
+00:00 +2: D:/project/prm323-lab3/prm323-lab3-camply/test/core/exception_mapper_test.dart: unexpected errors do not expose implementation details
+00:00 +3: D:/project/prm323-lab3/prm323-lab3-camply/test/core/exception_mapper_test.dart: unexpected errors do not expose implementation details
+00:00 +4: D:/project/prm323-lab3/prm323-lab3-camply/test/core/exception_mapper_test.dart: timeout gives an actionable message
+00:00 +5: D:/project/prm323-lab3/prm323-lab3-camply/test/services/firebase_preparation_test.dart: disabled initialization works without any native Firebase plugin
+00:00 +6: D:/project/prm323-lab3/prm323-lab3-camply/test/services/firebase_preparation_test.dart: pending authentication is explicitly unavailable
+00:01 +7: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: date, past tab and cancellation change the visible registrations
+00:02 +8: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: calendar draft is not applied until confirmed and handles year boundary
+00:02 +9: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: daily reward and redemption are idempotent and leave deposits unchanged
+00:02 +10: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: invalid code cannot confirm attendance; duplicate code cannot credit twice
+00:02 +11: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: insufficient balance rejects redemption without changing wallet or voucher
+00:02 +12: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: loading becomes empty when Firebase is not configured
+00:02 +13: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: configured Firebase becomes data
+00:02 +14: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: safe error is preserved and retry can recover
+00:02 +15: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: concurrent refresh does not start a duplicate initialization
+00:02 +16: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: completion after disposal does not update disposed state
+00:03 +17: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: date, time and custom range filter known event metadata
+00:03 +18: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: search, category and waitlist filters combine; reset restores results
+00:03 +19: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: search history deduplicates and bookmark/follow state is shared
+00:03 +20: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: validation rejects invalid identity and terms without moving wallet
+00:03 +21: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: successful registration holds deposit once and is visible to tickets
+00:03 +22: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: duplicate submission is blocked while loading
+00:03 +23: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: failed and full outcomes preserve form, wallet and registrations
+00:03 +24: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: waitlist and walk-in never hold coins or create walk-in tickets
+00:03 +25: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: pending registration can dispose without mutating disposed state
+00:03 +26: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: saved filters and remove action keep counts consistent
+00:03 +27: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: preferences require three selections and update Discover state
+00:03 +28: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: mark all read clears only unread presentation state
+00:19 +29: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: (setUpAll)
+00:19 +29: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:25 +30: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:25 +31: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:25 +32: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:25 +33: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:26 +34: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:26 +35: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 12 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///D:/project/prm323-lab3/prm323-lab3-camply/lib/screens/evia/discover_screen.dart:367:11
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#f4c4b relayoutBoundary=up1 OVERFLOWING:
+  creator: Row ← Column ← Padding ← DecoratedBox ← Container ← EviaCard ← _RecommendedCard ← Expanded
+    ← Row ← IntrinsicHeight ← Column ← Padding ← ⋯
+  parentData: offset=Offset(0.0, 426.0); flex=null; fit=null (can use size)
+  constraints: BoxConstraints(0.0<=w<=132.0, 0.0<=h<=Infinity)
+  size: Size(132.0, 20.0)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 12 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///D:/project/prm323-lab3/prm323-lab3-camply/lib/screens/evia/discover_screen.dart:367:11
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#af15d relayoutBoundary=up1 OVERFLOWING:
+  creator: Row ← Column ← Padding ← DecoratedBox ← Container ← EviaCard ← _RecommendedCard ← Expanded
+    ← Row ← IntrinsicHeight ← Column ← Padding ← ⋯
+  parentData: offset=Offset(0.0, 426.0); flex=null; fit=null (can use size)
+  constraints: BoxConstraints(0.0<=w<=132.0, 0.0<=h<=Infinity)
+  size: Size(132.0, 20.0)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: 'Multiple exceptions (2) were detected during the running of the current test, and at
+least one was unexpected.'
+Screen: /discover
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart:50:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart line 50
+The test description was:
+  all nine screens fit 360.0dp at 1.0x text
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:27 +35 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:27 +35 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text [E]
+  Test failed. See exception logs above.
+  The test description was: all nine screens fit 360.0dp at 1.0x text
+  
+00:27 +36 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:28 +37 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:28 +38 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:29 +38 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:29 +39 -1: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: 'Multiple exceptions (3) were detected during the running of the current test, and at
+least one was unexpected.'
+Screen: /explore
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart:50:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart line 50
+The test description was:
+  all nine screens fit 412.0dp at 1.0x text
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:29 +39 -2: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:29 +39 -2: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text [E]
+  Test failed. See exception logs above.
+  The test description was: all nine screens fit 412.0dp at 1.0x text
+  
+00:30 +39 -2: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: FlutterError:<A RenderFlex overflowed by 188 pixels on the right.>
+Screen: /
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart:50:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart line 50
+The test description was:
+  all nine screens fit 360.0dp at 2.0x text
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:30 +39 -3: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:30 +39 -3: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text [E]
+  Test failed. See exception logs above.
+  The test description was: all nine screens fit 360.0dp at 2.0x text
+  
+00:30 +40 -3: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /event/schedule fits phone widths and scaled text
+00:30 +40 -3: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: FlutterError:<A RenderFlex overflowed by 136 pixels on the right.>
+Screen: /
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart:50:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart line 50
+The test description was:
+  all nine screens fit 412.0dp at 2.0x text
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:30 +40 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /event/schedule fits phone widths and scaled text
+00:30 +40 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text [E]
+  Test failed. See exception logs above.
+  The test description was: all nine screens fit 412.0dp at 2.0x text
+  
+00:30 +41 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:31 +42 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:31 +43 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI
+00:32 +44 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI
+00:32 +45 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI
+00:33 +46 -4: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER FRAMEWORK ╞═════════════════════════════════════════════════════════
+The following assertion was thrown:
+ListTile background color or ink splashes may be invisible.
+The ListTile is wrapped in a DecoratedBox that has a background color. Because ListTile paints its
+background and ink splashes on the nearest Material ancestor, this DecoratedBox will hide those
+effects.
+To fix this, wrap the ListTile in its own Material widget, or remove the background color from the
+intermediate DecoratedBox.
+
+ListTile: ListTile(onTap: Closure: () => void)
+DecoratedBox: DecoratedBox(bg:
+    BoxDecoration(color: Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), border: Border.all(BorderSide(color: Color(alpha: 1.0000, red: 0.8627, green: 0.8784, blue: 0.9098, colorSpace: ColorSpace.sRGB))), borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [BoxShadow(Color(alpha: 0.0353, red: 0.0431, green:
+        0.1216, blue: 0.2667, colorSpace: ColorSpace.sRGB), Offset(0.0,
+        2.0), 4.0, 0.0, BlurStyle.normal)]
+      )
+  )
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: 'Multiple exceptions (3) were detected during the running of the current test, and at
+least one was unexpected.'
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart:91:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart line 91
+The test description was:
+  skip, search, filters and follow actions update the visible UI
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:33 +46 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:33 +46 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI [E]
+  Test failed. See exception logs above.
+  The test description was: skip, search, filters and follow actions update the visible UI
+  
+00:34 +47 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:35 +48 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/error fits phone widths and scaled text
+00:35 +49 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/check-in fits phone widths and scaled text
+00:35 +50 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /event/about fits phone widths and scaled text
+00:35 +51 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/locker fits phone widths and scaled text
+00:35 +52 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration fits phone widths and scaled text
+00:36 +53 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/catalog fits phone widths and scaled text
+00:37 +54 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/going fits phone widths and scaled text
+00:37 +55 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards fits phone widths and scaled text
+00:37 +56 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards fits phone widths and scaled text
+00:37 +57 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/loading fits phone widths and scaled text
+00:38 +58 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/success fits phone widths and scaled text
+00:38 +59 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/failed fits phone widths and scaled text
+00:38 +60 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/confirm fits phone widths and scaled text
+00:38 +61 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /organizer fits phone widths and scaled text
+00:39 +62 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/detail fits phone widths and scaled text
+00:39 +63 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile fits phone widths and scaled text
+00:39 +64 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile fits phone widths and scaled text
+00:39 +65 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/milestones fits phone widths and scaled text
+00:40 +66 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/interests fits phone widths and scaled text
+00:40 +67 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/history fits phone widths and scaled text
+00:40 +68 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/saved fits phone widths and scaled text
+00:40 +69 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: cancel confirmation changes registrations only after confirmation
+00:41 +70 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: cancel confirmation changes registrations only after confirmation
+00:41 +71 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: event registration shows loading then creates a usable ticket
+00:42 +72 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: event registration shows loading then creates a usable ticket
+00:42 +73 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: catalog search remains editable beside its icon
+00:42 +74 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: saving a form correction removes its validation error
+00:43 +75 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: mark all read updates notification badges without deleting notices
+00:43 +76 -5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: (tearDownAll)
+00:44 +76 -5: Some tests failed.
+
+Failing tests:
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: skip, search, filters and follow actions update the visible UI

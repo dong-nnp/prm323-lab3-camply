@@ -1,0 +1,83 @@
+{
+  "project": "prm393-31822",
+  "batch": "evia-demo-20261105-v1",
+  "verifiedAt": "2026-11-05T05:16:03.501Z",
+  "counts": {
+    "interests": 10,
+    "organizers": 5,
+    "events": 12,
+    "rewards": 5,
+    "milestones": 5,
+    "users": 2,
+    "wallets": 2,
+    "staff_assignments": 11,
+    "voucher_admins": 1,
+    "milestone_admins": 1,
+    "attendance": 0,
+    "registrations": 0,
+    "notifications": 0,
+    "operation_receipts": 0,
+    "checkin_tokens": 0,
+    "checkin_codes": 0,
+    "milestone_audit": 0
+  },
+  "catalogChecks": [
+    {
+      "kind": "organizers",
+      "storedCount": 5,
+      "publicCount": 5,
+      "httpStatus": 200
+    },
+    {
+      "kind": "events",
+      "storedCount": 12,
+      "publicCount": 11,
+      "httpStatus": 200
+    },
+    {
+      "kind": "rewards",
+      "storedCount": 5,
+      "publicCount": 5,
+      "httpStatus": 200
+    },
+    {
+      "kind": "interests",
+      "storedCount": 10,
+      "publicCount": 10,
+      "httpStatus": 200
+    }
+  ],
+  "accounts": [
+    {
+      "uid": "evia-demo-staff-v1",
+      "role": "staff",
+      "passwordSignIn": true,
+      "profileRead": true,
+      "interestOptions": 10,
+      "availableCoins": 200,
+      "ledgerCount": 1,
+      "verifiedAttendance": 0,
+      "oppositeRoleDenied": true,
+      "appRoleConfirmedWithoutWrites": true,
+      "privateRoleDocReadStatus": 403
+    },
+    {
+      "uid": "evia-demo-admin-v1",
+      "role": "admin",
+      "passwordSignIn": true,
+      "profileRead": true,
+      "interestOptions": 10,
+      "availableCoins": 200,
+      "ledgerCount": 1,
+      "verifiedAttendance": 0,
+      "oppositeRoleDenied": true,
+      "appRoleConfirmedWithoutWrites": true,
+      "privateRoleDocReadStatus": 403
+    }
+  ],
+  "cafePriceCoins": 200,
+  "fullEventSpots": 0,
+  "lastTicketSpots": 1,
+  "positiveAttendanceOrRedemptionAttempted": false,
+  "roleChecksCreatedNoTransactions": true
+}

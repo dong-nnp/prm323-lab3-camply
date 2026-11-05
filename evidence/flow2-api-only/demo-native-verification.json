@@ -1,0 +1,26 @@
+{
+  "uid": "evia-demo-staff-v1",
+  "eventId": "demo-career-talk",
+  "beforeWallet": {
+    "heldCoins": 0,
+    "availableCoins": 165,
+    "version": 5,
+    "updatedAt": "2026-11-05T14:53:49.312Z"
+  },
+  "afterWallet": {
+    "heldCoins": 0,
+    "version": 7,
+    "availableCoins": 245,
+    "updatedAt": "2026-11-05T14:55:17.855Z"
+  },
+  "attendance": {
+    "isDemo": true,
+    "method": "debug_demo_button",
+    "coins": 80
+  },
+  "observedTicketLabel": "Attendance confirmed",
+  "observedMyEventsLabel": "Attended",
+  "demoButtonHiddenAfterSuccess": true,
+  "screenshotSha256": "eb8ef39a0247f8c1223461031013c971ab547deb02351c323de31b683cbfcdf8",
+  "verified": true
+}

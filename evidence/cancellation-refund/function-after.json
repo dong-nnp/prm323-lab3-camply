@@ -1,0 +1,14 @@
+{
+  "project": "prm393-31822",
+  "name": "projects/prm393-31822/locations/asia-southeast1/functions/cancelRegistration",
+  "state": "ACTIVE",
+  "updateTime": "2026-11-05T09:46:35.153166475Z",
+  "revision": "cancelregistration-00004-fad",
+  "service": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration",
+  "runtime": "nodejs22",
+  "sourceHash": "a8fc7cc7f3f843ab93530ddc5d57b436900d289c",
+  "uri": "https://cancelregistration-mohnhzr27a-as.a.run.app",
+  "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration/revisions/cancelregistration-00004-fad",
+  "latestCreatedRevision": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration/revisions/cancelregistration-00004-fad",
+  "ready": true
+}

@@ -1,0 +1,23 @@
+{
+  "status": "success",
+  "result": {
+    "@type": "type.googleapis.com/google.firestore.admin.v1.Database",
+    "name": "projects/prm393-31822/databases/(default)",
+    "uid": "aa2f858e-f6de-4e16-8395-dbda09120a25",
+    "createTime": "2026-11-04T14:36:34.691960Z",
+    "updateTime": "2026-11-04T14:36:34.691960Z",
+    "locationId": "asia-southeast1",
+    "type": "FIRESTORE_NATIVE",
+    "concurrencyMode": "PESSIMISTIC",
+    "versionRetentionPeriod": "3600s",
+    "earliestVersionTime": "2026-11-04T14:36:34.691960Z",
+    "appEngineIntegrationMode": "DISABLED",
+    "keyPrefix": "zas",
+    "pointInTimeRecoveryEnablement": "POINT_IN_TIME_RECOVERY_DISABLED",
+    "deleteProtectionState": "DELETE_PROTECTION_DISABLED",
+    "databaseEdition": "STANDARD",
+    "freeTier": true,
+    "realtimeUpdatesMode": "REALTIME_UPDATES_MODE_ENABLED",
+    "etag": "IPCIr/LE7pcDMPjervLE7pcD"
+  }
+}

@@ -1,0 +1,10 @@
+Analyzing prm323-lab3-camply...                                 
+
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\app\router.dart:65:13 - curly_braces_in_flow_control_structures
+   info - Unnecessary use of multiple underscores. Try using '_' - lib\repositories\push_notification_repository.dart:18:73 - unnecessary_underscores
+   info - 'getToken' is deprecated and shouldn't be used. Use register() and onRegistered instead. Try replacing the use of the deprecated member with the replacement - lib\services\firebase_messaging_service.dart:24:39 - deprecated_member_use
+   info - 'onTokenRefresh' is deprecated and shouldn't be used. Use onRegistered instead. Try replacing the use of the deprecated member with the replacement - lib\services\firebase_messaging_service.dart:27:65 - deprecated_member_use
+   info - 'deleteToken' is deprecated and shouldn't be used. Use unregister() and onUnregistered instead. Try replacing the use of the deprecated member with the replacement - lib\services\firebase_messaging_service.dart:42:38 - deprecated_member_use
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\viewmodels\push_notifications_view_model.dart:73:81 - curly_braces_in_flow_control_structures
+
+6 issues found. (ran in 71.3s)

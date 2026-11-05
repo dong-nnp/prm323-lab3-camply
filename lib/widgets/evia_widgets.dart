@@ -19,6 +19,36 @@ class FigmaIcon extends StatelessWidget {
       SvgPicture.asset(FigmaAssets.path(screen, name));
 }
 
+Widget catalogImage(
+  String? url,
+  String fallback, {
+  double? width,
+  double? height,
+  BoxFit? fit,
+  String? semanticLabel,
+}) => url != null && Uri.tryParse(url)?.hasScheme == true
+    ? Image.network(
+        url,
+        width: width,
+        height: height,
+        fit: fit,
+        semanticLabel: semanticLabel,
+        errorBuilder: (_, _, _) => Image.asset(
+          fallback,
+          width: width,
+          height: height,
+          fit: fit,
+          semanticLabel: semanticLabel,
+        ),
+      )
+    : Image.asset(
+        url ?? fallback,
+        width: width,
+        height: height,
+        fit: fit,
+        semanticLabel: semanticLabel,
+      );
+
 class EviaPage extends StatelessWidget {
   const EviaPage({
     required this.child,
@@ -403,13 +433,9 @@ Widget _policy(CampusEvent event) => EventBadge(
   event.policy,
   color: event.policy == 'Walk-in allowed'
       ? AppColors.successSurface
-      : event.policy == 'Waitlist available'
-      ? AppColors.warningSurface
       : AppColors.primarySoft,
   foreground: event.policy == 'Walk-in allowed'
       ? AppColors.success
-      : event.policy == 'Waitlist available'
-      ? AppColors.warning
       : AppColors.primary,
 );
 
@@ -432,7 +458,8 @@ class EventThumbnail extends StatelessWidget {
         children: [
           Positioned.fill(
             child: showImage && event.image != null
-                ? Image.asset(
+                ? catalogImage(
+                    event.image,
                     event.image!,
                     fit: BoxFit.cover,
                     semanticLabel: event.title,

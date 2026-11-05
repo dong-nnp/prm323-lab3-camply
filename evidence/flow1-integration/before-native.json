@@ -1,0 +1,26 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T05:51:46.673Z",
+  "uid": "evia-demo-staff-v1",
+  "onboardingCompleted": true,
+  "interests": [
+    "technology",
+    "music",
+    "arts"
+  ],
+  "wallet": {
+    "availableCoins": 200,
+    "heldCoins": 0,
+    "version": 1,
+    "updatedAt": "2026-11-05T05:14:00.474Z"
+  },
+  "following": [],
+  "saved": [],
+  "registrations": [],
+  "tickets": [],
+  "ledgerEntries": [
+    {
+      "type": "signup_bonus"
+    }
+  ]
+}

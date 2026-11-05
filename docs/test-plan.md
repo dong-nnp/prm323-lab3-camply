@@ -1,5 +1,86 @@
 # Test plan — template
 
+> **Ticket cache fix — 05/11/2026:** 195/195 Flutter tests đạt; tái hiện vé tồn
+> tại nhưng My Events cache rỗng, refresh error có previous data, vé revoked,
+> event bị xóa và cancel route không có đăng ký. 14 same-data render comparisons
+> trùng RGBA, analyze sạch. [Evidence](../evidence/ticket-cache-fix/).
+
+> **Flow 2 — 05/11/2026:** 59/59 backend Emulator và 190/190 Flutter tests đạt;
+> 14/14 ảnh same-data ở 360/412dp trùng RGBA. Đã kiểm 7 Functions READY, hủy 50
+> hoàn 15 và push FCM đến Android/open đúng event. Regression modal sau refresh
+> đã được thêm. Native proof của nút demo/camera và các giới hạn xem
+> [evidence](../evidence/flow2-api-only/); không dùng nút demo làm proof staff quét thật.
+
+> **Mở email mọi domain 05/11/2026:** 57/57 backend Emulator tests và 176/176
+> Flutter tests đạt; analyze sạch, APK debug build đạt. Tests Gmail/Outlook/domain
+> riêng và malformed email, signup/login/reset, profile/registration, giữ MSSV và
+> role guards. [Evidence](../evidence/open-email/). Chưa nghiệm thu Google login
+> với tài khoản ngoài trường trên native; không lấy fake tests làm cloud proof.
+
+> **API-only theo owner 05/11/2026:** đã gỡ bộ màn `Flow1Screen` tạo ngoài phạm vi;
+> nối Firebase vào các màn gốc, giữ layout/style/assets. Giữ 8 thẻ sở thích;
+> Gaming/Environment chờ đội UI. Ảnh cũ làm minh họa khi chưa có URL; vé chỉ hiện
+> QR trong ô cũ, chưa có mã dự phòng. [Phạm vi](API_INTEGRATION_PHASES.md) · [Evidence sửa lại](../evidence/flow1-api-only/).
+> Các mô tả bộ màn live riêng/kết quả cũ bên dưới là lịch sử, không nghiệm thu bản này.
+
+
+> **Flow 1 mobile integration 05/11/2026:** **171/171 Flutter tests PASS**, gồm
+> 22 tests mới; pub get/format/analyze đạt, APK debug live build đạt. Native smoke
+> trên SM-G996N đã đọc catalog, login email/password, search/follow/bookmark,
+> đăng ký giữ 50 xu và mở lại vé/QR sau restart/logout/login. [Evidence](../evidence/flow1-integration/).
+> Google login, signup/reset email trên native, first-time onboarding trên tài
+> khoản mới, Flow 2/3 và ARTEMIS chưa nghiệm thu. Không gộp native smoke với E2E.
+
+> **Demo catalog/operator setup 05/11/2026:** ba tests mới thuần Node tại
+> demo_catalog.test.mjs đạt (schema/references/windows/edge capacities/dry-run).
+> [Cloud data verification](../evidence/demo-data/verification.json) xác nhận 32
+> catalog records, 5 milestones giữ nguyên; hai password sign-ins, profile/ledger
+> đúng và sai quyền bị từ chối. Không tạo attendance/redemption để giả tích hợp.
+> Không đổi Dart/native/backend handlers nên không chạy lại Flutter/Emulator suite;
+> 51/149 ở release trước vẫn là evidence của revision tương ứng, không test mới.
+
+> **Sau review trước tích hợp 05/11/2026:** baseline Flutter 141/141 đạt trước
+> sửa; suite sau sửa **149/149 đạt**, analyze không issues, pub get/format đạt.
+> Backend mới **51/51 Emulator tests PASS**, 0 fail/skipped. [Logs mới](../evidence/preintegration/).
+> APK debug build đạt; chưa cài lại thiết bị hoặc chạy native Firebase E2E.
+> Tests kiểm FPT domain/MSSV ở hai phía, manual code expiry/rate/staff/race/retry,
+> publication/update/reminder routing/dedupe/stale updates, onboarding không Skip/
+> chờ server, claim không optimistic và UI thiếu service không giả thành công.
+> Không chạy mobile Firebase E2E hoặc gửi notification/cấp xu thử trên cloud.
+
+> **Event Milestones 05/11/2026:** backend suite mới **41/41 PASS**, 0 fail/skipped:
+> [log](../evidence/event-milestones/emulator-tests-release.log). Bao gồm historical
+> attendance, loại pending/future/invalid mode, manual claim, race/retry, đủ 5 mốc
+> tổng +1.100, giữ held balance, admin roles/version/edit/snapshot/audit, Rules và
+> schema validation; cả registered-ticket và walk-in integration cập nhật progress.
+> Không thay Dart/native; không chạy lại Flutter tests/build cho task backend này.
+> Cloud evidence và giới hạn: [feature contract](EVENT_MILESTONES.md).
+
+> **Mô phỏng UI 05/11/2026:** debug + `DEMO_AUTH=true` hiện cho phép mô phỏng
+> giữ/hoàn cọc, check-in, daily reward và đổi thưởng. `ActivityViewModel` quản lý
+> presentation state tạm trong RAM từ fixtures đã được cho phép, không gọi backend.
+> `/profile/demo` chỉ đăng ký khi cờ bật, cho mở 44 màn/trạng thái và reset ví 2.000 xu.
+> Các mô tả “không mutation” phía dưới vẫn áp dụng khi cờ tắt; không dùng demo này
+> làm evidence tích hợp thật. Xem hướng dẫn mới trong README.
+
+
+> 05/11/2026: theo yêu cầu xem UI, thêm DemoAuthenticationService qua DI khi debug + DEMO_AUTH=true; mặc định vẫn pending. Login đi View → EviaViewModel → AuthenticationRepository → AuthenticationService, session stream cập nhật guard; logout xóa session. Không tích hợp Firebase Auth thật. Xem tài khoản/lệnh chạy trong README.
+> Test mới: sai mật khẩu không mở guard, đăng nhập/đăng xuất qua ViewModel, session cho listener mới và unsupported operations. Kết quả chỉ ghi sau khi chạy.
+
+
+## Cloud release — 04/11/2026
+
+Source giữ nguyên so với 31-test Emulator run. Build TypeScript đạt; deploy 34 Functions/Run latest revisions READY, 2 Scheduler definitions/IAM đúng, 14 indexes READY. **6/6 Callable smoke và 3/3 Firestore Rules smoke đạt**, không authenticated mutations/test users/seed. [Release evidence](backend-release.md). Không coi definition checks là job business execution, OAuth/FCM hoặc UI/E2E proof.
+
+## Backend readiness mới — 04/11/2026
+
+Lệnh `npm --prefix functions run test:emulator`, Node22.23.4 + Java21 JBR + Firebase CLI: build TypeScript và **31/31 tests đạt, 0 fail, 0 skipped**. [Log cuối](../evidence/backend-readiness/emulator-final.log). Flutter không thay đổi, không chạy lại UI/native tests trong milestone này.
+
+Ngoài coverage backend cũ, lượt này kiểm terms version import/API, empty dry-run, tìm kiếm đ/d tiếng Việt, FCM token cap, Rules không cho client đọc/ghi quyền admin, đăng ký lại/tranh slot/vé và QR cũ, admin voucher dùng một lần/revoke/expiry, monthly race/cutoff/onboarding/year rollover và no-show cutoff/idempotency/attended/cancelled event.
+
+Monthly/no-show business functions được gọi trực tiếp trong Emulator tests. Emulator không chạy Cloud Scheduler theo lịch thật; chưa deploy code mới, chưa kiểm IAM/schedule/cost hoặc FCM delivery. Các kết quả 20 tests bên dưới là lịch sử revision trước.
+
+RED→GREEN evidence: [search trước fix](../evidence/backend-readiness/emulator-before-search-fix.log), [search sau fix](../evidence/backend-readiness/search-after-fix.log), [re-registration trước implementation](../evidence/backend-readiness/reregistration-before.log), [voucher trước implementation](../evidence/backend-readiness/voucher-before.log). Không tính các lượt RED là pass.
 ## Sign Up branding match — 05/11/2026
 
 Logo và tagline khôi phục đúng kích thước/style Login, không thêm collage.
@@ -140,6 +221,29 @@ lượt sửa này (không thay thế các bằng chứng lịch sử ở mục 
 Trạng thái: có unit/widget tests cho foundation và Evia UI; chưa có E2E ARTEMIS.
 Tài liệu này là kế hoạch, không xác nhận pass/fail cho các bước chưa chạy.
 
+## Firebase development setup — run 04/11/2026
+
+SDK: Flutter 3.47.9 / Dart 3.13.7 tại `F:\Mobile_Programing\flutter_evia_lab3`.
+
+| Check | Kết quả thực tế | Log local |
+|---|---|---|
+| `flutter pub get` | PASS, giữ nguyên dependency constraints/lock | Terminal setup |
+| `dart format --output=none --set-exit-if-changed lib test` | PASS, 88 files / 0 changed | `evidence/firebase-setup/dart-format-check.log` |
+| `flutter analyze` | PASS, no issues | `evidence/firebase-setup/flutter-analyze.log` |
+| `flutter test` | FAIL, 76 pass / 5 fail; Evia UI overflow và ListTile assertion | `evidence/firebase-setup/flutter-test.log` |
+| `flutter test test/services/firebase_preparation_test.dart test/viewmodels/bootstrap_view_model_test.dart test/widgets/foundation_app_test.dart` | PASS, 12 tests | `evidence/firebase-setup/firebase-foundation-tests.log` |
+| `firebase deploy --only firestore:rules --project evia-lab3-kiet-2026 --non-interactive` | PASS, deny-all Rules compiled/released | `evidence/firebase-setup/firestore-rules-deploy.log` |
+| Anonymous REST read `users/probe` | HTTP 403, denied | `evidence/firebase-setup/firestore-access-check.txt` |
+| `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true` | PASS after fixing JDK path and cross-drive Kotlin cache | `evidence/firebase-setup/flutter-build-apk.log` |
+| `flutter build apk --debug --no-pub` with native config temporarily absent | PASS; native config restored afterwards | `evidence/firebase-setup/flutter-build-without-firebase.log` |
+| Native Firebase smoke — Pixel 5 emulator | PASS: `/foundation` displays “Firebase đã khởi tạo”; native init successful | `evidence/firebase-setup/emulator-firebase.png`, `emulator-firebase.xml`, `emulator-startup.log` |
+| Native install/start — Samsung SM-G996N | Install/start PASS; native Firebase init successful. Visual check not verified: phone locked | `evidence/firebase-setup/samsung-startup.log` |
+
+Full-suite failures nằm trong `test/widgets/evia_screens_test.dart` (4 layout
+cases và 1 navigation case); source UI/test đó chưa thay đổi trong task config.
+Không đánh dấu full test suite đạt. Đây không phải emulator security tests,
+ARTEMIS results hoặc bằng chứng các dịch vụ Firebase nghiệp vụ đã hoạt động.
+
 ## Phạm vi foundation
 
 | Loại | Trường hợp | Test source |
@@ -242,6 +346,81 @@ trong cả 17 capture không có mismatch. Không phải pixel-diff hoặc Andro
 sign-off. APK debug biên dịch thành công; Gradle in cảnh báo native-access/KGP
 của Firebase plugins hiện có. Chưa kiểm thử real registration/backend/camera.
 
+## Backend Firebase — run thật 04/11/2026
+
+Scope: chỉ `functions/`, Firebase config/Rules/indexes và docs; working-tree run,
+chưa có commit/PR, chưa cloud deploy. Không chạy lại toàn bộ Flutter/Dart tests vì task không sửa UI/domain Dart.
+Sau cấu hình Auth/SHA thật và sinh lại FlutterFire config, có build APK debug
+riêng; xem kết quả bổ sung bên dưới. Kết quả UI cũ không đại diện
+cho backend mới và các lỗi cũ chưa được sửa trong task này.
+
+Toolchain thực tế: Node22.23.4, Java21 JBR, Firebase CLI15.30.2. Chạy từ repo root
+với toolchain trên PATH, `FUNCTIONS_DISCOVERY_TIMEOUT=60`:
+
+```powershell
+npm --prefix functions run test:emulator
+```
+
+Kết quả cuối: TypeScript build đạt, **20 pass / 0 fail / 0 skipped**.
+Log: `evidence/backend/emulator-tests.log`. Gồm signup once/interest validation,
+last-seat race, cancel once/reopen, quotes/terms/requestId conflicts, scoped staff
+QR + revocation, walk-in intent/expiry/replay, daily race/Vietnam midnight/gap/year
+rollover, stock race/voucher owner/expiry/physical reward, insufficient balance,
+follow races, inbox owner/read cutoff, FCM token reassignment/rotation, catalog
+feeds/pagination/My Events, catalog validation/dry-run, real HTTP Callable Auth.
+
+Firestore/Storage tests dùng **Auth Emulator ID token qua REST**, không dùng Admin
+SDK để giả vờ kiểm tra Rules. Phủ own/public reads và từ chối cross-UID, direct
+wallet/profile/event/attendance writes, private secrets/devices, unfiltered catalog,
+PDF wrong type/size/overwrite. Test harness Admin SDK chỉ tạo test fixtures và
+assert state trong demo project; có guard project/loopback trước clear dữ liệu.
+
+Một lượt trước phát hiện Storage Emulator coi upload ghi đè như create: thêm
+`resource == null` và chạy lại tới pass. Không đánh dấu pass lượt trước lỗi.
+FCM thật bị bỏ qua trong Emulator; test token binding không chứng minh delivery.
+Emulator không kiểm tra composite index requirements như cloud. Chưa có native
+Google OAuth/camera/export/push, cloud Rules/index build/cost/latency evidence.
+
+`npm --prefix functions audit --omit=dev --json`: 6 moderate transitive findings,
+0 high/critical, ghi tại `evidence/backend/npm-audit.json`. Chuỗi chủ yếu nằm ở
+Firestore SDK → gaxios/rimraf → glob/minimatch; chưa áp dụng breaking override
+hoặc `--force`. API không nhận glob pattern/path filesystem từ client; đây không
+phải chứng minh hoàn toàn không thể khai thác. Kiểm tra lại SDK upstream trước
+production. Audit command exit1 do findings, không phải audit sạch.
+
+Bổ sung cấu hình Android thật: FlutterFire CLI sinh lại config sau khi bật
+Google/email-password và thêm debug SHA. `flutter build apk --debug` **PASS**
+(assembleDebug 75.9s); log `evidence/backend/flutter-build-apk.log`. Có warning
+Kotlin Gradle Plugin từ Firebase plugins hiện có. Chưa cài/chạy lại APK hoặc
+đăng nhập trên thiết bị ở lượt này; không suy ra native OAuth pass từ build.
+Không sửa UI/Dart business logic; config sinh tự động vẫn Git-ignore.
+
+## Migration project nhóm — 04/11/2026
+
+- Đích `prm393-31822`, billing đã enabled (không liên kết billing mới).
+- Chỉ sửa config/triển khai backend, thêm script deploy nhóm 4; không sửa UI.
+- Chạy lại `npm --prefix functions run test:emulator`: **20/20 PASS** sau cấu hình
+  CPU fractional. Log `evidence/firebase-migration/emulator-tests.log`.
+- FlutterFire CLI sinh config mới, native compiled resources xác nhận project ID
+  và app ID mới (`compiled-project-check.txt`). `flutter build apk --debug` PASS
+  42.6s, còn warning KGP từ plugins hiện có.
+- Pixel 5 headless: `flutter run -d emulator-5554 --debug --route=/foundation
+  --dart-define=FIREBASE_ENABLED=true --no-resident` PASS. XML + PNG thực tế hiển thị
+  Firebase đã khởi tạo (`android-foundation.xml/png`, `android-startup.log`).
+  Đây chỉ xác nhận bootstrap; không suy ra login/FCM/ba luồng UI pass.
+- Firestore cloud: 14 indexes READY. Anonymous public filtered query 200, unfiltered
+  query và private wallet GET 403 (`cloud-rules-smoke.json`). Không tạo test users
+  hay seed business data trên project thật.
+- Rollout Functions bị quota ở các lượt đầu; logs lỗi được giữ, chỉ đếm revision
+  ready + smoke thành công sau khi deploy theo nhóm nhỏ. Xem `firebase-migration.md`
+  để biết trạng thái chốt; không dùng Functions API ACTIVE một mình làm bằng chứng
+  vì Cloud Run vẫn có thể đang phục vụ revision cũ.
+
+Kết quả migration cuối: **32 Functions ACTIVE + 32 latest Cloud Run revisions READY**,
+14 indexes READY. **4/4 HTTP Callable + 3/3 Firestore Rules cloud smoke đạt**.
+Logs/JSON thật tại `evidence/firebase-migration/`. Script deploy nhóm 4 đã chạy
+đủ 8 nhóm, exit0; đây cũng là validation thực tế cho script, không chỉ AST check.
+Không ghi test users/data lên cloud. Không rerun toàn bộ Flutter UI tests.
 ## Rewards UI/UX regression — 05/11/2026
 
 `test/widgets/rewards_regression_test.dart` kiểm tra tote → confirm → success →
@@ -301,6 +480,30 @@ Validation for this change:
 - APK installed successfully on emulator-5554. am start -W timed out; subsequent
   dumpsys confirmed MainActivity as topResumedActivity. No visual startup sign-off.
 
+### Validation tài khoản mock — 05/11/2026
+
+- `flutter pub get`, `dart format lib test`, `flutter analyze`: đạt.
+- 12 tests tập trung (demo auth, auth guard, EviaViewModel, login keyboard): đạt.
+- `flutter test`: 128 đạt, 5 lỗi trong `evia_screens_test.dart` (layout overflow,
+  ListTile Material assertion và flow UI). Chưa sửa nhóm UI này trong task tài khoản.
+- `flutter build apk --debug --dart-define=DEMO_AUTH=true --target-platform android-arm64 --no-pub`: đạt.
+- Chưa xác nhận thao tác đăng nhập thủ công trên thiết bị; không coi unit tests là native E2E.
+
+### Validation mô phỏng UI — 05/11/2026 (mới nhất)
+
+- `flutter pub get`, `dart format lib test`, `flutter analyze`, `git diff --check`: đạt.
+- `flutter test`: **141/141 đạt**. Bao gồm giữ/hoàn cọc và đăng ký lại, chặn
+  thao tác trùng/thiếu xu/guest, daily/check-in một lần, receipt đúng phần thưởng,
+  reset, gallery chỉ bật khi demo và tra được đủ 44 routes.
+- Widget flow demo: Confirm Registration → Registration Successful, ví còn 1.900;
+  Reset demo → 2.000. Gallery/Discover/Explore/Following kiểm ở 360dp/412dp,
+  gồm text scale 2×. Sửa ListTile thiếu Material và Row overflow gặp trong lượt này;
+  test Following dùng auth fake để thực sự render protected screens.
+- `flutter build apk --debug --dart-define=DEMO_AUTH=true --target-platform android-arm64 --no-pub`: đạt.
+- Kết quả này thay cho 5 lỗi UI được ghi ở lượt tài khoản mock trước đó.
+- Chưa kiểm chứng từng thao tác bằng tay trên điện thoại; widget tests không phải
+  native E2E. Không chạy Google/QR camera/email/backend nghiệp vụ thật.
+
 ## Luồng Discover, Search và Following — 05/11/2026
 
 Đã kiểm tra Skip mở Discover Guest, Search & Explore mở cùng route, Filter
@@ -313,3 +516,15 @@ Full suite đạt 132 test trước khi siết danh sách Their Events để ch�
 đăng ký xác nhận. Sau thay đổi cuối, 31 test liên quan Evia và Registration
 đạt, gồm kiểm tra Going không xuất hiện trong Their Events. Analyze sạch.
 Các ca đăng nhập dùng phiên kiểm thử, không xác nhận tích hợp auth/backend thật.
+
+### Validation hợp nhất `origin/main` vào backend — 05/11/2026
+
+- Hợp nhất điều hướng Discover Guest, Search, Schedule và Their Events với
+  adapters Firebase hiện có; giữ onboarding lưu server, không Waitlist, hoàn
+  cọc 30% làm tròn xuống và bản sửa vé không phụ thuộc cache My Events.
+- `flutter pub get`, `dart format lib test`, `flutter analyze`: đạt.
+- `flutter test`: **200/200 đạt**, gồm hai ca hồi quy mới cho Their Events đọc
+  đăng ký server/mở đúng ID và widget tóm tắt nhận ảnh URL.
+- `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=DEMO_AUTH=false --target-platform android-arm64 --no-pub`: đạt.
+- Chưa cài/chạy lại bản merge trên điện thoại và chưa kiểm tra Firebase trực tiếp
+  trong lượt này. Không thay đổi hay deploy Functions/Rules.

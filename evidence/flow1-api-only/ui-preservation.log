@@ -1,0 +1,37 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/.local/ui-preservation/probe_test.dart
+00:00 +0: discover 360.0 unchanged with same data
+00:01 +1: discover 412.0 unchanged with same data
+00:01 +2: guest-discover 360.0 unchanged with same data
+00:01 +3: guest-discover 412.0 unchanged with same data
+00:02 +4: explore 360.0 unchanged with same data
+00:02 +5: explore 412.0 unchanged with same data
+00:02 +6: explore-results 360.0 unchanged with same data
+00:03 +7: explore-results 412.0 unchanged with same data
+00:03 +8: following-events 360.0 unchanged with same data
+00:03 +9: following-events 412.0 unchanged with same data
+00:04 +10: following-organizers 360.0 unchanged with same data
+00:04 +11: following-organizers 412.0 unchanged with same data
+00:04 +12: interests 360.0 unchanged with same data
+00:04 +13: interests 412.0 unchanged with same data
+00:04 +14: event-about 360.0 unchanged with same data
+00:04 +15: event-about 412.0 unchanged with same data
+00:05 +16: event-schedule 360.0 unchanged with same data
+00:05 +17: event-schedule 412.0 unchanged with same data
+00:05 +18: event-location 360.0 unchanged with same data
+00:05 +19: event-location 412.0 unchanged with same data
+00:05 +20: organizer 360.0 unchanged with same data
+00:06 +21: organizer 412.0 unchanged with same data
+00:06 +22: registration 360.0 unchanged with same data
+00:06 +23: registration 412.0 unchanged with same data
+00:06 +24: registration-result 360.0 unchanged with same data
+00:06 +25: registration-result 412.0 unchanged with same data
+00:06 +26: ticket 360.0 unchanged with same data
+00:06 +27: ticket 412.0 unchanged with same data
+00:06 +28: profile 360.0 unchanged with same data
+00:07 +29: profile 412.0 unchanged with same data
+00:07 +30: profile-interests 360.0 unchanged with same data
+00:07 +31: profile-interests 412.0 unchanged with same data
+00:07 +32: saved 360.0 unchanged with same data
+00:07 +33: saved 412.0 unchanged with same data
+00:07 +34: (tearDownAll)
+00:07 +34: All tests passed!

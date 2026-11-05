@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-11-04T16:48:27.781Z",
+  "project": "prm393-31822",
+  "afterDeployment": true,
+  "passed": 6,
+  "checks": [
+    {
+      "name": "getServerInfo",
+      "status": 200,
+      "expected": 200,
+      "durationMs": 384,
+      "result": {
+        "apiVersion": 1,
+        "serverTime": "2026-11-04T16:48:28.804Z",
+        "region": "asia-southeast1",
+        "timezone": "Asia/Ho_Chi_Minh",
+        "monthlyGiftEnabled": true,
+        "monthlyGiftMode": "automatic",
+        "cashierVerificationEnabled": true
+      }
+    },
+    {
+      "name": "getPublicCatalog",
+      "status": 200,
+      "expected": 200,
+      "durationMs": 514,
+      "itemCount": 0
+    },
+    {
+      "name": "getAccount",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 372,
+      "errorCode": "UNAUTHENTICATED"
+    },
+    {
+      "name": "getOperationStatus",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 365,
+      "errorCode": "UNAUTHENTICATED"
+    },
+    {
+      "name": "grantMonthlyGift",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 498,
+      "errorCode": "UNAUTHENTICATED"
+    },
+    {
+      "name": "verifyVoucher",
+      "status": 401,
+      "expected": 401,
+      "durationMs": 702,
+      "errorCode": "UNAUTHENTICATED"
+    }
+  ]
+}

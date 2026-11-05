@@ -1,5 +1,109 @@
 # Kiến trúc source base
 
+> **Ticket cache fix — 05/11/2026:** ticket provider tạo event presentation từ
+> response `getTicket`; View không dùng My Events cache để kết luận có vé hay
+> chưa đăng ký. Cancel lookup nullable và error/loading dùng widgets hiện có.
+> [Regression/evidence](../evidence/ticket-cache-fix/).
+
+> **Flow 2 — 05/11/2026:** Activity/Profile ViewModels dùng Flow1Repository
+> cho cancellation, Going, attendance và inbox; NotificationsViewModel giữ
+> pagination/read/retry. PushNotificationsViewModel → PushNotificationRepository
+> → MessagingService/FirebaseMessagingService + BackendService đăng ký FCM.
+> SDK Messaging chỉ ở services; EventQrCamera chỉ camera presentation, không
+> gọi backend. Server kiểm cờ demo, receipt và ownership cho nút debug.
+> [Contract và evidence](../evidence/flow2-api-only/).
+
+> **Email policy 05/11/2026:** client/server nhận mọi domain email đúng định dạng;
+> validator dùng chung cho auth/profile/registration, MSSV và role guards giữ
+> nguyên. Không thêm adapter/layer hoặc thay layout. [Contract](PREINTEGRATION_DECISIONS.md).
+
+> **API-only theo owner 05/11/2026:** đã gỡ bộ màn `Flow1Screen` tạo ngoài phạm vi;
+> nối Firebase vào các màn gốc, giữ layout/style/assets. Giữ 8 thẻ sở thích;
+> Gaming/Environment chờ đội UI. Ảnh cũ làm minh họa khi chưa có URL; vé chỉ hiện
+> QR trong ô cũ, chưa có mã dự phòng. [Phạm vi](API_INTEGRATION_PHASES.md) · [Evidence sửa lại](../evidence/flow1-api-only/).
+> Các mô tả bộ màn live riêng/kết quả cũ bên dưới là lịch sử, không nghiệm thu bản này.
+
+
+> **Flow 1 live — 05/11/2026:** [phạm vi mới](API_INTEGRATION_PHASES.md) thay thế
+> ghi chú “chưa có adapter/chưa nối Flutter” phía dưới đối với Flow 1.
+> View → Flow1ViewModel/RegistrationViewModel → Flow1Repository → BackendService
+> → FirebaseBackendService; auth qua AuthenticationRepository/service adapter.
+> Live bật với FIREBASE_ENABLED=true và không DEMO_AUTH. Dữ liệu demo live ở
+> Firebase do owner yêu cầu; không import fixture business vào đường dữ liệu live.
+> Các adapter khác, Flow 2/3 và instrumentation vẫn pending.
+
+> **Dữ liệu demo live 05/11/2026:** [DEMO_DATA.md](DEMO_DATA.md) là dataset được
+> owner cho phép tạo để nối SDK về sau. JSON và script nằm ở firebase/ và
+> functions/scripts/, không import catalog demo vào Dart runtime. Operators
+> được tạo ở Firebase Auth và app-role documents; credentials chỉ ở ignored
+> local folder, không trong Firestore hoặc APK. Không có SDK adapter mới trong task.
+
+> **Trước tích hợp 05/11/2026:** CampusRepository/CampusService bổ sung hai
+> actions được yêu cầu: lưu onboarding và claim thành tựu. VM chỉ chuyển tiếp/
+> cập nhật reward sau success của service; pending adapter ném lỗi rõ. Backend
+> identity.ts dùng chung FPT policy; event_notifications.ts tách event trigger/
+> scheduler khỏi SDK entry point để test logic với clock và Emulator.
+> [Contract mới](PREINTEGRATION_DECISIONS.md) phân biệt source/UI contracts với
+> concrete mobile adapters còn pending, không coi đây là nối ba flows hoàn tất.
+
+> **Backend Event Milestones 05/11/2026:** module `functions/src/milestones.ts`
+> compose vào createBackend, thêm 3 callables; API/policy tại
+> [EVENT_MILESTONES.md](EVENT_MILESTONES.md). Firestore giữ definitions,
+> aggregate attendance tính tiến độ; claim transaction ghi wallet/ledger/snapshot/
+> receipt nguyên tử. Remote Config chỉ presentation. Flutter models/services/DI
+> cho feature này chưa nối; task hiện tại không đổi UI demo đang phát triển.
+
+> **Mô phỏng UI 05/11/2026:** debug + `DEMO_AUTH=true` hiện cho phép mô phỏng
+> giữ/hoàn cọc, check-in, daily reward và đổi thưởng. `ActivityViewModel` quản lý
+> presentation state tạm trong RAM từ fixtures đã được cho phép, không gọi backend.
+> `/profile/demo` chỉ đăng ký khi cờ bật, cho mở 44 màn/trạng thái và reset ví 2.000 xu.
+> Các mô tả “không mutation” phía dưới vẫn áp dụng khi cờ tắt; không dùng demo này
+> làm evidence tích hợp thật. Xem hướng dẫn mới trong README.
+
+
+> 05/11/2026: theo yêu cầu xem UI, thêm DemoAuthenticationService qua DI khi debug + DEMO_AUTH=true; mặc định vẫn pending. Login đi View → EviaViewModel → AuthenticationRepository → AuthenticationService, session stream cập nhật guard; logout xóa session. Không tích hợp Firebase Auth thật. Xem tài khoản/lệnh chạy trong README.
+
+
+> **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
+
+> **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
+> App đã chuyển bằng FlutterFire; 32 Functions + Rules đã deploy, 14 indexes READY.
+> API smoke cloud + 20 Emulator tests + APK/startup Core đạt; [evidence](firebase-migration.md).
+> UI, Google login/push thật và dữ liệu catalog chưa tích hợp.
+> Các mục về `evia-lab3-kiet-2026` bên dưới là lịch sử, không phải project để deploy tiếp.
+
+
+## Backend nghiệp vụ độc lập — 04/11/2026
+
+`functions/src/index.ts` nhận HTTPS Callable với Firebase Auth context →
+`backend.ts` validate/dispatch → accounts/events/rewards/queries → Admin SDK
+Firestore transactions. Monetary writes dùng receipt + ledger atomic; callable
+không tin UID/role/giá trị tiền từ client. Rules từ chối mọi client mutation.
+`catalog.ts` + create-only importer quản lý dữ liệu được duyệt, không seed giả.
+
+Flutter vẫn giữ View → ViewModel → Repository → Service interface → SDK adapter.
+Task này **không sửa Dart/UI**, không thay pending providers hoặc giả rằng UI đã
+đăng nhập/gọi backend. Khi frontend sẵn sàng, thêm service adapter dùng callable
+region asia-southeast1 và domain models theo [API v1](backend-integration.md),
+đồng thời test state/error/auth guard. Auth credentials thuộc Firebase Auth SDK.
+
+`firebase.json` cấu hình Auth/Firestore/Functions/Storage Emulators; tests chỉ
+project demo loopback. Rules/indexes đã deploy lên project nhóm; Functions theo trạng thái migration. FCM trigger
+chuẩn bị gửi inbox notifications thật, bỏ qua rõ ràng trên Emulator. Analytics,
+Crashlytics, Remote Config app-side không đổi.
+
+Thư mục thêm: `functions/src/`, `functions/test/`, `functions/scripts/`,
+`evidence/backend/`. Xem `functions/README.md` để chạy không cần UI.
+
+
+## Cập nhật Firebase development 04/11/2026
+
+Android đã được FlutterFire cấu hình cho `evia-lab3-kiet-2026`; xem
+[firebase-setup.md](firebase-setup.md). Firestore cloud đã tạo với Rules deny-all,
+chưa có adapter/data model nghiệp vụ trong app. Dependency flow và sáu
+`PendingFirebaseServices` giữ nguyên; Firebase Core ready chỉ xác nhận bootstrap.
+`FIREBASE_ENABLED` tiếp tục mặc định false, có thể mở `/foundation` để kiểm tra.
+
 Ứng dụng Android `prm393_lab03` dùng MVVM, Riverpod cho state và dependency
 injection, go_router cho navigation. Foundation kiểm tra cấu hình khởi động ở
 `/foundation`; entry mặc định là S00 `/splash`, S01 Welcome ở `/`, Login ở `/login`.
@@ -41,13 +145,63 @@ test/
 └── widgets/
 e2e_test/                          # Chỉ README chuẩn bị ARTEMIS
 firebase/
-├── storage.rules                  # Deny all; chưa deploy
+├── storage.rules                  # Own create-only PDF reports; local only
 └── remote-config-defaults.json     # {} chờ xác định keys; chưa tải vào SDK
 docs/                             # Architecture + các template kế hoạch
 android/                          # Flutter-generated Android host
 ```
 
 ## MVVM và dependency flow
+
+### Inventory ViewModel hiện tại
+
+| ViewModel | Dependency hiện có | Service thực sự sử dụng | Ranh giới chưa tích hợp |
+|---|---|---|---|
+| BootstrapViewModel | BootstrapRepository | FirebaseInitializer → FirebaseInitializationService | Chỉ Core bootstrap, không phải sáu services nghiệp vụ |
+| AuthenticationViewModel | AuthenticationRepository | AuthenticationService → PendingFirebaseServices | Chỉ quan sát unavailable; login/logout thật chưa nối |
+| EviaViewModel | EviaMockData | Chưa có data service | Discover/search/follow/bookmark là demo state |
+| ActivityViewModel | ActivityMockData | Chưa có data service | Vé/check-in/daily/rewards/coin history là demo |
+| RegistrationViewModel | RegistrationMockData, ActivityViewModel | Chưa có data service | Submit/presentation state chưa gọi backend |
+| ProfileViewModel | RegistrationMockData, EviaViewModel | Chưa có data service | Profile/interests/saved/inbox chưa gọi backend |
+
+Khi tích hợp, thay nguồn mock bằng repository/service contracts theo [handoff](FRONTEND_HANDOFF.md); bảng không tuyên bố UI đã chạy qua các API backend.
+
+### Sequence bootstrap đã có trong source
+
+```mermaid
+sequenceDiagram
+    participant V as FoundationScreen
+    participant VM as BootstrapViewModel
+    participant R as BootstrapRepository
+    participant S as FirebaseInitializationService
+    participant F as Firebase Core SDK
+    V->>VM: refresh
+    VM-->>V: AppLoading
+    VM->>R: initialize
+    R->>S: initialize
+    alt FIREBASE_ENABLED false
+        S-->>R: notConfigured (không gọi SDK)
+        R-->>VM: notConfigured
+        VM-->>V: AppEmpty
+    else Firebase enabled
+        S->>F: initializeApp
+        alt thành công
+            F-->>S: FirebaseApp
+            S-->>R: ready
+            R-->>VM: ready
+            VM-->>V: AppData
+        else lỗi hoặc timeout
+            S-->>VM: exception qua repository
+            VM-->>V: AppError an toàn, cho retry
+        end
+    end
+```
+
+### Backend mới và jobs (local, chưa deploy)
+
+Hai lịch server `monthlyGiftSchedule`/`noShowSchedule` gọi `createMaintenance` → Firestore transactions; không phải route/UI action. Admin voucher kiểm custom claim và `voucher_admins` server-only trước khi mark-used. Xem [BACKEND_POLICIES.md](BACKEND_POLICIES.md). Các thay đổi local này mới hơn snapshot cloud 32 Functions.
+
+Sequence mục tiêu khi đội frontend nối đăng ký: View action → RegistrationViewModel → repository → Callable adapter → registerForEvent → transaction capacity/terms/wallet/ticket/receipt → domain result → ViewModel state. Phần từ Flutter đến adapter **chưa triển khai**, backend transaction đã được Emulator kiểm chứng.
 
 ```mermaid
 flowchart TD
@@ -189,10 +343,12 @@ tiếp không thay đổi `AuthSession`, không vượt qua guard cho protected 
 
 Discover Guest nhúng nội dung Explore vào cùng route và dùng chung
 `EviaViewModel` với trang bộ lọc. Mở chi tiết truyền khóa sự kiện qua route.
-`RegistrationMockData.findEvent` phân giải khóa sang dữ liệu của thẻ đã chọn,
-gồm các bản tham chiếu AI có khác biệt về địa điểm và chính sách tham dự.
-Following lấy đăng ký trong phiên từ `ActivityViewModel` và trạng thái Follow
-từ `EviaViewModel`. Hai ViewModel khởi tạo lại trạng thái khi đổi tài khoản.
+`RegistrationViewModel.findEvent` phân giải ID Firebase khi bật backend thật;
+`RegistrationMockData.findEvent` chỉ phân giải dữ liệu preview, gồm các bản
+tham chiếu AI có khác biệt về địa điểm và chính sách tham dự. Following lấy
+đăng ký từ `ActivityViewModel` và trạng thái Follow từ `EviaViewModel`; khi
+bật backend thật, cả hai phản ánh dữ liệu server. ViewModel xóa trạng thái tài
+khoản trước khi đổi phiên. `detailKey` giữ đúng sự kiện khi mở tab Schedule.
 
 `FigmaAssets` ánh xạ exports cục bộ, `EviaTheme` bổ sung tokens, `evia_widgets.dart`
 và `evia_brand.dart` chứa các thành phần giao diện dùng lại. Không thêm tải font

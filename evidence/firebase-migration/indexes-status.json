@@ -1,0 +1,77 @@
+{
+  "checkedAt": "2026-11-04T15:09:05.409Z",
+  "project": "prm393-31822",
+  "indexes": [
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/bookmarks/indexes/CICAgJim14AJ",
+      "state": "READY",
+      "collectionGroup": "bookmarks"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/attendance/indexes/CICAgOjXh4EJ",
+      "state": "READY",
+      "collectionGroup": "attendance"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/notifications/indexes/CICAgJj7z4EJ",
+      "state": "READY",
+      "collectionGroup": "notifications"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/following/indexes/CICAgJjF9oIJ",
+      "state": "READY",
+      "collectionGroup": "following"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/vouchers/indexes/CICAgJiUpoMJ",
+      "state": "READY",
+      "collectionGroup": "vouchers"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/notifications/indexes/CICAgOi3kJAJ",
+      "state": "READY",
+      "collectionGroup": "notifications"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/registrations/indexes/CICAgJim14AK",
+      "state": "READY",
+      "collectionGroup": "registrations"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/events/indexes/CICAgOjXh4EK",
+      "state": "READY",
+      "collectionGroup": "events"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/vouchers/indexes/CICAgJj7z4EK",
+      "state": "READY",
+      "collectionGroup": "vouchers"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/redemptions/indexes/CICAgJjF9oIK",
+      "state": "READY",
+      "collectionGroup": "redemptions"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/registrations/indexes/CICAgJiUpoMK",
+      "state": "READY",
+      "collectionGroup": "registrations"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/redemptions/indexes/CICAgOi3kJAK",
+      "state": "READY",
+      "collectionGroup": "redemptions"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/event_intents/indexes/CICAgJim14AL",
+      "state": "READY",
+      "collectionGroup": "event_intents"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/collectionGroups/ledger/indexes/CICAgJiUpoML",
+      "state": "READY",
+      "collectionGroup": "ledger"
+    }
+  ],
+  "hasMore": false
+}

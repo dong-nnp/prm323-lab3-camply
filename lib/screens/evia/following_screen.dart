@@ -210,7 +210,10 @@ class EviaFollowingScreen extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      for (final organizer in EviaMockData.recommendations)
+                      for (final organizer
+                          in (vm.live
+                              ? vm.suggestedOrganizers
+                              : EviaMockData.recommendations))
                         Padding(
                           padding: const EdgeInsets.only(right: AppSpacing.md),
                           child: SizedBox(
@@ -361,9 +364,11 @@ class _FollowingEvent extends StatelessWidget {
                 children: [
                   const CoinIcon(),
                   const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '+${event.coins} coins',
-                    style: EviaTheme.label.copyWith(color: EviaTheme.gold),
+                  Expanded(
+                    child: Text(
+                      '+${event.coins} coins',
+                      style: EviaTheme.label.copyWith(color: EviaTheme.gold),
+                    ),
                   ),
                 ],
               ),
@@ -399,7 +404,7 @@ class _OrganizerCard extends ConsumerWidget {
           else
             const Icon(Icons.add),
           const SizedBox(width: AppSpacing.xs),
-          Text(followed ? 'Following' : 'Follow'),
+          Flexible(child: Text(followed ? 'Following' : 'Follow')),
         ],
       ),
     );

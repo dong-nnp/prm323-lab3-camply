@@ -1,0 +1,522 @@
+{
+  "checkedAt": "2026-11-04T15:24:05.283Z",
+  "project": "prm393-31822",
+  "functionCount": 32,
+  "readyServiceCount": 32,
+  "functions": [
+    {
+      "name": "verifyWalkInQr",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "claimDailyCheckin",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getAccount",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "deliverNotification",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": "google.cloud.firestore.document.v1.created"
+    },
+    {
+      "name": "markNotificationsRead",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getVoucherCode",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getTicket",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "listMyEvents",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getServerInfo",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getTicketQr",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "initializeUser",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "setWalkInGoing",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "setBookmark",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "unfollowOrganizer",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getReward",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "followOrganizer",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "updateProfile",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "grantMonthlyGift",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "registerForEvent",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "redeemReward",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getOrganizer",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "saveInterests",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "cancelRegistration",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getPublicCatalog",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "listOwned",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "registerDevice",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "getEvent",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    },
+    {
+      "name": "unregisterDevice",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "cpu": "0.1666",
+      "concurrency": 1,
+      "maxInstances": 3,
+      "eventType": null
+    }
+  ],
+  "services": [
+    {
+      "name": "verifyvoucher",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "verifyvoucher-00001-wuq",
+      "latestCreated": "verifyvoucher-00001-wuq",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "verifywalkinqr",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "verifywalkinqr-00001-zew",
+      "latestCreated": "verifywalkinqr-00001-zew",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "verifyregisteredticket",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "verifyregisteredticket-00001-dov",
+      "latestCreated": "verifyregisteredticket-00001-dov",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "updateprofile",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "updateprofile-00001-xah",
+      "latestCreated": "updateprofile-00001-xah",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "unregisterdevice",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "unregisterdevice-00001-zij",
+      "latestCreated": "unregisterdevice-00001-zij",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "unfolloworganizer",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "unfolloworganizer-00001-vik",
+      "latestCreated": "unfolloworganizer-00001-vik",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "setwalkingoing",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "setwalkingoing-00001-wom",
+      "latestCreated": "setwalkingoing-00001-wom",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "setbookmark",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "setbookmark-00001-sop",
+      "latestCreated": "setbookmark-00001-sop",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "registerforevent",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "registerforevent-00001-qek",
+      "latestCreated": "registerforevent-00001-qek",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "saveinterests",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "saveinterests-00001-qeg",
+      "latestCreated": "saveinterests-00001-qeg",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "registerdevice",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "registerdevice-00001-vew",
+      "latestCreated": "registerdevice-00001-vew",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "redeemreward",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "redeemreward-00001-xex",
+      "latestCreated": "redeemreward-00001-xex",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "marknotificationsread",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "marknotificationsread-00001-lip",
+      "latestCreated": "marknotificationsread-00001-lip",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "listowned",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "listowned-00001-zon",
+      "latestCreated": "listowned-00001-zon",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "listmyevents",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "listmyevents-00001-gag",
+      "latestCreated": "listmyevents-00001-gag",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "issuewalkinqr",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "issuewalkinqr-00001-ved",
+      "latestCreated": "issuewalkinqr-00001-ved",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "initializeuser",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "initializeuser-00001-sox",
+      "latestCreated": "initializeuser-00001-sox",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "grantmonthlygift",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "grantmonthlygift-00001-wom",
+      "latestCreated": "grantmonthlygift-00001-wom",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getvouchercode",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getvouchercode-00001-mir",
+      "latestCreated": "getvouchercode-00001-mir",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getticketqr",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getticketqr-00001-cid",
+      "latestCreated": "getticketqr-00001-cid",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getserverinfo",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getserverinfo-00001-zur",
+      "latestCreated": "getserverinfo-00001-zur",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getticket",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getticket-00001-hig",
+      "latestCreated": "getticket-00001-hig",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getreward",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getreward-00001-cer",
+      "latestCreated": "getreward-00001-cer",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getpubliccatalog",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getpubliccatalog-00001-yer",
+      "latestCreated": "getpubliccatalog-00001-yer",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getorganizer",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getorganizer-00001-rok",
+      "latestCreated": "getorganizer-00001-rok",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getoperationstatus",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getoperationstatus-00001-qom",
+      "latestCreated": "getoperationstatus-00001-qom",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getevent",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getevent-00001-dus",
+      "latestCreated": "getevent-00001-dus",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "getaccount",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "getaccount-00001-kim",
+      "latestCreated": "getaccount-00001-kim",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "delivernotification",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "delivernotification-00001-reh",
+      "latestCreated": "delivernotification-00001-reh",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "followorganizer",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "followorganizer-00001-var",
+      "latestCreated": "followorganizer-00001-var",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "claimdailycheckin",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "claimdailycheckin-00001-baq",
+      "latestCreated": "claimdailycheckin-00001-baq",
+      "cpu": "0.1666"
+    },
+    {
+      "name": "cancelregistration",
+      "state": "CONDITION_SUCCEEDED",
+      "latestReady": "cancelregistration-00001-cej",
+      "latestCreated": "cancelregistration-00001-cej",
+      "cpu": "0.1666"
+    }
+  ]
+}

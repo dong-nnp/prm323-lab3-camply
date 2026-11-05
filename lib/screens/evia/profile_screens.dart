@@ -1,10 +1,12 @@
+import '../../viewmodels/authentication_view_model.dart';
+import '../../core/providers/service_providers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/flow_assets.dart';
 import '../../data/mock/evia_mock_data.dart';
-import '../../data/mock/registration_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/profile_view_model.dart';
@@ -15,6 +17,9 @@ import '../../widgets/activity_widgets.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
+import '../../widgets/status_widgets.dart';
+import '../../core/utils/exception_mapper.dart';
+import '../../viewmodels/push_notifications_view_model.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -203,9 +208,24 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            if (ref.watch(demoAuthEnabledProvider))
+              TextButton.icon(
+                onPressed: () => context.push('/profile/demo'),
+                icon: const Icon(Icons.grid_view),
+                label: const Text('Demo screens'),
+              ),
             const SizedBox(height: AppSpacing.xl),
             OutlinedButton(
-              onPressed: () {
+              onPressed: () async {
+                final error = await ref
+                    .read(authenticationViewModelProvider.notifier)
+                    .signOut();
+                if (!context.mounted) return;
+                if (error != null) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(error)));
+                  return;
+                }
                 ref.invalidate(profileViewModelProvider);
                 ref.invalidate(eviaViewModelProvider);
                 ref.invalidate(registrationViewModelProvider);
@@ -253,9 +273,7 @@ class ProfileScreen extends ConsumerWidget {
               TextField(
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'University Email',
-                ),
+                decoration: const InputDecoration(labelText: 'Email'),
               ),
             ],
           ),
@@ -266,10 +284,12 @@ class ProfileScreen extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () {
-              if (ref
+            onPressed: () async {
+              final success = await ref
                   .read(profileViewModelProvider.notifier)
-                  .updateProfile(name.text, id.text, email.text)) {
+                  .updateProfile(name.text, id.text, email.text);
+              if (!dialog.mounted || !context.mounted) return;
+              if (success) {
                 Navigator.pop(dialog);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -317,10 +337,17 @@ class ProfileInterestsScreen extends ConsumerWidget {
               label: 'Save Preferences',
               onPressed: selected.length < 3
                   ? null
-                  : () {
-                      vm.saveInterests();
+                  : () async {
+                      final saved = await vm.persistInterests();
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Preferences saved.')),
+                        SnackBar(
+                          content: Text(
+                            saved
+                                ? 'Preferences saved.'
+                                : ref.read(profileViewModelProvider).message ?? 'Could not save preferences. Please retry.',
+                          ),
+                        ),
                       );
                     },
             ),
@@ -561,7 +588,10 @@ class SavedEventsScreen extends ConsumerWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(AppRadius.small),
-                          child: Image.asset(
+                          child: catalogImage(
+                            ref.read(realBackendEnabledProvider)
+                                ? entry.event.image
+                                : null,
                             entry.image,
                             width: 88,
                             height: 88,
@@ -648,20 +678,72 @@ class SavedEventsScreen extends ConsumerWidget {
   }
 }
 
-class NotificationsScreen extends ConsumerWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (mounted) {
+        ref
+            .read(pushNotificationsViewModelProvider.notifier)
+            .requestPermission();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     const screen = '2092:607';
     ref.watch(profileViewModelProvider);
     final vm = ref.read(profileViewModelProvider.notifier);
+    final live = ref.watch(realBackendEnabledProvider);
+    final remote = live ? ref.watch(notificationsViewModelProvider) : null;
+    if (live) {
+      ref.listen(pushNotificationsViewModelProvider, (previous, next) {
+        if (next.error != null && previous?.error != next.error) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(next.error!)));
+        }
+      });
+    }
+    if (remote != null && !remote.hasValue) {
+      return EviaPage(
+        child: Center(
+          child: remote.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(remote.error!).message,
+                  onRetry: () => ref.invalidate(notificationsViewModelProvider),
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final notices = vm.notices;
     return EviaPage(
       header: ActivityHeader(
         'Notifications',
         screen: screen,
         backAsset: 'imgContainer4',
         trailing: TextButton(
-          onPressed: vm.markAllRead,
+          onPressed: () async {
+            final success = await vm.markAllRead();
+            if (!success &&
+                context.mounted &&
+                ref.read(profileViewModelProvider).message != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(ref.read(profileViewModelProvider).message!),
+                ),
+              );
+            }
+          },
           child: const Text('Mark all read'),
         ),
       ),
@@ -670,108 +752,141 @@ class NotificationsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            for (final today in [true, false]) ...[
-              Wrap(
-                spacing: AppSpacing.sm,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(today ? 'Today' : 'This Week', style: EviaTheme.label),
-                  if (today && vm.unreadCount > 0)
-                    EventBadge('${vm.unreadCount} new'),
-                ],
+            if (live && notices.isEmpty)
+              const AppEmptyWidget(
+                title: 'No notifications yet',
+                message: 'New event updates and reminders will appear here.',
               ),
-              const SizedBox(height: AppSpacing.md),
-              EviaCard(
-                color: today
-                    ? AppColors.primarySoft.withValues(alpha: .2)
-                    : AppColors.surface,
-                child: Column(
+            for (final today in [true, false])
+              if (!live || notices.any((n) => n.today == today)) ...[
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    for (final notice in RegistrationMockData.notices.where(
-                      (n) => n.today == today,
-                    )) ...[
-                      if (notice !=
-                          RegistrationMockData.notices.firstWhere(
-                            (n) => n.today == today,
-                          ))
-                        const Divider(height: AppSpacing.xl),
-                      InkWell(
-                        onTap: () {
-                          vm.readNotice(notice.id);
-                          context.push(
-                            notice.id == 'registration'
-                                ? '/my-events/ticket?event=music-live'
-                                : '/event/about?event=${notice.id == 'new-event' ? 'innovation' : 'music-live'}',
-                          );
-                        },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: today
-                                      ? AppColors.primarySoft
-                                      : AppColors.surfaceMuted,
-                                  child: ActivityIcon(
-                                    screen,
-                                    notice.icon == 0
-                                        ? 'imgContainer'
-                                        : 'imgContainer${notice.icon}',
-                                  ),
-                                ),
-                                if (vm.isUnread(notice))
-                                  const Positioned(
-                                    right: 0,
-                                    top: 0,
-                                    child: Icon(
-                                      Icons.circle,
-                                      color: AppColors.primary,
-                                      size: AppSpacing.sm,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Wrap(
-                                    spacing: AppSpacing.sm,
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      Text(
-                                        notice.title,
-                                        style: EviaTheme.label,
-                                      ),
-                                      if (vm.isUnread(notice))
-                                        const EventBadge('NEW'),
-                                      Text(
-                                        notice.when,
-                                        style: EviaTheme.caption,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: AppSpacing.xs),
-                                  Text(
-                                    notice.message,
-                                    style: EviaTheme.caption,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    Text(
+                      today
+                          ? 'Today'
+                          : live
+                          ? 'Earlier'
+                          : 'This Week',
+                      style: EviaTheme.label,
+                    ),
+                    if (today && vm.unreadCount > 0)
+                      EventBadge('${vm.unreadCount} new'),
                   ],
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-            ],
+                const SizedBox(height: AppSpacing.md),
+                EviaCard(
+                  color: today
+                      ? AppColors.primarySoft.withValues(alpha: .2)
+                      : AppColors.surface,
+                  child: Column(
+                    children: [
+                      for (final notice in notices.where(
+                        (n) => n.today == today,
+                      )) ...[
+                        if (notice !=
+                            notices.firstWhere((n) => n.today == today))
+                          const Divider(height: AppSpacing.xl),
+                        InkWell(
+                          onTap: () async {
+                            final success =
+                                !vm.isUnread(notice) ||
+                                await vm.readNotice(notice.id);
+                            if (!context.mounted) return;
+                            if (!success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    ref
+                                            .read(profileViewModelProvider)
+                                            .message ??
+                                        'Please retry.',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+                            if (live) {
+                              if (notice.destination != null) {
+                                context.push(notice.destination!);
+                              }
+                              return;
+                            }
+                            context.push(
+                              notice.id == 'registration'
+                                  ? '/my-events/ticket?event=music-live'
+                                  : '/event/about?event=${notice.id == 'new-event' ? 'innovation' : 'music-live'}',
+                            );
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: today
+                                        ? AppColors.primarySoft
+                                        : AppColors.surfaceMuted,
+                                    child: ActivityIcon(
+                                      screen,
+                                      notice.icon == 0
+                                          ? 'imgContainer'
+                                          : 'imgContainer${notice.icon}',
+                                    ),
+                                  ),
+                                  if (vm.isUnread(notice))
+                                    const Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Icon(
+                                        Icons.circle,
+                                        color: AppColors.primary,
+                                        size: AppSpacing.sm,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(width: AppSpacing.md),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Wrap(
+                                      spacing: AppSpacing.sm,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Text(
+                                          notice.title,
+                                          style: EviaTheme.label,
+                                        ),
+                                        if (vm.isUnread(notice))
+                                          const EventBadge('NEW'),
+                                        Text(
+                                          notice.when,
+                                          style: EviaTheme.caption,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: AppSpacing.xs),
+                                    Text(
+                                      notice.message,
+                                      style: EviaTheme.caption,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+              ],
           ],
         ),
       ),

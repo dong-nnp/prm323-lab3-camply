@@ -53,7 +53,7 @@ Future<ProviderContainer> openSignUp(
 Future<void> fill(WidgetTester tester) async {
   for (final entry in [
     'Alex Example',
-    'alex@example.com',
+    'alex@fpt.edu.vn',
     'test-password',
     'test-password',
   ].indexed) {

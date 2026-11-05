@@ -59,6 +59,8 @@ void main() {
     () async {
       final vm = container.read(registrationViewModelProvider.notifier);
       vm.preset('error', 'music-live');
+      vm.edit('email', 'not-an-email');
+      vm.validate();
       expect(
         container.read(registrationViewModelProvider).errors.keys,
         containsAll(['name', 'studentId', 'email', 'terms']),
@@ -116,17 +118,14 @@ void main() {
       expect(container.read(activityViewModelProvider).registrations, isEmpty);
     },
   );
-  test('waitlist and walk-in never hold coins or create walk-in tickets', () {
+  test('walk-in Going never holds coins and cannot create duplicate schedule entries', () {
     final vm = container.read(registrationViewModelProvider.notifier);
-    vm.joinWaitlist();
-    vm.joinWaitlist();
     vm.markGoing();
     vm.markGoing();
     final activity = container.read(activityViewModelProvider);
     expect(activity.available, 420);
     expect(activity.deposits, 100);
-    expect(activity.registrations.length, 2);
-    expect(activity.registrations.first.waitlisted, isTrue);
+    expect(activity.registrations.length, 1);
     expect(activity.registrations.last.walkIn, isTrue);
   });
   test(

@@ -1,0 +1,22 @@
+
+=== Deploying to 'prm393-31822'...
+
+i  deploying functions
+Running command: npm --prefix "$RESOURCE_DIR" run build
+
+> evia-backend@0.1.0 build
+> tsc
+
++  functions: Finished running predeploy script.
+i  functions: preparing codebase evia for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
++  functions: required API cloudbuild.googleapis.com is enabled
++  artifactregistry: required API artifactregistry.googleapis.com is enabled
++  functions: required API cloudfunctions.googleapis.com is enabled
+i  functions: Loading and analyzing source code for codebase evia to determine what to deploy
+Serving at port 8810
+
+
+Error: Request to https://cloudfunctions.googleapis.com/v2/projects/prm393-31822/locations/-/functions?filter=environment%3D%22GEN_2%22 had HTTP Error: 403, Cloud Functions API has not been used in project prm393-31822 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/cloudfunctions.googleapis.com/overview?project=prm393-31822 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.

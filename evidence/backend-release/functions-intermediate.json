@@ -1,0 +1,231 @@
+{
+  "checkedAt": "2026-11-04T16:35:06.035Z",
+  "project": "prm393-31822",
+  "functionCount": 32,
+  "functions": [
+    {
+      "id": "verifyWalkInQr",
+      "state": "ACTIVE",
+      "uri": "https://verifywalkinqr-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifywalkinqr",
+      "updateTime": "2026-11-04T15:21:32.307243610Z"
+    },
+    {
+      "id": "claimDailyCheckin",
+      "state": "ACTIVE",
+      "uri": "https://claimdailycheckin-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/claimdailycheckin",
+      "updateTime": "2026-11-04T16:35:00.704898973Z"
+    },
+    {
+      "id": "getAccount",
+      "state": "ACTIVE",
+      "uri": "https://getaccount-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getaccount",
+      "updateTime": "2026-11-04T15:11:51.474988713Z"
+    },
+    {
+      "id": "issueWalkInQr",
+      "state": "ACTIVE",
+      "uri": "https://issuewalkinqr-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/issuewalkinqr",
+      "updateTime": "2026-11-04T15:16:40.933413168Z"
+    },
+    {
+      "id": "deliverNotification",
+      "state": "ACTIVE",
+      "uri": "https://delivernotification-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/delivernotification",
+      "updateTime": "2026-11-04T16:35:01.023908899Z"
+    },
+    {
+      "id": "markNotificationsRead",
+      "state": "ACTIVE",
+      "uri": "https://marknotificationsread-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/marknotificationsread",
+      "updateTime": "2026-11-04T15:16:50.794186843Z"
+    },
+    {
+      "id": "getVoucherCode",
+      "state": "ACTIVE",
+      "uri": "https://getvouchercode-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getvouchercode",
+      "updateTime": "2026-11-04T15:15:09.807710829Z"
+    },
+    {
+      "id": "getTicket",
+      "state": "ACTIVE",
+      "uri": "https://getticket-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getticket",
+      "updateTime": "2026-11-04T15:13:33.040262311Z"
+    },
+    {
+      "id": "listMyEvents",
+      "state": "ACTIVE",
+      "uri": "https://listmyevents-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/listmyevents",
+      "updateTime": "2026-11-04T15:16:48.901471751Z"
+    },
+    {
+      "id": "getServerInfo",
+      "state": "ACTIVE",
+      "uri": "https://getserverinfo-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getserverinfo",
+      "updateTime": "2026-11-04T15:13:32.418266871Z"
+    },
+    {
+      "id": "getTicketQr",
+      "state": "ACTIVE",
+      "uri": "https://getticketqr-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getticketqr",
+      "updateTime": "2026-11-04T15:15:06.992366154Z"
+    },
+    {
+      "id": "initializeUser",
+      "state": "ACTIVE",
+      "uri": "https://initializeuser-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/initializeuser",
+      "updateTime": "2026-11-04T15:15:10.798007168Z"
+    },
+    {
+      "id": "verifyVoucher",
+      "state": "ACTIVE",
+      "uri": "https://verifyvoucher-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifyvoucher",
+      "updateTime": "2026-11-04T15:21:34.302267620Z"
+    },
+    {
+      "id": "setWalkInGoing",
+      "state": "ACTIVE",
+      "uri": "https://setwalkingoing-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/setwalkingoing",
+      "updateTime": "2026-11-04T15:19:57.484368918Z"
+    },
+    {
+      "id": "setBookmark",
+      "state": "ACTIVE",
+      "uri": "https://setbookmark-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/setbookmark",
+      "updateTime": "2026-11-04T15:19:54.785216306Z"
+    },
+    {
+      "id": "unfollowOrganizer",
+      "state": "ACTIVE",
+      "uri": "https://unfolloworganizer-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/unfolloworganizer",
+      "updateTime": "2026-11-04T15:19:58.712939329Z"
+    },
+    {
+      "id": "getReward",
+      "state": "ACTIVE",
+      "uri": "https://getreward-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getreward",
+      "updateTime": "2026-11-04T15:13:32.189211279Z"
+    },
+    {
+      "id": "followOrganizer",
+      "state": "ACTIVE",
+      "uri": "https://followorganizer-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/followorganizer",
+      "updateTime": "2026-11-04T16:34:59.941307826Z"
+    },
+    {
+      "id": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "uri": "https://verifyregisteredticket-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifyregisteredticket",
+      "updateTime": "2026-11-04T15:21:33.715404180Z"
+    },
+    {
+      "id": "updateProfile",
+      "state": "ACTIVE",
+      "uri": "https://updateprofile-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/updateprofile",
+      "updateTime": "2026-11-04T15:21:33.273063625Z"
+    },
+    {
+      "id": "grantMonthlyGift",
+      "state": "ACTIVE",
+      "uri": "https://grantmonthlygift-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/grantmonthlygift",
+      "updateTime": "2026-11-04T15:15:11.193393486Z"
+    },
+    {
+      "id": "registerForEvent",
+      "state": "ACTIVE",
+      "uri": "https://registerforevent-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/registerforevent",
+      "updateTime": "2026-11-04T15:18:23.318192866Z"
+    },
+    {
+      "id": "redeemReward",
+      "state": "ACTIVE",
+      "uri": "https://redeemreward-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/redeemreward",
+      "updateTime": "2026-11-04T15:18:16.070780104Z"
+    },
+    {
+      "id": "getOrganizer",
+      "state": "ACTIVE",
+      "uri": "https://getorganizer-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getorganizer",
+      "updateTime": "2026-11-04T15:12:00.200570433Z"
+    },
+    {
+      "id": "saveInterests",
+      "state": "ACTIVE",
+      "uri": "https://saveinterests-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/saveinterests",
+      "updateTime": "2026-11-04T15:18:23.044834369Z"
+    },
+    {
+      "id": "cancelRegistration",
+      "state": "ACTIVE",
+      "uri": "https://cancelregistration-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration",
+      "updateTime": "2026-11-04T16:34:52.591106227Z"
+    },
+    {
+      "id": "getPublicCatalog",
+      "state": "ACTIVE",
+      "uri": "https://getpubliccatalog-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getpubliccatalog",
+      "updateTime": "2026-11-04T15:13:28.828573395Z"
+    },
+    {
+      "id": "listOwned",
+      "state": "ACTIVE",
+      "uri": "https://listowned-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/listowned",
+      "updateTime": "2026-11-04T15:16:48.529625353Z"
+    },
+    {
+      "id": "getOperationStatus",
+      "state": "ACTIVE",
+      "uri": "https://getoperationstatus-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getoperationstatus",
+      "updateTime": "2026-11-04T15:11:59.661315803Z"
+    },
+    {
+      "id": "registerDevice",
+      "state": "ACTIVE",
+      "uri": "https://registerdevice-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/registerdevice",
+      "updateTime": "2026-11-04T15:18:23.268915837Z"
+    },
+    {
+      "id": "getEvent",
+      "state": "ACTIVE",
+      "uri": "https://getevent-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getevent",
+      "updateTime": "2026-11-04T15:12:00.379686880Z"
+    },
+    {
+      "id": "unregisterDevice",
+      "state": "ACTIVE",
+      "uri": "https://unregisterdevice-mohnhzr27a-as.a.run.app",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/unregisterdevice",
+      "updateTime": "2026-11-04T15:19:58.752301718Z"
+    }
+  ]
+}

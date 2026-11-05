@@ -1,0 +1,54 @@
+{
+  "project": "prm393-31822",
+  "verifiedAt": "2026-11-05T10:13:01.614Z",
+  "checks": [
+    {
+      "id": "demo-badminton",
+      "verified": true
+    },
+    {
+      "id": "demo-career-talk",
+      "verified": true
+    },
+    {
+      "id": "demo-design-thinking",
+      "verified": true
+    },
+    {
+      "id": "demo-full-event",
+      "verified": true
+    },
+    {
+      "id": "demo-green-campus",
+      "verified": true
+    },
+    {
+      "id": "demo-last-ticket",
+      "verified": true
+    },
+    {
+      "id": "demo-live-registration",
+      "verified": true
+    },
+    {
+      "id": "demo-live-walkin",
+      "verified": true
+    },
+    {
+      "id": "demo-mobile-workshop",
+      "verified": true
+    },
+    {
+      "id": "demo-music-night",
+      "verified": true
+    },
+    {
+      "id": "demo-past-event",
+      "verified": true
+    },
+    {
+      "id": "demo-photo-walk",
+      "verified": true
+    }
+  ]
+}

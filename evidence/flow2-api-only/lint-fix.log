@@ -1,0 +1,31 @@
+Computing fixes in lib...
+Applying fixes...
+
+repositories\push_notification_repository.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+screens\evia\check_in_screen.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+screens\evia\profile_screens.dart
+  curly_braces_in_flow_control_structures - 2 fixes
+
+screens\evia\ticket_screen.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+services\firebase_messaging_service.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+viewmodels\activity_view_model.dart
+  curly_braces_in_flow_control_structures - 2 fixes
+
+viewmodels\profile_view_model.dart
+  curly_braces_in_flow_control_structures - 3 fixes
+
+viewmodels\push_notifications_view_model.dart
+  curly_braces_in_flow_control_structures - 4 fixes
+
+widgets\event_qr_camera.dart
+  curly_braces_in_flow_control_structures - 1 fix
+
+16 fixes made in 9 files.

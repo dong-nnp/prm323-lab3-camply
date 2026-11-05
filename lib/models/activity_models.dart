@@ -7,18 +7,24 @@ class RegisteredEvent {
     required this.venue,
     required this.start,
     this.attended = false,
-    this.waitlisted = false,
+    this.past = false,
     this.walkIn = false,
     this.image,
     this.coins = 0,
+    this.status = 'Registered',
+    this.verifiedAt,
+    this.canCancel = true,
     String? detailKey,
   }) : detailKey = detailKey ?? id;
   final String id, title, category, dateLabel, venue;
   final String detailKey;
   final DateTime start;
-  final bool attended, waitlisted, walkIn;
+  final bool attended, walkIn, past;
   final String? image;
   final int coins;
+  final String status;
+  final DateTime? verifiedAt;
+  final bool canCancel;
 }
 
 class CampusReward {
@@ -41,7 +47,7 @@ class CampusReward {
   final int? validDays;
 }
 
-enum CoinKind { earned, spent, deposit }
+enum CoinKind { earned, spent, deposit, refund }
 
 class CoinEntry {
   const CoinEntry(
@@ -86,9 +92,13 @@ class MilestoneProgress {
     required this.reached,
     required this.next,
     required this.remaining,
+    this.claimed = false,
+    this.claiming = false,
   });
   final EventMilestone milestone;
   final bool reached, next;
+  final bool claimed, claiming;
+  bool get canClaim => reached && !claimed && !claiming;
   final int remaining;
   String get description => reached
       ? 'Attended ${milestone.events} verified campus ${milestone.events == 1 ? 'event' : 'events'}.'
@@ -96,7 +106,24 @@ class MilestoneProgress {
 }
 
 class EventMilestone {
-  const EventMilestone(this.title, this.events, this.coins, this.description);
-  final String title, description;
-  final int events, coins;
+  const EventMilestone(
+    this.title,
+    this.events,
+    this.coins,
+    this.description, {
+    required this.id,
+    this.version = 1,
+  });
+  final String id, title, description;
+  final int events, coins, version;
+}
+
+class MilestoneClaimResult {
+  const MilestoneClaimResult({
+    required this.milestoneId,
+    required this.availableCoins,
+    required this.heldCoins,
+  });
+  final String milestoneId;
+  final int availableCoins, heldCoins;
 }

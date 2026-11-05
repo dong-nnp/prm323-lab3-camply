@@ -1,0 +1,122 @@
+{
+  "project": "prm393-31822",
+  "verifiedAt": "2026-11-05T03:27:10.920Z",
+  "totalFunctions": 37,
+  "allFunctionsActive": true,
+  "deployments": [
+    {
+      "name": "getEventMilestones",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T03:23:25.860243386Z",
+      "uri": "https://geteventmilestones-mohnhzr27a-as.a.run.app",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/geteventmilestones/revisions/geteventmilestones-00001-xif",
+      "terminalState": "CONDITION_SUCCEEDED",
+      "sourceHash": "bf7c7c64b361399f052132b79b04ae9cb2604115"
+    },
+    {
+      "name": "claimEventMilestone",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T03:23:23.499734218Z",
+      "uri": "https://claimeventmilestone-mohnhzr27a-as.a.run.app",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/claimeventmilestone/revisions/claimeventmilestone-00001-dok",
+      "terminalState": "CONDITION_SUCCEEDED",
+      "sourceHash": "bf7c7c64b361399f052132b79b04ae9cb2604115"
+    },
+    {
+      "name": "upsertEventMilestone",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T03:23:26.510664319Z",
+      "uri": "https://upserteventmilestone-mohnhzr27a-as.a.run.app",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/upserteventmilestone/revisions/upserteventmilestone-00001-mob",
+      "terminalState": "CONDITION_SUCCEEDED",
+      "sourceHash": "bf7c7c64b361399f052132b79b04ae9cb2604115"
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T03:23:28.091174415Z",
+      "uri": "https://getoperationstatus-mohnhzr27a-as.a.run.app",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getoperationstatus/revisions/getoperationstatus-00003-jan",
+      "terminalState": "CONDITION_SUCCEEDED",
+      "sourceHash": "bf7c7c64b361399f052132b79b04ae9cb2604115"
+    }
+  ],
+  "attendanceIndex": {
+    "name": "projects/prm393-31822/databases/(default)/collectionGroups/attendance/indexes/CICAgJj7z4EL",
+    "state": "READY",
+    "fields": [
+      {
+        "fieldPath": "uid",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "mode",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "verifiedAt",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "__name__",
+        "order": "ASCENDING"
+      }
+    ]
+  },
+  "aggregationProbeCount": 0,
+  "publicMilestones": [
+    {
+      "id": "first-event",
+      "requiredEvents": 1,
+      "rewardCoins": 50
+    },
+    {
+      "id": "explorer",
+      "requiredEvents": 3,
+      "rewardCoins": 100
+    },
+    {
+      "id": "active-student",
+      "requiredEvents": 5,
+      "rewardCoins": 150
+    },
+    {
+      "id": "campus-regular",
+      "requiredEvents": 10,
+      "rewardCoins": 300
+    },
+    {
+      "id": "campus-star",
+      "requiredEvents": 20,
+      "rewardCoins": 500
+    }
+  ],
+  "anonymousWriteStatus": 403,
+  "callableChecks": [
+    {
+      "name": "getEventMilestones",
+      "httpStatus": 401,
+      "error": "UNAUTHENTICATED"
+    },
+    {
+      "name": "claimEventMilestone",
+      "httpStatus": 401,
+      "error": "UNAUTHENTICATED"
+    },
+    {
+      "name": "upsertEventMilestone",
+      "httpStatus": 401,
+      "error": "UNAUTHENTICATED"
+    }
+  ],
+  "remoteConfigVersion": "1",
+  "parameters": {
+    "event_milestones_enabled": true,
+    "event_milestones_intro": "Complete event milestones to earn extra Evia Coin."
+  },
+  "boundaries": [
+    "No live user, attendance, wallet, ledger or claim was created or changed",
+    "Positive authenticated claim verified in Emulator, not on a real mobile account",
+    "UI and admin screens not integrated in this backend-only release"
+  ]
+}

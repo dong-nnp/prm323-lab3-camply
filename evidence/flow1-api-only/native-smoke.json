@@ -1,0 +1,30 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T09:08:42.1837175Z",
+  "device": "SM-G996N / R3CR60CT0WZ",
+  "apkSha256": "f2741dd41d2929aa2cabbe1b3b3862227c426a016330977d4ed8ab56e38b73fd",
+  "mode": "FIREBASE_ENABLED=true; DEMO_AUTH=false; original screens",
+  "observed": [
+    "APK install/startup",
+    "email/password login after owner restored Wi-Fi",
+    "original Discover with server name and 150 coins",
+    "original Search & Explore: Flutter returns 2 events",
+    "original My Events: 1 upcoming registration",
+    "original Ticket: EV-1A98EDBA0E05 with QR in existing slot",
+    "final APK reinstall/restart preserves account, balance, registration and ticket"
+  ],
+  "checks": {
+    "heldCoins": 50,
+    "noManualCodeUi": true,
+    "qrVisible": true,
+    "walletUnchanged": true,
+    "registrationCount": 1,
+    "availableCoins": 150,
+    "ticketVisible": true
+  },
+  "limitations": [
+    "No new native registration in this correction; form/loading/result tested with widget fakes",
+    "No native Google login/signup/reset email/first-time onboarding",
+    "No staff scan, attendance, cancel, rewards, FCM or ARTEMIS"
+  ]
+}
