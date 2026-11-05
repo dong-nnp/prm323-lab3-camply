@@ -4,6 +4,7 @@ import '../core/providers/repository_providers.dart';
 import '../core/utils/exception_mapper.dart';
 import '../models/account_creation_result.dart';
 import '../models/sign_up_state.dart';
+import '../core/utils/fpt_identity.dart';
 
 final signUpViewModelProvider =
     NotifierProvider.autoDispose<SignUpViewModel, SignUpState>(
@@ -52,7 +53,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     final minimum = minimumPasswordLength;
     final errors = <String, String>{
       if (fullName.trim().isEmpty) 'name': 'Enter your full name.',
-      if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email.trim()))
+      if (!FptIdentity.validEmail(email))
         'email': 'Enter a valid email address.',
       if (password.isEmpty)
         'password': 'Create a password.'

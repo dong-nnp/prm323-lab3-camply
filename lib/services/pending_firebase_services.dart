@@ -10,6 +10,8 @@ import 'crash_reporting_service.dart';
 import 'messaging_service.dart';
 import 'remote_config_service.dart';
 import 'storage_service.dart';
+import 'campus_service.dart';
+import '../models/activity_models.dart';
 
 /// Explicitly unavailable adapters until each real integration is implemented.
 /// This is neither a mock backend nor a successful no-op implementation.
@@ -20,7 +22,8 @@ final class PendingFirebaseServices
         MessagingService,
         AnalyticsService,
         CrashReportingService,
-        RemoteConfigService {
+        RemoteConfigService,
+        CampusService {
   const PendingFirebaseServices();
 
   AppException get _pending => const AppException(
@@ -44,7 +47,14 @@ final class PendingFirebaseServices
       Stream.value(const AuthSession.unavailable());
 
   @override
+  Future<void> signInWithEmailPassword(String email, String password) async =>
+      throw _pending;
+
+  @override
   Future<void> signInWithGoogle() async => throw _pending;
+
+  @override
+  Future<void> resetPassword(String email) async => throw _pending;
 
   @override
   Future<void> signOut() async => throw _pending;
@@ -61,6 +71,16 @@ final class PendingFirebaseServices
 
   @override
   Future<String?> getToken() async => throw _pending;
+  @override
+  Stream<String> get tokenChanges => Stream.error(_pending);
+  @override
+  Stream<Map<String, String>> get foregroundMessages => Stream.error(_pending);
+  @override
+  Stream<Map<String, String>> get openedMessages => Stream.error(_pending);
+  @override
+  Future<Map<String, String>?> initialMessage() async => throw _pending;
+  @override
+  Future<void> disable() async => throw _pending;
 
   @override
   Future<void> logEvent(String name, {Map<String, Object>? parameters}) async =>
@@ -75,4 +95,13 @@ final class PendingFirebaseServices
 
   @override
   String getString(String key) => throw _pending;
+
+  @override
+  Future<void> saveInterests(Set<String> interestIds) async => throw _pending;
+
+  @override
+  Future<MilestoneClaimResult> claimEventMilestone({
+    required String milestoneId,
+    required int expectedVersion,
+  }) async => throw _pending;
 }

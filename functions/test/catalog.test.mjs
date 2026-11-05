@@ -50,3 +50,10 @@ test('import dry-run rejects an empty catalog before any Firebase access', async
     );
   } finally { await rm(folder, { recursive: true }); }
 });
+
+
+test('milestone catalog rejects unsafe earning policies and unknown metric types', () => {
+  const m = { id: 'test', title: 'Test fixture', metric: 'verified_events', requiredEvents: 1, rewardCoins: 50, active: true };
+  assert.equal(catalogSchema.safeParse({ milestones: [m] }).success, true);
+  for (const invalid of [{ ...m, requiredEvents: 0 }, { ...m, requiredEvents: 1.5 }, { ...m, rewardCoins: -10 }, { ...m, rewardCoins: 0 }, { ...m, metric: 'self_reported_events' }, { ...m, uid: 'another-user' }]) assert.equal(catalogSchema.safeParse({ milestones: [invalid] }).success, false);
+});

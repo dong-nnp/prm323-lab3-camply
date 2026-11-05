@@ -6,21 +6,21 @@ abstract final class ActivityMockData {
   static const balance = 420;
   static const deposits = 100;
   static const dailyCheckInRules =
-      'Days 1–2: +5 coins per day\nDays 3–4: +10 coins per day\nDays 5–6: +15 coins per day\nDay 7 onwards: +20 coins per day\n\nThe backend will confirm your streak and reward. Missing a day resets the streak; coins already earned are kept.';
+      'Days 1–7: +5 / +10 / +15 / +30 / +50 / +70 / +100 coins\nDay 8 onwards: +100 coins per day\n\nDates follow Vietnam time. Missing a day resets the streak; coins already earned are kept.';
   static const dailyCheckInPreview = (
     day: 8,
-    coins: 20,
+    coins: 100,
     checkedInToday: false,
     saving: false,
-    message: 'Max daily reward unlocked! Earn +20 coins each day you keep your streak.',
+    message: 'Max daily reward unlocked! Earn +100 coins each day you keep your streak.',
     days: [
-      (day: 2, coins: 5, today: false, claimed: true),
-      (day: 3, coins: 10, today: false, claimed: true),
-      (day: 4, coins: 10, today: false, claimed: true),
-      (day: 5, coins: 15, today: false, claimed: true),
-      (day: 6, coins: 15, today: false, claimed: true),
-      (day: 7, coins: 20, today: false, claimed: true),
-      (day: 8, coins: 20, today: true, claimed: false),
+      (day: 2, coins: 10, today: false, claimed: true),
+      (day: 3, coins: 15, today: false, claimed: true),
+      (day: 4, coins: 30, today: false, claimed: true),
+      (day: 5, coins: 50, today: false, claimed: true),
+      (day: 6, coins: 70, today: false, claimed: true),
+      (day: 7, coins: 100, today: false, claimed: true),
+      (day: 8, coins: 100, today: true, claimed: false),
     ],
   );
   static const voucherCode = 'VOUCHER-CC-82914';
@@ -29,7 +29,7 @@ abstract final class ActivityMockData {
   static const attendee = 'Nguyen Van A';
   static const studentId = 'SE123456';
   static const ticketNumber = 'CMN-2026-0841';
-  static const demoCheckInCode = 'EVIA-CLUB-2026';
+  static const demoCheckInCode = 'EVYA-2345';
   static final archivedRewards = [
     (reward: rewards[0], status: 'Used'),
     (reward: rewards[2], status: 'Expired'),
@@ -62,7 +62,6 @@ abstract final class ActivityMockData {
       dateLabel: 'Fri, Nov 6, 2026 · 13:30 – 15:30',
       venue: 'Computer Lab B',
       start: DateTime(2026, 11, 6, 13, 30),
-      waitlisted: true,
       image: ActivityAssets.image('2083:273', 0),
     ),
   ];
@@ -71,7 +70,7 @@ abstract final class ActivityMockData {
       id: 'cafe',
       title: 'Campus Café \$10 Voucher',
       category: 'Food & Drinks',
-      redeemCost: 250,
+      redeemCost: 200,
       image: ActivityAssets.image('2083:3327', 2),
       description: 'Enjoy a drink or pastry at participating campus cafés.',
       location: 'Participating campus cafés',
@@ -117,8 +116,8 @@ abstract final class ActivityMockData {
   ];
   static final referenceReceipt = RedemptionReceipt(
     rewards.first,
-    250,
-    170,
+    200,
+    220,
     voucherCode,
     redeemedOn: referenceDate,
     expiresOn: referenceDate.add(const Duration(days: 30)),
@@ -166,25 +165,40 @@ abstract final class ActivityMockData {
     ),
   ];
   static const milestones = <EventMilestone>[
-    EventMilestone('First Event', 1, 50, 'Attended your first campus event.'),
-    EventMilestone('Explorer', 3, 100, 'Attended 3 verified campus events.'),
+    EventMilestone(
+      'First Event',
+      1,
+      50,
+      'Attended your first campus event.',
+      id: 'first-event',
+    ),
+    EventMilestone(
+      'Explorer',
+      3,
+      100,
+      'Attended 3 verified campus events.',
+      id: 'explorer',
+    ),
     EventMilestone(
       'Active Student',
       5,
       150,
       'Attend 2 more events to unlock this milestone.',
+      id: 'active-student',
     ),
     EventMilestone(
-      'Campus Leader',
+      'Campus Regular',
       10,
       300,
       'Attend 10 verified campus events.',
+      id: 'campus-regular',
     ),
     EventMilestone(
-      'Evia Champion',
+      'Campus Star',
       20,
       500,
       'Become a dedicated campus event participant.',
+      id: 'campus-star',
     ),
   ];
 }

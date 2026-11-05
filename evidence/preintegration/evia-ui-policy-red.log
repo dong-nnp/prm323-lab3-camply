@@ -1,0 +1,34 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart
+00:00 +0: cancelling forfeits the held deposit without crediting available coins
+00:00 +0 -1: cancelling forfeits the held deposit without crediting available coins [E]
+  Expected: <2000>
+    Actual: <2100>
+  
+  package:matcher                                       expect
+  package:flutter_test/src/widget_tester.dart 473:18    expect
+  test\viewmodels\preintegration_policy_test.dart 18:5  main.<fn>
+  
+00:00 +0 -1: daily policy, Cafe price and available filters match confirmed scope
+00:00 +0 -2: daily policy, Cafe price and available filters match confirmed scope [E]
+  Expected: <100>
+    Actual: <20>
+  
+  package:matcher                                       expect
+  package:flutter_test/src/widget_tester.dart 473:18    expect
+  test\viewmodels\preintegration_policy_test.dart 24:5  main.<fn>
+  
+00:00 +0 -2: registration accepts FPT identity and rejects other school domains
+00:00 +0 -3: registration accepts FPT identity and rejects other school domains [E]
+  Expected: true
+    Actual: <false>
+  
+  package:matcher                                       expect
+  package:flutter_test/src/widget_tester.dart 473:18    expect
+  test\viewmodels\preintegration_policy_test.dart 36:5  main.<fn>
+  
+00:00 +0 -3: Some tests failed.
+
+Failing tests:
+  D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: cancelling forfeits the held deposit without crediting available coins
+  D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: daily policy, Cafe price and available filters match confirmed scope
+  D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: registration accepts FPT identity and rejects other school domains

@@ -1,5 +1,29 @@
 # EVIA — FIRESTORE DATABASE DESIGN & BACKEND CONTRACT (FOR CODEX)
 
+> **Flow 2 demo — 05/11/2026:** user có optional server-only
+> `demoAttendanceEnabled:boolean`, chỉ có tác dụng cùng `isDemo:true` và event
+> `isDemo:true`. Attendance demo thêm `isDemo:true` và
+> `verificationMethod:'debug_demo_button'`; vẫn là transaction thật trên ví/vé/
+> registration/receipt của dataset demo. Không phải xác minh staff đã quét thật.
+> Các field này không do `updateProfile` hoặc client Firestore ghi được.
+> [Contract và kiểm tra](../evidence/flow2-api-only/).
+
+> **Policy hủy mới 05/11/2026:** chủ động hủy hoàn 30% cọc, làm tròn xuống số xu
+> nguyên; phần còn lại mất. No-show vẫn mất toàn bộ. Không hoàn bù giao dịch cũ.
+> [Contract và ledger](BACKEND_POLICIES.md#chủ-động-hủy-đăng-ký--cập-nhật-05112026).
+
+> **Sau review UI/backend 05/11/2026:** đọc
+> [hợp đồng mới](PREINTEGRATION_DECISIONS.md) trước các snapshots bên dưới.
+> Thêm checkin_codes/code_attempts và notification_runs server-only; FPT identity
+> thay STU/.edu chung. Approve manual fallback và new-event/schedule/reminder
+> notifications; không approve feedback/seasonal rewards hoặc record quà giả.
+
+> **Bổ sung 05/11/2026 đã deploy:** [Event Milestones](EVENT_MILESTONES.md) có
+> definitions/claim snapshots/admin audit, ledger milestone_reward và aggregate
+> attendance index READY. 5 policy records thật được owner duyệt; 37 Functions
+> ACTIVE, 41/41 Emulator tests đạt. Các ghi chú không có milestone hoặc database
+> hoàn toàn trống ở snapshot cũ phía dưới đã được thay thế riêng cho feature này.
+
 > **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
 
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
@@ -35,9 +59,10 @@ contracts. The earlier Figma review was documentation only. Current implementati
   authenticated onboarding/preferences. No onboarding Skip; guest browsing is unaffected.
 - The Café voucher in FD-04 costs **200 Coin**, configured in its server reward
   record. No screen-level price constant; all other Figma values remain illustrative.
-- No milestones, feedback Coin bonus, missions, seasonal targets, assigned seats,
-  VIP/ticket tiers, ticket-email delivery or fixed 2–3-day attendance reminder jobs.
-  Walk-in accepts QR scans only; no manual-code fallback in the current scope.
+- Event Milestones restored 05/11/2026; see [current contract](EVENT_MILESTONES.md).
+  No feedback Coin bonus, missions, seasonal targets, assigned seats,
+  VIP/ticket tiers or ticket-email delivery. Three-day event reminders and manual
+  check-in fallback are now approved; see PREINTEGRATION_DECISIONS.md.
 - **Daily Coin grants:** `day 1…7 = [5,10,15,30,50,70,100]`, `day 8+ = 100/day`; missed calendar day resets next claim to day 1. **Monthly amount = 200 Coin**, at most once per eligible month, automatically on day 1 for initialized accounts at the Vietnam month cutoff; see v1.4 policy.
 - New-account Coin is **once per UID**; **200 is owner-confirmed**, once per new UID. Registration deposit **50** and attendance reward **200** in diagrams are **event-level examples**, not global hard-coded business policy.
 - No raw voucher secret, raw ticket token, service credential, staff key, registration email or student ID in public event docs, Firebase Analytics parameters, Git, README or screenshots.
@@ -86,13 +111,13 @@ Symbols: `S` string, `B` bool, `N` integer Number, `T` Timestamp, `A<T>` array, 
 | `events.capacity` | `null` = unlimited, otherwise integer `>=0`; `0 <= registeredCount <= capacity` if limited |
 | `events.depositCoins`, `attendanceRewardCoins` | integers `>=0`, server source of truth, per event |
 | `registrations.state` | `registered`, `cancelled`, `attended`, `no_show` (no `waitlisted`; don't persist transient client loading as business state) |
-| `registrations.depositSettlement` | `held`, `forfeited`, `refunded`, `none`; exactly one final settlement per registration |
+| `registrations.depositSettlement` | `held`, `forfeited` (historical cancellation/no-show), `partially_refunded`, `refunded`, `none`; exactly one final settlement per registration |
 | `tickets.status` | `active`, `checked_in`, `revoked`, `expired` |
 | `attendance.mode` | `organizer_scanned_ticket`, `student_scanned_walkin` |
 | `redemptions.status` | `issued`, `used`, `cancelled` *(cancellation policy OPEN; no user-cancel API)* |
 | `vouchers.status` | `unused`, `used`, `expired`, `revoked` |
 | `wallets.*Coins` | integer `>=0`; balance never trusts client-calculated amount |
-| `ledger.type` | `signup_bonus`, `deposit_hold`, `deposit_refund`, `deposit_forfeit`, `event_reward`, `daily_checkin`, `monthly_gift`, `redeem_reward`; **no milestone, feedback or mission reward types** |
+| `ledger.type` | `signup_bonus`, `deposit_hold`, `deposit_refund`, `deposit_forfeit` (historical), `deposit_partial_refund`, `event_reward`, `daily_checkin`, `monthly_gift`, `redeem_reward`, `milestone_reward`; no feedback or mission reward types. See current backend for no-show types. |
 | `daily_checkins.streakDay` | integer `>=1`; store true day number, cap **only award amount** to day-7 award (100) |
 | `notifications` | `readAt=null` until read; no client control over message payload |
 
@@ -237,7 +262,7 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
 |---|---:|---:|---|---|
 | First user initialized | `+signupBonusCoins` (200 **confirmed**) | 0 | `signup_bonus` | `signup:{uid}`; only once |
 | Registration with deposit | `-depositCoins` | `+depositCoins` | `deposit_hold` | `register:{uid}:{eventId}`; event capacity check |
-| Cancel registration | 0 | `-depositCoins` | `deposit_forfeit` | `cancel:{registrationId}`; ticket revoked |
+| Cancel registration | `floor(depositCoins * 3 / 10)` | `-depositCoins` | `deposit_partial_refund` | `cancel:{registrationId}`; ticket revoked |
 | Verified registered check-in | `+depositCoins` | `-depositCoins` | `deposit_refund` | `attendance:{uid}:{eventId}` (sub-entries share operation key) |
 | Same registered check-in reward | `+attendanceRewardCoins` | 0 | `event_reward` | SAME attendance operation, second ledger row |
 | Verified walk-in check-in | `+attendanceRewardCoins` | 0 | `event_reward` | `attendance:{uid}:{eventId}` |
@@ -245,7 +270,7 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
 | Eligible monthly grant | `+200` | 0 | `monthly_gift` | `monthly:{uid}:{YYYY-MM}` (local scheduler, not deployed) |
 | Redeem reward | `-priceCoinsSnapshot` | 0 | `redeem_reward` | `redeem:{uid}:{requestId}` |
 
-**Deposit semantics:** holding a deposit **moves existing Coin** from `available` to `held` (not an extra debit from total wallet); refund reverses the hold and rewards grant a separate addition. For example, starting `available=200, held=0`, register `50` -> `available=150, held=50`; verified attendance with `200` reward -> `available=400, held=0`. Cancel instead -> `available=150, held=0` (50 forfeited). These are **illustrative event/config values**.
+**Deposit semantics:** holding a deposit **moves existing Coin** from `available` to `held` (not an extra debit from total wallet); refund reverses the hold and rewards grant a separate addition. For example, starting `available=200, held=0`, register `50` -> `available=150, held=50`; verified attendance with `200` reward -> `available=400, held=0`. Cancel instead -> `available=165, held=0` (15 refunded, 35 forfeited). These are **illustrative event/config values**.
 
 ### 2.3. Daily check-in algorithm contract
 
@@ -268,10 +293,14 @@ transaction: create daily receipt + daily doc + ledger, update wallet and streak
 
 `maintenance.grantMonthly(scheduleTime)` grants 200 once per UID/month in one wallet/grant/ledger transaction. Scheduled at 00:00 day 1 Asia/Ho_Chi_Minh, all app profiles initialized at cutoff, no onboarding requirement. Callable grantMonthlyGift returns AUTOMATIC_ONLY. Retry keeps original scheduled month. See BACKEND_POLICIES.md; no cloud job was deployed in this update.
 
-### 2.5. Removed features
+### 2.5. Event Milestones and removed features
 
-Owner removed Event Milestones entirely: no progress/claim documents, milestone
-screen/API or Coin grants. No missions, seasonal targets, feedback bonus,
+Owner restored Event Milestones on 05/11/2026: `milestones/{id}` definitions,
+`users/{uid}/milestone_claims/{id}` immutable snapshots, `milestone_admins/{uid}`
+authorization and `milestone_audit/{id}` server-only audit. Aggregate canonical
+verified attendance; manual wallet/ledger/receipt transaction. Full schemas,
+versions and APIs: [EVENT_MILESTONES.md](EVENT_MILESTONES.md).
+No missions, seasonal targets, feedback bonus,
 assigned seats or ticket-email/reminder jobs from FD-09/10. Existing Figma/demo
 assets may still show them; that is pending UI cleanup, not approved backend scope.
 
@@ -285,7 +314,7 @@ All write endpoints: Firebase Authentication required; staff endpoints also requ
 | `followOrganizer` / `unfollowOrganizer` | signed-in; `organizerId` | atomically add/delete deterministic follow doc and update followerCount only if membership changed; no Coin | `UNAUTHENTICATED`, `ORGANIZER_NOT_FOUND` |
 | `registerForEvent` | signed-in; `eventId`, `requestId`, `attendeeInput`, `acceptedTermsVersion`, `expectedDepositCoins` | validate fields/terms/quote; snapshot attendee/terms; atomically reserve capacity/deposit and issue ticket. Verified-only event handling deferred with FD-08 | `VALIDATION_FAILED`, `TERMS_CHANGED`, `QUOTE_CHANGED`, `EVENT_FULL`, `ALREADY_REGISTERED`, `INSUFFICIENT_COINS`, `EVENT_NOT_OPEN` |
 | `setWalkInGoing` | signed-in; `eventId`, `going:B` | validated idempotent create/delete of own intent only; no registration, seat, ticket or coins | `UNAUTHENTICATED`, `EVENT_NOT_FOUND`, `WRONG_PARTICIPATION_MODE` |
-| `cancelRegistration` | signed-in; `eventId`, `requestId` | atomically cancel active registration, forfeit held deposit, revoke ticket, decrement occupied registration count once; reopened place available to new registration | `ALREADY_CANCELLED`, `CANNOT_CANCEL`, `ALREADY_ATTENDED` |
+| `cancelRegistration` | signed-in; `eventId`, `requestId` | atomically cancel active registration, refund floor(30% of held deposit), forfeit remainder, revoke ticket, decrement occupied registration count once; reopened place available to new registration | `ALREADY_CANCELLED`, `CANNOT_CANCEL`, `ALREADY_ATTENDED` |
 | `getTicketQr` | owner; `eventId` | return short-lived **opaque/signed QR payload** for active ticket; no wallet change | `NO_ACTIVE_TICKET`, `NOT_OWNER`, `TOKEN_EXPIRED` |
 | `verifyRegisteredTicket` | authenticated staff; `qrPayload`, `requestId` | validate staff assignment, ticket, time; create attendance, refund hold + grant reward, mark ticket | `FORBIDDEN_STAFF`, `WRONG_EVENT`, `QR_INVALID`, `OUTSIDE_CHECKIN_WINDOW`, `ALREADY_CHECKED_IN` |
 | `verifyWalkInQr` | signed-in; scanned `qrPayload`, `requestId` | validate event/venue QR, auth and window; create attendance + award; no registration/ticket or manual-code entry. Verified-only events deferred with FD-08 | `QR_INVALID`, `WRONG_EVENT`, `OUTSIDE_CHECKIN_WINDOW`, `ALREADY_CHECKED_IN` |
@@ -446,7 +475,7 @@ Tests must show commands, logs and commit references; all results are **NOT RUN*
 | FIG-06 | Duplicate FCM deliveries create one inbox item; mark-all-read affects only caller's notifications before cutoff; sign-out unlinks device; new arrivals stay unread. |
 | FIG-07 | My Events/bookmarks date filters use canonical event time, handle rescheduling/timezone/day boundaries, de-duplicate intent/registration/attendance, and never equate past with attended. |
 | FIG-08 | Fewer than 3 distinct valid interests cannot complete onboarding or save final preferences; duplicate/unknown IDs do not satisfy the count; no Skip; guest public browsing still works. |
-| FIG-09 | Removed milestones, feedback/mission/seasonal Coin paths, assigned seats, ticket-email/fixed reminder jobs and manual walk-in code entry have no active callable or ledger effect. |
+| FIG-09 | Milestones restored 05/11/2026 (EVENT_MILESTONES.md). Feedback/mission/seasonal Coin paths, assigned seats, ticket-email/fixed reminder jobs and manual walk-in code remain excluded. |
 
 ## 9. Database deliverables / review gate for Codex
 
@@ -500,7 +529,7 @@ Expected PR/files (adapt to actual repo naming, don't overwrite working implemen
   Voucher private document stores code for owner recovery; never expose via Rules.
 - Catalog import is create-only/dry-run by default. Interests, prices, stock,
   dates and event rewards are approved server data, not Figma constants.
-- Historical v1.3 policy blockers are superseded by BACKEND_POLICIES.md: monthly/no-show jobs, same-user re-registration and admin voucher use are implemented locally. Voucher rotation remains unimplemented. No manual walk-in code, milestone or Waitlist.
+- Historical v1.3 policy blockers are superseded by BACKEND_POLICIES.md: monthly/no-show jobs, same-user re-registration and admin voucher use are implemented. Event Milestones restored by EVENT_MILESTONES.md. Voucher rotation remains unimplemented. No manual walk-in code or Waitlist.
 - `validDays` means N times 24 hours from redemption, not a local end-of-day
   cutoff. Require approved per-record expiry before live import.
 - Queries use bounded candidate pagination; filtered pages can be empty with a

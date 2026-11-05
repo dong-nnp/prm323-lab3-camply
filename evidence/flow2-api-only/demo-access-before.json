@@ -1,0 +1,121 @@
+{
+  "project": "prm393-31822",
+  "users": [
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/users/evia-demo-staff-v1",
+      "fields": {
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:14:00.474Z"
+        },
+        "onboardingCompleted": {
+          "booleanValue": true
+        },
+        "universityEmail": {
+          "stringValue": "evia.lab3.staff.767cda4c58@fpt.edu.vn"
+        },
+        "studentId": {
+          "nullValue": null
+        },
+        "photoUrl": {
+          "nullValue": null
+        },
+        "displayName": {
+          "stringValue": "[DEMO] Evia Staff"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "interests": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "technology"
+              },
+              {
+                "stringValue": "music"
+              },
+              {
+                "stringValue": "arts"
+              }
+            ]
+          }
+        },
+        "phoneNumber": {
+          "nullValue": null
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "accountStatus": {
+          "stringValue": "active"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:14:10.218Z"
+        },
+        "demoRole": {
+          "stringValue": "staff"
+        }
+      },
+      "createTime": "2026-11-05T05:14:00.858439Z",
+      "updateTime": "2026-11-05T05:14:10.539508Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/users/evia-demo-admin-v1",
+      "fields": {
+        "accountStatus": {
+          "stringValue": "active"
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:14:18.565Z"
+        },
+        "photoUrl": {
+          "nullValue": null
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "demoRole": {
+          "stringValue": "admin"
+        },
+        "phoneNumber": {
+          "nullValue": null
+        },
+        "universityEmail": {
+          "stringValue": "evia.lab3.admin.42669bfdb6@fpt.edu.vn"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "displayName": {
+          "stringValue": "[DEMO] Evia Admin"
+        },
+        "onboardingCompleted": {
+          "booleanValue": true
+        },
+        "studentId": {
+          "nullValue": null
+        },
+        "interests": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "technology"
+              },
+              {
+                "stringValue": "music"
+              },
+              {
+                "stringValue": "arts"
+              }
+            ]
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:14:19.564Z"
+        }
+      },
+      "createTime": "2026-11-05T05:14:18.819700Z",
+      "updateTime": "2026-11-05T05:14:19.726173Z"
+    }
+  ]
+}

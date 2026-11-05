@@ -1,0 +1,44 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T09:06:25.647Z",
+  "uid": "evia-demo-staff-v1",
+  "onboardingCompleted": true,
+  "interests": [
+    "technology",
+    "music",
+    "arts"
+  ],
+  "wallet": {
+    "heldCoins": 50,
+    "version": 2,
+    "availableCoins": 150,
+    "updatedAt": "2026-11-05T05:58:49.301Z"
+  },
+  "following": [],
+  "saved": [
+    "demo-mobile-workshop"
+  ],
+  "registrations": [
+    {
+      "eventId": "demo-mobile-workshop",
+      "state": "registered",
+      "depositCoins": 50,
+      "ticketId": "1a98edba0e05e1ef19e5208da895c4c2cdec3eefc5e9c8cd7267a192695cdbf4"
+    }
+  ],
+  "tickets": [
+    {
+      "eventId": "demo-mobile-workshop",
+      "ticketNumber": "EV-1A98EDBA0E05",
+      "status": "active"
+    }
+  ],
+  "ledgerEntries": [
+    {
+      "type": "deposit_hold"
+    },
+    {
+      "type": "signup_bonus"
+    }
+  ]
+}

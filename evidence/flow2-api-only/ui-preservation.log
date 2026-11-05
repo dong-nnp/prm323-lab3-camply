@@ -1,0 +1,17 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/.local/ui-preservation-flow2/probe_test.dart
+00:00 +0: my-events 360.0 unchanged with same data
+00:01 +1: my-events 412.0 unchanged with same data
+00:01 +2: calendar 360.0 unchanged with same data
+00:02 +3: calendar 412.0 unchanged with same data
+00:03 +4: cancel 360.0 unchanged with same data
+00:03 +5: cancel 412.0 unchanged with same data
+00:03 +6: past 360.0 unchanged with same data
+00:03 +7: past 412.0 unchanged with same data
+00:04 +8: check-in 360.0 unchanged with same data
+00:04 +9: check-in 412.0 unchanged with same data
+00:04 +10: ticket 360.0 unchanged with same data
+00:04 +11: ticket 412.0 unchanged with same data
+00:04 +12: notifications 360.0 unchanged with same data
+00:04 +13: notifications 412.0 unchanged with same data
+00:04 +14: (tearDownAll)
+00:04 +14: All tests passed!

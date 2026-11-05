@@ -1,5 +1,27 @@
 # EVIA LAB 3 — IMPLEMENTATION & EVIDENCE TRACKER
 
+> **05/11/2026 — VERIFIED demo data/operator setup theo yêu cầu owner:** đã ghi
+> 32 catalog records, giữ 5 milestones; tạo hai Firebase Auth staff/admin, profile,
+> onboarding, signup wallet/ledger, 11 event assignments + hai admin assignments.
+> Ba Node tests mới đạt; public catalog, Auth login và giới hạn quyền được kiểm
+> trên cloud, không giả attendance/redemption. [Evidence](../evidence/demo-data/verification.json),
+> [handoff](DEMO_DATA.md). Không đổi mobile adapters hoặc Functions trong task data.
+
+> **Sau review 05/11/2026 — VERIFIED source/cloud preparation:** 51/51 backend
+> Emulator tests, 149/149 Flutter tests, analyze sạch; 41/41 Functions ACTIVE cùng
+> hash, 41 latest Cloud Run revisions READY. Ba Scheduler jobs ENABLED, group
+> indexes READY; [metadata](../evidence/preintegration/cloud-verification.json).
+> [Contract mới](PREINTEGRATION_DECISIONS.md) thay thế QR-only/no reminders/STU
+> cũ. Mobile SDK adapters, dataset thật, FCM/native E2E vẫn pending; không có
+> cloud rewards/users/attendance được seed hoặc role tự cấp. Chưa commit/push.
+
+> **05/11/2026 — VERIFIED backend Event Milestones:** 41/41 Emulator tests;
+> deploy 3 new callables + getOperationStatus, Rules/index READY; tổng 37 Functions
+> ACTIVE. Publish 5 approved definitions + Remote Config client version 1.
+> [Metadata cloud](../evidence/event-milestones/cloud-verification.json),
+> [policy/API/handoff](EVENT_MILESTONES.md). UI và admin UI chưa nối; chưa cấp
+> thưởng thử hoặc gán role cho tài khoản thật. Chưa commit/push trong task này.
+
 > **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
 
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
@@ -52,7 +74,7 @@ Owner đã chốt Monthly Gift tự động ngày 1, no-show mất cọc, đăng
 | O-02 | RESOLVED — no-show forfeits deposit | Owner confirmed in current chat | Local hourly job after event/check-in end; not deployed |
 | O-03 | RESOLVED — re-register if capacity remains | New requestId/ticket, preserve cancelled history | Implemented/tested locally; no priority slot reservation |
 | O-04 | RESOLVED — automatic +200 day 1 for all accounts | Asia/Ho_Chi_Minh cutoff, initialized app profiles | Local scheduler + idempotent grant tested; not deployed |
-| O-05 | RESOLVED — milestones removed entirely | No milestone feature or extra Coin issuance | No progress/claim/grant models or active UI/API; existing demo cleanup pending |
+| O-05 | SUPERSEDED 05/11/2026 — milestones restored | 1/3/5/10/20 verified events → 50/100/150/300/500, manual claim once | EVENT_MILESTONES.md; backend implemented, UI integration pending |
 | O-06 | Technical default — walk-in TTL60s, ticket TTL120s | Replay protection, not physical presence proof | Implemented locally; native scanner/operator handoff pending |
 | O-07 | Authorized staff verifier form (CLI/mobile/minimal tool) | Demonstrating real registered check-in | Propose secure minimal verifier and seek owner/lecturer sign-off |
 | O-08 | Real event/club/reward data sources | Lab prohibits mock/hardcoded submitted build | Dev fixtures only, plan verified-source import |
@@ -70,8 +92,9 @@ Owner đã chốt Monthly Gift tự động ngày 1, no-show mất cọc, đăng
 no Waitlist; full closes registration and cancellation releases one place;
 Daily 5/10/15/30/50/70/100, day8+100; monthly 200 automatically on day 1 for all initialized accounts;
 Café voucher 200; at least 3 distinct interests mandatory; registered staff scans
-student ticket, walk-in uses QR only; cancel forfeits deposit. Milestones and
-FD-09/10 business paths removed; academic/club verification deferred.
+student ticket, walk-in uses QR only; cancel refunds 30% of deposit rounded down, forfeiting the remainder. Milestones restored
+05/11/2026 (EVENT_MILESTONES.md); FD-09/10 business paths removed;
+academic/club verification deferred.
 
 ## 3. Evidence log (fill with real run outcomes)
 

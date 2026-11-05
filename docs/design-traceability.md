@@ -1,5 +1,40 @@
 # Design traceability — Evia
 
+> **Flow 2 — 05/11/2026:** nối dữ liệu/actions vào My Events, lịch, dialog hủy,
+> vé, check-in và Notifications cũ. Camera thật thay ảnh preview trong đúng khung
+> cũ khi live; theme/tokens/assets giữ nguyên. Text trạng thái/giờ/xu lấy từ server.
+> Owner cho phép riêng nút nhỏ “Demo: xác nhận đã quét” trên vé và hộp thoại quyền
+> Android khi mở Notifications. Không thêm màn staff hoặc ô mã trên vé.
+> [Evidence và giới hạn](../evidence/flow2-api-only/).
+
+> **Email mở mọi domain 05/11/2026:** chỉ đổi text label University Email → Email
+> và nội dung lỗi để phản ánh policy mới; không đổi bố cục/style/assets hoặc thêm
+> màn. Tham chiếu [contract](PREINTEGRATION_DECISIONS.md) và [checks](../evidence/open-email/).
+
+> **API-only theo owner 05/11/2026:** đã gỡ bộ màn `Flow1Screen` tạo ngoài phạm vi;
+> nối Firebase vào các màn gốc, giữ layout/style/assets. Giữ 8 thẻ sở thích;
+> Gaming/Environment chờ đội UI. Ảnh cũ làm minh họa khi chưa có URL; vé chỉ hiện
+> QR trong ô cũ, chưa có mã dự phòng. [Phạm vi](API_INTEGRATION_PHASES.md) · [Evidence sửa lại](../evidence/flow1-api-only/).
+> Các mô tả bộ màn live riêng/kết quả cũ bên dưới là lịch sử, không nghiệm thu bản này.
+
+
+> **Sau review 05/11/2026:** owner đã duyệt sửa các hành vi trái policy trong
+> [PREINTEGRATION_DECISIONS.md](PREINTEGRATION_DECISIONS.md): bỏ Waitlist, Skip
+> onboarding, feedback/seasonal reward và verified-eligibility; hủy hoàn 30% cọc làm tròn xuống,
+> Daily theo lịch server, Café 200, thêm claim controls. Không đổi Figma/layout
+> đã duyệt. Manual fallback và notifications mới là mở rộng owner yêu cầu rõ.
+
+> **Mô phỏng UI 05/11/2026:** debug + `DEMO_AUTH=true` hiện cho phép mô phỏng
+> giữ/hoàn cọc, check-in, daily reward và đổi thưởng. `ActivityViewModel` quản lý
+> presentation state tạm trong RAM từ fixtures đã được cho phép, không gọi backend.
+> `/profile/demo` chỉ đăng ký khi cờ bật, cho mở 44 màn/trạng thái và reset ví 2.000 xu.
+> Các mô tả “không mutation” phía dưới vẫn áp dụng khi cờ tắt; không dùng demo này
+> làm evidence tích hợp thật. Xem hướng dẫn mới trong README.
+
+
+> 05/11/2026: theo yêu cầu xem UI, thêm DemoAuthenticationService qua DI khi debug + DEMO_AUTH=true; mặc định vẫn pending. Login đi View → EviaViewModel → AuthenticationRepository → AuthenticationService, session stream cập nhật guard; logout xóa session. Không tích hợp Firebase Auth thật. Xem tài khoản/lệnh chạy trong README.
+
+
 ## Database review trực tiếp — 04/11/2026
 
 Đã đọc lại 44/44 frame trên page `2083:272` qua Figma, 1.342 visible text nodes,
@@ -10,7 +45,8 @@ Figma, dữ liệu Firebase hoặc Rules đã deploy.
 Các quyết định giữ riêng 200/250 Coin và Waitlist trong UI demo được ghi ở phần
 lịch sử bên dưới **không phải backend policy**. Schema production chỉ có một giá
 chuẩn **200 xu cho Café voucher**, không có Waitlist; Daily rewards theo PROJECT_CONTEXT.
-Owner đã bỏ toàn bộ milestones, ticket email/fixed reminders, feedback bonus,
+Milestones được owner khôi phục ngày 05/11/2026 theo [hợp đồng mới](EVENT_MILESTONES.md);
+backend chỉ thêm policy/API, chưa thay UI. Owner đã bỏ ticket email/fixed reminders, feedback bonus,
 missions, seasonal targets và assigned seats/VIP/tiers. Walk-in chỉ QR, không
 nhập mã; auth mở rộng Google + email/password; tối thiểu 3 sở thích bắt buộc,
 không Skip. Student/club verification tạm hoãn; FD-12 cashier flow chưa chốt.
@@ -295,7 +331,7 @@ không biểu thị server đã xác minh. Map và Help/Settings là hướng d�
 ## Backend handoff — 04/11/2026
 
 Backend API hiện có trong [backend-integration.md](backend-integration.md);
-không sửa màn hình/Figma ở task backend. UI demo cũ có thể còn Waitlist, milestone,
+không sửa màn hình/Figma ở task backend. UI demo cũ có thể còn Waitlist hoặc milestone chưa nối API,
 coin minh họa và auth giả: đội frontend cần chuyển theo owner decisions và bind
 services thay demo data. Không coi 20 backend Emulator tests là visual/native
 acceptance của 44 frames. Các nghiệp vụ chưa chốt vẫn bị backend khóa.

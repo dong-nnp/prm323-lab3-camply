@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { Firestore, Timestamp, Transaction, DocumentReference, DocumentData } from 'firebase-admin/firestore';
 import { HttpsError, FunctionsErrorCode } from 'firebase-functions/v2/https';
 import { z } from 'zod';
+import { emailAddress } from './identity.js';
 
 export type Actor = { uid: string; token: Record<string, unknown> };
 export type Result = Record<string, unknown>;
@@ -14,6 +15,7 @@ export function fail(code: string, status: FunctionsErrorCode = 'failed-precondi
 }
 export function authenticated(actor: Actor | null): string {
   if (!actor) fail('UNAUTHENTICATED', 'unauthenticated');
+  if (!emailAddress.safeParse(actor.token.email).success) fail('EMAIL_REQUIRED', 'permission-denied');
   return actor.uid;
 }
 export function key(...parts: unknown[]): string {
@@ -66,8 +68,15 @@ export async function operation(db: Firestore, uid: string, kind: string, operat
   });
 }
 export function notification(tx: Transaction, db: Firestore, uid: string, op: string, type: string, entityType: string, entityId: string, now: Timestamp) {
-  const title = type === 'registration_confirmed' ? 'Đăng ký thành công' : type === 'reward_redeemed' ? 'Đổi quà thành công' : 'Cập nhật sự kiện';
-  tx.create(db.doc(`notifications/${key(uid, op, type)}`), { uid, type, title, body: title, entityType, entityId, readAt: null, createdAt: now });
+  const content: Record<string, [string, string]> = {
+    registration_confirmed: ['Đăng ký thành công', 'Vé sự kiện của bạn đã sẵn sàng.'],
+    reward_redeemed: ['Đổi quà thành công', 'Phần thưởng đã được lưu vào tài khoản.'],
+    new_event: ['Sự kiện mới', 'CLB bạn theo dõi vừa công bố sự kiện mới.'],
+    schedule_updated: ['Lịch sự kiện thay đổi', 'Sự kiện bạn tham gia vừa cập nhật thời gian hoặc địa điểm.'],
+    event_reminder: ['Nhắc lịch sự kiện', 'Đừng quên sự kiện sắp tới. Xem giờ bắt đầu và địa điểm mới nhất trong ứng dụng.'],
+  };
+  const [title, body] = content[type] ?? ['Cập nhật sự kiện', 'Xem thông tin mới nhất trong ứng dụng.'];
+  tx.create(db.doc(`notifications/${key(uid, op, type)}`), { uid, type, title, body, entityType, entityId, readAt: null, createdAt: now });
 }
 export function json(value: unknown): any {
   if (value instanceof Timestamp) return value.toDate().toISOString();

@@ -1,0 +1,71 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T09:48:14.654Z",
+  "mode": "dry-run",
+  "plan": [
+    {
+      "id": "demo-badminton",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 30 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 60 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 30 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 60 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "id": "demo-career-talk",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 80 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 80 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T09:23:47.707311Z"
+    },
+    {
+      "id": "demo-design-thinking",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "id": "demo-full-event",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "id": "demo-last-ticket",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "id": "demo-live-registration",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "id": "demo-mobile-workshop",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:58:49.875647Z"
+    },
+    {
+      "id": "demo-music-night",
+      "beforeVersion": "demo-v1",
+      "afterVersion": "demo-refund30-v2",
+      "beforeText": "Dữ liệu demo. Đăng ký giữ 100 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 150 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "afterText": "Dữ liệu demo. Đăng ký giữ 100 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 150 xu. Chủ động hủy được hoàn 30% cọc, làm tròn xuống số xu nguyên; phần còn lại mất. No-show mất toàn bộ cọc. Không có Waitlist, không quy đổi tiền thật.",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    }
+  ]
+}

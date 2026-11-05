@@ -1,5 +1,89 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Flow 2 — 05/11/2026:** nối My Events/lịch/hủy, check-in walk-in và inbox +
+> Firebase Cloud Messaging vào màn hiện có. Owner cho phép nút demo nhỏ trên vé
+> trong debug, server giới hạn account/event demo. 59 backend + 190 Flutter tests
+> đạt; 14/14 ảnh same-data trùng RGBA; 7 API mới/cập nhật READY.
+> [Evidence và giới hạn native](evidence/flow2-api-only/). Flow 3 chưa tích hợp.
+
+> **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
+> đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;
+> quyền staff/admin và điều kiện sự kiện giữ nguyên. [Contract](docs/PREINTEGRATION_DECISIONS.md).
+
+> **Hủy đăng ký 05/11/2026:** hoàn **30% cọc, làm tròn xuống**; mất phần còn lại.
+> No-show mất toàn bộ cọc. Backend đã deploy, điều khoản demo đã đồng bộ;
+> nút hủy thật vẫn chờ nối Flow 2. [Policy](docs/BACKEND_POLICIES.md) ·
+> [Evidence](evidence/cancellation-refund/).
+
+> **API-only theo owner 05/11/2026:** đã gỡ bộ màn `Flow1Screen` tạo ngoài phạm vi;
+> nối Firebase vào các màn gốc, giữ layout/style/assets. Giữ 8 thẻ sở thích;
+> Gaming/Environment chờ đội UI. Ảnh cũ làm minh họa khi chưa có URL; vé chỉ hiện
+> QR trong ô cũ, chưa có mã dự phòng. [Phạm vi](docs/API_INTEGRATION_PHASES.md) · [Evidence sửa lại](evidence/flow1-api-only/).
+> Các mô tả bộ màn live riêng/kết quả cũ bên dưới là lịch sử, không nghiệm thu bản này.
+
+
+> **Gắn API theo giai đoạn — 05/11/2026:** [kế hoạch và phạm vi](docs/API_INTEGRATION_PHASES.md).
+> Flow 1 có adapter Firebase Auth/Callable, catalog, onboarding, follow/save,
+> đăng ký giữ cọc và vé server khi `FIREBASE_ENABLED=true` (không bật `DEMO_AUTH`).
+> Flow 2/3 chưa tích hợp app. Các mô tả “pending/chưa nối Flutter” bên dưới là
+> lịch sử hoặc chế độ preview, không áp dụng cho nhánh live Flow 1.
+
+> **Dữ liệu demo đã được owner cho phép tạo 05/11/2026:** Firebase hiện có
+> 10 interests, 5 organizers, 12 events, 5 rewards và 5 milestones có sẵn.
+> Hai tài khoản Auth vận hành staff/admin đã khởi tạo và phân quyền app.
+> [Dữ liệu, tài khoản và cách sửa](docs/DEMO_DATA.md) thay thế ghi chú “chưa có
+> dữ liệu/chưa tạo Café” phía dưới. Đây là dữ liệu demo có nhãn, chưa nối Flutter.
+
+> **Đồng bộ trước tích hợp 05/11/2026:** [quyết định mới](docs/PREINTEGRATION_DECISIONS.md)
+> chốt MSSV hai chữ + sáu số; email hiện nhận mọi domain hợp lệ, QR + mã
+> dự phòng và ba loại notification bổ sung. Đã sửa UI policy/claim controls;
+> CampusService vẫn pending cho đến bước nối SDK. Không tạo Café record khi
+> chưa có stock/nhà tài trợ/địa điểm/điều kiện thật được duyệt.
+
+> **Firebase 05/11/2026:** đã bổ sung backend Event Milestones theo
+> [hợp đồng thành tựu](docs/EVENT_MILESTONES.md): 5 mốc, manual claim một lần,
+> admin-managed catalog và hai Remote Config keys cho presentation.
+> Giao diện demo bên dưới chưa nối API này.
+
+## Tài khoản mock để xem UI — 05/11/2026
+
+Chỉ bản debug bật `--dart-define=DEMO_AUTH=true` mới dùng tài khoản local:
+`alex.m@fpt.edu.vn` / `EviaDemo123!` (Alex Morgan).
+Mặc định cờ tắt; profile/rewards/events vẫn là mock được phép dùng để preview.
+Không tạo Firebase user/token, không cấp quyền backend; Google/sign-up vẫn unavailable.
+Session chỉ nằm trong RAM, mất khi khởi động lại; Log Out xóa session và state demo.
+Release/profile luôn tắt demo auth, kể cả truyền cờ.
+
+```powershell
+& 'F:\Mobile_Programing\flutter_evia_lab3\bin\flutter.bat' run -d R3CR60CT0WZ --dart-define=DEMO_AUTH=true
+```
+
+
+
+## Mô phỏng toàn bộ UI — 05/11/2026
+
+Trong bản debug bật `DEMO_AUTH=true`, đăng nhập tài khoản demo ở trên rồi vào
+**Profile → Demo screens** để mở 44 màn/trạng thái, gồm đăng ký thành công,
+thất bại, hết chỗ, loading, lịch, vé, voucher và trạng thái rỗng.
+Nút **View Splash / Welcome / Login / Sign up** đăng xuất để xem nhóm authentication.
+
+- Ví demo bắt đầu với **2.000 xu khả dụng + 100 xu cọc**; mọi thay đổi chỉ ở RAM.
+- Đăng ký giữ cọc, hủy hoàn 30% cọc làm tròn xuống; thao tác lặp không trừ/hoàn hai lần.
+- Check-in sự kiện: **Enter code → EVIA-CLUB-2026**, xác nhận Campus Club Fair
+  và cộng 80 xu một lần. Đây là mô phỏng, không mở camera/quét QR thật.
+- Daily Check-in cộng 20 xu một lần trong phiên.
+- Đổi mỗi loại thưởng một lần: cập nhật ví, lịch sử và voucher mã `DEMO-...`.
+- **Reset demo** trong danh sách màn phục hồi ví/vé/thưởng ban đầu; đăng xuất
+  qua Profile hoặc khởi động lại cũng xóa trạng thái phiên.
+- Google sign-in, sign-up tạo tài khoản thật, email reset password, quyền thiết bị
+  và gửi feedback chưa kết nối. Có thể xem giao diện tương ứng, không gửi dữ liệu.
+- Các màn legacy (Waitlist/nhập mã check-in) chỉ để đối chiếu UI cũ,
+  không khẳng định đây là scope backend đã chốt.
+
+Không bật cờ: giữ chế độ preview cũ, không cho thay đổi xu khi Coin API chưa nối.
+Release/profile không bật demo auth hoặc danh sách màn. Không thay Firebase Rules,
+không seed cloud, không cấp Firebase token và không gọi API nghiệp vụ.
+
 ## Backend release — 04/11/2026
 
 Đã deploy **34 Functions**, xác minh **34 latest Cloud Run revisions READY**, hai Scheduler jobs ENABLED (Monthly Gift/ngày 1, no-show/mỗi 60 phút). Timezone/IAM đã kiểm; 6/6 Callable smoke + 3/3 Rules smoke đạt. [Release và bằng chứng](docs/backend-release.md). Không chạy thủ công job/cấp xu, không seed dữ liệu thật. UI và instrumentation vẫn chưa tích hợp.
@@ -24,7 +108,8 @@ UI và các Flutter adapters demo hiện tại chưa được nối vào backend
 - [Hợp đồng API và hướng dẫn đội giao diện tích hợp](docs/backend-integration.md).
 - [Chạy backend độc lập](functions/README.md), [kết quả kiểm thử](docs/test-plan.md).
 - Chốt 200 xu lần đầu/UID; Daily theo Asia/Ho_Chi_Minh; tiền/vé chỉ server ghi,
-  chống vượt chỗ/trừ xu trùng; không Waitlist hay milestone.
+  chống vượt chỗ/trừ xu trùng; không Waitlist. Event Milestones đã được bổ sung
+  theo [quyết định 05/11/2026](docs/EVENT_MILESTONES.md), chưa nối giao diện.
 - Policy mới đã chốt: Monthly Gift tự cộng ngày 1, no-show mất cọc, được đăng ký lại khi còn chỗ, admin xác nhận voucher ở nhà tài trợ. **Code mới local, chưa deploy**; xem [policy/jobs](docs/BACKEND_POLICIES.md).
 - Runtime: Node22, Java21+ cho Emulator, Firebase CLI 15.30.2 đã kiểm tra.
   Backend dependencies: firebase-admin 14.5.0, firebase-functions 7.4.0, zod 4.6.7;
@@ -53,7 +138,8 @@ xem [schema v1.2](docs/DATABASE_DESIGN.md), chưa triển khai dữ liệu nghi�
 
 Owner đã làm rõ scope sau review: không Waitlist (hủy vé trả lại chỗ), Café
 voucher 200 xu từ server data, Google + email/password auth, tối thiểu 3 sở thích
-bắt buộc. Bỏ milestones/nhập mã walk-in và các nghiệp vụ FD-09/10; verification
+bắt buộc. Milestones khôi phục theo [policy mới](docs/EVENT_MILESTONES.md).
+Bỏ nhập mã walk-in và các nghiệp vụ FD-09/10; verification
 sinh viên/CLB tạm hoãn. Đây là yêu cầu cho implementation tiếp theo; UI demo
 và mô tả prototype phía dưới chưa được đổi hành vi trong task tài liệu này.
 SDK riêng trên máy hiện tại: `F:\Mobile_Programing\flutter_evia_lab3`
@@ -152,19 +238,22 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | go_router | 18.1.1 | MaterialApp.router, redirect/auth guard |
 | flutter_svg | 2.3.2 | Render SVG export gốc từ Figma, lưu cục bộ |
 | firebase_core | 5.1.0 | Khởi tạo SDK khi đã opt in |
-| firebase_auth | 7.0.1 | Chuẩn bị Authentication |
+| firebase_auth | 7.0.1 | Firebase Authentication cho Flow 1 |
+| cloud_functions | 7.0.1 | Callable backend Flow 1 tại asia-southeast1 |
+| qr_flutter | 4.1.0 | Render QR vé do backend cấp |
+| mobile_scanner | 7.5.0 | Camera quét QR walk-in trong khung màn hiện có |
 | google_sign_in | 7.2.0 | Chuẩn bị Google Sign-In |
 | firebase_storage | 14.0.1 | Chuẩn bị Cloud Storage |
-| firebase_messaging | 17.0.1 | Chuẩn bị Cloud Messaging |
+| firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
 | firebase_analytics | 13.0.1 | Chuẩn bị Analytics, chưa tracking |
 | firebase_crashlytics | 6.0.1 | Chuẩn bị Crashlytics, chưa handlers |
 | firebase_remote_config | 7.0.1 | Chuẩn bị Remote Config |
 | flutter_test | Flutter SDK | Unit/widget tests |
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |
 
-Chưa thêm Firestore hoặc HTTP client vì chưa xác định nguồn dữ liệu Lab 2.
-Chưa thêm ARTEMIS dependency hay automation. Firebase packages ngoài Core mới
-chỉ được chuẩn bị trong dependency graph, chưa có real adapters/use cases.
+Flow 1 dùng callable thay vì Firestore SDK/HTTP client trực tiếp. Chưa thêm
+ARTEMIS dependency hay automation. Storage/Messaging/Analytics/Crashlytics/
+Remote Config app-side vẫn dùng pending adapters.
 
 ## Cấu trúc và quy tắc
 
@@ -194,15 +283,15 @@ android/                 # Android host
 
 View → ViewModel → Repository → service interface → SDK adapter. SDK chỉ được
 gọi trong `lib/services/`; domain models không chứa SDK types. Providers tạo và
-inject dependencies, dễ override để test. Sáu service providers hiện dùng
-`PendingFirebaseServices`: auth stream phát `unavailable`, các thao tác khác
-báo `AppException` thay vì giả thành công. Khởi tạo Firebase Core thành công
-**không tự thay** các adapter pending thành dịch vụ thật.
+inject dependencies, dễ override để test. Auth/Backend chọn real adapter trong
+live mode; cấu hình tắt dùng pending/unavailable, demo auth chỉ bật riêng ở debug.
+Các service còn lại dùng `PendingFirebaseServices`, ném lỗi rõ. Khởi tạo Firebase
+Core thành công không có nghĩa Flow 2/3 hoặc các service này đã tích hợp.
 
 Welcome, Login, Sign Up, nội dung sự kiện công khai và `/foundation`
 không yêu cầu đăng nhập. Các route cá nhân/đăng ký/voucher áp dụng auth guard S01.
-Auth session stream và guard fail closed vẫn giữ nguyên; chưa tích hợp adapter
-đăng nhập/đăng ký thật. Login hiển thị validation/trạng thái chưa cấu hình.
+Auth session stream và guard fail closed vẫn giữ nguyên. Live mode dùng adapter
+đăng nhập/đăng ký thật; hoàn tất onboarding dựa trên profile server.
 
 ## Bộ màn hình Evia
 

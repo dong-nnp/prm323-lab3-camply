@@ -8,6 +8,8 @@ import '../theme/splash_tokens.dart';
 import '../theme/app_motion.dart';
 import '../screens/foundation_screen.dart';
 import '../screens/evia/login_screen.dart';
+import '../screens/evia/demo_screens_screen.dart';
+import '../core/providers/service_providers.dart';
 import '../screens/evia/welcome_screen.dart';
 import '../screens/evia/sign_up_screen.dart';
 import '../screens/evia/splash_screen.dart';
@@ -34,22 +36,66 @@ import '../viewmodels/evia_view_model.dart';
 import '../models/auth_session.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/status_widgets.dart';
+import '../widgets/evia_widgets.dart';
+import '../core/utils/exception_mapper.dart';
+import '../viewmodels/flow1_view_model.dart';
 import 'authentication_guard.dart';
+import '../viewmodels/push_notifications_view_model.dart';
 
 final initialLocationProvider = Provider<String>((ref) => AppRoutes.splash);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier(0);
+  late final GoRouter router;
   ref.listen(authenticationViewModelProvider, (_, next) {
+    // A pushed Login retains the previous URI during refresh in go_router.
+    final matches = router.routerDelegate.currentConfiguration;
+    if (next.asData?.value.status == AuthStatus.signedIn &&
+        matches.isNotEmpty) {
+      final top = matches.last;
+      if (top is ImperativeRouteMatch &&
+          [AppRoutes.login, AppRoutes.signUp].contains(top.matches.uri.path)) {
+        router.go(top.matches.uri.toString());
+        return;
+      }
+    }
     refresh.value++;
   });
+  final real = ref.watch(realBackendEnabledProvider);
+  if (real) {
+    ref.listen(pushNotificationsViewModelProvider, (_, next) {
+      if (next.destination != null) {
+        final destination = next.destination!;
+        ref
+            .read(pushNotificationsViewModelProvider.notifier)
+            .clearDestination();
+        Future.microtask(() => router.push(destination));
+      }
+    });
+  }
+  if (real) ref.listen(flow1ViewModelProvider, (_, _) => refresh.value++);
 
-  final router = GoRouter(
+  router = GoRouter(
     initialLocation: ref.watch(initialLocationProvider),
     refreshListenable: refresh,
     redirect: (context, state) {
       final auth = ref.read(authenticationViewModelProvider);
       final session = auth.isLoading ? null : auth.asData?.value;
+      if (real &&
+          session?.status == AuthStatus.signedIn &&
+          AppRoutes.requiresAuthentication(state.uri.path) &&
+          state.uri.path != AppRoutes.interests &&
+          state.uri.path != '/profile/interests') {
+        final profile = ref.read(flow1ViewModelProvider).asData?.value.profile;
+        if (profile != null &&
+            profile.isNotEmpty &&
+            profile['onboardingCompleted'] != true) {
+          return Uri(
+            path: AppRoutes.interests,
+            queryParameters: {'from': state.uri.toString()},
+          ).toString();
+        }
+      }
       if (session?.status == AuthStatus.signedIn &&
           [
             AppRoutes.home,
@@ -58,26 +104,44 @@ final routerProvider = Provider<GoRouter>((ref) {
           ].contains(state.uri.path)) {
         final handled =
             session!.personalizationHandled ||
+            (real &&
+                ref
+                        .read(flow1ViewModelProvider)
+                        .asData
+                        ?.value
+                        .profile['onboardingCompleted'] ==
+                    true) ||
             ref
                 .read(eviaViewModelProvider)
                 .personalizedUsers
                 .contains(session.userId);
-        if (!handled) return AppRoutes.interests;
+        if (!handled) {
+          return Uri(
+            path: AppRoutes.interests,
+            queryParameters: {
+              if (state.uri.queryParameters['from'] != null)
+                'from': state.uri.queryParameters['from']!,
+            },
+          ).toString();
+        }
         final from = state.uri.queryParameters['from'];
         final target = from == null ? null : Uri.tryParse(from);
         if (target != null &&
             !target.hasAuthority &&
             !target.hasScheme &&
             target.path.startsWith('/') &&
-            AppRoutes.requiresAuthentication(target.path)) {
+            (AppRoutes.requiresAuthentication(target.path) ||
+                real &&
+                    (target.path.startsWith('/event/') ||
+                        target.path == '/organizer'))) {
           return from;
         }
         return AppRoutes.discover;
       }
       final redirect = AuthenticationGuard.redirect(
-        requiresAuthentication: AppRoutes.requiresAuthentication(
-          state.uri.path,
-        ),
+        requiresAuthentication:
+            AppRoutes.requiresAuthentication(state.uri.path) ||
+            real && state.uri.path == AppRoutes.interests,
         session: session,
       );
       return redirect == null
@@ -88,6 +152,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             ).toString();
     },
     routes: [
+      if (ref.read(demoAuthEnabledProvider))
+        GoRoute(
+          path: '/profile/demo',
+          builder: (_, _) => const DemoScreensScreen(),
+        ),
       GoRoute(
         path: AppRoutes.splash,
         builder: (_, _) => const EviaSplashScreen(),
@@ -95,43 +164,65 @@ final routerProvider = Provider<GoRouter>((ref) {
       for (final tab in ['about', 'schedule', 'location'])
         GoRoute(
           path: '/event/$tab',
-          builder: (_, state) => EventDetailsScreen(
-            tab: tab,
-            eventId: state.uri.queryParameters['event'] ?? 'music-live',
+          builder: (_, state) => _catalogReady(
+            EventDetailsScreen(
+              tab: tab,
+              eventId:
+                  state.uri.queryParameters['event'] ??
+                  (real ? '' : 'music-live'),
+            ),
           ),
         ),
       GoRoute(
         path: '/registration',
-        builder: (_, state) => RegistrationFormScreen(
-          eventId: state.uri.queryParameters['event'] ?? 'music-live',
-          resume: state.uri.queryParameters['resume'] == 'true',
+        builder: (_, state) => _catalogReady(
+          RegistrationFormScreen(
+            eventId:
+                state.uri.queryParameters['event'] ??
+                (real ? '' : 'music-live'),
+            resume: state.uri.queryParameters['resume'] == 'true',
+          ),
         ),
       ),
       for (final view in ['legacy', 'legacy-error', 'error', 'loading'])
         GoRoute(
           path: '/registration/$view',
-          builder: (_, state) => RegistrationFormScreen(
-            view: view,
-            eventId: state.uri.queryParameters['event'] ?? 'music-live',
+          builder: (_, state) => _catalogReady(
+            RegistrationFormScreen(
+              view: view,
+              eventId:
+                  state.uri.queryParameters['event'] ??
+                  (real ? '' : 'music-live'),
+            ),
           ),
         ),
       for (final view in ['success', 'going', 'full', 'failed'])
         GoRoute(
           path: '/registration/$view',
-          builder: (_, _) => RegistrationResultScreen(view: view),
+          builder: (_, state) => _catalogReady(
+            RegistrationResultScreen(
+              view: view,
+              eventId: state.uri.queryParameters['event'],
+            ),
+          ),
         ),
       GoRoute(
         path: '/organizer',
-        builder: (_, _) => const OrganizerProfileScreen(),
+        builder: (_, state) => _catalogReady(
+          OrganizerProfileScreen(organizerId: state.uri.queryParameters['id']),
+        ),
       ),
-      GoRoute(path: '/profile', builder: (_, _) => const ProfileScreen()),
+      GoRoute(
+        path: '/profile',
+        builder: (_, _) => _catalogReady(const ProfileScreen()),
+      ),
       GoRoute(
         path: '/profile/interests',
-        builder: (_, _) => const ProfileInterestsScreen(),
+        builder: (_, _) => _catalogReady(const ProfileInterestsScreen()),
       ),
       GoRoute(
         path: '/profile/saved',
-        builder: (_, _) => const SavedEventsScreen(),
+        builder: (_, _) => _catalogReady(const SavedEventsScreen()),
       ),
       GoRoute(
         path: '/profile/notifications',
@@ -139,7 +230,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/my-events',
-        builder: (_, _) => const MyEventsScreen(view: 'upcoming'),
+        builder: (_, _) =>
+            _catalogReady(const MyEventsScreen(view: 'upcoming')),
       ),
       for (final view in [
         'past-empty',
@@ -150,24 +242,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       ])
         GoRoute(
           path: '/my-events/$view',
-          builder: (_, _) => MyEventsScreen(view: view),
+          builder: (_, _) => _catalogReady(MyEventsScreen(view: view)),
         ),
       GoRoute(
         path: '/my-events/cancel',
-        builder: (_, state) => MyEventsScreen(
-          view: 'cancel',
-          cancelId: state.uri.queryParameters['event'] ?? 'music',
+        builder: (_, state) => _catalogReady(
+          MyEventsScreen(
+            view: 'cancel',
+            cancelId:
+                state.uri.queryParameters['event'] ?? (real ? '' : 'music'),
+          ),
         ),
       ),
       GoRoute(
         path: '/my-events/ticket',
-        builder: (_, state) => TicketScreen(
-          eventId: state.uri.queryParameters['event'] ?? 'music',
+        builder: (_, state) => _catalogReady(
+          TicketScreen(
+            eventId:
+                state.uri.queryParameters['event'] ?? (real ? '' : 'music'),
+          ),
         ),
       ),
       GoRoute(
         path: '/my-events/check-in',
-        builder: (_, _) => const EventCheckInScreen(),
+        builder: (_, state) => _catalogReady(
+          EventCheckInScreen(eventId: state.uri.queryParameters['event'] ?? ''),
+        ),
       ),
       GoRoute(path: '/rewards', builder: (_, _) => const RewardsScreen()),
       GoRoute(
@@ -229,37 +329,45 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.interests,
-        pageBuilder: (context, state) =>
-            _startupPage(context, state, const EviaInterestsScreen()),
+        pageBuilder: (context, state) => _startupPage(
+          context,
+          state,
+          _catalogReady(const EviaInterestsScreen()),
+        ),
       ),
       GoRoute(
         path: AppRoutes.discover,
-        pageBuilder: (context, state) =>
-            _startupPage(context, state, const EviaDiscoverScreen()),
+        pageBuilder: (context, state) => _startupPage(
+          context,
+          state,
+          _catalogReady(const EviaDiscoverScreen()),
+        ),
       ),
       GoRoute(
         path: AppRoutes.guestDiscover,
-        builder: (_, _) => const EviaDiscoverScreen(guest: true),
+        builder: (_, _) => _catalogReady(const EviaDiscoverScreen(guest: true)),
       ),
       GoRoute(
         path: AppRoutes.explore,
-        builder: (_, _) => const EviaExploreScreen(),
+        builder: (_, _) => _catalogReady(const EviaExploreScreen()),
       ),
       GoRoute(
         path: AppRoutes.searchResults,
-        builder: (_, _) => const EviaExploreScreen(referenceResults: true),
+        builder: (_, _) =>
+            _catalogReady(const EviaExploreScreen(referenceResults: true)),
       ),
       GoRoute(
         path: AppRoutes.filters,
-        builder: (_, _) => const EviaFiltersScreen(),
+        builder: (_, _) => _catalogReady(const EviaFiltersScreen()),
       ),
       GoRoute(
         path: AppRoutes.followingEvents,
-        builder: (_, _) => const EviaFollowingScreen(),
+        builder: (_, _) => _catalogReady(const EviaFollowingScreen()),
       ),
       GoRoute(
         path: AppRoutes.followingOrganizers,
-        builder: (_, _) => const EviaFollowingScreen(organizers: true),
+        builder: (_, _) =>
+            _catalogReady(const EviaFollowingScreen(organizers: true)),
       ),
     ],
     errorBuilder: (context, state) => const Scaffold(
@@ -275,6 +383,42 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+// Gate API reads with the existing loading/error components; keep each original screen.
+Widget _catalogReady(Widget child) => Consumer(
+  builder: (context, ref, _) {
+    if (!ref.watch(realBackendEnabledProvider)) return child;
+    ref.listen(flow1ViewModelProvider, (previous, next) {
+      final error = next.asData?.value.actionError;
+      if (error != null && error != previous?.asData?.value.actionError) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted && (ModalRoute.of(context)?.isCurrent ?? false)) {
+            ScaffoldMessenger.maybeOf(context)
+                ?.showSnackBar(SnackBar(content: Text(error)));
+          }
+        });
+      }
+    });
+    return ref
+        .watch(flow1ViewModelProvider)
+        .when(
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          loading: () =>
+              const EviaPage(child: Center(child: AppLoadingWidget())),
+          error: (error, _) => EviaPage(
+            child: Center(
+              child: AppErrorWidget(
+                message: ExceptionMapper.map(error).message,
+                onRetry: () =>
+                    ref.read(flow1ViewModelProvider.notifier).refresh(),
+              ),
+            ),
+          ),
+          data: (_) => child,
+        );
+  },
+);
 
 CustomTransitionPage<void> _startupPage(
   BuildContext context,

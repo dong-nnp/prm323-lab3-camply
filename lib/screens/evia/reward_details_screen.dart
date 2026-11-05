@@ -152,6 +152,8 @@ class RewardDetailsScreen extends ConsumerWidget {
                 child: AppButton(
                   label: vm.canRedeem(reward.id)
                       ? 'Redeem for ${reward.redeemCost} coins'
+                      : vm.demoAvailable
+                      ? vm.rewardStatus(reward.id)
                       : 'Coin API not connected',
                   trailing: const CoinIcon(),
                   onPressed: vm.canRedeem(reward.id)
@@ -426,7 +428,9 @@ class _ConfirmRedemption extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
         ActivityInfo(
-          ActivityViewModel.coinServiceMessage,
+          vm.demoAvailable
+              ? 'Demo only · coins and rewards reset when the app restarts.'
+              : ActivityViewModel.coinServiceMessage,
           icon: const ActivityIcon('2083:3865', 'imgMargin'),
         ),
         if (state.message != null)

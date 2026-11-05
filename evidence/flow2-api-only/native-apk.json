@@ -1,0 +1,8 @@
+{
+  "package": "com.example.prm393_lab03",
+  "device": "SM-G996N / R3CR60CT0WZ",
+  "sha256": "14d28a25d5c1bf2af0bd1a530bbb31baf9fa051129f99330ffa07dca02786c5e",
+  "installedMatchesBuiltApk": true,
+  "FIREBASE_ENABLED": true,
+  "DEMO_AUTH": false
+}

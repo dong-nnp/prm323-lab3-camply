@@ -40,11 +40,12 @@ Tham chiếu: [design-traceability.md](design-traceability.md), [architecture.md
 - [ ] Hoàn thiện profile/sở thích/danh sách thông báo thật theo phạm vi đã chốt.
 - [ ] Cả 3 flow Lab 2 chạy end to end, gồm nhánh thay thế, lỗi/phục hồi và Back; mọi màn hình Final UI đều truy cập được.
 - [ ] Mỗi màn hình tải dữ liệu xử lý được offline, permission denied, empty và lỗi server bằng thông báo rõ ràng.
-- [ ] Đồng bộ UI demo với scope hiện tại: không Waitlist/milestones, walk-in chỉ QR, Café 200 xu, tối thiểu 3 sở thích không Skip.
+- [x] Đồng bộ UI policy: không Waitlist/feedback/học kỳ/verified-eligibility; hủy hoàn 30% cọc làm tròn xuống, Daily theo server, Café 200, không Skip onboarding; thêm claim states/loading. API adapter thật vẫn pending; xem PREINTEGRATION_DECISIONS.md.
+- [x] Backend identity validation (email mở mọi domain theo cập nhật mới), QR + manual fallback và new-event/schedule/reminder notifications: 51/51 Emulator tests, 41 Functions/Run revisions READY; Scheduler reminder private/IAM đúng. Không đồng nghĩa native push/scan đã chạy thật.
 - [x] Chốt Monthly Gift, admin voucher tại nhà tài trợ, no-show và đăng ký lại; xem [BACKEND_POLICIES.md](BACKEND_POLICIES.md).
 - [x] Triển khai/kiểm thử các policy mới trên Emulator, gồm đăng ký lại với vé mới, monthly/no-show jobs và admin voucher.
 - [x] Deploy revision mới: 34 Functions/Run revisions READY; 2 Scheduler jobs ENABLED, timezone/target/IAM đã verify. Không manual job hoặc cấp voucher-admin role; chưa có business execution evidence trên dữ liệu thật.
-- [x] Chuẩn bị [quy trình dữ liệu thật](DATA_READINESS.md) và [handoff frontend](FRONTEND_HANDOFF.md); chưa có dataset được duyệt.
+- [x] Chuẩn bị quy trình dữ liệu/handoff; owner cho phép dataset **demo** đã được tạo và kiểm trên cloud, xem DEMO_DATA.md. Dataset/sponsor thật chưa có.
 
 Tham chiếu: [backend-integration.md](backend-integration.md), [firebase-migration.md](firebase-migration.md), [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md).
 

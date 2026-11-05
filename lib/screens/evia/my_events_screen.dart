@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/mock/activity_mock_data.dart';
 import '../../core/constants/activity_assets.dart';
 import '../../models/activity_models.dart';
+import '../../core/providers/service_providers.dart';
+import '../../viewmodels/flow1_view_model.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
@@ -13,6 +14,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/status_widgets.dart';
 import 'monthly_calendar.dart';
 
 class MyEventsScreen extends ConsumerStatefulWidget {
@@ -22,15 +24,34 @@ class MyEventsScreen extends ConsumerStatefulWidget {
   ConsumerState<MyEventsScreen> createState() => _MyEventsScreenState();
 }
 
-class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
+class _MyEventsScreenState extends ConsumerState<MyEventsScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Future.microtask(() {
       if (mounted) {
         ref.read(activityViewModelProvider.notifier).setReference(widget.view);
+        if (ref.read(realBackendEnabledProvider)) {
+          ref.read(flow1ViewModelProvider.notifier).refresh();
+        }
       }
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        ref.read(realBackendEnabledProvider)) {
+      ref.read(flow1ViewModelProvider.notifier).refresh();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   String screenFor(ActivityState state) {
@@ -261,79 +282,6 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                       child: _RegisteredCard(event: event, screen: screen),
                     ),
-                if (state.past && vm.visibleEvents.isNotEmpty) ...[
-                  if (state.selectedDate != null)
-                    EviaCard(
-                      color: EviaTheme.lavender,
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            backgroundColor: AppColors.accent,
-                            child: ActivityIcon('2083:2170', 'imgContainer9'),
-                          ),
-                          const SizedBox(width: AppSpacing.md),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () => showActivityHelp(
-                                context,
-                                'Event feedback',
-                                'Thanks for joining Campus Music Night. Feedback submissions are currently unavailable.',
-                              ),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Did you enjoy this concert?',
-                                    style: EviaTheme.label,
-                                  ),
-                                  Text(
-                                    'Leave feedback to earn an extra 20 campus perks.',
-                                    style: EviaTheme.caption,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    EviaCard(
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            backgroundColor: AppColors.accent,
-                            child: ActivityIcon('2083:2931', 'imgContainer10'),
-                          ),
-                          const SizedBox(width: AppSpacing.md),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Fall Semester Active',
-                                  style: EviaTheme.label,
-                                ),
-                                Text(
-                                  '1 of 4 required seasonal campus events verified.',
-                                  style: EviaTheme.caption,
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            tooltip: 'View event milestones',
-                            onPressed: () =>
-                                context.push('/rewards/milestones'),
-                            icon: const ActivityIcon(
-                              '2083:2931',
-                              'imgContainer11',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
               ],
             ),
           ),
@@ -431,7 +379,7 @@ class _DayCell extends ConsumerWidget {
     final vm = ref.read(activityViewModelProvider.notifier);
     final selected =
         state.selectedDate != null && vm.sameDay(day, state.selectedDate!);
-    final today = vm.sameDay(day, ActivityMockData.referenceDate);
+    final today = vm.sameDay(day, vm.today);
     return Semantics(
       selected: selected,
       label: '${monthName(day.month)} ${day.day}',
@@ -521,9 +469,7 @@ class _RegisteredCard extends ConsumerWidget {
               ? 4
               : 3
         : screen == '2083:273'
-        ? event.waitlisted
-              ? 7
-              : 3
+        ? 3
         : 4;
     return EviaCard(
       child: Column(
@@ -540,7 +486,11 @@ class _RegisteredCard extends ConsumerWidget {
                     children: [
                       Positioned.fill(
                         child: event.image != null
-                            ? Image.asset(event.image!, fit: BoxFit.cover)
+                            ? catalogImage(
+                                event.image,
+                                event.image!,
+                                fit: BoxFit.cover,
+                              )
                             : const ColoredBox(color: EviaTheme.lavender),
                       ),
                       Positioned(
@@ -569,9 +519,7 @@ class _RegisteredCard extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xs),
                           decoration: BoxDecoration(
-                            color: event.waitlisted
-                                ? AppColors.warningSurface
-                                : AppColors.successSurface,
+                            color: AppColors.successSurface,
                             borderRadius: BorderRadius.circular(
                               AppRadius.small,
                             ),
@@ -583,15 +531,9 @@ class _RegisteredCard extends ConsumerWidget {
                               const SizedBox(width: AppSpacing.xs),
                               Flexible(
                                 child: Text(
-                                  past
-                                      ? 'Attended'
-                                      : event.waitlisted
-                                      ? 'Waitlisted · #4 in line'
-                                      : 'Registered',
+                                  past ? 'Attended' : event.status,
                                   style: EviaTheme.caption.copyWith(
-                                    color: event.waitlisted
-                                        ? AppColors.warning
-                                        : AppColors.success,
+                                    color: AppColors.success,
                                   ),
                                 ),
                               ),
@@ -653,16 +595,20 @@ class _RegisteredCard extends ConsumerWidget {
                     allPast ? 'imgContainer8' : 'imgContainer7',
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Attendance verified at Gate B',
+                      event.verifiedAt == null
+                          ? 'Attendance verified at Gate B'
+                          : 'Attendance verified',
                       style: EviaTheme.caption,
                     ),
                   ),
                   if (allPast)
-                    const Flexible(
+                    Flexible(
                       child: Text(
-                        '18:14 CHECK-IN',
+                        event.verifiedAt == null
+                            ? '18:14 CHECK-IN'
+                            : '${event.verifiedAt!.toUtc().add(const Duration(hours: 7)).hour.toString().padLeft(2, '0')}:${event.verifiedAt!.toUtc().add(const Duration(hours: 7)).minute.toString().padLeft(2, '0')} CHECK-IN',
                         style: ActivityTheme.smallLabel,
                       ),
                     ),
@@ -691,40 +637,29 @@ class _RegisteredCard extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: event.waitlisted
-                        ? 'View Status'
-                        : event.walkIn
-                        ? 'Check In'
-                        : 'View Ticket',
+                    label: event.walkIn ? 'Check In' : 'View Ticket',
                     onPressed: () {
-                      if (event.waitlisted) {
-                        showActivityHelp(
-                          context,
-                          'Waitlist status',
-                          'You are #4 in line. We’ll let you know when a spot becomes available.',
-                        );
-                      } else if (event.walkIn) {
-                        context.push('/my-events/check-in');
+                      if (event.walkIn) {
+                        context.push('/my-events/check-in?event=${event.id}');
                       } else {
                         context.push('/my-events/ticket?event=${event.id}');
                       }
                     },
                     trailing: ActivityIcon(
                       screen,
-                      screen == '2083:273'
-                          ? event.waitlisted
-                                ? 'imgContainer8'
-                                : 'imgContainer6'
-                          : 'imgContainer7',
+                      screen == '2083:273' ? 'imgContainer6' : 'imgContainer7',
                     ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () =>
-                        context.push('/my-events/cancel?event=${event.id}'),
-                    child: Text(event.waitlisted ? 'Leave Waitlist' : 'Cancel'),
+                    onPressed: !event.canCancel
+                        ? null
+                        : () => context.push(
+                            '/my-events/cancel?event=${event.id}',
+                          ),
+                    child: const Text('Cancel'),
                   ),
                 ),
               ],
@@ -754,141 +689,163 @@ class _ActivityMeta extends StatelessWidget {
   );
 }
 
-class _CancellationBackdrop extends StatelessWidget {
+class _CancellationBackdrop extends ConsumerWidget {
   const _CancellationBackdrop();
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.all(AppSpacing.lg),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('My Events', style: ActivityTheme.title),
-                  Text(
-                    'Manage your registrations and passes',
-                    style: EviaTheme.caption,
-                  ),
-                ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    final live = ref.watch(realBackendEnabledProvider);
+    ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
+    final events = vm.visibleEvents;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('My Events', style: ActivityTheme.title),
+                    Text(
+                      'Manage your registrations and passes',
+                      style: EviaTheme.caption,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ActivityIcon('2083:2795', 'imgContainer'),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.xl),
-        ActivityTabs(
-          labels: const ['Upcoming  2', 'Past  1'],
-          selected: 0,
-          onSelected: (_) {},
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        for (var i = 0; i < 2; i++)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-            child: EviaCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: ActivityTheme.detailImageHeight,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            ActivityAssets.image('2083:2795', i),
-                            fit: BoxFit.cover,
+              ActivityIcon('2083:2795', 'imgContainer'),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          ActivityTabs(
+            labels: live
+                ? [
+                    'Upcoming  ${vm.countFor(false)}',
+                    'Past  ${vm.countFor(true)}',
+                  ]
+                : const ['Upcoming  2', 'Past  1'],
+            selected: 0,
+            onSelected: (_) {},
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          for (var i = 0; i < (live ? events.length : 2); i++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+              child: EviaCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: ActivityTheme.detailImageHeight,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: catalogImage(
+                              live ? events[i].image : null,
+                              ActivityAssets.image('2083:2795', i % 2),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          top: AppSpacing.md,
-                          left: AppSpacing.md,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ActivityIcon(
-                                '2083:2795',
-                                i == 0 ? 'imgContainer1' : 'imgContainer6',
-                              ),
-                              EventBadge(
-                                i == 0 ? 'REGISTERED' : 'CONFIRMED',
-                                color: AppColors.accent,
-                                foreground: AppColors.textPrimary,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (i == 0)
-                          const Positioned(
-                            bottom: AppSpacing.md,
-                            right: AppSpacing.md,
+                          Positioned(
+                            top: AppSpacing.md,
+                            left: AppSpacing.md,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                ActivityIcon('2083:2795', 'imgContainer2'),
-                                Text(
-                                  'Row C • Seat 14',
-                                  style: TextStyle(color: AppColors.surface),
+                                ActivityIcon(
+                                  '2083:2795',
+                                  i == 0 ? 'imgContainer1' : 'imgContainer6',
+                                ),
+                                EventBadge(
+                                  live
+                                      ? events[i].status.toUpperCase()
+                                      : i == 0
+                                      ? 'REGISTERED'
+                                      : 'CONFIRMED',
+                                  color: AppColors.accent,
+                                  foreground: AppColors.textPrimary,
                                 ),
                               ],
                             ),
                           ),
-                      ],
+                          if (i == 0 && !live)
+                            const Positioned(
+                              bottom: AppSpacing.md,
+                              right: AppSpacing.md,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ActivityIcon('2083:2795', 'imgContainer2'),
+                                  Text(
+                                    'Row C • Seat 14',
+                                    style: TextStyle(color: AppColors.surface),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          i == 0
-                              ? 'Campus Music Night'
-                              : 'AI & Future Careers Workshop',
-                          style: EviaTheme.section,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _ActivityMeta(
-                          i == 0
-                              ? 'Friday, Oct 24 • 7:00 PM'
-                              : 'Nov 2, 2026 • 09:00 - 12:00',
-                          ActivityIcon(
-                            '2083:2795',
-                            i == 0 ? 'imgContainer3' : 'imgContainer6',
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            live
+                                ? events[i].title
+                                : i == 0
+                                ? 'Campus Music Night'
+                                : 'AI & Future Careers Workshop',
+                            style: EviaTheme.section,
                           ),
-                        ),
-                        _ActivityMeta(
-                          i == 0
-                              ? 'Campus Amphitheater'
-                              : 'Innovation Hub • Hall A',
-                          ActivityIcon(
-                            '2083:2795',
-                            i == 0 ? 'imgContainer4' : 'imgContainer7',
+                          const SizedBox(height: AppSpacing.sm),
+                          _ActivityMeta(
+                            live
+                                ? events[i].dateLabel
+                                : i == 0
+                                ? 'Friday, Oct 24 • 7:00 PM'
+                                : 'Nov 2, 2026 • 09:00 - 12:00',
+                            ActivityIcon(
+                              '2083:2795',
+                              i == 0 ? 'imgContainer3' : 'imgContainer6',
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Row(
-                          children: [
-                            const Expanded(child: Text('View Ticket')),
-                            const ActivityIcon('2083:2795', 'imgContainer5'),
-                            const SizedBox(width: AppSpacing.lg),
-                            const Text('Cancel'),
-                          ],
-                        ),
-                      ],
+                          _ActivityMeta(
+                            live
+                                ? events[i].venue
+                                : i == 0
+                                ? 'Campus Amphitheater'
+                                : 'Innovation Hub • Hall A',
+                            ActivityIcon(
+                              '2083:2795',
+                              i == 0 ? 'imgContainer4' : 'imgContainer7',
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Row(
+                            children: [
+                              const Expanded(child: Text('View Ticket')),
+                              const ActivityIcon('2083:2795', 'imgContainer5'),
+                              const SizedBox(width: AppSpacing.lg),
+                              const Text('Cancel'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class _CancelRegistration extends ConsumerWidget {
@@ -897,7 +854,16 @@ class _CancelRegistration extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.read(activityViewModelProvider.notifier);
-    final event = vm.event(eventId);
+    final busy = ref.watch(activityViewModelProvider).cancellingEventId != null;
+    final event = ref.read(realBackendEnabledProvider)
+        ? vm.findEvent(eventId)
+        : vm.event(eventId);
+    if (event == null) {
+      return AppErrorWidget(
+        message: 'No registration for this event. Open My Events to select an existing registration.',
+        onRetry: () => ref.read(flow1ViewModelProvider.notifier).refresh(),
+      );
+    }
     void close() => context.canPop() ? context.pop() : context.go('/my-events');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -914,12 +880,12 @@ class _CancelRegistration extends ConsumerWidget {
         const Text('Cancel Registration?', style: ActivityTheme.title),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Are you sure you want to cancel your registration for ${event.title}? Your ticket will no longer be available.',
+          'Are you sure you want to cancel your registration for ${event.title}? Your ticket will no longer be available. You will receive 30% of your held deposit back, rounded down to whole coins. The remaining deposit is forfeited.',
           style: EviaTheme.caption,
         ),
         const SizedBox(height: AppSpacing.xl),
         FilledButton(
-          onPressed: close,
+          onPressed: busy ? null : close,
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.surfaceMuted,
             foregroundColor: AppColors.textPrimary,
@@ -928,10 +894,30 @@ class _CancelRegistration extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         TextButton(
-          onPressed: () {
-            vm.cancelRegistration(eventId);
-            close();
-          },
+          onPressed: busy
+              ? null
+              : () async {
+                  final router = GoRouter.of(context);
+                  final live = ref.read(realBackendEnabledProvider);
+                  final success = await vm.cancelEvent(eventId);
+                  if (success) {
+                    if (live) {
+                      router.go('/my-events');
+                    } else if (context.mounted) {
+                      close();
+                    }
+                  } else {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          ref.read(activityViewModelProvider).message ??
+                              'Please retry.',
+                        ),
+                      ),
+                    );
+                  }
+                },
           child: const Text(
             'Yes, Cancel',
             style: TextStyle(color: AppColors.error),

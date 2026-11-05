@@ -1,5 +1,20 @@
 # CODEX — START HERE: EVIA LAB 3
 
+> **Flow 2 — 05/11/2026:** đã nối hủy/Going/My Events/lịch/check-in walk-in/
+> inbox và FCM; owner cho thêm nút nhỏ demo quét trên vé, không thêm màn staff.
+> 59 backend, 190 Flutter tests đạt; 14 same-data render comparisons trùng RGBA;
+> 7 API liên quan READY. [Evidence hiện tại](../evidence/flow2-api-only/) phân biệt
+> local/cloud/native. Nút demo có ghi Firebase/xu trong dataset demo, chỉ debug và
+> account/event do server bật; tắt `demoAttendanceEnabled` trước phát hành thật.
+> Flow 3 và camera quét vật lý/staff thật chưa nghiệm thu.
+
+> **Email policy 05/11/2026:** đã bỏ giới hạn domain trên app và Firebase
+> `prm393-31822`; email hợp lệ ở mọi domain được chấp nhận, MSSV giữ nguyên.
+> 32/32 callable liên quan đã cập nhật và kiểm latest revision READY; 12 sự kiện
+> demo đã đồng bộ yêu cầu email. 57 backend tests và 176 Flutter tests đạt.
+> [Evidence hiện tại](../evidence/open-email/). Chưa nghiệm thu đăng nhập thành
+> công bằng tài khoản ngoài trường trên native; các snapshot dưới đây là lịch sử.
+
 > **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
 
 > **Latest local readiness (04/11/2026):** read [BACKEND_POLICIES.md](BACKEND_POLICIES.md), [FRONTEND_HANDOFF.md](FRONTEND_HANDOFF.md) and [DATA_READINESS.md](DATA_READINESS.md). Owner has resolved monthly/no-show/re-registration/admin voucher policy. Local 34-export backend passes 31 Emulator tests; new jobs/admin changes NOT deployed. Historical 20-test/policy-blocked notes below describe the earlier revision. No approved real catalog exists. Flutter/UI remains owned by the other team.
@@ -26,8 +41,11 @@
 > **Owner update 2026-11-04:** read PROJECT_CONTEXT v1.3 / DATABASE_DESIGN v1.3
 > before using older handoff/prototype text. Authentication now includes Google
 > and email/password sign-up/sign-in/reset; minimum 3 distinct interests is required.
-> Café voucher is 200 Coin; Figma data is illustrative. No milestones, manual
-> walk-in codes, FD-09 extra business paths or FD-10 seat/tier inventory.
+> Café voucher is 200 Coin; Figma data is illustrative. Event Milestones restored
+> 05/11/2026 with manual claims; read [current policy](EVENT_MILESTONES.md).
+> Later review approves unrestricted email domains, manual check-in fallback and three-day event
+> reminders: [latest decisions](PREINTEGRATION_DECISIONS.md). No feedback/seasonal
+> bonus, ticket-email delivery or FD-10 seat/tier inventory.
 > Student/club verification is deferred; FD-12 cashier flow remains OPEN.
 > **Target repo:** https://github.com/dong-nnp/prm323-lab3-camply (existing repository; old `camply` name in URL, product is now **Evia**). This repo was **not accessible to ChatGPT via its current GitHub connection**. You (Codex) must verify your own permissions. **Do not create a new repository, rename the existing one, or force-push.**
 
@@ -50,7 +68,7 @@
 2. Produce an **as-is vs target gap report** mapped to the current `DATABASE_DESIGN.md` sections. If you find a working schema, **extend and migrate it**; don't replace the database or destroy working users/transactions.
 3. Identify the **smallest first PR**: recommend Firestore model + Security Rules + Emulator Suite tests as a foundation, then transactions and callables in later PRs.
 4. Add/update `docs/IMPLEMENTATION_TRACKER.md` with actual repo findings, file paths, blockers and evidence. Make an initial documentation commit/PR without inventing results.
-5. Explain any remaining policy ambiguities and **block sensitive live features** pending explicit owner decision (monthly eligibility/scheduling, no-show, same-user re-register, QR rotation mode and cashier authority). Do not reintroduce owner-removed milestones as an OPEN feature.
+5. Use BACKEND_POLICIES.md for confirmed monthly/no-show/re-register/voucher decisions and EVENT_MILESTONES.md for milestones restored 05/11/2026. QR rotation remains unimplemented; do not invent sensitive policy or treat old OPEN/removed notes as current decisions.
 
 ## Work after the as-is audit (in small reviewable PRs)
 

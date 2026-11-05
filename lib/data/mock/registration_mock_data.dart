@@ -4,9 +4,9 @@ import '../../models/registration_models.dart';
 /// Figma fixtures only. No real registration or verified-account assertion.
 abstract final class RegistrationMockData {
   static const name = 'Alex Morgan';
-  static const studentId = 'STU-849201';
-  static const profileStudentId = 'STU-842901';
-  static const email = 'alex.m@university.edu';
+  static const studentId = 'SE849201';
+  static const profileStudentId = 'SE842901';
+  static const email = 'alex.m@fpt.edu.vn';
   static const phone = '+1 (555) 019-2834';
   static const venue = 'Main Stadium, University Campus';
   static final music = EventPresentation(

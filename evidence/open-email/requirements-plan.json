@@ -1,0 +1,341 @@
+{
+  "project": "prm393-31822",
+  "plan": [
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-badminton",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-career-talk",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-design-thinking",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-full-event",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-green-campus",
+      "updateTime": "2026-11-05T05:13:06.163855Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-last-ticket",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-live-registration",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-live-walkin",
+      "updateTime": "2026-11-05T05:13:06.163855Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-mobile-workshop",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-music-night",
+      "updateTime": "2026-11-05T09:48:20.246303Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-past-event",
+      "updateTime": "2026-11-05T05:13:06.163855Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-photo-walk",
+      "updateTime": "2026-11-05T05:13:06.163855Z",
+      "old": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      },
+      "updated": {
+        "arrayValue": {
+          "values": [
+            {
+              "stringValue": "Dùng tài khoản có địa chỉ email hợp lệ trong ứng dụng."
+            },
+            {
+              "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

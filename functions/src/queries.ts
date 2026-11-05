@@ -8,7 +8,7 @@ const page = z.object({ limit: z.number().int().min(1).max(50).default(20), curs
 const eventFields = ['organizerId', 'title', 'subtitle', 'description', 'category', 'tags', 'imageUrl', 'status', 'visibility', 'startAt', 'endAt', 'timezone', 'doorsOpenAt', 'checkInStartAt', 'checkInEndAt', 'venue', 'audience', 'benefits', 'participantRequirements', 'schedule', 'scheduleNote', 'featured', 'admissionNote', 'registrationTerms', 'participationMode', 'capacity', 'registeredCount', 'depositCoins', 'attendanceRewardCoins', 'registrationClosesAt'];
 function selected(data: DocumentData, fields: string[]) { return Object.fromEntries(fields.filter(f => data[f] !== undefined).map(f => [f, data[f]])); }
 export function eventView(eventId: string, data: DocumentData) {
-  return { id: eventId, ...selected(data, eventFields), spotsRemaining: data.capacity === null ? null : Math.max(0, data.capacity - data.registeredCount) };
+  return { id: eventId, ...selected(data, eventFields), isDemo: data.isDemo === true, spotsRemaining: data.capacity === null ? null : Math.max(0, data.capacity - data.registeredCount) };
 }
 export function queries(db: Firestore, clock: () => Date) {
   async function list(query: Query, input: z.infer<typeof page>, sort?: { field: string; descending?: boolean; path: string }) {
@@ -118,7 +118,7 @@ export function queries(db: Firestore, clock: () => Date) {
       return { registration, ticket: required(ticket.data(), 'NO_ACTIVE_TICKET'), event: event.exists ? eventView(eventId, event.data()!) : null };
     },
     getOperationStatus: async (actor: Actor | null, raw: unknown) => {
-      const { operationKind, operationId } = z.object({ operationKind: z.enum(['register', 'cancel', 'daily', 'redeem', 'verify-ticket', 'verify-walkin', 'verify-voucher']), operationId: z.string().min(1).max(128) }).strict().parse(raw), uid = authenticated(actor);
+      const { operationKind, operationId } = z.object({ operationKind: z.enum(['register', 'cancel', 'daily', 'redeem', 'verify-ticket', 'verify-walkin', 'verify-voucher', 'milestone']), operationId: z.string().min(1).max(128) }).strict().parse(raw), uid = authenticated(actor);
       const receipt = required((await db.doc(`operation_receipts/${key(uid, operationKind, operationId)}`).get()).data(), 'NOT_FOUND');
       if (operationKind === 'verify-ticket') await db.runTransaction(tx => staff(tx, db, actor, receipt.result.eventId, 'verify_ticket'));
       if (operationKind === 'verify-voucher') await db.runTransaction(tx => voucherAdmin(tx, db, actor));

@@ -1,5 +1,16 @@
 # Backend release — 04/11/2026
 
+> **Release tiếp sau review 05/11/2026:** 41 Functions ACTIVE cùng hash, 41 Cloud
+> Run latest revisions READY; FPT guard/manual code/event notifications đã deploy.
+> [Contract/release mới](PREINTEGRATION_DECISIONS.md),
+> [cloud evidence](../evidence/preintegration/cloud-verification.json).
+> 51/51 backend và 149/149 Flutter tests đạt; mobile integration vẫn pending.
+
+> **Release bổ sung 05/11/2026:** Event Milestones thêm 3 callables, cập nhật
+> getOperationStatus, Firestore Rules/index, publish 5 policies và 2 Remote Config
+> keys. [Contract/evidence mới](EVENT_MILESTONES.md). Phần dưới giữ nguyên
+> evidence release 34 Functions ngày 04/11; không phải số lượng hiện tại.
+
 Trạng thái: **deploy và cloud checks đã xác minh đạt**; docs/evidence đã push và xác minh remote tại commit `a76de1f`. Project `prm393-31822`, region `asia-southeast1`, nhánh `KietDM/feat/backend`.
 
 ## Phạm vi và authorization

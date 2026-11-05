@@ -1,0 +1,176 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart
+00:00 +0: D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart: public foundation remains accessible before authentication
+00:00 +1: D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart: unknown, unavailable and signed-out sessions cannot enter private UI
+00:00 +2: D:/project/prm323-lab3/prm323-lab3-camply/test/app/authentication_guard_test.dart: authenticated session can enter a protected route
+00:00 +3: D:/project/prm323-lab3/prm323-lab3-camply/test/core/exception_mapper_test.dart: unexpected errors do not expose implementation details
+00:00 +4: D:/project/prm323-lab3/prm323-lab3-camply/test/core/exception_mapper_test.dart: timeout gives an actionable message
+00:00 +5: D:/project/prm323-lab3/prm323-lab3-camply/test/services/demo_authentication_service_test.dart: default adapter remains unavailable without demo flag
+00:00 +6: D:/project/prm323-lab3/prm323-lab3-camply/test/services/firebase_preparation_test.dart: disabled initialization works without any native Firebase plugin
+00:00 +7: D:/project/prm323-lab3/prm323-lab3-camply/test/services/demo_authentication_service_test.dart: rejects wrong credentials, signs in and signs out through ViewModels
+00:00 +8: D:/project/prm323-lab3/prm323-lab3-camply/test/services/demo_authentication_service_test.dart: rejects wrong credentials, signs in and signs out through ViewModels
+00:00 +9: D:/project/prm323-lab3/prm323-lab3-camply/test/services/demo_authentication_service_test.dart: new listeners see current session; unsupported auth stays unavailable
+00:00 +10: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: preview money never changes from check-in or redemption without API
+00:00 +11: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: event deposits cannot be held locally
+00:00 +12: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: date, past tab and cancellation change event presentation only
+00:00 +13: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: calendar draft waits for Apply and handles year boundaries
+00:00 +14: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/activity_view_model_test.dart: preview search and history filters still work
+00:00 +15: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: loading becomes empty when Firebase is not configured
+00:00 +16: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: configured Firebase becomes data
+00:00 +17: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: safe error is preserved and retry can recover
+00:00 +18: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: concurrent refresh does not start a duplicate initialization
+00:00 +19: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/bootstrap_view_model_test.dart: completion after disposal does not update disposed state
+00:00 +20: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/demo_preview_test.dart: registration holds deposit once, cancellation forfeits once, re-register holds a new deposit
+00:00 +21: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/demo_preview_test.dart: check-in and daily reward never award twice; attendance appears in past events
+00:00 +22: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: date, time and custom range filter known event metadata
+00:00 +23: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: date, time and custom range filter known event metadata
+00:00 +24: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: date, time and custom range filter known event metadata
+00:00 +25: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: search, category and participation filters combine; reset restores results
+00:01 +26: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/evia_view_model_test.dart: search history deduplicates and bookmark/follow state is shared
+00:01 +27: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart: pagination continues after an empty filtered page; nullable capacity remains unlimited
+00:01 +28: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart: repeated cursor fails instead of looping indefinitely
+00:01 +29: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart: date range is inclusive by Vietnam day and filters use server keys
+00:01 +30: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart: follow blocks duplicate taps and changes only after server success
+00:01 +31: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +32: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +33: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +34: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +35: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +36: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +37: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +38: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/guest_access_test.dart: guest actions cannot mutate account collections or money
+00:01 +39: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow1_view_model_test.dart: switching accounts clears uncertain requests and ignores late actions from the old UID
+00:01 +40: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: milestone claim waits for the server, rejects double taps and uses the server wallet
+00:01 +41: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: unavailable backend cannot finish onboarding or claim milestone money
+00:01 +42: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: cancelling forfeits the held deposit without crediting available coins
+00:01 +43: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: daily policy, Cafe price and available filters match confirmed scope
+00:01 +44: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/preintegration_policy_test.dart: registration accepts FPT identity and rejects other school domains
+00:01 +45: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: validation rejects invalid identity and terms without moving wallet
+00:01 +46: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/registration_view_model_test.dart: registration requiring a coin deposit waits for API without changing preview wallet
+00:01 +47: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +48: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +49: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +50: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +51: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +52: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +53: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +54: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: required fields, email, confirmation and terms block submission
+00:01 +55: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: password length comes from the adapter, not an invented default
+00:01 +56: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: one request, trimmed identity, and wait for the real session
+00:01 +57: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: email conflicts are inline and edits clear that error
+00:01 +58: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: verification stays on the form rather than claiming signed in
+00:01 +59: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/sign_up_view_model_test.dart: Google requires terms but does not require manual password fields
+00:01 +60: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: waits for initialization even when signed out
+00:01 +61: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: waits for initialization even when signed out
+00:01 +62: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: waits for initialization even when signed out
+00:01 +63: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: unavailable and signed-out sessions go to Welcome
+00:01 +64: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: signed-in routing uses profile flag, not mock interests
+00:01 +65: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: onboarding waits for the server and blocks duplicate saves
+00:01 +66: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: initialization failure opens existing retry screen
+00:01 +67: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/startup_view_model_test.dart: waits for auth and does not reuse another users completion
+00:02 +68: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: (setUpAll)
+00:02 +68: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:04 +69: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:04 +70: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:04 +71: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:04 +72: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:04 +73: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:05 +74: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:05 +75: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:05 +76: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:05 +77: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-empty fits phone widths and scaled text
+00:05 +78: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:05 +79: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +80: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +81: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +82: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +83: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +84: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +85: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:06 +86: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:07 +87: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:07 +88: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 1.0x text
+00:07 +89: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +90: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +91: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +92: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +93: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +94: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:07 +95: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/legacy-error fits phone widths and scaled text
+00:08 +96: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:08 +97: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:08 +98: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:08 +99: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:08 +100: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:08 +101: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:09 +102: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:09 +103: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: Sign Up fits 360.0x640.0 text 1.0
+00:09 +104: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text
+00:09 +105: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 1.0x text
+00:09 +106: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/splash_screen_test.dart: assembled original artwork is centered at phone widths without extra text
+00:09 +107: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/splash_screen_test.dart: assembled original artwork is centered at phone widths without extra text
+00:09 +108: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/splash_screen_test.dart: assembled original artwork is centered at phone widths without extra text
+00:09 +109: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/splash_screen_test.dart: assembled original artwork is centered at phone widths without extra text
+00:09 +110: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/welcome_screen_test.dart: Welcome fits 390.0x844.0 text 1.0
+00:10 +111: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +112: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +113: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +114: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +115: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +116: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:10 +117: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/past-all fits phone widths and scaled text
+00:11 +118: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+00:11 +119: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+00:11 +120: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+00:11 +121: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+00:11 +122: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 360.0dp at 2.0x text
+00:11 +123: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: inline errors, password toggles and unavailable adapter do not navigate
+00:11 +124: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/welcome_screen_test.dart: Get Started opens /signup
+00:11 +125: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:11 +126: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:12 +127: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:12 +128: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:12 +129: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:12 +130: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/selected fits phone widths and scaled text
+00:12 +131: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+00:12 +132: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+00:13 +133: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+00:13 +134: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+00:13 +135: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/evia_screens_test.dart: all nine screens fit 412.0dp at 2.0x text
+00:13 +136: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/error fits phone widths and scaled text
+00:13 +137: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: creation waits for observed auth, then personalization true
+00:13 +138: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: creation waits for observed auth, then personalization true
+00:13 +139: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: creation waits for observed auth, then personalization true
+00:13 +140: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: creation waits for observed auth, then personalization true
+00:14 +141: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/sign_up_screen_test.dart: creation waits for observed auth, then personalization true
+00:14 +142: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:14 +143: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:14 +144: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:14 +145: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:14 +146: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/calendar fits phone widths and scaled text
+00:14 +147: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/going fits phone widths and scaled text
+00:15 +148: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /my-events/check-in fits phone widths and scaled text
+00:15 +149: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/full fits phone widths and scaled text
+00:15 +150: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/locker fits phone widths and scaled text
+00:15 +151: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/loading fits phone widths and scaled text
+00:15 +152: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/loading fits phone widths and scaled text
+00:15 +153: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards fits phone widths and scaled text
+00:16 +154: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /registration/failed fits phone widths and scaled text
+00:16 +155: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/success fits phone widths and scaled text
+00:16 +156: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/success fits phone widths and scaled text
+00:16 +157: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile fits phone widths and scaled text
+00:16 +158: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/confirm fits phone widths and scaled text
+00:16 +159: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/interests fits phone widths and scaled text
+00:17 +160: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/interests fits phone widths and scaled text
+00:17 +161: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: /rewards/voucher fits phone widths and scaled text
+00:17 +162: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/saved fits phone widths and scaled text
+00:17 +163: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/saved fits phone widths and scaled text
+00:17 +164: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: /profile/saved fits phone widths and scaled text
+00:17 +165: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: cancel confirmation changes registrations only after confirmation
+00:18 +166: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/activity_screens_test.dart: cancel confirmation changes registrations only after confirmation
+00:18 +167: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: registration does not hold preview coins while API is unavailable
+00:18 +168: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: registration does not hold preview coins while API is unavailable
+00:18 +169: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: registration does not hold preview coins while API is unavailable
+00:18 +170: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: saving a form correction removes its validation error
+00:18 +171: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: mark all read updates notification badges without deleting notices
+00:18 +172: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/registration_screens_test.dart: (tearDownAll)
+00:18 +172: All tests passed!

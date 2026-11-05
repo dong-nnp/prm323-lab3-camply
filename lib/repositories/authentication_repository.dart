@@ -3,7 +3,8 @@ import '../models/account_creation_result.dart';
 import '../services/authentication_service.dart';
 
 final class AuthenticationRepository {
-  const AuthenticationRepository(this._service);
+  const AuthenticationRepository(this._service, {this.beforeSignOut});
+  final Future<void> Function()? beforeSignOut;
 
   final AuthenticationService _service;
 
@@ -21,6 +22,12 @@ final class AuthenticationRepository {
   );
 
   Stream<AuthSession> watchSession() => _service.watchSession();
+  Future<void> signInWithEmailPassword(String email, String password) =>
+      _service.signInWithEmailPassword(email, password);
   Future<void> signInWithGoogle() => _service.signInWithGoogle();
-  Future<void> signOut() => _service.signOut();
+  Future<void> resetPassword(String email) => _service.resetPassword(email);
+  Future<void> signOut() async {
+    await beforeSignOut?.call();
+    await _service.signOut();
+  }
 }

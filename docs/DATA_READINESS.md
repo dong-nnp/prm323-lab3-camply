@@ -1,5 +1,22 @@
 # Chuẩn bị dữ liệu thật và nhập catalog
 
+> **Cập nhật theo yêu cầu trực tiếp 05/11/2026:** owner yêu cầu tự generate và
+> thêm database để sửa sau. Đã tạo 32 catalog records demo (10 sở thích, 5 CLB,
+> 12 sự kiện, 5 quà) và hai Auth operators có quyền app. Café demo giá 200,
+> stock/validity/địa điểm/terms giả lập có nhãn rõ. [DEMO_DATA.md](DEMO_DATA.md)
+> ghi exact scope/evidence/cách sửa; các ghi chú chưa seed bên dưới là lịch sử.
+> Dataset thật và quyền sử dụng thương mại vẫn chưa được xác nhận.
+
+> **Sau review 05/11/2026:** owner chưa có stock/nhà tài trợ/địa điểm/validity/
+> terms cho Café; chỉ chuẩn bị giá 200, **không tạo reward record cloud**.
+> Dữ liệu sở thích/CLB/sự kiện/quà vẫn chờ duyệt, không lấy Figma làm dữ liệu thật.
+> Nhập danh mục sở thích active là điều kiện để hoàn thành onboarding FPT.
+
+> **05/11/2026:** năm definitions thành tựu trong
+> [event-milestones.json](../firebase/event-milestones.json) đã được owner chốt
+> và publish như policy thật. Không seed users/attendance/coins. Nguồn dữ liệu
+> sự kiện/CLB/sở thích/phần thưởng bên dưới vẫn cần chuẩn bị riêng.
+
 Ngày 04/11/2026. Chủ dự án xác nhận **chưa có nguồn dữ liệu thật**. Không có seed production, không dùng nội dung Figma làm dữ liệu thật. Checklist dưới đây chuẩn bị để nhập khi dữ liệu được duyệt; không đánh dấu hoàn thành catalog.
 
 ## Hồ sơ cần thu thập

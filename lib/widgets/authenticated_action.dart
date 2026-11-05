@@ -15,6 +15,11 @@ bool ensureAuthenticated(BuildContext context, WidgetRef ref) {
   if (redirect == null && ref.read(hasAuthenticatedSessionProvider)) {
     return true;
   }
-  context.push(redirect ?? AppRoutes.login);
+  context.push(
+    Uri(
+      path: redirect ?? AppRoutes.login,
+      queryParameters: {'from': GoRouterState.of(context).uri.toString()},
+    ).toString(),
+  );
   return false;
 }

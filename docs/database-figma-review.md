@@ -1,5 +1,9 @@
 # Evia — đối chiếu Figma với database
 
+> **Quyết định mới 05/11/2026:** owner đã khôi phục Event Milestones, manual
+> claim 1/3/5/10/20 → 50/100/150/300/500 xu. [Contract hiện tại](EVENT_MILESTONES.md)
+> thay thế các kết luận bỏ FD-03/milestones trong bản review lịch sử bên dưới.
+
 Ngày kiểm tra: **04/11/2026**. Đây là cập nhật thiết kế dữ liệu, chưa phải code,
 migration, seed hoặc triển khai schema lên Firebase.
 
@@ -80,7 +84,7 @@ Các tên dưới đây rút gọn; tên gốc và text đầy đủ có trong e
 | `2083:2170` | Past selected date | Attendance state/gate/awarded coins thật; không có feedback bonus |
 | `2083:2345` | My Ticket | Attendee snapshot/student ID/ticket number; không seat/tier fields; QR không dùng display ID làm secret |
 | `2083:2481` | Monthly calendar | Local date selection/markers; đổi thành UTC range theo event timezone |
-| `2083:2795` | Cancel confirmation | Revoke ticket + forfeiture theo quyết định đã chốt; không tự triển khai assigned seats |
+| `2083:2795` | Cancel confirmation | Revoke ticket + hoàn 30% cọc làm tròn xuống theo quyết định mới; không tự triển khai assigned seats |
 | `2083:2931` | All past | Event time và verified check-in; past không đồng nghĩa attended; không có seasonal targets |
 | `2083:3108` | Upcoming selected date | Canonical event start/end, references hợp nhất và đúng số lượng |
 | `2089:154` | Profile | Private profile fields, bookmark/follow/inbox references và logout cleanup |

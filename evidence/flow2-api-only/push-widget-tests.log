@@ -1,0 +1,9 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/push_notifications_view_model_test.dart
+00:00 +0: D:/project/prm323-lab3/prm323-lab3-camply/test/services/push_notification_repository_test.dart: permission denial does not register a device
+00:00 +1: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/push_notifications_view_model_test.dart: FCM restore does not prompt or loop; explicit permission reinitializes listeners once
+00:00 +2: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/push_notifications_view_model_test.dart: FCM restore does not prompt or loop; explicit permission reinitializes listeners once
+00:00 +3: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/push_notifications_view_model_test.dart: FCM restore does not prompt or loop; explicit permission reinitializes listeners once
+00:00 +4: D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/push_notifications_view_model_test.dart: FCM startup failure is reported and can recover on Notifications retry
+00:05 +5: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart: ticket demo button waits for server and replaces QR with confirmed state
+00:24 +6: D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart: notifications render server data and mark-read action without mock notices
+00:32 +7: All tests passed!

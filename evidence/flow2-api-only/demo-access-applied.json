@@ -1,0 +1,16 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T13:31:28.106Z",
+  "checks": [
+    {
+      "uid": "evia-demo-staff-v1",
+      "enabled": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "uid": "evia-demo-admin-v1",
+      "enabled": true,
+      "otherFieldsUnchanged": true
+    }
+  ]
+}

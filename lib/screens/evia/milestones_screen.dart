@@ -17,9 +17,7 @@ class EventMilestonesScreen extends ConsumerWidget {
   const EventMilestonesScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(
-      activityViewModelProvider.select((s) => s.verified.length),
-    );
+    final count = ref.watch(activityViewModelProvider).verified.length;
     final vm = ref.read(activityViewModelProvider.notifier);
     return EviaPage(
       header: const ActivityHeader(
@@ -161,14 +159,14 @@ class EventMilestonesScreen extends ConsumerWidget {
   }
 }
 
-class _MilestoneRow extends StatelessWidget {
+class _MilestoneRow extends ConsumerWidget {
   const _MilestoneRow({required this.progress, required this.last});
   final MilestoneProgress progress;
   final bool last;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final milestone = progress.milestone;
-    final claimed = progress.reached;
+    final claimed = progress.claimed;
     final next = progress.next;
     return IntrinsicHeight(
       child: Row(
@@ -279,11 +277,39 @@ class _MilestoneRow extends StatelessWidget {
                         ActivityIcon('2083:4156', 'imgContainer3'),
                         SizedBox(width: AppSpacing.xs),
                         Text(
-                          'Reached',
+                          'Claimed',
                           style: TextStyle(color: AppColors.success),
                         ),
                       ],
                     ),
+                  if (!claimed)
+                    Text(
+                      progress.reached ? 'Ready to claim' : 'Not reached',
+                      style: EviaTheme.caption,
+                    ),
+                  if (progress.reached && !claimed) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    AppButton(
+                      label: progress.claiming ? 'Claiming…' : 'Claim reward',
+                      isLoading: progress.claiming,
+                      onPressed: progress.canClaim
+                          ? () async {
+                              await ref
+                                  .read(activityViewModelProvider.notifier)
+                                  .claimMilestone(milestone.id);
+                              if (!context.mounted) return;
+                              final message = ref
+                                  .read(activityViewModelProvider)
+                                  .message;
+                              if (message != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(message)),
+                                );
+                              }
+                            }
+                          : null,
+                    ),
+                  ],
                   if (next) const EventBadge('NEXT GOAL'),
                   const SizedBox(height: AppSpacing.xs),
                   Text(

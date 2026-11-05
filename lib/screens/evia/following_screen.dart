@@ -17,6 +17,7 @@ class EviaFollowingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(eviaViewModelProvider);
+    final vm = ref.read(eviaViewModelProvider.notifier);
     return EviaPage(
       header: EviaHeader(
         title: organizers ? 'Followed Organizers' : 'Following',
@@ -111,12 +112,18 @@ class EviaFollowingScreen extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    for (final name in [
-                      'All',
-                      'Student Union',
-                      'Photography Club',
-                      'Robotics Society',
-                    ])
+                    for (final name
+                        in (vm.live
+                            ? [
+                                'All',
+                                ...vm.followedOrganizers.map((o) => o.name),
+                              ]
+                            : [
+                                'All',
+                                'Student Union',
+                                'Photography Club',
+                                'Robotics Society',
+                              ]))
                       Padding(
                         padding: const EdgeInsets.only(right: AppSpacing.sm),
                         child: EviaPill(
@@ -139,19 +146,25 @@ class EviaFollowingScreen extends ConsumerWidget {
                   const Expanded(
                     child: Text('Upcoming Events', style: EviaTheme.section),
                   ),
-                  TextButton(
-                    onPressed: ref
-                        .read(eviaViewModelProvider.notifier)
-                        .toggleSort,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          state.descending ? 'Date: Latest' : 'Date: Soonest',
-                          style: EviaTheme.caption,
-                        ),
-                        const FigmaIcon('2083:1582', 'imgContainer1'),
-                      ],
+                  Flexible(
+                    child: TextButton(
+                      onPressed: ref
+                          .read(eviaViewModelProvider.notifier)
+                          .toggleSort,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              state.descending
+                                  ? 'Date: Latest'
+                                  : 'Date: Soonest',
+                              style: EviaTheme.caption,
+                            ),
+                          ),
+                          const FigmaIcon('2083:1582', 'imgContainer1'),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -194,7 +207,10 @@ class EviaFollowingScreen extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      for (final organizer in EviaMockData.recommendations)
+                      for (final organizer
+                          in (vm.live
+                              ? vm.suggestedOrganizers
+                              : EviaMockData.recommendations))
                         Padding(
                           padding: const EdgeInsets.only(right: AppSpacing.md),
                           child: SizedBox(
@@ -344,9 +360,11 @@ class _FollowingEvent extends StatelessWidget {
                 children: [
                   const CoinIcon(),
                   const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '+${event.coins} coins',
-                    style: EviaTheme.label.copyWith(color: EviaTheme.gold),
+                  Expanded(
+                    child: Text(
+                      '+${event.coins} coins',
+                      style: EviaTheme.label.copyWith(color: EviaTheme.gold),
+                    ),
                   ),
                 ],
               ),
@@ -382,7 +400,7 @@ class _OrganizerCard extends ConsumerWidget {
           else
             const Icon(Icons.add),
           const SizedBox(width: AppSpacing.xs),
-          Text(followed ? 'Following' : 'Follow'),
+          Flexible(child: Text(followed ? 'Following' : 'Follow')),
         ],
       ),
     );

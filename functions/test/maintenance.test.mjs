@@ -12,7 +12,7 @@ const app = initializeApp({ projectId: 'demo-evia-backend' }, 'maintenance-tests
 const db = getFirestore(app);
 let now = new Date('2026-11-04T03:00:00Z');
 const api = createBackend(db, () => now), jobs = createMaintenance(db, () => now);
-const alice = { uid: 'test-monthly-alice', token: {} };
+const alice = { uid: 'test-monthly-alice', token: { email: 'monthly@fpt.edu.vn' } };
 beforeEach(async () => {
   const response = await fetch(`http://${process.env.FIRESTORE_EMULATOR_HOST}/emulator/v1/projects/demo-evia-backend/databases/(default)/documents`, { method: 'DELETE' });
   assert.equal(response.status, 200);
@@ -24,7 +24,7 @@ after(() => deleteApp(app));
 test('monthly job grants all initialized accounts once per Vietnam month, even before onboarding', async () => {
   const scheduled = new Date('2026-11-30T17:00:00Z');
   now = new Date('2026-12-02T03:00:00Z');
-  await api.invoke('initializeUser', { uid: 'test-after-cutoff', token: {} }, {});
+  await api.invoke('initializeUser', { uid: 'test-after-cutoff', token: { email: 'aftercutoff@fpt.edu.vn' } }, {});
   const results = await Promise.all([jobs.grantMonthly(scheduled), jobs.grantMonthly(scheduled)]);
   assert.equal(results.reduce((n, r) => n + r.grantedCount, 0), 1);
   assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 400);

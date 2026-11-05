@@ -14,7 +14,7 @@ assert.equal(process.env.GCLOUD_PROJECT, projectId, 'Tests must never target a l
 const app = initializeApp({ projectId }, 'backend-tests'), db = getFirestore(app);
 let now = new Date('2026-11-04T03:00:00Z');
 const api = createBackend(db, () => now);
-const alice = { uid: 'test-alice', token: {} }, bob = { uid: 'test-bob', token: {} }, operator = { uid: 'test-staff', token: { staff: true } };
+const alice = { uid: 'test-alice', token: { email: 'alice@gmail.com' } }, bob = { uid: 'test-bob', token: { email: 'bob@outlook.com' } }, operator = { uid: 'test-staff', token: { staff: true, email: 'staff@yahoo.com' } };
 const firestoreUrl = `http://${process.env.FIRESTORE_EMULATOR_HOST}/v1/projects/${projectId}/databases/(default)/documents`;
 async function tokenFor(actor) {
   const token = await getAuth(app).createCustomToken(actor.uid);
@@ -29,7 +29,7 @@ const rejects = async (promise, code) => assert.rejects(promise, e => e.details?
 async function event(eventId = 'registered', overrides = {}) {
   await db.doc(`events/${eventId}`).set({ title: 'Test event fixture', organizerId: 'test-club', category: 'technology', tags: ['technology'], status: 'published', visibility: 'public', participationMode: 'registration', audience: { scope: 'everyone' }, startAt: Timestamp.fromDate(new Date('2026-11-05T03:00:00Z')), endAt: Timestamp.fromDate(new Date('2026-11-05T05:00:00Z')), checkInStartAt: Timestamp.fromDate(new Date('2026-11-04T02:00:00Z')), checkInEndAt: Timestamp.fromDate(new Date('2026-11-04T05:00:00Z')), timezone: 'Asia/Ho_Chi_Minh', capacity: 1, registeredCount: 0, depositCoins: 50, attendanceRewardCoins: 100, registrationTerms: { version: 'v1', text: 'Emulator test only' }, ...overrides });
 }
-const registration = (requestId = 'register-0001', eventId = 'registered') => ({ eventId, requestId, expectedDepositCoins: 50, acceptedTermsVersion: 'v1', attendeeInput: { fullName: 'Test Student', studentId: 'TEST-01', universityEmail: 'student@example.test' } });
+const registration = (requestId = 'register-0001', eventId = 'registered') => ({ eventId, requestId, expectedDepositCoins: 50, acceptedTermsVersion: 'v1', attendeeInput: { fullName: 'Test Student', studentId: 'SE123456', universityEmail: 'student@gmail.com' } });
 async function reward(overrides = {}) {
   await db.doc('rewards/cafe').set({ title: 'Test reward fixture', status: 'active', priceCoins: 200, stockRemaining: 1, termsVersion: 'v1', termsText: 'Test terms', validDays: 30, usageLocations: ['Test location'], redemptionSteps: ['Test step'], fulfillmentType: 'voucher', ...overrides });
 }
@@ -46,6 +46,103 @@ beforeEach(async () => {
   await event();
 });
 after(async () => { await deleteApp(app); });
+
+test('demo attendance requires server flags, settles once, and cannot bypass real staff APIs', async () => {
+  const input = { eventId: 'registered', requestId: 'demo-attend-0001' };
+  await rejects(call('demoConfirmAttendance', alice, input), 'DEMO_NOT_ALLOWED');
+  await db.doc(`users/${alice.uid}`).update({ isDemo: true, demoAttendanceEnabled: true });
+  await rejects(call('demoConfirmAttendance', alice, input), 'DEMO_NOT_ALLOWED');
+  await db.doc('events/registered').update({ isDemo: true });
+  await rejects(call('demoConfirmAttendance', alice, input), 'NOT_REGISTERED');
+  await call('registerForEvent', alice, registration());
+  const results = await Promise.all([call('demoConfirmAttendance', alice, input), call('demoConfirmAttendance', alice, input)]);
+  assert.deepEqual(results[0], results[1]);
+  assert.equal(results[0].wallet.availableCoins, 300);
+  assert.equal(results[0].wallet.heldCoins, 0);
+  assert.equal(results[0].isDemo, true);
+  assert.equal((await db.doc(`attendance/${key(alice.uid, 'registered')}`).get()).get('verificationMethod'), 'debug_demo_button');
+  assert.equal((await db.doc(`registrations/${key(alice.uid, 'registered')}`).get()).get('state'), 'attended');
+  await rejects(call('demoConfirmAttendance', alice, { ...input, requestId: 'demo-attend-0002' }), 'ALREADY_CHECKED_IN');
+  await rejects(call('demoConfirmAttendance', bob, input), 'DEMO_NOT_ALLOWED');
+  await db.doc(`users/${alice.uid}`).update({ demoAttendanceEnabled: false });
+  await rejects(call('demoConfirmAttendance', alice, input), 'DEMO_NOT_ALLOWED');
+  await rejects(call('verifyRegisteredCode', alice, { code: 'ABCD-EFGH', requestId: 'not-staff-0001' }), 'FORBIDDEN_STAFF');
+  const token = await tokenFor(alice);
+  await status(fetch(`${firestoreUrl}/users/${alice.uid}?updateMask.fieldPaths=demoAttendanceEnabled`, {
+    method: 'PATCH', headers: headersFor(token), body: JSON.stringify({ fields: { demoAttendanceEnabled: { booleanValue: true } } }),
+  }), 403);
+});
+
+test('demo walk-in bypasses time only on marked demo data and cannot consume a cancelled ticket', async () => {
+  await db.doc(`users/${alice.uid}`).update({ isDemo: true, demoAttendanceEnabled: true });
+  await event('demo-walk', { isDemo: true, participationMode: 'walk_in', depositCoins: 0, capacity: null,
+    checkInEndAt: Timestamp.fromDate(new Date('2020-01-01T00:00:00Z')) });
+  const walk = await call('demoConfirmAttendance', alice, { eventId: 'demo-walk', requestId: 'demo-walk-0001' });
+  assert.equal(walk.wallet.availableCoins, 300);
+  await db.doc('events/registered').update({ isDemo: true });
+  await call('registerForEvent', alice, registration());
+  await call('cancelRegistration', alice, { eventId: 'registered', requestId: 'cancel-demo-0001' });
+  await rejects(call('demoConfirmAttendance', alice, { eventId: 'registered', requestId: 'cancelled-demo-01' }), 'NO_ACTIVE_TICKET');
+});
+
+test('any valid email domain can initialize, edit profile and register while identity syntax stays validated', async () => {
+  const newcomer = { uid: 'gmail-user', token: { email: ' Person@Gmail.COM ' } };
+  const initialized = await call('initializeUser', newcomer);
+  assert.equal(initialized.profile.universityEmail, 'person@gmail.com');
+  assert.equal(initialized.wallet.availableCoins, 200);
+  await call('saveInterests', newcomer, { interests: ['technology', 'music', 'arts'] });
+  await call('updateProfile', newcomer, { studentId: ' se123456 ', universityEmail: ' Person@Outlook.COM ' });
+  assert.equal((await db.doc('users/gmail-user').get()).get('universityEmail'), 'person@outlook.com');
+  const registered = await call('registerForEvent', newcomer, { ...registration('any-email-register'), attendeeInput: { ...registration().attendeeInput, universityEmail: 'person+event@custom-domain.org' } });
+  assert.equal((await db.doc(`registrations/${registered.registrationId}`).get()).get('attendeeSnapshot').universityEmail, 'person+event@custom-domain.org');
+  await rejects(call('initializeUser', { uid: 'invalid-email', token: { email: 'invalid' } }), 'EMAIL_REQUIRED');
+  assert.equal((await db.doc('wallets/invalid-email').get()).exists, false);
+  await rejects(call('updateProfile', alice, { studentId: 'STU-123456' }), 'VALIDATION_FAILED');
+  await rejects(call('updateProfile', alice, { universityEmail: 'invalid@' }), 'VALIDATION_FAILED');
+  await rejects(call('registerForEvent', bob, { ...registration('invalid-email-register'), attendeeInput: { ...registration().attendeeInput, universityEmail: 'a@@gmail.com' } }), 'VALIDATION_FAILED');
+  await rejects(call('initializeUser', null), 'UNAUTHENTICATED');
+});
+
+test('manual walk-in code shares QR attendance protection, expiry and retry receipts', async () => {
+  await event('walk-code', { participationMode: 'walk_in', depositCoins: 0, capacity: null });
+  await db.doc(`staff_assignments/${key(operator.uid, 'walk-code')}`).set({ staffUid: operator.uid, eventId: 'walk-code', active: true, permissions: ['issue_walk_in'] });
+  const issued = await call('issueWalkInQr', operator, { eventId: 'walk-code' });
+  assert.match(issued.manualCode, /^[A-Z2-9]{4}-[A-Z2-9]{4}$/);
+  await rejects(call('verifyWalkInCode', alice, { code: issued.manualCode, expectedEventId: 'another-event', requestId: 'wrong-code-event' }), 'QR_EVENT_MISMATCH');
+  await rejects(call('verifyWalkInQr', alice, { qrPayload: issued.qrPayload, expectedEventId: 'another-event', requestId: 'wrong-qr-event' }), 'QR_EVENT_MISMATCH');
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 200);
+  const input = { code: issued.manualCode.toLowerCase(), requestId: 'manual-walk-001' };
+  await Promise.all([call('verifyWalkInCode', alice, input), call('verifyWalkInCode', alice, input)]);
+  for (let i = 0; i < 7; i++) assert.equal((await call('verifyWalkInCode', alice, input)).coinsGranted, 100);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 300);
+  await rejects(call('verifyWalkInQr', alice, { qrPayload: issued.qrPayload, requestId: 'manual-then-qr' }), 'ALREADY_CHECKED_IN');
+  now = new Date(now.getTime() + 61_000);
+  await rejects(call('verifyWalkInCode', bob, { code: issued.manualCode, requestId: 'manual-expired' }), 'CODE_EXPIRED');
+  assert.equal((await call('getEventMilestones')).verifiedEventCount, 1);
+});
+
+test('manual registered code requires event-scoped staff and cannot become a student self-check-in', async () => {
+  await call('registerForEvent', alice, registration('manual-register'));
+  const issued = await call('getTicketQr', alice, { eventId: 'registered' });
+  const input = { code: issued.manualCode, requestId: 'manual-ticket-001' };
+  await rejects(call('verifyRegisteredCode', bob, input), 'FORBIDDEN_STAFF');
+  await rejects(call('verifyRegisteredCode', operator, input), 'FORBIDDEN_STAFF');
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
+  const done = await call('verifyRegisteredCode', operator, input);
+  assert.equal(done.depositRefunded, 50); assert.equal(done.coinsGranted, 100);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 300);
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).update({ active: false });
+  await rejects(call('verifyRegisteredCode', operator, input), 'FORBIDDEN_STAFF');
+});
+
+test('manual code guessing is limited per authenticated account across process restarts', async () => {
+  const input = { code: '2222-2222', requestId: 'manual-guess-001' };
+  for (let i = 0; i < 5; i++) await rejects(call('verifyWalkInCode', bob, input), 'CODE_INVALID');
+  await rejects(createBackend(db, () => now).invoke('verifyWalkInCode', bob, input), 'CODE_RATE_LIMITED');
+  now = new Date(now.getTime() + 60_000);
+  await rejects(call('verifyWalkInCode', bob, input), 'CODE_INVALID');
+  assert.equal((await db.doc(`wallets/${bob.uid}`).get()).get('availableCoins'), 200);
+});
 
 test('signup bonus is once per UID and interests cannot be forged/duplicated', async () => {
   await Promise.all(Array.from({ length: 5 }, () => call('initializeUser')));
@@ -66,19 +163,63 @@ test('last seat race has one winner, full event has no monetary side effects', a
   const wallets = await db.collection('wallets').get();
   assert.equal(wallets.docs.reduce((s, d) => s + d.get('heldCoins'), 0), 50);
 });
-test('cancel forfeits once and opens exactly one place to another user', async () => {
+test('cancel refunds 30 percent once and opens exactly one place to another user', async () => {
   const registered = await call('registerForEvent', alice, registration());
   assert.equal((await call('registerForEvent', alice, registration())).ticketId, registered.ticketId);
   const input = { eventId: 'registered', requestId: 'cancel-00001' };
-  await Promise.all([call('cancelRegistration', alice, input), call('cancelRegistration', alice, input)]);
-  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 150);
+  const results = await Promise.all([call('cancelRegistration', alice, input), call('cancelRegistration', alice, input)]);
+  assert.deepEqual(results[0], results[1]);
+  assert.equal(results[0].depositRefunded, 15);
+  assert.equal(results[0].depositForfeited, 35);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 165);
   assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('heldCoins'), 0);
   assert.equal((await db.doc('events/registered').get()).get('registeredCount'), 0);
   assert.equal((await db.doc(`tickets/${registered.ticketId}`).get()).get('status'), 'revoked');
+  const reg = (await db.doc(`registrations/${registered.registrationId}`).get()).data();
+  assert.equal(reg.depositSettlement, 'partially_refunded');
+  assert.equal(reg.cancellationRefundCoins, 15);
+  assert.equal(reg.cancellationForfeitedCoins, 35);
+  const ledger = await db.collection(`wallets/${alice.uid}/ledger`).where('type', '==', 'deposit_partial_refund').get();
+  assert.equal(ledger.size, 1);
+  assert.equal(ledger.docs[0].get('deltaAvailable'), 15);
+  assert.equal(ledger.docs[0].get('deltaHeld'), -50);
   await call('registerForEvent', bob, registration('bob-reopen-1'));
   await rejects(call('cancelRegistration', alice, { ...input, requestId: 'cancel-00002' }), 'ALREADY_CANCELLED');
   assert.equal((await db.doc('events/registered').get()).get('registeredCount'), 1);
 });
+test('cancellation rounds down, uses the original held deposit and never grants attendance', async () => {
+  for (const deposit of [0, 1, 3, 4, 55, 199]) {
+    const eventId = `cancel-deposit-${deposit}`;
+    await event(eventId, { depositCoins: deposit });
+    await db.doc(`wallets/${alice.uid}`).update({ availableCoins: 1000, heldCoins: 0 });
+    const reg = await call('registerForEvent', alice, { ...registration(`hold-${deposit}-0001`, eventId), expectedDepositCoins: deposit });
+    await db.doc(`events/${eventId}`).update({ depositCoins: 999 });
+    const cancelled = await call('cancelRegistration', alice, { eventId, requestId: `cancel-${deposit}-001` });
+    assert.equal(cancelled.depositRefunded, Math.floor(deposit * 3 / 10));
+    assert.equal(cancelled.depositForfeited, deposit - Math.floor(deposit * 3 / 10));
+    assert.equal(cancelled.wallet.availableCoins, 1000 - deposit + Math.floor(deposit * 3 / 10));
+    assert.equal(cancelled.wallet.heldCoins, 0);
+    assert.equal((await db.doc(`registrations/${reg.registrationId}`).get()).get('depositSettlement'), deposit ? 'partially_refunded' : 'none');
+    assert.equal((await db.doc(`attendance/${key(alice.uid, eventId)}`).get()).exists, false);
+  }
+});
+
+test('cancellation racing check-in settles the deposit by exactly one path', async () => {
+  const registered = await call('registerForEvent', alice, registration('race-cancel-hold'));
+  const qr = await call('getTicketQr', alice, { eventId: 'registered' });
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
+  const results = await Promise.allSettled([
+    call('cancelRegistration', alice, { eventId: 'registered', requestId: 'race-cancel-0001' }),
+    call('verifyRegisteredTicket', operator, { qrPayload: qr.qrPayload, requestId: 'race-checkin-001' }),
+  ]);
+  assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
+  const reg = (await db.doc(`registrations/${registered.registrationId}`).get()).data();
+  const wallet = (await db.doc(`wallets/${alice.uid}`).get()).data();
+  assert.equal(wallet.heldCoins, 0);
+  assert.equal(wallet.availableCoins, reg.state === 'cancelled' ? 165 : 300);
+  assert.equal((await db.doc(`attendance/${key(alice.uid, 'registered')}`).get()).exists, reg.state === 'attended');
+});
+
 test('stale terms/deposit and requestId conflicts do not change wallet', async () => {
   await rejects(call('registerForEvent', alice, { ...registration(), acceptedTermsVersion: 'old' }), 'TERMS_CHANGED');
   await rejects(call('registerForEvent', alice, { ...registration(), expectedDepositCoins: 0 }), 'QUOTE_CHANGED');
@@ -116,6 +257,7 @@ test('walk-in Going is only an intent and QR verification is unique/window-bound
   const qr = await call('issueWalkInQr', operator, { eventId: 'walk-in' });
   const input = { qrPayload: qr.qrPayload, requestId: 'walkin-scan-1' };
   const done = await call('verifyWalkInQr', alice, input); assert.equal(done.coinsGranted, 100);
+  assert.equal((await call('getEventMilestones')).verifiedEventCount, 1);
   await rejects(call('verifyWalkInQr', alice, { ...input, requestId: 'walkin-scan-2' }), 'ALREADY_CHECKED_IN');
   now = new Date(now.getTime() + 61_000);
   await rejects(call('verifyWalkInQr', bob, { ...input, requestId: 'walkin-expire' }), 'QR_INVALID');
@@ -264,7 +406,7 @@ test('cancelled owner can compete for the reopened seat with a new ticket', asyn
   assert.equal((await db.collection(`registrations/${first.registrationId}/history`).get()).size, 1);
   await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
   await rejects(call('verifyRegisteredTicket', operator, { qrPayload: oldQr.qrPayload, requestId: 'old-qr-replay' }), 'NO_ACTIVE_TICKET');
-  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 100);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 115);
 });
 
 test('reregistering while the seat is available always creates a new ticket and preserves the cancelled attempt', async () => {
@@ -282,7 +424,7 @@ test('only authorized admins consume a sponsor voucher once without another debi
   await reward();
   const issued = await call('redeemReward', alice, redemption('admin-voucher'));
   const secret = await call('getVoucherCode', alice, { voucherId: issued.voucherId });
-  const admin = { uid: operator.uid, token: { admin: true } };
+  const admin = { uid: operator.uid, token: { admin: true, email: 'staff@yahoo.com' } };
   const input = { code: secret.code, requestId: 'use-voucher-1' };
   await rejects(call('verifyVoucher', alice, input), 'FORBIDDEN_ADMIN');
   await rejects(call('verifyVoucher', admin, input), 'FORBIDDEN_ADMIN');
@@ -308,7 +450,7 @@ test('voucher verification rejects expired codes and forged admin permissions', 
   await reward({ validDays: 1 });
   const issued = await call('redeemReward', alice, redemption('expiring-admin'));
   const secret = await call('getVoucherCode', alice, { voucherId: issued.voucherId });
-  const admin = { uid: operator.uid, token: { admin: true } };
+  const admin = { uid: operator.uid, token: { admin: true, email: 'staff@yahoo.com' } };
   await db.doc(`voucher_admins/${admin.uid}`).set({ active: true });
   await rejects(call('verifyVoucher', operator, { code: secret.code, requestId: 'false-admin-1' }), 'FORBIDDEN_ADMIN');
   now = new Date(now.getTime() + 86_400_000);
@@ -331,9 +473,24 @@ test('real callable transport validates Firebase Auth and returns stable error c
   const unauthorized = await fetch(`${base}/getAccount`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ data: {} }) });
   assert.equal(unauthorized.status, 401);
   assert.equal((await unauthorized.json()).error.details.code, 'UNAUTHENTICATED');
-  const signup = await fetch('http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=emulator-only', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: `transport-${Date.now()}@example.test`, password: 'emulator-fixture-only-123', returnSecureToken: true }) });
+  const signup = await fetch('http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=emulator-only', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: `transport-${Date.now()}@gmail.com`, password: 'emulator-fixture-only-123', returnSecureToken: true }) });
   const session = await signup.json(); assert.ok(session.idToken);
   const response = await fetch(`${base}/initializeUser`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${session.idToken}` }, body: JSON.stringify({ data: {} }) });
   assert.equal(response.status, 200);
   assert.equal((await response.json()).result.wallet.availableCoins, 200);
+});
+
+
+test('verified registration QR unlocks a milestone and manual claim adds only its bonus', async () => {
+  await db.doc('milestones/qr-first').set({ title: 'Test first event', description: 'Test fixture', metric: 'verified_events', requiredEvents: 1, rewardCoins: 50, sortOrder: 1, active: true, version: 1 });
+  await call('registerForEvent', alice, registration('milestone-register'));
+  assert.equal((await call('getEventMilestones')).verifiedEventCount, 0);
+  const qr = await call('getTicketQr', alice, { eventId: 'registered' });
+  await db.doc(`staff_assignments/${key(operator.uid, 'registered')}`).set({ staffUid: operator.uid, eventId: 'registered', active: true, permissions: ['verify_ticket'] });
+  await call('verifyRegisteredTicket', operator, { qrPayload: qr.qrPayload, requestId: 'milestone-staff-scan' });
+  assert.equal((await call('getEventMilestones')).verifiedEventCount, 1);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 300);
+  await call('claimEventMilestone', alice, { milestoneId: 'qr-first', expectedVersion: 1 });
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 350);
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('heldCoins'), 0);
 });

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/activity_assets.dart';
+import '../../data/mock/activity_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
@@ -11,38 +12,61 @@ import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/event_qr_camera.dart';
+import '../../core/providers/service_providers.dart';
+import '../../models/flow1_models.dart';
+import '../../viewmodels/flow1_view_model.dart';
+import '../../widgets/status_widgets.dart';
 
 class EventCheckInScreen extends ConsumerWidget {
-  const EventCheckInScreen({super.key});
+  const EventCheckInScreen({this.eventId = '', super.key});
+  final String eventId;
   Future<void> _enterCode(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController();
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Enter event code'),
-        content: TextField(
-          controller: controller,
-          textCapitalization: TextCapitalization.characters,
-          decoration: const InputDecoration(labelText: 'Event code'),
+      builder: (dialogContext) => Consumer(
+        builder: (dialogContext, ref, _) => AlertDialog(
+          title: const Text('Enter event code'),
+          content: TextField(
+            controller: controller,
+            textCapitalization: TextCapitalization.characters,
+            maxLength: 9,
+            decoration: const InputDecoration(
+              labelText: 'Event code',
+              hintText: 'ABCD-EFGH',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed:
+                  ref.watch(activityViewModelProvider).checkingInEventId != null
+                  ? null
+                  : () async {
+                      final vm = ref.read(activityViewModelProvider.notifier);
+                      final success = ref.read(realBackendEnabledProvider)
+                          ? await vm.verifyWalkIn(
+                              eventId,
+                              controller.text,
+                              manual: true,
+                            )
+                          : vm.checkIn(controller.text);
+                      if (!context.mounted || !dialogContext.mounted) return;
+                      final message =
+                          ref.read(activityViewModelProvider).message ??
+                          'Please retry.';
+                      if (success) Navigator.pop(dialogContext);
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(message)));
+                    },
+              child: const Text('Check in'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final success = ref
-                  .read(activityViewModelProvider.notifier)
-                  .checkIn(controller.text);
-              final message = ref.read(activityViewModelProvider).message!;
-              if (success) Navigator.pop(dialogContext);
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(message)));
-            },
-            child: const Text('Check in'),
-          ),
-        ],
       ),
     );
     controller.dispose();
@@ -52,6 +76,19 @@ class EventCheckInScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
+    final live = ref.watch(realBackendEnabledProvider);
+    final snapshot = live
+        ? ref.watch(flow1ViewModelProvider).asData?.value
+        : null;
+    final event = snapshot?.events.where((e) => e.id == eventId).firstOrNull;
+    final confirmed = state.verified.contains(live ? eventId : 'club-live');
+    if (live && (event == null || !event.walkIn)) {
+      return const EviaPage(
+        child: AppErrorWidget(
+          message: 'Open a walk-in event from My Events to check in.',
+        ),
+      );
+    }
     void flash() => vm.toggleFlashlight();
     return EviaPage(
       header: ActivityHeader(
@@ -112,26 +149,37 @@ class EventCheckInScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.lg),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Campus Club Fair', style: EviaTheme.cardTitle),
-                        _ScanMeta('Nov 10, 2026 · 10:00', 'imgContainer'),
-                        _ScanMeta('Central Plaza', 'imgContainer1'),
-                        SizedBox(height: AppSpacing.sm),
+                        Text(
+                          event?.title ?? 'Campus Club Fair',
+                          style: EviaTheme.cardTitle,
+                        ),
+                        _ScanMeta(
+                          event == null
+                              ? 'Nov 10, 2026 · 10:00'
+                              : eventDate(event.start),
+                          'imgContainer',
+                        ),
+                        _ScanMeta(
+                          event?.venue['name'] as String? ?? 'Central Plaza',
+                          'imgContainer1',
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
                         Wrap(
                           spacing: AppSpacing.xs,
                           runSpacing: AppSpacing.xs,
                           children: [
-                            EventBadge('Walk-in allowed'),
+                            const EventBadge('Walk-in allowed'),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                CoinIcon(),
-                                SizedBox(width: AppSpacing.xs),
+                                const CoinIcon(),
+                                const SizedBox(width: AppSpacing.xs),
                                 EventBadge(
-                                  '+80 coins',
+                                  '+${event?.reward ?? 80} coins',
                                   color: AppColors.warningSurface,
                                   foreground: AppColors.warning,
                                 ),
@@ -162,15 +210,36 @@ class EventCheckInScreen extends ConsumerWidget {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: Image.asset(
-                        ActivityAssets.path(
-                          '2083:1776',
-                          'imgSimulatedCameraBackgroundWithBlurAndDarkTint',
-                        ),
-                        fit: BoxFit.cover,
-                        color: ActivityTheme.cameraMultiply,
-                        colorBlendMode: BlendMode.modulate,
-                      ),
+                      child: live
+                          ? EventQrCamera(
+                              enabled:
+                                  !confirmed && state.checkingInEventId == null,
+                              torch: state.flashlight,
+                              onScan: (value) async {
+                                await vm.verifyWalkIn(eventId, value);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        ref
+                                                .read(activityViewModelProvider)
+                                                .message ??
+                                            'Please retry.',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            )
+                          : Image.asset(
+                              ActivityAssets.path(
+                                '2083:1776',
+                                'imgSimulatedCameraBackgroundWithBlurAndDarkTint',
+                              ),
+                              fit: BoxFit.cover,
+                              color: ActivityTheme.cameraMultiply,
+                              colorBlendMode: BlendMode.modulate,
+                            ),
                     ),
                     const Positioned.fill(
                       child: DecoratedBox(
@@ -260,28 +329,38 @@ class EventCheckInScreen extends ConsumerWidget {
               'imgContainer5',
             ),
             const SizedBox(height: AppSpacing.xl),
-            const ActivityInfo(
-              ActivityViewModel.coinServiceMessage,
-              icon: ActivityIcon('2083:1776', 'imgContainer6'),
+            ActivityInfo(
+              live
+                  ? confirmed
+                        ? 'Attendance confirmed.'
+                        : state.checkingInEventId != null
+                        ? 'Confirming attendance…'
+                        : 'Attendance and coins are confirmed by the server.'
+                  : ActivityViewModel.coinServiceMessage,
+              icon: const ActivityIcon('2083:1776', 'imgContainer6'),
             ),
             const SizedBox(height: AppSpacing.section),
             Wrap(
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                const Text(
-                  'Having trouble scanning?',
+                Text(
+                  vm.demoAvailable
+                      ? 'Demo code: ${ActivityMockData.demoCheckInCode}'
+                      : 'Having trouble scanning?',
                   style: EviaTheme.caption,
                 ),
                 TextButton(
-                  onPressed: vm.coinServiceAvailable
+                  onPressed:
+                      live && !confirmed && state.checkingInEventId == null ||
+                          vm.coinServiceAvailable
                       ? () => _enterCode(context, ref)
                       : null,
                   child: const Text('Enter code'),
                 ),
               ],
             ),
-            if (state.verified.contains('club'))
+            if (confirmed)
               AppButton(
                 label: 'Attendance confirmed',
                 onPressed: () => context.go('/my-events'),

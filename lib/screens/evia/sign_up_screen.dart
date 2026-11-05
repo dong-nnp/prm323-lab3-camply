@@ -446,7 +446,14 @@ class _EviaSignUpScreenState extends ConsumerState<EviaSignUpScreen> {
                                 TextButton(
                                   onPressed: state.isBusy
                                       ? null
-                                      : () => context.go(AppRoutes.login),
+                                      : () => context.go(
+                                          Uri(
+                                            path: AppRoutes.login,
+                                            queryParameters: GoRouterState.of(
+                                              context,
+                                            ).uri.queryParameters,
+                                          ).toString(),
+                                        ),
                                   child: const Text('Log In'),
                                 ),
                               ],

@@ -23,7 +23,6 @@ void main() {
     expect(c.read(profileViewModelProvider).saved, saved);
     final registration = c.read(registrationViewModelProvider.notifier);
     registration.markGoing();
-    registration.joinWaitlist();
     expect(await registration.submit(), RegistrationStatus.failed);
     final activity = c.read(activityViewModelProvider.notifier);
     expect(

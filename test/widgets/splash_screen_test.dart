@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:prm393_lab03/viewmodels/evia_view_model.dart';
 import 'package:prm393_lab03/app/app.dart';
 import 'package:prm393_lab03/app/router.dart';
 import 'package:prm393_lab03/core/providers/service_providers.dart';
@@ -165,12 +166,14 @@ void main() {
         handled ? '/discover' : '/interests',
       );
       if (!handled) {
-        await tester.tap(find.text('Skip'));
+        expect(find.text('Skip'), findsNothing);
+        await tester.tap(find.text('Continue'));
         await tester.pumpAndSettle();
         expect(
           c.read(routerProvider).routeInformationProvider.value.uri.path,
-          '/discover',
+          '/interests',
         );
+        expect(c.read(eviaViewModelProvider).personalizedUsers, isEmpty);
       }
       expect(tester.takeException(), isNull);
     });

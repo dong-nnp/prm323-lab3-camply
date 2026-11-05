@@ -1,3 +1,5 @@
+import '../helpers/startup_test_auth.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -42,7 +44,10 @@ void main() {
           await tester.pumpWidget(
             ProviderScope(
               key: ValueKey(route),
-              overrides: [initialLocationProvider.overrideWithValue(route)],
+              overrides: [
+                initialLocationProvider.overrideWithValue(route),
+                if (route.startsWith('/following/')) signedInTestSession,
+              ],
               child: const LabApp(),
             ),
           );
@@ -90,6 +95,18 @@ void main() {
       final container = ProviderScope.containerOf(context);
       container.read(routerProvider).go('/following/organizers');
       await tester.pumpAndSettle();
+      expect(find.text('Log in'), findsOneWidget);
+      await tester.pumpWidget(
+        ProviderScope(
+          key: const ValueKey('authenticated-following'),
+          overrides: [
+            signedInTestSession,
+            initialLocationProvider.overrideWithValue('/following/organizers'),
+          ],
+          child: const LabApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Following').first);
       await tester.pumpAndSettle();
       expect(find.text('1 Active'), findsOneWidget);
@@ -125,7 +142,7 @@ void main() {
       await tester.ensureVisible(login);
       await tester.tap(login);
       await tester.pumpAndSettle();
-      expect(find.text('Please enter a valid email address.'), findsOneWidget);
+      expect(find.text('Enter a valid email address.'), findsOneWidget);
       expect(container.read(eviaViewModelProvider).results, isFalse);
     },
   );

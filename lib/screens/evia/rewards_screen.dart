@@ -306,9 +306,11 @@ class _RewardCard extends ConsumerWidget {
   }
 }
 
-class _DailyCheckIn extends StatelessWidget {
+class _DailyCheckIn extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
     final progress = ActivityMockData.dailyCheckInPreview;
     return EviaCard(
       child: Column(
@@ -383,13 +385,17 @@ class _DailyCheckIn extends StatelessWidget {
                                 padding: const EdgeInsets.all(AppSpacing.sm),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: day.claimed
+                                  color:
+                                      (day.claimed ||
+                                          (day.today && state.dailyClaimed))
                                       ? ActivityTheme.actionDark
                                       : day.today
                                       ? AppColors.warningSurface
                                       : AppColors.primarySoft,
                                 ),
-                                child: day.claimed
+                                child:
+                                    (day.claimed ||
+                                        (day.today && state.dailyClaimed))
                                     ? const ActivityIcon(
                                         '2083:3522',
                                         'imgContainer8',
@@ -414,7 +420,7 @@ class _DailyCheckIn extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           const Text(
-            'Max reward unlocked · +20 coins daily',
+            'Max reward unlocked · +100 coins daily',
             textAlign: TextAlign.center,
             style: EviaTheme.label,
           ),
@@ -428,10 +434,12 @@ class _DailyCheckIn extends StatelessWidget {
           AppButton(
             label: progress.saving
                 ? 'Saving check-in...'
-                : progress.checkedInToday
+                : state.dailyClaimed
                 ? 'Checked In Today · +${progress.coins} coins'
                 : 'Check In · +${progress.coins} coins',
-            onPressed: null,
+            onPressed: vm.demoAvailable && !state.dailyClaimed
+                ? vm.claimDaily
+                : null,
           ),
         ],
       ),

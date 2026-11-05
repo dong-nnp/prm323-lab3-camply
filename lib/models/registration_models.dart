@@ -21,7 +21,8 @@ class EventPresentation {
   });
   final String id, title, category, date, time, venue, organizer;
   final DateTime start;
-  final int coins, deposit, spots;
+  final int coins, deposit;
+  final int? spots;
   final bool walkIn, past;
   final String? image;
 }
@@ -51,8 +52,10 @@ class ProfileNotice {
     this.icon, {
     this.unread = false,
     this.today = false,
+    this.destination,
   });
   final String id, title, message, when;
   final int icon;
   final bool unread, today;
+  final String? destination;
 }

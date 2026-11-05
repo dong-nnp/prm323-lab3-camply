@@ -1,0 +1,30 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart
+00:00 +0: ticket renders authoritative response when My Events cache has no registration
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: AppException:<AppException(NOT_REGISTERED): No registration for this event.>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart:16:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart line 16
+The test description was:
+  ticket renders authoritative response when My Events cache has no registration
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -1: ticket renders authoritative response when My Events cache has no registration [E]
+  Test failed. See exception logs above.
+  The test description was: ticket renders authoritative response when My Events cache has no registration
+  
+00:01 +0 -1: Some tests failed.
+
+Failing tests:
+  D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart: ticket renders authoritative response when My Events cache has no registration

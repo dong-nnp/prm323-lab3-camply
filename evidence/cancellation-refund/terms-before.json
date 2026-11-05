@@ -1,0 +1,1769 @@
+{
+  "project": "prm393-31822",
+  "capturedAt": "2026-11-05T09:48:16.503Z",
+  "documents": [
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-badminton",
+      "fields": {
+        "checkInEndAt": {
+          "timestampValue": "2026-11-12T07:40:24.671Z"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "featured": {
+          "booleanValue": false
+        },
+        "startAt": {
+          "timestampValue": "2026-11-12T06:10:24.671Z"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "60"
+        },
+        "registeredCount": {
+          "integerValue": "0"
+        },
+        "capacity": {
+          "integerValue": "40"
+        },
+        "depositCoins": {
+          "integerValue": "30"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-12T06:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-12T06:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-12T06:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-12T08:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "category": {
+          "stringValue": "sports"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "checkInStartAt": {
+          "timestampValue": "2026-11-12T05:40:24.671Z"
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-12T05:40:24.671Z"
+        },
+        "organizerId": {
+          "stringValue": "demo-sports-club"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 60 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "title": {
+          "stringValue": "[DEMO] Giao lưu cầu lông"
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "description": {
+          "stringValue": "Giao lưu cầu lông. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "name": {
+                "stringValue": "[DEMO] Nhà thi đấu"
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              }
+            }
+          }
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "sports"
+              }
+            ]
+          }
+        },
+        "endAt": {
+          "timestampValue": "2026-11-12T08:10:24.671Z"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "version": {
+                "stringValue": "demo-v1"
+              },
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 30 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 60 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              }
+            }
+          }
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-12T06:10:24.671Z"
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-career-talk",
+      "fields": {
+        "checkInStartAt": {
+          "timestampValue": "2026-11-08T05:40:24.671Z"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "featured": {
+          "booleanValue": false
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "career"
+              },
+              {
+                "stringValue": "technology"
+              }
+            ]
+          }
+        },
+        "endAt": {
+          "timestampValue": "2026-11-08T08:10:24.671Z"
+        },
+        "startAt": {
+          "timestampValue": "2026-11-08T06:10:24.671Z"
+        },
+        "capacity": {
+          "integerValue": "80"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-08T06:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-08T06:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-08T06:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-08T08:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T09:23:47.176Z"
+        },
+        "depositCoins": {
+          "integerValue": "0"
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "name": {
+                "stringValue": "[DEMO] Phòng Lab A"
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              }
+            }
+          }
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-08T07:40:24.671Z"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "category": {
+          "stringValue": "career"
+        },
+        "title": {
+          "stringValue": "[DEMO] Định hướng nghề nghiệp lập trình"
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "version": {
+                "stringValue": "demo-v1"
+              },
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 80 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              }
+            }
+          }
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 80 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-08T06:10:24.671Z"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "80"
+        },
+        "registeredCount": {
+          "integerValue": "1"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "description": {
+          "stringValue": "Định hướng nghề nghiệp lập trình. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "organizerId": {
+          "stringValue": "demo-tech-club"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-08T05:40:24.671Z"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T09:23:47.707311Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-design-thinking",
+      "fields": {
+        "capacity": {
+          "integerValue": "60"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-14T09:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-14T09:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-14T09:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-14T11:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "depositCoins": {
+          "integerValue": "50"
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-14T10:40:24.671Z"
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "arts"
+              }
+            ]
+          }
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "featured": {
+          "booleanValue": false
+        },
+        "endAt": {
+          "timestampValue": "2026-11-14T11:10:24.671Z"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "name": {
+                "stringValue": "[DEMO] Xưởng sáng tạo"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              }
+            }
+          }
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "checkInStartAt": {
+          "timestampValue": "2026-11-14T08:40:24.671Z"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-14T09:10:24.671Z"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "category": {
+          "stringValue": "arts"
+        },
+        "title": {
+          "stringValue": "[DEMO] Workshop tư duy thiết kế"
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "startAt": {
+          "timestampValue": "2026-11-14T09:10:24.671Z"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "description": {
+          "stringValue": "Workshop tư duy thiết kế. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "registeredCount": {
+          "integerValue": "0"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "version": {
+                "stringValue": "demo-v1"
+              },
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              }
+            }
+          }
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-14T08:40:24.671Z"
+        },
+        "organizerId": {
+          "stringValue": "demo-creative-club"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "100"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-full-event",
+      "fields": {
+        "checkInStartAt": {
+          "timestampValue": "2026-11-15T08:40:24.671Z"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "category": {
+          "stringValue": "technology"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "endAt": {
+          "timestampValue": "2026-11-15T11:10:24.671Z"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-15T09:10:24.671Z"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              },
+              "version": {
+                "stringValue": "demo-v1"
+              }
+            }
+          }
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "technology"
+              }
+            ]
+          }
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "name": {
+                "stringValue": "[DEMO] Phòng Lab A"
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              }
+            }
+          }
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "featured": {
+          "booleanValue": false
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "startAt": {
+          "timestampValue": "2026-11-15T09:10:24.671Z"
+        },
+        "title": {
+          "stringValue": "[DEMO] Workshop đã đóng số lượng vé"
+        },
+        "capacity": {
+          "integerValue": "0"
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-15T09:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-15T09:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-15T09:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-15T11:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "depositCoins": {
+          "integerValue": "0"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-15T10:40:24.671Z"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 50 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "registeredCount": {
+          "integerValue": "0"
+        },
+        "description": {
+          "stringValue": "Workshop đã đóng số lượng vé. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-15T08:40:24.671Z"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "organizerId": {
+          "stringValue": "demo-tech-club"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "50"
+        },
+        "status": {
+          "stringValue": "published"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-last-ticket",
+      "fields": {
+        "attendanceRewardCoins": {
+          "integerValue": "50"
+        },
+        "featured": {
+          "booleanValue": false
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "depositCoins": {
+          "integerValue": "0"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-16T09:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-16T09:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-16T09:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-16T11:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-16T10:40:24.671Z"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "capacity": {
+          "integerValue": "1"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "sports"
+              }
+            ]
+          }
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "registeredCount": {
+          "integerValue": "0"
+        },
+        "category": {
+          "stringValue": "sports"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "title": {
+          "stringValue": "[DEMO] Giao lưu thể thao — một vé cuối"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 0 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 50 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              },
+              "version": {
+                "stringValue": "demo-v1"
+              }
+            }
+          }
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 50 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "name": {
+                "stringValue": "[DEMO] Nhà thi đấu"
+              }
+            }
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "endAt": {
+          "timestampValue": "2026-11-16T11:10:24.671Z"
+        },
+        "organizerId": {
+          "stringValue": "demo-sports-club"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-16T08:40:24.671Z"
+        },
+        "startAt": {
+          "timestampValue": "2026-11-16T09:10:24.671Z"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-16T09:10:24.671Z"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "description": {
+          "stringValue": "Giao lưu thể thao — một vé cuối. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "checkInStartAt": {
+          "timestampValue": "2026-11-16T08:40:24.671Z"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-live-registration",
+      "fields": {
+        "registeredCount": {
+          "integerValue": "0"
+        },
+        "endAt": {
+          "timestampValue": "2026-11-05T07:55:24.671Z"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "category": {
+          "stringValue": "technology"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-05T05:55:24.671Z"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-05T05:55:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-05T06:10:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-05T06:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-05T07:55:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "capacity": {
+          "integerValue": "30"
+        },
+        "title": {
+          "stringValue": "[DEMO] Workshop Flutter đang mở check-in"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "featured": {
+          "booleanValue": true
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "version": {
+                "stringValue": "demo-v1"
+              },
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              }
+            }
+          }
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "name": {
+                "stringValue": "[DEMO] Phòng Lab A"
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              }
+            }
+          }
+        },
+        "organizerId": {
+          "stringValue": "demo-tech-club"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-05T05:25:24.671Z"
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "technology"
+              }
+            ]
+          }
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "description": {
+          "stringValue": "Workshop Flutter đang mở check-in. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "depositCoins": {
+          "integerValue": "50"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "startAt": {
+          "timestampValue": "2026-11-05T05:55:24.671Z"
+        },
+        "checkInStartAt": {
+          "timestampValue": "2026-11-05T04:55:24.671Z"
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-05T07:25:24.671Z"
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "100"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-mobile-workshop",
+      "fields": {
+        "registeredCount": {
+          "integerValue": "1"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-06T07:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-06T07:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-06T07:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-06T09:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "capacity": {
+          "integerValue": "100"
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "checkInStartAt": {
+          "timestampValue": "2026-11-06T06:40:24.671Z"
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "featured": {
+          "booleanValue": true
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "100"
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "category": {
+          "stringValue": "technology"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 50 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 100 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              },
+              "version": {
+                "stringValue": "demo-v1"
+              }
+            }
+          }
+        },
+        "organizerId": {
+          "stringValue": "demo-tech-club"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-06T06:40:24.671Z"
+        },
+        "description": {
+          "stringValue": "Flutter và Firebase từ cơ bản. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-06T07:10:24.671Z"
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "title": {
+          "stringValue": "[DEMO] Flutter và Firebase từ cơ bản"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 100 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "name": {
+                "stringValue": "[DEMO] Phòng Lab A"
+              },
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              }
+            }
+          }
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:58:49.301Z"
+        },
+        "startAt": {
+          "timestampValue": "2026-11-06T07:10:24.671Z"
+        },
+        "depositCoins": {
+          "integerValue": "50"
+        },
+        "endAt": {
+          "timestampValue": "2026-11-06T09:10:24.671Z"
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-06T08:40:24.671Z"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "technology"
+              }
+            ]
+          }
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:58:49.875647Z"
+    },
+    {
+      "name": "projects/prm393-31822/databases/(default)/documents/events/demo-music-night",
+      "fields": {
+        "checkInStartAt": {
+          "timestampValue": "2026-11-10T08:40:24.671Z"
+        },
+        "depositCoins": {
+          "integerValue": "100"
+        },
+        "schedule": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "welcome"
+                    },
+                    "title": {
+                      "stringValue": "Đón người tham dự"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-10T09:10:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-10T09:25:24.671Z"
+                    },
+                    "locationLabel": {
+                      "stringValue": "Địa điểm demo"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "id": {
+                      "stringValue": "main"
+                    },
+                    "title": {
+                      "stringValue": "Hoạt động chính"
+                    },
+                    "startAt": {
+                      "timestampValue": "2026-11-10T09:25:24.671Z"
+                    },
+                    "endAt": {
+                      "timestampValue": "2026-11-10T11:10:24.671Z"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": {
+          "stringValue": "Đêm nhạc sinh viên Evia. Nội dung, thời gian và địa điểm do hệ thống tạo theo yêu cầu chủ dự án để thử ba flow. Đây không phải lời mời hoặc lịch tổ chức thật."
+        },
+        "capacity": {
+          "integerValue": "100"
+        },
+        "endAt": {
+          "timestampValue": "2026-11-10T11:10:24.671Z"
+        },
+        "isDemo": {
+          "booleanValue": true
+        },
+        "organizerId": {
+          "stringValue": "demo-music-club"
+        },
+        "doorsOpenAt": {
+          "timestampValue": "2026-11-10T08:40:24.671Z"
+        },
+        "featured": {
+          "booleanValue": true
+        },
+        "subtitle": {
+          "stringValue": "Sự kiện giả lập cho việc tích hợp và kiểm thử Evia"
+        },
+        "updatedAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "checkInEndAt": {
+          "timestampValue": "2026-11-10T10:40:24.671Z"
+        },
+        "audience": {
+          "mapValue": {
+            "fields": {
+              "scope": {
+                "stringValue": "everyone"
+              }
+            }
+          }
+        },
+        "category": {
+          "stringValue": "music"
+        },
+        "seedBatchId": {
+          "stringValue": "evia-demo-20261105-v1"
+        },
+        "title": {
+          "stringValue": "[DEMO] Đêm nhạc sinh viên Evia"
+        },
+        "attendanceRewardCoins": {
+          "integerValue": "150"
+        },
+        "participantRequirements": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "Dùng tài khoản email FPT trong ứng dụng."
+              },
+              {
+                "stringValue": "Chỉ dùng dữ liệu này để thử nghiệm Lab 3."
+              }
+            ]
+          }
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "stringValue": "music"
+              }
+            ]
+          }
+        },
+        "visibility": {
+          "stringValue": "public"
+        },
+        "participationMode": {
+          "stringValue": "registration"
+        },
+        "venue": {
+          "mapValue": {
+            "fields": {
+              "accessibilityNotes": {
+                "stringValue": "Địa điểm giả lập; chưa có thông tin tiếp cận thực tế."
+              },
+              "name": {
+                "stringValue": "[DEMO] Sân khấu campus"
+              },
+              "address": {
+                "stringValue": "Khuôn viên Evia giả lập — địa điểm minh họa"
+              },
+              "transitNotes": {
+                "stringValue": "Không dùng địa chỉ demo để di chuyển."
+              },
+              "checkInInstructions": {
+                "stringValue": "Xuất trình QR hoặc mã vé cho staff demo được phân công."
+              },
+              "entranceLabel": {
+                "stringValue": "Cổng demo"
+              }
+            }
+          }
+        },
+        "timezone": {
+          "stringValue": "Asia/Ho_Chi_Minh"
+        },
+        "sourceRef": {
+          "stringValue": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+        },
+        "status": {
+          "stringValue": "published"
+        },
+        "scheduleNote": {
+          "stringValue": "Lịch demo có thể được chủ dự án sửa sau."
+        },
+        "createdAt": {
+          "timestampValue": "2026-11-05T05:13:06.020Z"
+        },
+        "benefits": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "title": {
+                      "stringValue": "Thử nghiệm flow tham dự"
+                    },
+                    "description": {
+                      "stringValue": "Check-in hợp lệ nhận 150 Evia Coin trong môi trường demo."
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "registrationClosesAt": {
+          "timestampValue": "2026-11-10T09:10:24.671Z"
+        },
+        "registrationTerms": {
+          "mapValue": {
+            "fields": {
+              "text": {
+                "stringValue": "Dữ liệu demo. Đăng ký giữ 100 Evia Coin; check-in hợp lệ hoàn cọc và thưởng 150 xu. Hủy hoặc no-show mất cọc. Không có Waitlist, không quy đổi tiền thật."
+              },
+              "version": {
+                "stringValue": "demo-v1"
+              }
+            }
+          }
+        },
+        "startAt": {
+          "timestampValue": "2026-11-10T09:10:24.671Z"
+        },
+        "admissionNote": {
+          "stringValue": "Vé giới hạn theo capacity; không bán vé bằng tiền thật."
+        },
+        "demoNotice": {
+          "stringValue": "Dữ liệu giả lập được chủ dự án yêu cầu tạo cho Lab 3; có thể sửa hoặc xóa sau."
+        },
+        "registeredCount": {
+          "integerValue": "0"
+        }
+      },
+      "createTime": "2026-11-05T05:13:06.163855Z",
+      "updateTime": "2026-11-05T05:13:06.163855Z"
+    }
+  ]
+}

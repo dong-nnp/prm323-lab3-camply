@@ -1,10 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/registration_mock_data.dart';
+import '../core/utils/fpt_identity.dart';
 import '../models/registration_models.dart';
 import '../models/activity_models.dart';
 import 'activity_view_model.dart';
 import 'authentication_view_model.dart';
+import '../core/providers/service_providers.dart';
+import '../models/flow1_models.dart';
+import 'flow1_view_model.dart';
 
 class RegistrationState {
   const RegistrationState({
@@ -56,20 +60,86 @@ final registrationViewModelProvider =
 
 class RegistrationViewModel extends Notifier<RegistrationState> {
   int _generation = 0;
+  ProviderSubscription<Flow1RegistrationState>? _requestSubscription;
+  bool get live => ref.read(realBackendEnabledProvider);
+  bool get pendingConfirmation =>
+      live &&
+      state.eventId.isNotEmpty &&
+      ref.read(flow1RegistrationProvider(state.eventId)).uncertain;
   @override
   RegistrationState build() {
-    ref.onDispose(() => _generation++);
+    ref.onDispose(() {
+      _generation++;
+      _requestSubscription?.close();
+    });
+    if (ref.watch(realBackendEnabledProvider)) {
+      ref.listen(authenticationViewModelProvider, (previous, next) {
+        if (previous?.asData?.value.userId != next.asData?.value.userId) {
+          _generation++;
+          _requestSubscription?.close();
+          state = const RegistrationState(
+            name: '',
+            studentId: '',
+            email: '',
+            phone: '',
+            agreed: false,
+            eventId: '',
+          );
+        }
+      });
+      return const RegistrationState(
+        name: '',
+        studentId: '',
+        email: '',
+        phone: '',
+        agreed: false,
+        eventId: '',
+      );
+    }
     return const RegistrationState();
   }
 
-  EventPresentation event(String id) => [
-    RegistrationMockData.music,
-    RegistrationMockData.club,
-    RegistrationMockData.innovation,
-    RegistrationMockData.arts,
-    RegistrationMockData.leadership,
-  ].firstWhere((e) => e.id == id, orElse: () => RegistrationMockData.music);
+  Flow1Event remoteEvent(String id) {
+    final data = ref.read(flow1ViewModelProvider).requireValue;
+    return ref.read(flow1EventProvider(id)).asData?.value ??
+        data.events.firstWhere((e) => e.id == id);
+  }
+
+  EventPresentation event(String id) => live
+      ? remoteEvent(id).presentation(
+          ref
+              .read(flow1ViewModelProvider)
+              .requireValue
+              .organizerName(remoteEvent(id).organizerId),
+        )
+      : [
+          RegistrationMockData.music,
+          RegistrationMockData.club,
+          RegistrationMockData.innovation,
+          RegistrationMockData.arts,
+          RegistrationMockData.leadership,
+        ].firstWhere(
+          (e) => e.id == id,
+          orElse: () => RegistrationMockData.music,
+        );
   void preset(String view, String eventId) {
+    if (live) {
+      final profile = ref.read(flow1ViewModelProvider).requireValue.profile;
+      _requestSubscription?.close();
+      _requestSubscription = ref.listen(
+        flow1RegistrationProvider(eventId),
+        (_, _) {},
+      );
+      state = RegistrationState(
+        name: profile['displayName'] as String? ?? '',
+        studentId: profile['studentId'] as String? ?? '',
+        email: profile['universityEmail'] as String? ?? '',
+        phone: profile['phoneNumber'] as String? ?? '',
+        agreed: false,
+        eventId: eventId,
+      );
+      return;
+    }
     if (view == 'legacy-error') {
       state = RegistrationState(
         name: '',
@@ -122,19 +192,18 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       errors['studentId'] = legacy
           ? 'Student ID is required.'
           : 'Please enter a valid student ID.';
-    } else if (!RegExp(r'^STU-\d{6}$').hasMatch(state.studentId.trim())) {
+    } else if (!FptIdentity.validStudentId(state.studentId)) {
       errors['studentId'] = 'Please enter a valid student ID.';
     }
-    if (!RegExp(
-      r'^[^\s@]+@[^\s@]+\.(edu|edu\.vn)$',
-      caseSensitive: false,
-    ).hasMatch(state.email.trim())) {
+    if (!FptIdentity.validEmail(state.email)) {
       errors['email'] = legacy
-          ? 'Please enter a valid university email address.'
-          : 'Please enter a valid university email.';
+          ? 'Enter a valid email address.'
+          : 'Enter a valid email address.';
     }
     if (state.phone.trim().isNotEmpty &&
-        state.phone.replaceAll(RegExp(r'\D'), '').length < 8) {
+        (live
+            ? !RegExp(r'^\+?[0-9 ()-]{7,24}$').hasMatch(state.phone)
+            : state.phone.replaceAll(RegExp(r'\D'), '').length < 8)) {
       errors['phone'] = 'Please enter a valid phone number.';
     }
     if (!state.agreed) {
@@ -156,6 +225,47 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     }
     if (state.status == RegistrationStatus.loading) return state.status;
     if (!validate()) return RegistrationStatus.idle;
+    if (live) {
+      final generation = _generation;
+      final uid = ref
+          .read(authenticationViewModelProvider)
+          .asData
+          ?.value
+          .userId;
+      final id = state.eventId;
+      final input = {
+        'fullName': state.name,
+        'studentId': state.studentId,
+        'universityEmail': state.email,
+        'phoneNumber': state.phone,
+      };
+      final agreed = state.agreed;
+      state = state.copy(status: RegistrationStatus.loading);
+      final done = await ref
+          .read(flow1RegistrationProvider(id).notifier)
+          .submit(remoteEvent(id), input, agreed);
+      if (!ref.mounted ||
+          generation != _generation ||
+          ref.read(authenticationViewModelProvider).asData?.value.userId !=
+              uid) {
+        return RegistrationStatus.idle;
+      }
+      final result = ref.read(flow1RegistrationProvider(id));
+      final status = done
+          ? RegistrationStatus.success
+          : result.errors['server'] == 'EVENT_FULL'
+          ? RegistrationStatus.full
+          : RegistrationStatus.failed;
+      state = state.copy(
+        status: status,
+        message: result.message,
+        agreed:
+            ['QUOTE_CHANGED', 'TERMS_CHANGED'].contains(result.errors['server'])
+            ? false
+            : null,
+      );
+      return status;
+    }
     final selected = event(state.eventId);
     final generation = _generation;
     state = state.copy(status: RegistrationStatus.loading);
@@ -186,7 +296,9 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     if (!added) {
       state = state.copy(
         status: RegistrationStatus.failed,
-        message: ActivityViewModel.coinServiceMessage,
+        message:
+            ref.read(activityViewModelProvider).message ??
+            ActivityViewModel.coinServiceMessage,
       );
       return state.status;
     }
@@ -195,8 +307,17 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
   }
 
   void backToForm() => state = state.copy(status: RegistrationStatus.idle);
-  void markGoing() {
-    if (!ref.read(hasAuthenticatedSessionProvider)) return;
+  Future<bool> markGoing([String? eventId]) async {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return false;
+    if (live) {
+      final id = eventId ?? state.eventId;
+      final result = await ref.read(flow1ViewModelProvider.notifier).going(id);
+      if (!ref.mounted) return false;
+      if (result) {
+        state = state.copy(status: RegistrationStatus.going, eventId: id);
+      }
+      return result;
+    }
     final selected = RegistrationMockData.club;
     ref
         .read(activityViewModelProvider.notifier)
@@ -214,23 +335,6 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
           ),
         );
     state = state.copy(status: RegistrationStatus.going, eventId: selected.id);
-  }
-
-  void joinWaitlist() {
-    if (!ref.read(hasAuthenticatedSessionProvider)) return;
-    final selected = event(state.eventId);
-    ref
-        .read(activityViewModelProvider.notifier)
-        .addRegistration(
-          RegisteredEvent(
-            id: '${selected.id}-waitlist',
-            title: selected.title,
-            category: selected.category,
-            dateLabel: '${selected.date} · ${selected.time}',
-            venue: selected.venue,
-            start: selected.start,
-            waitlisted: true,
-          ),
-        );
+    return true;
   }
 }

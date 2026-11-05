@@ -1,0 +1,189 @@
+i  emulators: Starting emulators: auth, functions, firestore, storage
+i  emulators: Detected demo project ID "demo-evia-backend", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
++  firestore: Firestore Emulator was started in standard edition.
++  firestore: Firestore Emulator UI websocket is running on 9150.
+i  functions: Watching "D:\project\prm323-lab3\prm323-lab3-camply\functions" for Cloud Functions...
++  functions: Using node@22 from host.
+Serving at port 8034
+
++  functions: Loaded functions definitions from source: cancelRegistration, claimDailyCheckin, deliverNotification, followOrganizer, getAccount, getEvent, getOperationStatus, getOrganizer, getPublicCatalog, getReward, getServerInfo, getTicket, getTicketQr, getVoucherCode, grantMonthlyGift, initializeUser, issueWalkInQr, listMyEvents, listOwned, markNotificationsRead, monthlyGiftSchedule, noShowSchedule, redeemReward, registerDevice, registerForEvent, saveInterests, setBookmark, setWalkInGoing, unfollowOrganizer, unregisterDevice, updateProfile, verifyRegisteredTicket, verifyVoucher, verifyWalkInQr.
++  functions[asia-southeast1-cancelRegistration]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/cancelRegistration).
++  functions[asia-southeast1-claimDailyCheckin]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/claimDailyCheckin).
++  functions[asia-southeast1-deliverNotification]: firestore function initialized.
++  functions[asia-southeast1-followOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/followOrganizer).
++  functions[asia-southeast1-getAccount]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getAccount).
++  functions[asia-southeast1-getEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getEvent).
++  functions[asia-southeast1-getOperationStatus]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOperationStatus).
++  functions[asia-southeast1-getOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getOrganizer).
++  functions[asia-southeast1-getPublicCatalog]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getPublicCatalog).
++  functions[asia-southeast1-getReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getReward).
++  functions[asia-southeast1-getServerInfo]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getServerInfo).
++  functions[asia-southeast1-getTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicket).
++  functions[asia-southeast1-getTicketQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getTicketQr).
++  functions[asia-southeast1-getVoucherCode]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/getVoucherCode).
++  functions[asia-southeast1-grantMonthlyGift]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/grantMonthlyGift).
++  functions[asia-southeast1-initializeUser]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/initializeUser).
++  functions[asia-southeast1-issueWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/issueWalkInQr).
++  functions[asia-southeast1-listMyEvents]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listMyEvents).
++  functions[asia-southeast1-listOwned]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/listOwned).
++  functions[asia-southeast1-markNotificationsRead]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/markNotificationsRead).
+i  functions[asia-southeast1-monthlyGiftSchedule]: function ignored because the pubsub emulator does not exist or is not running.
+i  functions[asia-southeast1-noShowSchedule]: function ignored because the pubsub emulator does not exist or is not running.
++  functions[asia-southeast1-redeemReward]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/redeemReward).
++  functions[asia-southeast1-registerDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerDevice).
++  functions[asia-southeast1-registerForEvent]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/registerForEvent).
++  functions[asia-southeast1-saveInterests]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/saveInterests).
++  functions[asia-southeast1-setBookmark]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setBookmark).
++  functions[asia-southeast1-setWalkInGoing]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/setWalkInGoing).
++  functions[asia-southeast1-unfollowOrganizer]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unfollowOrganizer).
++  functions[asia-southeast1-unregisterDevice]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/unregisterDevice).
++  functions[asia-southeast1-updateProfile]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/updateProfile).
++  functions[asia-southeast1-verifyRegisteredTicket]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyRegisteredTicket).
++  functions[asia-southeast1-verifyVoucher]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyVoucher).
++  functions[asia-southeast1-verifyWalkInQr]: http function initialized (http://127.0.0.1:5001/demo-evia-backend/asia-southeast1/verifyWalkInQr).
+i  Running script: node --test --test-timeout=120000 functions/test/milestones.test.mjs
+TAP version 13
+# (node:27524) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: approved five milestone policies are preserved as data, not a fixed-size runtime list
+ok 1 - approved five milestone policies are preserved as data, not a fixed-size runtime list
+  ---
+  duration_ms: 4254.7689
+  type: 'test'
+  ...
+# Subtest: progress includes historical verified attendance, excludes registration/Going/daily and other users
+not ok 2 - progress includes historical verified attendance, excludes registration/Going/daily and other users
+  ---
+  duration_ms: 677.6746
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: 'UNKNOWN_OPERATION'
+  code: 'not-found'
+  stack: |-
+    fail (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/shared.js:10:11)
+    Object.invoke (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/backend.js:12:17)
+    call (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:18:55)
+    TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:47:24)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unearned/client-forged claims do not create money or claim records
+not ok 3 - unearned/client-forged claims do not create money or claim records
+  ---
+  duration_ms: 312.8223
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: 'MILESTONE_NOT_UNLOCKED'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:58:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: concurrent retries and restarts award a milestone only once with ledger and receipt
+not ok 4 - concurrent retries and restarts award a milestone only once with ledger and receipt
+  ---
+  duration_ms: 464.6057
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:65:1'
+  failureType: 'testCodeFailure'
+  error: 'UNKNOWN_OPERATION'
+  code: 'not-found'
+  stack: |-
+    fail (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/shared.js:10:11)
+    Object.invoke (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/backend.js:12:17)
+    call (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:18:55)
+    TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:69:38)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: all five manual claims total 1100 coins and never auto-grant from progress reads
+not ok 5 - all five manual claims total 1100 coins and never auto-grant from progress reads
+  ---
+  duration_ms: 622.1663
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:85:1'
+  failureType: 'testCodeFailure'
+  error: 'UNKNOWN_OPERATION'
+  code: 'not-found'
+  stack: |-
+    fail (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/shared.js:10:11)
+    Object.invoke (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/backend.js:12:17)
+    call (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:18:55)
+    TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:87:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: admin adds a sixth goal for existing attendance; immutable reward and version guard protect history
+not ok 6 - admin adds a sixth goal for existing attendance; immutable reward and version guard protect history
+  ---
+  duration_ms: 430.4635
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:94:1'
+  failureType: 'testCodeFailure'
+  error: 'FORBIDDEN_ADMIN'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:97:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: disabled and malformed server policies cannot award coins
+not ok 7 - disabled and malformed server policies cannot award coins
+  ---
+  duration_ms: 459.6473
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:111:1'
+  failureType: 'testCodeFailure'
+  error: 'MILESTONE_INACTIVE'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:114:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+not ok 8 - Rules protect definitions/admin/audit/claims and allow only the owner to read a claim
+  ---
+  duration_ms: 333.7061
+  type: 'test'
+  location: 'D:\\project\\prm323-lab3\\prm323-lab3-camply\\functions\\test\\milestones.test.mjs:120:1'
+  failureType: 'testCodeFailure'
+  error: 'UNKNOWN_OPERATION'
+  code: 'not-found'
+  stack: |-
+    fail (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/shared.js:10:11)
+    Object.invoke (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/lib/backend.js:12:17)
+    call (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:18:55)
+    TestContext.<anonymous> (file:///D:/project/prm323-lab3/prm323-lab3-camply/functions/test/milestones.test.mjs:121:26)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8421.5693
+!  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  firestore: Stopping Firestore Emulator
+!  Firestore Emulator has exited upon receiving signal: SIGINT
+i  auth: Stopping Authentication Emulator
+i  storage: Stopping Storage Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node --test --test-timeout=120000 functions/test/milestones.test.mjs" exited with code 1

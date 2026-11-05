@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { Actor, authenticated, activeUser, empty, fail, id, key, ledger, required, walletData } from './shared.js';
 import { SIGNUP_BONUS_COINS, dailyGrant, PRODUCT_TIMEZONE } from './policy.js';
 import { changeWallet, operation } from './shared.js';
+import { emailAddress, fptStudentId } from './identity.js';
 
 export function accounts(db: Firestore, clock: () => Date) {
   return {
@@ -17,7 +18,7 @@ export function accounts(db: Firestore, clock: () => Date) {
           return { profile: user.data(), wallet: walletData(wallet.data()), created: false };
         }
         if (wallet.exists) fail('ACCOUNT_INTEGRITY_ERROR', 'internal');
-        const profile = { displayName: typeof actor?.token.name === 'string' ? actor.token.name : null, universityEmail: null, studentId: null, phoneNumber: null, photoUrl: null, interests: [], onboardingCompleted: false, accountStatus: 'active', createdAt: now, updatedAt: now };
+        const profile = { displayName: typeof actor?.token.name === 'string' ? actor.token.name : null, universityEmail: emailAddress.parse(actor?.token.email), studentId: null, phoneNumber: null, photoUrl: null, interests: [], onboardingCompleted: false, accountStatus: 'active', createdAt: now, updatedAt: now };
         const balance = { availableCoins: SIGNUP_BONUS_COINS, heldCoins: 0, version: 1, updatedAt: now };
         tx.create(userRef, profile); tx.create(walletRef, balance);
         ledger(tx, db, uid, key('signup', uid), 'signup_bonus', SIGNUP_BONUS_COINS, 0, uid, now);
@@ -25,7 +26,7 @@ export function accounts(db: Firestore, clock: () => Date) {
       });
     },
     updateProfile: async (actor: Actor | null, raw: unknown) => {
-      const input = z.object({ displayName: z.string().trim().min(1).max(100).optional(), studentId: z.string().trim().min(1).max(64).optional(), universityEmail: z.email().max(254).optional(), phoneNumber: z.string().trim().regex(/^\+?[0-9 ()-]{7,24}$/).nullable().optional() }).strict().refine(v => Object.keys(v).length > 0).parse(raw);
+      const input = z.object({ displayName: z.string().trim().min(1).max(100).optional(), studentId: fptStudentId.optional(), universityEmail: emailAddress.optional(), phoneNumber: z.string().trim().regex(/^\+?[0-9 ()-]{7,24}$/).nullable().optional() }).strict().refine(v => Object.keys(v).length > 0).parse(raw);
       const uid = authenticated(actor);
       await db.runTransaction(async tx => { await activeUser(tx, db, uid); tx.update(db.doc(`users/${uid}`), { ...input, updatedAt: Timestamp.fromDate(clock()) }); });
       return { updated: true };

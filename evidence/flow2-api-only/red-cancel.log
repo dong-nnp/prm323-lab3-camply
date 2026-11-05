@@ -1,0 +1,54 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart
+test/viewmodels/flow2_view_model_test.dart:19:7: Error: Undefined name 'signedInTestSession'.
+      signedInTestSession,
+      ^^^^^^^^^^^^^^^^^^^
+test/viewmodels/flow2_view_model_test.dart:34:24: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+ - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+    final pending = vm.cancelEvent('server-event-17');
+                       ^^^^^^^^^^^
+test/viewmodels/flow2_view_model_test.dart:36:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+ - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+    expect(await vm.cancelEvent('server-event-17'), isFalse);
+                    ^^^^^^^^^^^
+test/viewmodels/flow2_view_model_test.dart:61:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+ - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+    expect(await vm.cancelEvent('server-event-17'), isFalse);
+                    ^^^^^^^^^^^
+test/viewmodels/flow2_view_model_test.dart:63:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+ - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+    expect(await vm.cancelEvent('server-event-17'), isTrue);
+                    ^^^^^^^^^^^
+00:00 +0 -1: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart [E]
+  Failed to load "D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart":
+  Compilation failed for testPath=D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart: test/viewmodels/flow2_view_model_test.dart:19:7: Error: Undefined name 'signedInTestSession'.
+        signedInTestSession,
+        ^^^^^^^^^^^^^^^^^^^
+  test/viewmodels/flow2_view_model_test.dart:34:24: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+   - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+      final pending = vm.cancelEvent('server-event-17');
+                         ^^^^^^^^^^^
+  test/viewmodels/flow2_view_model_test.dart:36:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+   - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+      expect(await vm.cancelEvent('server-event-17'), isFalse);
+                      ^^^^^^^^^^^
+  test/viewmodels/flow2_view_model_test.dart:61:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+   - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+      expect(await vm.cancelEvent('server-event-17'), isFalse);
+                      ^^^^^^^^^^^
+  test/viewmodels/flow2_view_model_test.dart:63:21: Error: The method 'cancelEvent' isn't defined for the type 'ActivityViewModel'.
+   - 'ActivityViewModel' is from 'package:prm393_lab03/viewmodels/activity_view_model.dart' ('lib/viewmodels/activity_view_model.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'cancelEvent'.
+      expect(await vm.cancelEvent('server-event-17'), isTrue);
+                      ^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart

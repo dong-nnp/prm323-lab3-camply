@@ -35,7 +35,7 @@ void main() {
     expect(find.text('8-day streak'), findsOneWidget);
     expect(find.text('Day 2'), findsOneWidget);
     final button = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Check In \u00b7 +20 coins'),
+      find.widgetWithText(FilledButton, 'Check In \u00b7 +100 coins'),
     );
     expect(button.onPressed, isNull);
     expect(find.textContaining('Coin service'), findsNothing);
@@ -46,7 +46,7 @@ void main() {
     tester,
   ) async {
     final c = await open(tester, '/rewards/catalog');
-    expect(find.text('250 coins'), findsOneWidget);
+    expect(find.text('200 coins'), findsOneWidget);
     expect(find.text('Eligible'), findsNothing);
     c.read(routerProvider).go('/rewards/detail?id=tote');
     await tester.pumpAndSettle();

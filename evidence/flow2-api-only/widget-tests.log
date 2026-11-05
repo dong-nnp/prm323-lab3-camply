@@ -1,0 +1,4 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/widgets/flow2_screens_test.dart
+00:00 +0: ticket demo button waits for server and replaces QR with confirmed state
+00:13 +1: notifications render server data and mark-read action without mock notices
+00:14 +2: All tests passed!

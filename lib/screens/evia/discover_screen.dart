@@ -7,6 +7,8 @@ import '../../models/evia_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
+import '../../viewmodels/activity_view_model.dart';
+import '../../core/providers/service_providers.dart';
 import '../../widgets/evia_brand.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
@@ -22,6 +24,14 @@ class EviaDiscoverScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(eviaViewModelProvider.select((s) => s.followed));
+    final demo = ref.watch(demoAuthEnabledProvider);
+    final vm = ref.read(eviaViewModelProvider.notifier);
+    final live = ref.watch(realBackendEnabledProvider);
+    final featured = vm.featured;
+    final recommendations = vm.recommended;
+    final balance = ref.watch(
+      activityViewModelProvider.select((s) => s.available),
+    );
     final screen = guest ? '2083:1143' : '2083:456';
     return EviaPage(
       header: Container(
@@ -38,28 +48,32 @@ class EviaDiscoverScreen extends ConsumerWidget {
             const EviaLogo(),
             if (!guest) ...[
               const SizedBox(width: AppSpacing.md),
-              const Expanded(
-                child: Text(
-                  EviaMockData.discoverName,
-                  style: EviaTheme.compactTitle,
-                ),
+              Expanded(
+                child: Text(vm.discoverName, style: EviaTheme.compactTitle),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.warningSurface,
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CoinIcon(),
-                    SizedBox(width: AppSpacing.xs),
-                    Text(EviaMockData.points, style: EviaTheme.caption),
-                  ],
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warningSurface,
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CoinIcon(),
+                      const SizedBox(width: AppSpacing.xs),
+                      Flexible(
+                        child: Text(
+                          live || demo ? '$balance coins' : EviaMockData.points,
+                          style: EviaTheme.caption,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               IconButton(
@@ -107,7 +121,7 @@ class EviaDiscoverScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            _FeaturedEvent(guest: guest),
+            if (featured != null) _FeaturedEvent(guest: guest, event: featured),
             const SizedBox(height: AppSpacing.sm),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +135,7 @@ class EviaDiscoverScreen extends ConsumerWidget {
               guest ? 'Popular Events' : 'Recommended for You',
               subtitle: guest
                   ? 'Trending on campus'
-                  : 'Based on your interests in Technology & Arts',
+                  : vm.recommendationSubtitle,
               onSeeAll: () => _search(context, ref),
             ),
             IntrinsicHeight(
@@ -129,17 +143,21 @@ class EviaDiscoverScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: _RecommendedCard(
-                      event: EviaMockData.recommendedAi,
-                      guest: guest,
-                    ),
+                    child: recommendations.isEmpty
+                        ? const SizedBox.shrink()
+                        : _RecommendedCard(
+                            event: recommendations.first,
+                            guest: guest,
+                          ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
-                    child: _RecommendedCard(
-                      event: EviaMockData.photoWalk,
-                      guest: guest,
-                    ),
+                    child: recommendations.length < 2
+                        ? const SizedBox.shrink()
+                        : _RecommendedCard(
+                            event: recommendations[1],
+                            guest: guest,
+                          ),
                   ),
                 ],
               ),
@@ -175,7 +193,7 @@ class EviaDiscoverScreen extends ConsumerWidget {
               subtitle: 'Upcoming events on campus',
               onSeeAll: () => _search(context, ref),
             ),
-            for (final event in EviaMockData.upcoming)
+            for (final event in (live ? vm.events : EviaMockData.upcoming))
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: _UpcomingCard(event: event, guest: guest),
@@ -204,8 +222,9 @@ class _CarouselDot extends StatelessWidget {
 }
 
 class _FeaturedEvent extends StatelessWidget {
-  const _FeaturedEvent({required this.guest});
+  const _FeaturedEvent({required this.guest, required this.event});
   final bool guest;
+  final CampusEvent event;
   @override
   Widget build(BuildContext context) {
     final screen = guest ? '2083:1143' : '2083:456';
@@ -221,22 +240,28 @@ class _FeaturedEvent extends StatelessWidget {
         children: [
           Row(
             children: [
-              const EventBadge(
-                'FEATURED',
-                color: AppColors.textSecondary,
-                foreground: AppColors.surface,
-                category: true,
+              Expanded(
+                child: Wrap(
+                  spacing: AppSpacing.xs,
+                  runSpacing: AppSpacing.xs,
+                  children: [
+                    const EventBadge(
+                      'FEATURED',
+                      color: AppColors.textSecondary,
+                      foreground: AppColors.surface,
+                      category: true,
+                    ),
+                    EventBadge(
+                      event.category.toUpperCase(),
+                      color: AppColors.accent,
+                      foreground: AppColors.textPrimary,
+                      category: true,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(width: AppSpacing.xs),
-              const EventBadge(
-                'MUSIC',
-                color: AppColors.accent,
-                foreground: AppColors.textPrimary,
-                category: true,
-              ),
-              const Spacer(),
               BookmarkButton(
-                event: EviaMockData.music,
+                event: event,
                 overlay: true,
                 screen: screen,
                 asset: 'imgContainer1',
@@ -245,7 +270,7 @@ class _FeaturedEvent extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Text(
-            'Campus Music Night',
+            event.title,
             style: EviaTheme.section.copyWith(color: AppColors.surface),
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -256,12 +281,12 @@ class _FeaturedEvent extends StatelessWidget {
             children: [
               FigmaIcon(screen, 'imgContainer2'),
               Text(
-                'Oct 26 · 18:00',
+                event.date,
                 style: EviaTheme.caption.copyWith(color: AppColors.surface),
               ),
               FigmaIcon(screen, 'imgContainer3'),
               Text(
-                'Main Stadium',
+                event.location,
                 style: EviaTheme.caption.copyWith(color: AppColors.surface),
               ),
             ],
@@ -272,14 +297,16 @@ class _FeaturedEvent extends StatelessWidget {
             children: [
               const CoinIcon(),
               const SizedBox(width: AppSpacing.xs),
-              const Text(
-                '+120 coins',
-                style: TextStyle(color: AppColors.accent),
+              Expanded(
+                child: Text(
+                  '+${event.coins} coins',
+                  style: TextStyle(color: AppColors.accent),
+                ),
               ),
             ],
           ),
           TextButton(
-            onPressed: () => showEvent(context, EviaMockData.music),
+            onPressed: () => showEvent(context, event),
             style: TextButton.styleFrom(
               foregroundColor: AppColors.surface,
               padding: EdgeInsets.zero,
@@ -287,7 +314,7 @@ class _FeaturedEvent extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('View event'),
+                const Flexible(child: Text('View event')),
                 const SizedBox(width: AppSpacing.xs),
                 FigmaIcon(screen, 'imgContainer5'),
               ],
@@ -369,9 +396,11 @@ class _RecommendedCard extends StatelessWidget {
             children: [
               const CoinIcon(),
               const SizedBox(width: AppSpacing.xs),
-              Text(
-                '+${event.coins} coins',
-                style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
+              Expanded(
+                child: Text(
+                  '+${event.coins} coins',
+                  style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
+                ),
               ),
             ],
           ),
@@ -439,10 +468,12 @@ class _FollowingPreview extends StatelessWidget {
                     children: [
                       const CoinIcon(),
                       const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '+${event.coins} coins',
-                        style: EviaTheme.caption.copyWith(
-                          color: EviaTheme.gold,
+                      Expanded(
+                        child: Text(
+                          '+${event.coins} coins',
+                          style: EviaTheme.caption.copyWith(
+                            color: EviaTheme.gold,
+                          ),
                         ),
                       ),
                     ],
@@ -528,10 +559,12 @@ class _UpcomingCard extends StatelessWidget {
                       children: [
                         const CoinIcon(),
                         const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '+${event.coins} coins',
-                          style: EviaTheme.caption.copyWith(
-                            color: EviaTheme.gold,
+                        Flexible(
+                          child: Text(
+                            '+${event.coins} coins',
+                            style: EviaTheme.caption.copyWith(
+                              color: EviaTheme.gold,
+                            ),
                           ),
                         ),
                       ],

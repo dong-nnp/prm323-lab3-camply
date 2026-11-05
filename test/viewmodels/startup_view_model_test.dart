@@ -12,14 +12,19 @@ import 'package:prm393_lab03/viewmodels/startup_view_model.dart';
 
 import '../helpers/fake_firebase_initializer.dart';
 import '../helpers/startup_test_auth.dart';
+import '../helpers/fake_campus_service.dart';
+
+import 'package:prm393_lab03/services/campus_service.dart';
 
 void main() {
   Future<ProviderContainer> open(
     AuthSession session, {
     Future<FirebaseStatus> Function()? initialize,
+    CampusService? campus,
   }) async {
     final container = ProviderContainer(
       overrides: [
+        campusServiceProvider.overrideWithValue(campus ?? FakeCampusService()),
         firebaseInitializerProvider.overrideWithValue(
           FakeFirebaseInitializer(
             initialize ?? () async => FirebaseStatus.notConfigured,
@@ -69,15 +74,23 @@ void main() {
     expect(completed.read(startupDestinationProvider), '/discover');
   });
 
-  test('explicit skip preserves interests and is scoped to the user', () async {
-    final c = await open(const AuthSession.signedIn('first'));
+  test('onboarding waits for the server and blocks duplicate saves', () async {
+    final saved = Completer<void>();
+    final fake = FakeCampusService()..onSave = (_) => saved.future;
+    final c = await open(const AuthSession.signedIn('first'), campus: fake);
     final before = c.read(eviaViewModelProvider).interests;
+    final pending = c
+        .read(eviaViewModelProvider.notifier)
+        .finishPersonalization();
+    expect(c.read(startupDestinationProvider), '/interests');
+    expect(c.read(eviaViewModelProvider).isSavingInterests, isTrue);
     expect(
-      c
-          .read(eviaViewModelProvider.notifier)
-          .finishPersonalization(skipped: true),
-      '/discover',
+      await c.read(eviaViewModelProvider.notifier).finishPersonalization(),
+      isNull,
     );
+    expect(fake.saveCalls, 1);
+    saved.complete();
+    expect(await pending, '/discover');
     expect(c.read(startupDestinationProvider), '/discover');
     expect(c.read(eviaViewModelProvider).interests, before);
     expect(c.read(eviaViewModelProvider).personalizedUsers, {'first'});
@@ -99,6 +112,7 @@ void main() {
     addTearDown(sessions.close);
     final c = ProviderContainer(
       overrides: [
+        campusServiceProvider.overrideWithValue(FakeCampusService()),
         firebaseInitializerProvider.overrideWithValue(
           FakeFirebaseInitializer(() async => FirebaseStatus.notConfigured),
         ),
@@ -113,7 +127,7 @@ void main() {
     expect(c.read(startupDestinationProvider), isNull);
     sessions.add(const AuthSession.signedIn('first'));
     await Future<void>.delayed(Duration.zero);
-    c.read(eviaViewModelProvider.notifier).finishPersonalization();
+    await c.read(eviaViewModelProvider.notifier).finishPersonalization();
     expect(c.read(startupDestinationProvider), '/discover');
     sessions.add(const AuthSession.signedIn('second'));
     await Future<void>.delayed(Duration.zero);

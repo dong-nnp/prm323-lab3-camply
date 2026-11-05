@@ -1,0 +1,6 @@
+Final isolated build: flutter build apk --debug --no-pub --dart-define=FIREBASE_ENABLED=true --dart-define=DEMO_AUTH=false
+Selected lines from ignored full verbose log:
+[        ] [   +2 ms] exiting with code 0
+[+1802 ms] √ Built build\app\outputs\flutter-apk\app-debug.apk
+[        ] exiting with code 0
+Installed APK hash and flags: native-apk.json

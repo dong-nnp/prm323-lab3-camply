@@ -1,5 +1,39 @@
 # Hợp đồng bàn giao cho đội giao diện — không yêu cầu đổi layout
 
+> **Flow 2 — 05/11/2026:** đã nối API vào My Events/lịch/hủy/vé/check-in/inbox;
+> thêm Firebase Cloud Messaging. Owner cho phép riêng nút demo nhỏ trên vé trong
+> debug và xin quyền Android khi mở Notifications. Các styles/tokens/assets giữ
+> nguyên. Nút demo chỉ dùng account/event được server bật, ghi trạng thái/xu thật
+> trong dataset demo. [Giới hạn và evidence](../evidence/flow2-api-only/).
+
+> **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
+> đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;
+> quyền staff/admin và điều kiện sự kiện giữ nguyên. [Contract](PREINTEGRATION_DECISIONS.md).
+
+> **API-only theo owner 05/11/2026:** đã gỡ bộ màn `Flow1Screen` tạo ngoài phạm vi;
+> nối Firebase vào các màn gốc, giữ layout/style/assets. Giữ 8 thẻ sở thích;
+> Gaming/Environment chờ đội UI. Ảnh cũ làm minh họa khi chưa có URL; vé chỉ hiện
+> QR trong ô cũ, chưa có mã dự phòng. [Phạm vi](API_INTEGRATION_PHASES.md) · [Evidence sửa lại](../evidence/flow1-api-only/).
+> Các mô tả bộ màn live riêng/kết quả cũ bên dưới là lịch sử, không nghiệm thu bản này.
+
+
+> **Flow 1 đã có adapter trong source 05/11/2026:** xem
+> [API_INTEGRATION_PHASES.md](API_INTEGRATION_PHASES.md). Live dùng ID/catalog
+> server, mandatory onboarding, follow/bookmark, registration receipt và vé.
+> Các ghi chú pending phía dưới vẫn áp dụng cho Flow 2/3 và instrumentation.
+
+> **Dataset đã sẵn sàng để nối 05/11/2026:** [DEMO_DATA.md](DEMO_DATA.md) có
+> 10 interests, 5 CLB, 12 events, 5 rewards (Café `demo-cafe`=200), 5 milestones
+> và hai Auth operators staff/admin. Fetch dữ liệu server, không map bằng title
+> hoặc ID fixture cũ. Reward category IDs: food_drinks/merchandise/experiences;
+> labels và ảnh placeholder map tại presentation. Lịch live là snapshot, có expiry.
+
+> **Sau review 05/11/2026:** [quyết định/contract mới](PREINTEGRATION_DECISIONS.md)
+> chốt email domain mở, mã check-in dự phòng và notifications. UI đã sửa policy và
+> claim/loading controls. CampusRepository/CampusService có saveInterests và
+> claimEventMilestone; concrete SDK adapter vẫn pending, không giả thành công.
+> Dữ liệu/versions/claimed/count thật phải load từ server ở bước tích hợp tiếp theo.
+
 Ngày 04/11/2026. **Backend mới đã deploy: 34 Functions ACTIVE, 34 Cloud Run latest revisions READY, 2 scheduled jobs ENABLED**. Monthly Gift/no-show/re-registration/admin voucher đã có trên cloud; [release evidence](backend-release.md). Chưa nối Flutter hoặc thay files trong `lib/`. Native/authenticated flow acceptance vẫn cần làm khi tích hợp.
 
 ## Dùng chung
@@ -16,10 +50,12 @@ Ngày 04/11/2026. **Backend mới đã deploy: 34 Functions ACTIVE, 34 Cloud Run
 |---|---|---|
 | Auth/onboarding | Auth SDK → `initializeUser` → `getAccount` → `saveInterests` khi cần | Auth cancelled/failed, ≥3 valid interests, account disabled. Không suy ra login thật từ nút Continue |
 | Discover/search | `getPublicCatalog`, `getEvent`, `getOrganizer`, follow/bookmark | Trang rỗng có cursor chưa phải empty toàn bộ; `following`/`recommended` cần auth/onboarding |
-| Đăng ký/hủy/đăng ký lại | Event detail → confirm quote/terms → `registerForEvent` → `getTicket`; cancel qua `cancelRegistration` | `EVENT_FULL`, `QUOTE_CHANGED`, `TERMS_CHANGED`, `INSUFFICIENT_COINS`. Hủy mất cọc; đăng ký lại tính cọc mới và cạnh tranh slot hiện còn |
+| Đăng ký/hủy/đăng ký lại | Event detail → confirm quote/terms → `registerForEvent` → `getTicket`; cancel qua `cancelRegistration` | `EVENT_FULL`, `QUOTE_CHANGED`, `TERMS_CHANGED`, `INSUFFICIENT_COINS`. Hủy hoàn 30% cọc làm tròn xuống; đăng ký lại tính cọc mới và cạnh tranh slot hiện còn |
 | My Events/ticket | `listMyEvents` → `getTicket({eventId})` → `getTicketQr` | Phân biệt registered/cancelled/attended/no_show. Vé cũ đã revoked không được hiện như vé active |
 | Check-in | Registered: staff scan `verifyRegisteredTicket`; walk-in: student scan `verifyWalkInQr` | `QR_INVALID`, `OUTSIDE_CHECKIN_WINDOW`, `ALREADY_CHECKED_IN`, `FORBIDDEN_STAFF`; không parse QR để tự cấp xu |
+| Mã check-in dự phòng | QR response có manualCode; `verifyRegisteredCode` cho staff / `verifyWalkInCode` cho student | CODE_INVALID, CODE_EXPIRED, CODE_RATE_LIMITED; giữ requestId khi retry, recover verify-ticket/verify-walkin receipt |
 | Ví/daily/monthly | `getAccount`, `listOwned(kind:ledger)`, `claimDailyCheckin` | Monthly tự cộng ngày 1, không có nút claim; `grantMonthlyGift` trả `AUTOMATIC_ONLY`. No-show chỉ mất held, không trừ thêm available |
+| Thành tựu | `getEventMilestones({})` → `claimEventMilestone({milestoneId,expectedVersion})` | 1/3/5/10/20 → 50/100/150/300/500. Người dùng bấm Nhận thưởng; không tự cộng khi mở màn hình. MILESTONE_CHANGED yêu cầu tải lại. [Chi tiết](EVENT_MILESTONES.md) |
 | Rewards/voucher | `getReward` → `redeemReward` → `getVoucherCode` cho owner | `PRICE_CHANGED`, `TERMS_CHANGED`, `OUT_OF_STOCK`, `EXPIRED`, `USED`; không lưu QR/code vào logs/analytics |
 | Admin sử dụng voucher | Quét QR `evia:voucher:<voucherId>:<code>` → gửi phần code vào `verifyVoucher` | Chỉ admin được cấp quyền xác nhận; status used là cuối, không trừ xu lần nữa. Giao diện admin nằm ngoài task hiện tại |
 | Inbox/FCM | Permission → `registerDevice`; token refresh đăng ký lại; sign-out gỡ installation → Auth logout | Backend có inbox; nhận push ba trạng thái và navigation cần verify trên Android thật |
@@ -32,6 +68,7 @@ FCM `data` có `notificationId`, `entityType`, `entityId`, đều string. Không
 |---|---|---|
 | `ticket` | **ticketId**, không phải eventId | Service dùng authenticated Firestore read `tickets/{ticketId}` của owner để lấy eventId, sau đó `getTicket({eventId})`. Không truyền ticketId vào tham số eventId |
 | `redemption` | redemptionId | Service đọc owner record `redemptions/{id}` để lấy rewardId/voucherId và mở detail tương ứng |
+| `event` | eventId | Load lại event; dùng cho new_event, schedule_updated, event_reminder. Không chọn màn qua tên/ID mock cố định |
 | Giá trị không hỗ trợ/record không còn | Không tin ID/URL tùy ý | Mở notification center và hiển thị trạng thái phù hợp; không mở link tùy ý từ payload |
 
 Chưa có Callable lookup theo ticketId/redemptionId; nếu đội tích hợp muốn chỉ dùng Callable, cần thống nhất bổ sung endpoint thay vì tự đoán. Các reads ở trên được Rules cho owner, SDK chỉ dùng trong service.

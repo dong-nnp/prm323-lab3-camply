@@ -26,7 +26,7 @@ await db.runTransaction(async tx => {
   const now = Timestamp.now();
   for (const [collection, rows] of Object.entries(catalog)) for (const row of rows) {
     const { id, ...fields } = row;
-    tx.create(db.doc(`${collection}/${id}`), { ...convert(fields), ...(collection === 'events' ? { registeredCount: 0 } : {}), ...(collection === 'organizers' ? { followerCount: 0 } : {}), createdAt: now, updatedAt: now });
+    tx.create(db.doc(`${collection}/${id}`), { ...convert(fields), ...(collection === 'events' ? { registeredCount: 0 } : {}), ...(collection === 'organizers' ? { followerCount: 0 } : {}), ...(collection === 'milestones' ? { version: 1 } : {}), createdAt: now, updatedAt: now });
   }
 });
-console.log('Created approved catalog records. No users, balances, tickets or attendance were seeded.');
+console.log('Created approved catalog/policy records. No users, balances, tickets or attendance were seeded.');

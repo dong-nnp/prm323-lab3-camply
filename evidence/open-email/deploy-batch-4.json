@@ -1,0 +1,11 @@
+{
+  "project": "prm393-31822",
+  "functions": [
+    "verifyRegisteredTicket",
+    "verifyWalkInQr",
+    "verifyRegisteredCode",
+    "verifyWalkInCode"
+  ],
+  "success": true,
+  "completedAt": "2026-11-05T10:05:48.8993108Z"
+}

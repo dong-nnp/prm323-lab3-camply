@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/flow_assets.dart';
 import '../../data/mock/registration_mock_data.dart';
 import '../../models/registration_models.dart';
+import '../../models/flow1_models.dart';
+import '../../viewmodels/flow1_view_model.dart';
+import '../../widgets/status_widgets.dart';
+import '../../core/utils/exception_mapper.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/flow_theme.dart';
@@ -29,6 +33,22 @@ class EventDetailsScreen extends ConsumerWidget {
   final String tab, eventId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(eviaViewModelProvider);
+    final vm = ref.read(eviaViewModelProvider.notifier);
+    final remote = vm.live ? ref.watch(flow1EventProvider(eventId)) : null;
+    if (remote != null && !remote.hasValue) {
+      return EviaPage(
+        child: Center(
+          child: remote.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(remote.error!).message,
+                  onRetry: () => ref.invalidate(flow1EventProvider(eventId)),
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final raw = remote?.asData?.value;
     final event = ref
         .read(registrationViewModelProvider.notifier)
         .event(eventId);
@@ -55,13 +75,20 @@ class EventDetailsScreen extends ConsumerWidget {
         color: AppColors.surface,
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('FREE ADMISSION', style: FlowTheme.footnote),
-                  Text('120 spots remaining', style: EviaTheme.label),
+                  const Text('FREE ADMISSION', style: FlowTheme.footnote),
+                  Text(
+                    raw == null
+                        ? '120 spots remaining'
+                        : raw.spots == null
+                        ? 'Unlimited registration'
+                        : '${raw.spots} spots remaining',
+                    style: EviaTheme.label,
+                  ),
                 ],
               ),
             ),
@@ -72,6 +99,12 @@ class EventDetailsScreen extends ConsumerWidget {
                     ? 'Event Ended'
                     : registered
                     ? 'View My Events'
+                    : raw != null &&
+                          !raw.walkIn &&
+                          !raw.registrationOpen(DateTime.now().toUtc())
+                    ? (raw.spots == 0
+                          ? 'Registration Full'
+                          : 'Registration Closed')
                     : event.walkIn
                     ? "I'm Going"
                     : 'Register Now',
@@ -83,17 +116,23 @@ class EventDetailsScreen extends ConsumerWidget {
                       ? 'imgContainer7'
                       : 'imgContainer12',
                 ),
-                onPressed: event.past
+                onPressed:
+                    event.past ||
+                        (raw != null &&
+                            !registered &&
+                            !raw.walkIn &&
+                            !raw.registrationOpen(DateTime.now().toUtc()))
                     ? null
-                    : () {
+                    : () async {
                         if (!ensureAuthenticated(context, ref)) return;
                         if (registered) {
                           context.go('/my-events');
                         } else if (event.walkIn) {
-                          ref
+                          final saved = await ref
                               .read(registrationViewModelProvider.notifier)
-                              .markGoing();
-                          context.push('/registration/going');
+                              .markGoing(event.id);
+                          if (!context.mounted || !saved) return;
+                          context.push('/registration/going?event=${event.id}');
                         } else {
                           context.push('/registration?event=${event.id}');
                         }
@@ -112,7 +151,8 @@ class EventDetailsScreen extends ConsumerWidget {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.asset(
+                    child: catalogImage(
+                      raw?.imageUrl,
                       event.id == 'music-live'
                           ? FlowAssets.image(screen, 0)
                           : event.image ??
@@ -161,11 +201,12 @@ class EventDetailsScreen extends ConsumerWidget {
                                 ? 'Remove from saved events'
                                 : 'Save event',
                             isSelected: saved,
-                            onPressed: () {
+                            onPressed: () async {
                               if (!ensureAuthenticated(context, ref)) return;
-                              ref
+                              final success = await ref
                                   .read(profileViewModelProvider.notifier)
                                   .toggleSaved(event.id);
+                              if (!context.mounted || !success) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -205,7 +246,11 @@ class EventDetailsScreen extends ConsumerWidget {
                                 foreground: AppColors.textPrimary,
                               ),
                               const Spacer(),
-                              EventBadge('${event.spots} spots left'),
+                              EventBadge(
+                                event.spots == null
+                                    ? 'Unlimited registration'
+                                    : '${event.spots} spots left',
+                              ),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.lg),
@@ -219,13 +264,19 @@ class EventDetailsScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          _EventOrganizer(screen: screen),
+                          _EventOrganizer(
+                            screen: screen,
+                            event: event,
+                            organizerId: raw?.organizerId,
+                          ),
                           const Divider(height: AppSpacing.xl),
                           FlowMeta(
                             event.id == 'music-live'
                                 ? 'Sat, Nov 7, 2026'
                                 : event.date,
-                            subtitle: 'Fall Semester Showcase',
+                            subtitle: raw == null
+                                ? 'Fall Semester Showcase'
+                                : raw.data['subtitle'] as String?,
                             screen: screen,
                             asset: 'imgContainer3',
                           ),
@@ -233,7 +284,11 @@ class EventDetailsScreen extends ConsumerWidget {
                             tab == 'about' && event.id == 'music-live'
                                 ? 'Sat, Nov 7, 2026'
                                 : event.time,
-                            subtitle: 'Doors open: 17:30',
+                            subtitle: raw == null
+                                ? 'Doors open: 17:30'
+                                : raw.data['doorsOpenAt'] == null
+                                ? null
+                                : 'Doors open: ${eventDate(DateTime.parse(raw.data['doorsOpenAt'] as String)).split(' · ').last}',
                             screen: screen,
                             asset: 'imgContainer4',
                           ),
@@ -241,7 +296,9 @@ class EventDetailsScreen extends ConsumerWidget {
                             tab == 'about' && event.id == 'music-live'
                                 ? 'Sat, Nov 7, 2026'
                                 : event.venue,
-                            subtitle: 'West Campus Lawn • Gate 4 Entrance',
+                            subtitle: raw == null
+                                ? 'West Campus Lawn • Gate 4 Entrance'
+                                : raw.venue['address'] as String?,
                             screen: screen,
                             asset: 'imgContainer5',
                           ),
@@ -342,7 +399,7 @@ class EventDetailsScreen extends ConsumerWidget {
                                         style: EviaTheme.label,
                                       ),
                                       const Text(
-                                        'Held during registration · Refund subject to event policy',
+                                        'Held during registration · Cancel: 30% refund, rounded down · No-show: no refund',
                                         style: EviaTheme.caption,
                                       ),
                                     ],
@@ -396,11 +453,15 @@ class EventDetailsScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: AppSpacing.lg),
                           if (tab == 'about')
-                            const _AboutPanel()
+                            _AboutPanel(remote: raw)
                           else if (tab == 'schedule')
-                            _SchedulePanel(screen: screen, event: event)
+                            _SchedulePanel(
+                              screen: screen,
+                              event: event,
+                              remote: raw,
+                            )
                           else
-                            const _LocationPanel(),
+                            _LocationPanel(remote: raw),
                         ],
                       ),
                     ),
@@ -416,12 +477,15 @@ class EventDetailsScreen extends ConsumerWidget {
 }
 
 class _EventOrganizer extends ConsumerWidget {
-  const _EventOrganizer({required this.screen});
+  const _EventOrganizer({required this.screen, this.event, this.organizerId});
+  final EventPresentation? event;
+  final String? organizerId;
   final String screen;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final id = organizerId ?? 'union';
     final followed = ref.watch(
-      eviaViewModelProvider.select((s) => s.followed.contains('union')),
+      eviaViewModelProvider.select((s) => s.followed.contains(id)),
     );
     return Row(
       children: [
@@ -433,15 +497,22 @@ class _EventOrganizer extends ConsumerWidget {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: InkWell(
-            onTap: () => context.push('/organizer'),
+            onTap: () => context.push(
+              organizerId == null
+                  ? '/organizer'
+                  : '/organizer?id=${Uri.encodeQueryComponent(organizerId!)}',
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Organized by', style: EviaTheme.caption),
                 Row(
                   children: [
-                    const Flexible(
-                      child: Text('Student Union', style: EviaTheme.label),
+                    Flexible(
+                      child: Text(
+                        event?.organizer ?? 'Student Union',
+                        style: EviaTheme.label,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     ActivityIcon(screen, 'imgContainer2'),
@@ -454,7 +525,7 @@ class _EventOrganizer extends ConsumerWidget {
         OutlinedButton(
           onPressed: () {
             if (!ensureAuthenticated(context, ref)) return;
-            ref.read(eviaViewModelProvider.notifier).toggleFollowed('union');
+            ref.read(eviaViewModelProvider.notifier).toggleFollowed(id);
           },
           child: Text(followed ? 'Following' : '+ Follow'),
         ),
@@ -464,21 +535,29 @@ class _EventOrganizer extends ConsumerWidget {
 }
 
 class _AboutPanel extends StatelessWidget {
-  const _AboutPanel();
+  const _AboutPanel({this.remote});
+  final Flow1Event? remote;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const Text('About This Event', style: EviaTheme.cardTitle),
       const SizedBox(height: AppSpacing.md),
-      const Text(
-        'Kick off the fall semester with the biggest live music showcase on campus! Featuring student bands, guest DJ sets, food trucks, and light installations across the Main Stadium lawn.',
+      Text(
+        remote?.description ?? 'Kick off the fall semester with the biggest live music showcase on campus! Featuring student bands, guest DJ sets, food trucks, and light installations across the Main Stadium lawn.',
         style: EviaTheme.caption,
       ),
       const SizedBox(height: AppSpacing.xl),
       const Text("What You'll Gain", style: EviaTheme.cardTitle),
       const SizedBox(height: AppSpacing.md),
-      for (var i = 0; i < 3; i++) ...[
+      for (
+        var i = 0;
+        i <
+            (remote == null
+                ? 3
+                : jsonRows(remote!.data['benefits'] ?? []).length);
+        i++
+      ) ...[
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -493,19 +572,25 @@ class _AboutPanel extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    [
-                      'Live Performances',
-                      'Campus Networking',
-                      'Free Merch & Snacks',
-                    ][i],
+                    remote == null
+                        ? [
+                            'Live Performances',
+                            'Campus Networking',
+                            'Free Merch & Snacks',
+                          ][i]
+                        : jsonRows(remote!.data['benefits'])[i]['title']
+                              as String,
                     style: EviaTheme.label,
                   ),
                   Text(
-                    [
-                      'Experience live sets from top student bands and guest artists.',
-                      'Connect with peers across faculties and student club leaders.',
-                      'Exclusive festival wristbands, stickers, and local food vouchers.',
-                    ][i],
+                    remote == null
+                        ? [
+                            'Experience live sets from top student bands and guest artists.',
+                            'Connect with peers across faculties and student club leaders.',
+                            'Exclusive festival wristbands, stickers, and local food vouchers.',
+                          ][i]
+                        : jsonRows(remote!.data['benefits'])[i]['description']
+                              as String,
                     style: EviaTheme.caption,
                   ),
                 ],
@@ -517,8 +602,12 @@ class _AboutPanel extends StatelessWidget {
       ],
       const Text('Who Can Join', style: EviaTheme.cardTitle),
       const SizedBox(height: AppSpacing.md),
-      const Text(
-        '• Open to all currently enrolled undergraduate and graduate students from any faculty.\n\n• Valid student ID (digital or physical card) required at Gate 4 entrance check-in.',
+      Text(
+        remote != null
+            ? (remote!.data['participantRequirements'] as List? ?? [])
+                  .map((r) => '• $r')
+                  .join('\n\n')
+            : '• Open to all currently enrolled undergraduate and graduate students from any faculty.\n\n• Valid student ID (digital or physical card) required at Gate 4 entrance check-in.',
         style: EviaTheme.caption,
       ),
     ],
@@ -526,7 +615,12 @@ class _AboutPanel extends StatelessWidget {
 }
 
 class _SchedulePanel extends StatelessWidget {
-  const _SchedulePanel({required this.screen, required this.event});
+  const _SchedulePanel({
+    required this.screen,
+    required this.event,
+    this.remote,
+  });
+  final Flow1Event? remote;
   final String screen;
   final EventPresentation event;
   @override
@@ -535,9 +629,24 @@ class _SchedulePanel extends StatelessWidget {
     children: [
       Text(event.title, style: EviaTheme.section),
       const SizedBox(height: AppSpacing.lg),
-      _EventOrganizer(screen: screen),
+      _EventOrganizer(
+        screen: screen,
+        event: event,
+        organizerId: remote?.organizerId,
+      ),
       const SizedBox(height: AppSpacing.lg),
-      for (final item in RegistrationMockData.agenda) ...[
+      for (final item
+          in (remote == null
+              ? RegistrationMockData.agenda
+              : remote!.schedule.map(
+                  (s) => EventAgendaItem(
+                    eventDate(DateTime.parse(s['startAt'] as String))
+                        .split(' · ')
+                        .last,
+                    s['title'] as String,
+                    s['description'] as String? ?? '',
+                  ),
+                ))) ...[
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -565,8 +674,10 @@ class _SchedulePanel extends StatelessWidget {
         ),
         const Divider(height: AppSpacing.xl),
       ],
-      const Text(
-        'Schedule subject to minor changes. Final artist lineup confirmed upon check-in.',
+      Text(
+        remote == null
+            ? 'Schedule subject to minor changes. Final artist lineup confirmed upon check-in.'
+            : remote!.data['scheduleNote'] as String? ?? '',
         style: EviaTheme.caption,
       ),
     ],
@@ -574,7 +685,8 @@ class _SchedulePanel extends StatelessWidget {
 }
 
 class _LocationPanel extends StatelessWidget {
-  const _LocationPanel();
+  const _LocationPanel({this.remote});
+  final Flow1Event? remote;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -609,17 +721,19 @@ class _LocationPanel extends StatelessWidget {
                   foreground: AppColors.textSecondary,
                 ),
               ),
-              const Center(
+              Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: AppColors.primary,
                       child: ActivityIcon('2083:5137', 'imgContainer7'),
                     ),
-                    SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     EventBadge(
-                      '• Main Stadium Lawn',
+                      remote == null
+                          ? '• Main Stadium Lawn'
+                          : '• ${remote!.venue['name']}',
                       color: AppColors.surface,
                       foreground: AppColors.textPrimary,
                     ),
@@ -651,20 +765,37 @@ class _LocationPanel extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        [
-                          'Main Stadium',
-                          'Entrance & Check-in',
-                          'Accessibility & Transit',
-                        ][i],
+                        remote != null && i == 0
+                            ? remote!.venue['name'] as String
+                            : [
+                                'Main Stadium',
+                                'Entrance & Check-in',
+                                'Accessibility & Transit',
+                              ][i],
                         style: EviaTheme.label,
                       ),
-                      if (i == 0) const EventBadge('GATE 4'),
+                      if (i == 0)
+                        EventBadge(
+                          remote == null
+                              ? 'GATE 4'
+                              : remote!.venue['entranceLabel'] as String? ?? '',
+                        ),
                       Text(
-                        [
-                          'West Campus Lawn • University Ave Entrance',
-                          'Active Student ID required for gate check-in. Doors open at 17:30. Follow signs to Gate 4.',
-                          'Wheelchair accessible entrance via North Ramp at Gate 4. Campus Shuttle Blue Line stops at Stadium North. Student Lot B parking open with valid digital permit.',
-                        ][i],
+                        remote != null
+                            ? [
+                                    remote!.venue['address'] ?? '',
+                                    remote!.venue['checkInInstructions'] ?? '',
+                                    [
+                                      remote!.venue['accessibilityNotes'],
+                                      remote!.venue['transitNotes'],
+                                    ].whereType<String>().join(' · '),
+                                  ][i]
+                                  as String
+                            : [
+                                'West Campus Lawn • University Ave Entrance',
+                                'Active Student ID required for gate check-in. Doors open at 17:30. Follow signs to Gate 4.',
+                                'Wheelchair accessible entrance via North Ramp at Gate 4. Campus Shuttle Blue Line stops at Stadium North. Student Lot B parking open with valid digital permit.',
+                              ][i],
                         style: EviaTheme.caption,
                       ),
                     ],
@@ -678,7 +809,9 @@ class _LocationPanel extends StatelessWidget {
         onPressed: () => showActivityHelp(
           context,
           'Campus map',
-          'Map preview: Main Stadium Lawn, West Campus Lawn • University Ave Entrance. Enter via Gate 4.',
+          remote == null
+              ? 'Map preview: Main Stadium Lawn, West Campus Lawn • University Ave Entrance. Enter via Gate 4.'
+              : '${remote!.venue['name']} · ${remote!.venue['address'] ?? ''}',
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,

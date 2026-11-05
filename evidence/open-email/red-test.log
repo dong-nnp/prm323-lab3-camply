@@ -1,0 +1,16 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/open_email_policy_test.dart
+00:00 +0: email accepts any valid domain and normalizes identity
+00:00 +0 -1: email accepts any valid domain and normalizes identity [E]
+  Expected: true
+    Actual: <false>
+   person@gmail.com 
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\viewmodels\open_email_policy_test.dart 6:4     main.<fn>
+  
+00:00 +0 -1: bad email syntax is rejected while student ID format stays unchanged
+00:00 +1 -1: Some tests failed.
+
+Failing tests:
+  D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/open_email_policy_test.dart: email accepts any valid domain and normalizes identity

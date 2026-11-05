@@ -82,14 +82,6 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
     super.dispose();
   }
 
-  void _unavailable(String feature) => ScaffoldMessenger.of(context)
-      .showSnackBar(
-        SnackBar(
-          content: Text(
-            '$feature is currently unavailable. Use Skip to explore.',
-          ),
-        ),
-      );
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(eviaViewModelProvider);
@@ -257,8 +249,9 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
-                              onPressed: () =>
-                                  _unavailable('Password recovery'),
+                              onPressed: state.isLoggingIn
+                                  ? null
+                                  : () => vm.resetPassword(_email.text),
                               child: const Text('Forgot password?'),
                             ),
                           ),
@@ -276,6 +269,7 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                             ),
                           AppButton(
                             label: 'Log in',
+                            isLoading: state.isLoggingIn,
                             trailing: const FigmaIcon(
                               '2083:4509',
                               'imgVector8',
@@ -290,13 +284,16 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                             child: Row(
                               children: [
                                 const Expanded(child: Divider()),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                  ),
-                                  child: Text(
-                                    'or continue with',
-                                    style: EviaTheme.caption,
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.md,
+                                    ),
+                                    child: Text(
+                                      'or continue with',
+                                      textAlign: TextAlign.center,
+                                      style: EviaTheme.caption,
+                                    ),
                                   ),
                                 ),
                                 const Expanded(child: Divider()),
@@ -304,7 +301,9 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                             ),
                           ),
                           OutlinedButton(
-                            onPressed: () => _unavailable('Google sign-in'),
+                            onPressed: state.isLoggingIn
+                                ? null
+                                : vm.continueWithGoogle,
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: AppColors.border),
                             ),
@@ -331,7 +330,14 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                                 style: EviaTheme.caption,
                               ),
                               TextButton(
-                                onPressed: () => context.push('/signup'),
+                                onPressed: () => context.go(
+                                  Uri(
+                                    path: '/signup',
+                                    queryParameters: GoRouterState.of(context)
+                                        .uri
+                                        .queryParameters,
+                                  ).toString(),
+                                ),
                                 child: const Text('Sign up'),
                               ),
                             ],

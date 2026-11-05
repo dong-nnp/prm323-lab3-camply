@@ -1,0 +1,19 @@
+{
+  "uid": "evia-demo-staff-v1",
+  "eventId": "demo-mobile-workshop",
+  "before": {
+    "heldCoins": 50,
+    "availableCoins": 150,
+    "version": 3,
+    "updatedAt": "2026-11-05T09:23:47.176Z"
+  },
+  "after": {
+    "heldCoins": 0,
+    "version": 4,
+    "availableCoins": 165,
+    "updatedAt": "2026-11-05T13:43:22.319Z"
+  },
+  "refundCoins": 15,
+  "forfeitedCoins": 35,
+  "verified": true
+}

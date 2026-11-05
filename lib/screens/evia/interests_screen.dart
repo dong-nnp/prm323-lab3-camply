@@ -18,6 +18,7 @@ class EviaInterestsScreen extends ConsumerWidget {
       eviaViewModelProvider.select((s) => s.interests),
     );
     final ready = ref.read(eviaViewModelProvider.notifier).canContinue;
+    final state = ref.watch(eviaViewModelProvider);
     return EviaPage(
       footer: Container(
         color: AppColors.surface,
@@ -26,13 +27,34 @@ class EviaInterestsScreen extends ConsumerWidget {
           width: double.infinity,
           child: AppButton(
             label: 'Continue',
+            isLoading: state.isSavingInterests,
             trailing: const FigmaIcon('2088:2', 'imgContainer11'),
-            onPressed: ready
-                ? () {
-                    final destination = ref
+            onPressed: ready && !state.isSavingInterests
+                ? () async {
+                    final destination = await ref
                         .read(eviaViewModelProvider.notifier)
                         .finishPersonalization();
-                    if (destination != null) context.go(destination);
+                    if (context.mounted && destination != null) {
+                      final from = GoRouterState.of(context)
+                          .uri
+                          .queryParameters['from'];
+                      final target = Uri.tryParse(from ?? '');
+                      context.go(
+                        target != null &&
+                                !target.hasScheme &&
+                                !target.hasAuthority &&
+                                target.path.startsWith('/') &&
+                                ![
+                                  '/interests',
+                                  '/profile/interests',
+                                  '/login',
+                                  '/signup',
+                                  '/',
+                                ].contains(target.path)
+                            ? target.toString()
+                            : destination,
+                      );
+                    }
                   }
                 : null,
           ),
@@ -43,21 +65,9 @@ class EviaInterestsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const EviaLogo(interests: true),
-                TextButton(
-                  onPressed: () {
-                    final destination = ref
-                        .read(eviaViewModelProvider.notifier)
-                        .finishPersonalization(skipped: true);
-                    if (destination != null) context.go(destination);
-                  },
-                  child: const Text('Skip'),
-                ),
-              ],
-            ),
+            const EviaLogo(interests: true),
+            if (state.message != null)
+              Text(state.message!, style: EviaTheme.caption),
             const SizedBox(height: AppSpacing.xl),
             const EventBadge('PERSONALIZE YOUR FEED'),
             const SizedBox(height: AppSpacing.md),

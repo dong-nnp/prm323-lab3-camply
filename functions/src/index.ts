@@ -2,13 +2,14 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import { createBackend } from './backend.js';
 import { REGION, PRODUCT_TIMEZONE } from './policy.js';
 import { createMaintenance } from './maintenance.js';
 import { key } from './shared.js';
+import { createEventNotifications } from './event_notifications.js';
 
 initializeApp();
 // Lab traffic fits fractional CPU and avoids exhausting the project's regional CPU quota.
@@ -37,6 +38,9 @@ export const getTicketQr = callable('getTicketQr');
 export const issueWalkInQr = callable('issueWalkInQr');
 export const verifyRegisteredTicket = callable('verifyRegisteredTicket');
 export const verifyWalkInQr = callable('verifyWalkInQr');
+export const verifyRegisteredCode = callable('verifyRegisteredCode');
+export const verifyWalkInCode = callable('verifyWalkInCode');
+export const demoConfirmAttendance = callable('demoConfirmAttendance');
 export const claimDailyCheckin = callable('claimDailyCheckin');
 export const grantMonthlyGift = callable('grantMonthlyGift');
 export const redeemReward = callable('redeemReward');
@@ -54,8 +58,19 @@ export const listMyEvents = callable('listMyEvents');
 export const getTicket = callable('getTicket');
 export const getOperationStatus = callable('getOperationStatus');
 export const getServerInfo = callable('getServerInfo');
+export const getEventMilestones = callable('getEventMilestones');
+export const claimEventMilestone = callable('claimEventMilestone');
+export const upsertEventMilestone = callable('upsertEventMilestone');
 
 const maintenance = createMaintenance(db);
+const eventNotices = createEventNotifications(db);
+export const eventNotifications = onDocumentWritten({ document: 'events/{eventId}', retry: true, timeoutSeconds: 540 }, async event => {
+  const result = await eventNotices.onEventWritten(event.params.eventId, event.data?.before.data(), event.data?.after.data(), new Date(event.time));
+  console.info('Event notifications prepared', result);
+});
+export const eventReminderSchedule = onSchedule({ schedule: 'every 15 minutes', timeZone: PRODUCT_TIMEZONE, timeoutSeconds: 540, retryCount: 3 }, async () => {
+  console.info('Event reminders finished', await eventNotices.sendReminders());
+});
 export const monthlyGiftSchedule = onSchedule({ schedule: '0 0 1 * *', timeZone: PRODUCT_TIMEZONE, timeoutSeconds: 540, retryCount: 3 }, async event => {
   const result = await maintenance.grantMonthly(new Date(event.scheduleTime));
   console.info('Monthly gifts finished', result);

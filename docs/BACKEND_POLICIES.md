@@ -1,5 +1,28 @@
 # Quy tắc backend đã chốt — 04/11/2026
 
+> **Demo attendance — 05/11/2026, owner yêu cầu:** callable riêng
+> `demoConfirmAttendance` chỉ chạy khi user có `isDemo:true` và
+> `demoAttendanceEnabled:true`, event cũng `isDemo:true`. Server kiểm ownership,
+> active ticket, receipt/transaction; client không thể tự bật cờ. Nút chỉ hiện
+> debug. Chỉ demo bỏ cửa sổ check-in để trình diễn sự kiện tương lai; attendance
+> ghi rõ `isDemo`/`verificationMethod`. QR thật vẫn giữ staff/window/rate guards.
+> [Cách vận hành/tắt demo và evidence](../evidence/flow2-api-only/).
+
+> **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
+> đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;
+> quyền staff/admin và điều kiện sự kiện giữ nguyên. [Contract](PREINTEGRATION_DECISIONS.md).
+
+> **Bổ sung sau review 05/11/2026:** email domain mở, QR + mã dự phòng và ba loại
+> notifications mới theo [PREINTEGRATION_DECISIONS.md](PREINTEGRATION_DECISIONS.md).
+> Bỏ feedback/thành tích theo học kỳ. Café 200 nhưng chưa tạo record cloud khi
+> không có stock/nhà tài trợ/địa điểm/terms được duyệt.
+
+> **Bổ sung 05/11/2026:** owner chốt khôi phục thành tựu lifetime verified events,
+> user bấm Nhận thưởng một lần/mốc. 1/3/5/10/20 → 50/100/150/300/500 xu;
+> tổng +1.100 ngoài event reward. Admin-managed catalog và UI-only Remote Config:
+> [hợp đồng version/snapshot/claim](EVENT_MILESTONES.md). Các số 34 Functions ở
+> bản release 04/11 bên dưới là lịch sử; feature này bổ sung 3 callables thành 37.
+
 Các quyết định trong chat hiện tại thay thế những mục Monthly Gift/no-show/re-registration/cashier còn OPEN ở tài liệu v1.3 trước đây. Implementation mới **đã deploy lên project prm393-31822**; hai jobs ENABLED, metadata/IAM đã verify. Xem [release](backend-release.md); chưa kiểm chứng lần chạy tự nhiên trên dữ liệu thật.
 
 ## Monthly Gift
@@ -12,6 +35,26 @@ Các quyết định trong chat hiện tại thay thế những mục Monthly Gi
 - Callable cũ `grantMonthlyGift` giữ để client cũ nhận lỗi rõ `AUTOMATIC_ONLY`; không cho client chọn UID/tháng/số xu.
 - Không tự backfill những tháng trước lúc triển khai. Khi vận hành cần replay một lần chạy lỗi, operator tin cậy dùng đúng scheduled timestamp, không đưa API replay public cho mobile.
 
+## Chủ động hủy đăng ký — cập nhật 05/11/2026
+
+- Đã deploy riêng `cancelRegistration` lên `prm393-31822`, revision mới READY;
+  8 điều khoản demo đã đồng bộ. [Release evidence](../evidence/cancellation-refund/).
+- Owner chốt hoàn **30% số xu cọc của lần đăng ký**, làm tròn xuống:
+  `refund = floor(registration.depositCoins * 3 / 10)`. Cọc 50 → hoàn 15/mất 35;
+  cọc 55 → hoàn 16/mất 39. Không tính trên tổng ví hoặc giá cọc hiện tại của event.
+- Transaction giảm held toàn bộ cọc, cộng available đúng refund, thu hồi vé và
+  giảm registeredCount một lần. Không cấp attendance/event reward/thành tựu.
+- Registration lưu `depositSettlement: partially_refunded` (cọc 0: `none`),
+  `cancellationRefundCoins`, `cancellationForfeitedCoins`,
+  `cancellationPolicyVersion: refund-30-floor-v1`.
+- Ledger mới `deposit_partial_refund`: `deltaAvailable=refund`, `deltaHeld=-deposit`.
+  Response/receipt trả `depositRefunded`, `depositForfeited`, wallet. Cùng requestId
+  trả lại receipt; request khác trên registration đã hủy bị từ chối, không hoàn lần hai.
+- Áp dụng cho thao tác hủy mới. Không backfill các lần đã hủy/settle hoặc sửa receipt,
+  ledger, attendance cũ. No-show vẫn mất toàn bộ cọc theo quy tắc bên dưới.
+- Mobile Flow 2 chưa nối nút hủy thật; chỉ đồng bộ copy trong dialog cũ và preview.
+  Các kiểm chứng release mới ghi ở [evidence/cancellation-refund](../evidence/cancellation-refund/).
+
 ## No-show
 
 - Chủ dự án chốt: không tham dự thì **mất cọc, không hoàn**.
@@ -23,7 +66,7 @@ Các quyết định trong chat hiện tại thay thế những mục Monthly Gi
 ## Đăng ký lại sau hủy
 
 - Chủ dự án chốt: được đăng ký lại nếu slot còn trống. Kiểm tra capacity và đóng đăng ký tại transaction time; không giữ slot ưu tiên cho người vừa hủy.
-- Client dùng requestId mới. Cọc đã mất của lần trước không hoàn; lần mới giữ cọc theo quote/terms hiện tại.
+- Client dùng requestId mới. Lần hủy trước đã hoàn 30% cọc (làm tròn xuống), phần mất không hoàn thêm; lần mới giữ toàn bộ cọc theo quote/terms hiện tại.
 - Registration canonical vẫn theo `(uid,eventId)`. Lần hủy cũ được archive server-only tại `registrations/{id}/history/{oldTicketId}`; ledger/receipts cũ giữ nguyên.
 - TicketId mới theo registration + requestId. Vé và QR cũ không được kích hoạt lại; counter tăng đúng một nếu thắng slot.
 

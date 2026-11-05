@@ -64,3 +64,14 @@ app.*.map.json
 !/evidence/firebase-migration/*.log
 !/evidence/firebase-migration/**/*.log
 !/evidence/backend-readiness/*.log
+
+!/evidence/event-milestones/*.log
+!/evidence/preintegration/*.log
+!/evidence/demo-data/*.log
+!/evidence/flow1-integration/*.log
+!/evidence/flow1-api-only/*.log
+!/evidence/cancellation-refund/*.log
+!/evidence/open-email/*.log
+!/evidence/flow2-api-only/*.log
+!/evidence/ticket-cache-fix/*.log
+/.local/

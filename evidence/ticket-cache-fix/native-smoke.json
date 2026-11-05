@@ -1,0 +1,24 @@
+{
+  "device": "SM-G996N / R3CR60CT0WZ",
+  "installedApkMatchesBuiltHash": true,
+  "apkSha256": "075046122c05c1095ae539664f79ff32e079fbeeb71076689d826686e3ddb4de",
+  "FIREBASE_ENABLED": true,
+  "DEMO_AUTH": false,
+  "appProcessRunning": true,
+  "observedScreenLabels": [
+    "Discover",
+    "Events",
+    "Rewards",
+    "Profile",
+    "Evia"
+  ],
+  "notRegisteredRenderExceptionInCurrentProcess": false,
+  "cacheRaceReproducedByWidgetTest": true,
+  "cacheRaceForcedOnDevice": false,
+  "openExistingTicket": {
+    "myTicketVisible": true,
+    "qrVisible": true,
+    "errorWidgetTextVisible": false,
+    "businessActionsSubmitted": false
+  }
+}

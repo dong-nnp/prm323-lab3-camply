@@ -1,10 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/evia_mock_data.dart';
+import '../core/providers/repository_providers.dart';
+import '../core/utils/exception_mapper.dart';
 import '../models/evia_models.dart';
 import '../models/auth_session.dart';
 import '../core/constants/app_routes.dart';
+import '../core/utils/fpt_identity.dart';
 import 'authentication_view_model.dart';
+import '../core/providers/service_providers.dart';
+import '../models/flow1_models.dart';
+import 'flow1_view_model.dart';
 
 class EviaState {
   const EviaState({
@@ -21,6 +27,8 @@ class EviaState {
     this.organizer = 'All',
     this.message,
     this.showPassword = false,
+    this.isLoggingIn = false,
+    this.isSavingInterests = false,
     this.personalizedUsers = const {},
   });
   final Set<String> interests, saved, followed;
@@ -30,6 +38,8 @@ class EviaState {
   final EventFilters filters, draft;
   final bool results, descending, showPassword;
   final String? message;
+  final bool isLoggingIn;
+  final bool isSavingInterests;
   EviaState copyWith({
     Set<String>? interests,
     Set<String>? saved,
@@ -44,6 +54,8 @@ class EviaState {
     String? organizer,
     String? message,
     bool? showPassword,
+    bool? isLoggingIn,
+    bool? isSavingInterests,
     Set<String>? personalizedUsers,
   }) => EviaState(
     interests: interests ?? this.interests,
@@ -59,6 +71,8 @@ class EviaState {
     organizer: organizer ?? this.organizer,
     message: message,
     showPassword: showPassword ?? this.showPassword,
+    isLoggingIn: isLoggingIn ?? this.isLoggingIn,
+    isSavingInterests: isSavingInterests ?? this.isSavingInterests,
     personalizedUsers: personalizedUsers ?? this.personalizedUsers,
   );
 }
@@ -68,49 +82,132 @@ final eviaViewModelProvider = NotifierProvider<EviaViewModel, EviaState>(
 );
 
 class EviaViewModel extends Notifier<EviaState> {
+  bool get live => ref.read(realBackendEnabledProvider);
+  Flow1Snapshot? get catalog =>
+      live ? ref.read(flow1ViewModelProvider).asData?.value : null;
+  static const interestIds = {
+    'Technology': 'technology',
+    'Music & Gigs': 'music',
+    'Arts & Culture': 'arts',
+    'Sports & Fitness': 'sports',
+    'Photography': 'photography',
+    'Career & Skills': 'career',
+    'Volunteering': 'volunteer',
+    'Startups & Pitch': 'business',
+  };
+  Set<String> _interestNames(Flow1Snapshot? data) => interestIds.entries
+      .where((e) => data?.selectedInterests.contains(e.value) ?? false)
+      .map((e) => e.key)
+      .toSet();
   @override
-  EviaState build() => const EviaState();
-
-  /// Records an explicit completion/skip for the current real session only.
-  /// This UI state does not claim to save a profile to a pending backend.
-  String? finishPersonalization({bool skipped = false}) {
-    if (!skipped && !canContinue) return null;
-    final session = ref.read(authenticationViewModelProvider).asData?.value;
-    if (session?.status == AuthStatus.signedIn) {
+  EviaState build() {
+    if (!ref.watch(realBackendEnabledProvider)) return const EviaState();
+    ref.listen(flow1ViewModelProvider, (_, next) {
+      final data = next.asData?.value;
       state = state.copyWith(
-        personalizedUsers: {...state.personalizedUsers, session!.userId!},
+        saved: data?.saved ?? {},
+        followed: data?.followed ?? {},
+        interests: _interestNames(data),
+        message: data?.actionError,
+      );
+    });
+    return EviaState(
+      saved: catalog?.saved ?? {},
+      followed: catalog?.followed ?? {},
+      interests: _interestNames(catalog),
+      history: const [],
+    );
+  }
+
+  Future<String?> finishPersonalization() async {
+    if (!canContinue || state.isSavingInterests) return null;
+    final session = ref.read(authenticationViewModelProvider).asData?.value;
+    if (session?.status != AuthStatus.signedIn) {
+      state = state.copyWith(message: 'Log in before saving your interests.');
+      return null;
+    }
+    state = state.copyWith(isSavingInterests: true);
+    try {
+      if (live) {
+        final ids = state.interests.map((name) => interestIds[name]!).toSet();
+        // Preserve server interests whose UI cards have not been provided yet.
+        ids.addAll(
+          (catalog?.selectedInterests ?? {}).where(
+            (id) => !interestIds.containsValue(id),
+          ),
+        );
+        await ref.read(flow1RepositoryProvider).saveInterests(ids);
+        await ref.read(flow1ViewModelProvider.notifier).refresh();
+        if (ref.read(flow1ViewModelProvider).hasError) {
+          throw ref.read(flow1ViewModelProvider).error!;
+        }
+      } else {
+        await ref
+            .read(campusRepositoryProvider)
+            .saveInterests(Set.unmodifiable(state.interests));
+      }
+      if (!ref.mounted ||
+          ref.read(authenticationViewModelProvider).asData?.value.userId !=
+              session!.userId) {
+        return null;
+      }
+      state = state.copyWith(
+        personalizedUsers: {...state.personalizedUsers, session.userId!},
+        isSavingInterests: false,
       );
       return AppRoutes.discover;
+    } catch (error) {
+      if (ref.mounted) {
+        state = state.copyWith(
+          isSavingInterests: false,
+          message: ExceptionMapper.map(error).message,
+        );
+      }
+      return null;
+    } finally {
+      if (ref.mounted && state.isSavingInterests) {
+        state = state.copyWith(
+          isSavingInterests: false,
+          message: state.message,
+        );
+      }
     }
-    return skipped ? AppRoutes.guestDiscover : AppRoutes.discover;
   }
 
   Set<String> _toggle(Set<String> values, String value) =>
       values.contains(value)
       ? ({...values}..remove(value))
       : {...values, value};
-  void toggleInterest(String name) =>
+  void toggleInterest(String name) {
+    if (!state.isSavingInterests) {
       state = state.copyWith(interests: _toggle(state.interests, name));
+    }
+  }
+
   bool saveInterests(Set<String> values) {
     if (values.length < 3) return false;
     state = state.copyWith(interests: Set.unmodifiable(values));
     return true;
   }
 
-  void toggleSaved(String id) {
+  Future<bool> toggleSaved(String id) async {
     if (!ref.read(hasAuthenticatedSessionProvider)) {
       state = state.copyWith(message: 'Log in to save events.');
-      return;
+      return false;
     }
+    if (live) return ref.read(flow1ViewModelProvider.notifier).bookmark(id);
     state = state.copyWith(saved: _toggle(state.saved, id));
+    return true;
   }
 
-  void toggleFollowed(String id) {
+  Future<bool> toggleFollowed(String id) async {
     if (!ref.read(hasAuthenticatedSessionProvider)) {
       state = state.copyWith(message: 'Log in to follow organizers.');
-      return;
+      return false;
     }
+    if (live) return ref.read(flow1ViewModelProvider.notifier).follow(id);
     state = state.copyWith(followed: _toggle(state.followed, id));
+    return true;
   }
 
   void removeHistory(String value) => state = state.copyWith(
@@ -170,14 +267,24 @@ class EviaViewModel extends Notifier<EviaState> {
   void togglePassword() =>
       state = state.copyWith(showPassword: !state.showPassword);
   bool get canContinue => state.interests.length >= 3;
-  List<CampusEvent> get followedEventFeed => EviaMockData.followingEvents
-      .where(
-        (event) => state.followed.contains(
-          event.organizer == 'Student Union' ? 'union' : 'photography',
-        ),
-      )
-      .toList();
+  List<CampusEvent> get followedEventFeed => live
+      ? events.where((e) => state.followed.contains(e.organizerId)).toList()
+      : EviaMockData.followingEvents
+            .where(
+              (event) => state.followed.contains(
+                event.organizer == 'Student Union' ? 'union' : 'photography',
+              ),
+            )
+            .toList();
   List<CampusEvent> get followingEvents {
+    if (live) {
+      final selected = followedEventFeed
+          .where(
+            (e) => state.organizer == 'All' || e.organizer == state.organizer,
+          )
+          .toList();
+      return state.descending ? selected.reversed.toList() : selected;
+    }
     final events = EviaMockData.followingEvents
         .where(
           (event) =>
@@ -192,23 +299,131 @@ class EviaViewModel extends Notifier<EviaState> {
   }
 
   List<CampusOrganizer> get followedOrganizers {
-    final organizers = [
-      ...EviaMockData.organizers,
-      ...EviaMockData.recommendations,
-    ].where((o) => state.followed.contains(o.id)).toList();
+    final organizers = [...allOrganizers]
+        .where((o) => state.followed.contains(o.id))
+        .toList();
     return state.descending ? organizers.reversed.toList() : organizers;
   }
 
-  List<CampusOrganizer> get suggestedOrganizers => EviaMockData.organizers
-      .where((o) => !state.followed.contains(o.id))
-      .toList();
-  void login(String email, String password) => state = state.copyWith(
-    message: !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email.trim())
-        ? 'Please enter a valid email address.'
-        : password.isEmpty
-        ? 'Please enter your password.'
-        : 'Sign-in is currently unavailable. Use Skip to explore.',
-  );
+  List<CampusOrganizer> get suggestedOrganizers =>
+      (live ? allOrganizers : EviaMockData.organizers)
+          .where((o) => !state.followed.contains(o.id))
+          .toList();
+  List<CampusOrganizer> get allOrganizers => live
+      ? catalog?.organizerCards ?? []
+      : [...EviaMockData.organizers, ...EviaMockData.recommendations];
+  List<CampusEvent> get events => live
+      ? catalog?.events
+                .map((e) => e.card(catalog!.organizerName(e.organizerId)))
+                .toList() ??
+            []
+      : [EviaMockData.music, ...EviaMockData.upcoming];
+  CampusEvent? get featured => live
+      ? catalog?.events
+            .where((e) => e.featured)
+            .firstOrNull
+            ?.card(
+              catalog!.organizerName(
+                catalog!.events.firstWhere((e) => e.featured).organizerId,
+              ),
+            )
+      : EviaMockData.music;
+  List<CampusEvent> get recommended => live
+      ? catalog?.events
+                .where(
+                  (e) => [
+                    e.category,
+                    ...List<String>.from(e.data['tags'] as List? ?? []),
+                  ].any(catalog!.selectedInterests.contains),
+                )
+                .map((e) => e.card(catalog!.organizerName(e.organizerId)))
+                .take(2)
+                .toList() ??
+            []
+      : [EviaMockData.recommendedAi, EviaMockData.photoWalk];
+  List<String> get categories => live
+      ? ['All', ...events.map((e) => e.category).toSet()]
+      : ['All', 'Technology', 'Music', 'Sports', 'Arts'];
+  String get discoverName => live
+      ? 'Hey ${catalog?.profile['displayName'] ?? ''}! 👋'
+      : EviaMockData.discoverName;
+  String get recommendationSubtitle => live
+      ? 'Based on your interests'
+      : 'Based on your interests in Technology & Arts';
+  Future<void> login(String email, String password) async {
+    if (state.isLoggingIn) return;
+    if (!FptIdentity.validEmail(email)) {
+      state = state.copyWith(message: 'Enter a valid email address.');
+      return;
+    }
+    if (password.isEmpty) {
+      state = state.copyWith(message: 'Please enter your password.');
+      return;
+    }
+    state = state.copyWith(isLoggingIn: true);
+    try {
+      await ref
+          .read(authenticationRepositoryProvider)
+          .signInWithEmailPassword(email, password);
+    } catch (error) {
+      if (ref.mounted) {
+        state = state.copyWith(message: ExceptionMapper.map(error).message);
+      }
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoggingIn: false, message: state.message);
+      }
+    }
+  }
+
+  Future<void> continueWithGoogle() async {
+    if (state.isLoggingIn) return;
+    state = state.copyWith(isLoggingIn: true);
+    try {
+      await ref.read(authenticationRepositoryProvider).signInWithGoogle();
+    } catch (error) {
+      if (ref.mounted) {
+        state = state.copyWith(
+          message: ExceptionMapper.map(error).message,
+          isLoggingIn: true,
+        );
+      }
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoggingIn: false, message: state.message);
+      }
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    if (state.isLoggingIn) return;
+    if (!FptIdentity.validEmail(email)) {
+      state = state.copyWith(message: 'Enter a valid email address.');
+      return;
+    }
+    state = state.copyWith(isLoggingIn: true);
+    try {
+      await ref.read(authenticationRepositoryProvider).resetPassword(email);
+      if (ref.mounted) {
+        state = state.copyWith(
+          isLoggingIn: true,
+          message:
+              'If this account exists, a password reset email has been sent.',
+        );
+      }
+    } catch (error) {
+      if (ref.mounted) {
+        state = state.copyWith(
+          isLoggingIn: true,
+          message: ExceptionMapper.map(error).message,
+        );
+      }
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoggingIn: false, message: state.message);
+      }
+    }
+  }
 
   List<CampusEvent> get searchResults {
     final catalog = <String, CampusEvent>{
@@ -293,7 +508,6 @@ class EviaViewModel extends Notifier<EviaState> {
     };
     final matchesAvailability = switch (filters.availability) {
       'Any' => true,
-      'Waitlist Available' => event.policy == 'Waitlist available',
       'Spots Available' => event.note == '120 spots left',
       _ => false,
     };

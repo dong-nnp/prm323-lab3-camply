@@ -1,0 +1,54 @@
+{
+  "project": "prm393-31822",
+  "verifiedAt": "2026-11-05T09:48:49.874Z",
+  "checks": [
+    {
+      "id": "demo-badminton",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-career-talk",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-design-thinking",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-full-event",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-last-ticket",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-live-registration",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-mobile-workshop",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    },
+    {
+      "id": "demo-music-night",
+      "version": "demo-refund30-v2",
+      "termsVerified": true,
+      "otherFieldsUnchanged": true
+    }
+  ]
+}

@@ -96,7 +96,8 @@ class FlowEventSummary extends StatelessWidget {
                       top: -73,
                       width: 334,
                       height: 715.5,
-                      child: Image.asset(
+                      child: catalogImage(
+                        event.image,
                         FlowAssets.image(screen, 0),
                         fit: BoxFit.fill,
                       ),

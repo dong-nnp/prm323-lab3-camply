@@ -1,0 +1,357 @@
+{
+  "checkedAt": "2026-11-05T05:02:29.885Z",
+  "project": "prm393-31822",
+  "region": "asia-southeast1",
+  "totalFunctions": 41,
+  "allActiveAndReady": true,
+  "sourceHash": "d651a370b2e9a4f54b9b4ac2e47e6fb15c0f0e28",
+  "run": [
+    {
+      "name": "verifyWalkInQr",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/verifywalkinqr/revisions/verifywalkinqr-00003-wuq",
+      "updateTime": "2026-11-05T04:37:41.558702513Z"
+    },
+    {
+      "name": "claimDailyCheckin",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/claimdailycheckin/revisions/claimdailycheckin-00003-fah",
+      "updateTime": "2026-11-05T04:23:12.787929692Z"
+    },
+    {
+      "name": "getAccount",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getaccount/revisions/getaccount-00003-tuj",
+      "updateTime": "2026-11-05T04:24:39.474611168Z"
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/issuewalkinqr/revisions/issuewalkinqr-00003-few",
+      "updateTime": "2026-11-05T04:30:21.755194541Z"
+    },
+    {
+      "name": "deliverNotification",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/delivernotification/revisions/delivernotification-00003-soh",
+      "updateTime": "2026-11-05T04:23:15.768378577Z"
+    },
+    {
+      "name": "markNotificationsRead",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/marknotificationsread/revisions/marknotificationsread-00003-kat",
+      "updateTime": "2026-11-05T04:30:24.935154676Z"
+    },
+    {
+      "name": "eventNotifications",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/eventnotifications/revisions/eventnotifications-00001-kes",
+      "updateTime": "2026-11-05T04:24:57.082615175Z"
+    },
+    {
+      "name": "getVoucherCode",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getvouchercode/revisions/getvouchercode-00003-kiz",
+      "updateTime": "2026-11-05T04:28:52.263836568Z"
+    },
+    {
+      "name": "noShowSchedule",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/noshowschedule/revisions/noshowschedule-00002-zac",
+      "updateTime": "2026-11-05T04:31:57.755536875Z"
+    },
+    {
+      "name": "getTicket",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getticket/revisions/getticket-00003-sew",
+      "updateTime": "2026-11-05T04:27:32.000899937Z"
+    },
+    {
+      "name": "listMyEvents",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/listmyevents/revisions/listmyevents-00003-mas",
+      "updateTime": "2026-11-05T04:30:23.361640119Z"
+    },
+    {
+      "name": "getServerInfo",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getserverinfo/revisions/getserverinfo-00003-gof",
+      "updateTime": "2026-11-05T04:27:32.449323985Z"
+    },
+    {
+      "name": "getTicketQr",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getticketqr/revisions/getticketqr-00003-xov",
+      "updateTime": "2026-11-05T04:28:47.681693815Z"
+    },
+    {
+      "name": "initializeUser",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/initializeuser/revisions/initializeuser-00003-suf",
+      "updateTime": "2026-11-05T04:28:52.486000913Z"
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/verifyvoucher/revisions/verifyvoucher-00003-cem",
+      "updateTime": "2026-11-05T04:36:15.187854012Z"
+    },
+    {
+      "name": "setWalkInGoing",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/setwalkingoing/revisions/setwalkingoing-00003-ceq",
+      "updateTime": "2026-11-05T04:33:18.658994456Z"
+    },
+    {
+      "name": "setBookmark",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/setbookmark/revisions/setbookmark-00003-wuy",
+      "updateTime": "2026-11-05T04:33:18.602474626Z"
+    },
+    {
+      "name": "unfollowOrganizer",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/unfolloworganizer/revisions/unfolloworganizer-00003-ced",
+      "updateTime": "2026-11-05T04:34:31.920749628Z"
+    },
+    {
+      "name": "getReward",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getreward/revisions/getreward-00003-dox",
+      "updateTime": "2026-11-05T04:27:31.229442167Z"
+    },
+    {
+      "name": "followOrganizer",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/followorganizer/revisions/followorganizer-00003-heq",
+      "updateTime": "2026-11-05T04:24:40.450332489Z"
+    },
+    {
+      "name": "verifyRegisteredCode",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/verifyregisteredcode/revisions/verifyregisteredcode-00001-men",
+      "updateTime": "2026-11-05T04:36:04.801686236Z"
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/verifyregisteredticket/revisions/verifyregisteredticket-00003-qar",
+      "updateTime": "2026-11-05T04:36:14.905534584Z"
+    },
+    {
+      "name": "updateProfile",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/updateprofile/revisions/updateprofile-00003-wip",
+      "updateTime": "2026-11-05T04:34:35.034004611Z"
+    },
+    {
+      "name": "grantMonthlyGift",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/grantmonthlygift/revisions/grantmonthlygift-00003-run",
+      "updateTime": "2026-11-05T04:28:53.394867697Z"
+    },
+    {
+      "name": "registerForEvent",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/registerforevent/revisions/registerforevent-00003-yut",
+      "updateTime": "2026-11-05T04:33:16.726538034Z"
+    },
+    {
+      "name": "redeemReward",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/redeemreward/revisions/redeemreward-00003-heq",
+      "updateTime": "2026-11-05T04:31:58.426691932Z"
+    },
+    {
+      "name": "getOrganizer",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getorganizer/revisions/getorganizer-00003-mef",
+      "updateTime": "2026-11-05T04:26:10.471488876Z"
+    },
+    {
+      "name": "eventReminderSchedule",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/eventreminderschedule/revisions/eventreminderschedule-00001-qig",
+      "updateTime": "2026-11-05T04:24:40.462193934Z"
+    },
+    {
+      "name": "getEventMilestones",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/geteventmilestones/revisions/geteventmilestones-00002-kiq",
+      "updateTime": "2026-11-05T04:26:11.162021239Z"
+    },
+    {
+      "name": "saveInterests",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/saveinterests/revisions/saveinterests-00003-kiw",
+      "updateTime": "2026-11-05T04:33:19.404045983Z"
+    },
+    {
+      "name": "monthlyGiftSchedule",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/monthlygiftschedule/revisions/monthlygiftschedule-00002-cuh",
+      "updateTime": "2026-11-05T04:31:44.998096088Z"
+    },
+    {
+      "name": "upsertEventMilestone",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/upserteventmilestone/revisions/upserteventmilestone-00002-toy",
+      "updateTime": "2026-11-05T04:34:35.701982050Z"
+    },
+    {
+      "name": "cancelRegistration",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration/revisions/cancelregistration-00003-qor",
+      "updateTime": "2026-11-05T04:23:04.251522471Z"
+    },
+    {
+      "name": "getPublicCatalog",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getpubliccatalog/revisions/getpubliccatalog-00003-lev",
+      "updateTime": "2026-11-05T04:27:31.962434924Z"
+    },
+    {
+      "name": "listOwned",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/listowned/revisions/listowned-00003-zox",
+      "updateTime": "2026-11-05T04:30:24.513541611Z"
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getoperationstatus/revisions/getoperationstatus-00004-yoj",
+      "updateTime": "2026-11-05T04:26:11.906351251Z"
+    },
+    {
+      "name": "registerDevice",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/registerdevice/revisions/registerdevice-00003-kul",
+      "updateTime": "2026-11-05T04:31:57.694465120Z"
+    },
+    {
+      "name": "getEvent",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/getevent/revisions/getevent-00003-huf",
+      "updateTime": "2026-11-05T04:26:04.654499507Z"
+    },
+    {
+      "name": "unregisterDevice",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/unregisterdevice/revisions/unregisterdevice-00003-dax",
+      "updateTime": "2026-11-05T04:34:35.074747322Z"
+    },
+    {
+      "name": "claimEventMilestone",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/claimeventmilestone/revisions/claimeventmilestone-00002-don",
+      "updateTime": "2026-11-05T04:23:14.209990261Z"
+    },
+    {
+      "name": "verifyWalkInCode",
+      "state": "ACTIVE",
+      "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/verifywalkincode/revisions/verifywalkincode-00001-fos",
+      "updateTime": "2026-11-05T04:36:12.861747415Z"
+    }
+  ],
+  "groupIndexes": [
+    {
+      "collection": "following",
+      "field": "organizerId",
+      "state": "READY",
+      "queryPassed": true
+    },
+    {
+      "collection": "event_intents",
+      "field": "eventId",
+      "state": "READY",
+      "queryPassed": true
+    }
+  ],
+  "scheduler": [
+    {
+      "name": "firebase-schedule-eventReminderSchedule-asia-southeast1",
+      "state": "ENABLED",
+      "schedule": "every 15 minutes",
+      "timeZone": "Asia/Ho_Chi_Minh",
+      "lastAttemptTime": "2026-11-05T04:54:03.807166Z",
+      "status": {}
+    },
+    {
+      "name": "firebase-schedule-noShowSchedule-asia-southeast1",
+      "state": "ENABLED",
+      "schedule": "every 60 minutes",
+      "timeZone": "Asia/Ho_Chi_Minh",
+      "lastAttemptTime": "2026-11-05T04:43:01.867225Z",
+      "status": {}
+    },
+    {
+      "name": "firebase-schedule-monthlyGiftSchedule-asia-southeast1",
+      "state": "ENABLED",
+      "schedule": "0 0 1 * *",
+      "timeZone": "Asia/Ho_Chi_Minh",
+      "status": {
+        "code": -1
+      }
+    }
+  ],
+  "reminderInvokerPrivateAndAuthorized": true,
+  "checks": [
+    {
+      "name": "verifyWalkInCode",
+      "httpStatus": 401,
+      "code": "UNAUTHENTICATED"
+    },
+    {
+      "name": "verifyRegisteredCode",
+      "httpStatus": 401,
+      "code": "UNAUTHENTICATED"
+    },
+    {
+      "name": "getPublicCatalog",
+      "kind": "events",
+      "httpStatus": 200,
+      "count": 0
+    },
+    {
+      "name": "getPublicCatalog",
+      "kind": "interests",
+      "httpStatus": 200,
+      "count": 0
+    },
+    {
+      "name": "getPublicCatalog",
+      "kind": "organizers",
+      "httpStatus": 200,
+      "count": 0
+    },
+    {
+      "name": "getPublicCatalog",
+      "kind": "rewards",
+      "httpStatus": 200,
+      "count": 0
+    }
+  ],
+  "counts": {
+    "users": 0,
+    "wallets": 0,
+    "events": 0,
+    "organizers": 0,
+    "interests": 0,
+    "rewards": 0,
+    "milestones": 5,
+    "attendance": 0,
+    "notifications": 0,
+    "checkin_tokens": 0,
+    "checkin_codes": 0,
+    "code_attempts": 0,
+    "notification_runs": 0,
+    "staff_assignments": 0,
+    "voucher_admins": 0
+  },
+  "remoteConfigVersion": "1",
+  "boundaries": [
+    "No live business or Auth data was written by these checks",
+    "FPT guard and positive code/notification behavior verified in Emulator, not via live user transactions",
+    "Scheduler configuration and IAM are verified; delivery on a real mobile account is not verified"
+  ]
+}

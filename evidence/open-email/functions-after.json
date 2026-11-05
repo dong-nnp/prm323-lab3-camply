@@ -1,0 +1,300 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T10:12:43.351Z",
+  "publicOnlyUnchanged": [
+    "getEvent",
+    "getOrganizer",
+    "getReward",
+    "getServerInfo"
+  ],
+  "functions": [
+    {
+      "name": "initializeUser",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:00:45.004096133Z",
+      "revision": "initializeuser-00004-huz",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/initializeuser",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "updateProfile",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:00:44.991618413Z",
+      "revision": "updateprofile-00004-cug",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/updateprofile",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "saveInterests",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:00:46.790813262Z",
+      "revision": "saveinterests-00004-viw",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/saveinterests",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getAccount",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:00:44.645802179Z",
+      "revision": "getaccount-00004-rin",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getaccount",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "followOrganizer",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:02:20.522200258Z",
+      "revision": "followorganizer-00004-som",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/followorganizer",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "unfollowOrganizer",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:02:30.460158176Z",
+      "revision": "unfolloworganizer-00004-ruw",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/unfolloworganizer",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "setBookmark",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:02:29.263124832Z",
+      "revision": "setbookmark-00004-piw",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/setbookmark",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "setWalkInGoing",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:02:31.159849345Z",
+      "revision": "setwalkingoing-00004-dac",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/setwalkingoing",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "registerForEvent",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:04:14.533514629Z",
+      "revision": "registerforevent-00004-vun",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/registerforevent",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "cancelRegistration",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:04:05.505862383Z",
+      "revision": "cancelregistration-00005-suz",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/cancelregistration",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getTicketQr",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:04:14.464083373Z",
+      "revision": "getticketqr-00004-tih",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getticketqr",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:04:14.288808908Z",
+      "revision": "issuewalkinqr-00004-pav",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/issuewalkinqr",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:05:43.158259725Z",
+      "revision": "verifyregisteredticket-00004-ses",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifyregisteredticket",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "verifyWalkInQr",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:05:42.452372268Z",
+      "revision": "verifywalkinqr-00004-pip",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifywalkinqr",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "verifyRegisteredCode",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:05:38.498050150Z",
+      "revision": "verifyregisteredcode-00002-yin",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifyregisteredcode",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "verifyWalkInCode",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:05:42.338458434Z",
+      "revision": "verifywalkincode-00002-rel",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifywalkincode",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "claimDailyCheckin",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:07:17.973268289Z",
+      "revision": "claimdailycheckin-00004-tef",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/claimdailycheckin",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "grantMonthlyGift",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:07:23.544332396Z",
+      "revision": "grantmonthlygift-00004-vel",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/grantmonthlygift",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "redeemReward",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:07:23.406143191Z",
+      "revision": "redeemreward-00004-dob",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/redeemreward",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getVoucherCode",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:07:24.552085219Z",
+      "revision": "getvouchercode-00004-pil",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getvouchercode",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:09:02.794626883Z",
+      "revision": "verifyvoucher-00004-tuq",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/verifyvoucher",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "markNotificationsRead",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:08:58.641939565Z",
+      "revision": "marknotificationsread-00004-kon",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/marknotificationsread",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "registerDevice",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:09:02.547810216Z",
+      "revision": "registerdevice-00004-vil",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/registerdevice",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "unregisterDevice",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:09:01.352189610Z",
+      "revision": "unregisterdevice-00004-zeq",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/unregisterdevice",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getPublicCatalog",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:10:28.800201557Z",
+      "revision": "getpubliccatalog-00004-dep",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getpubliccatalog",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "listOwned",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:10:29.133286654Z",
+      "revision": "listowned-00004-rek",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/listowned",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "listMyEvents",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:10:29.342744291Z",
+      "revision": "listmyevents-00004-fuw",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/listmyevents",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getTicket",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:10:29.737043415Z",
+      "revision": "getticket-00004-mag",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getticket",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:11:57.411853457Z",
+      "revision": "getoperationstatus-00005-yek",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/getoperationstatus",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "getEventMilestones",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:11:56.833774264Z",
+      "revision": "geteventmilestones-00003-fec",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/geteventmilestones",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "claimEventMilestone",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:11:55.436109192Z",
+      "revision": "claimeventmilestone-00003-pib",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/claimeventmilestone",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    },
+    {
+      "name": "upsertEventMilestone",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-05T10:11:59.160419954Z",
+      "revision": "upserteventmilestone-00003-wox",
+      "service": "projects/prm393-31822/locations/asia-southeast1/services/upserteventmilestone",
+      "hash": "b07933c99723a27c7f4e971d2bcd621a13360759",
+      "ready": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "project": "prm393-31822",
+  "functions": [
+    "claimDailyCheckin",
+    "grantMonthlyGift",
+    "redeemReward",
+    "getVoucherCode"
+  ],
+  "success": true,
+  "completedAt": "2026-11-05T10:07:28.2437240Z"
+}

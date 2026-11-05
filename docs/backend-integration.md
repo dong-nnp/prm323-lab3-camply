@@ -1,5 +1,25 @@
 # Backend Evia — hướng dẫn tích hợp
 
+> **Flow 2 — 05/11/2026:** `verifyWalkInQr`/`verifyWalkInCode` bổ sung
+> `expectedEventId?:string` tương thích caller cũ; khác event lỗi
+> `QR_EVENT_MISMATCH`, không ghi attendance/wallet. `demoConfirmAttendance`
+> nhận `{eventId,requestId}`, chỉ user `isDemo && demoAttendanceEnabled` và event
+> `isDemo` do server quản lý; chỉ demo bỏ cửa sổ giờ. Không cần staff credentials
+> trong APK. [Contract, cách tắt demo và evidence](../evidence/flow2-api-only/).
+
+> **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
+> đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;
+> quyền staff/admin và điều kiện sự kiện giữ nguyên. [Contract](PREINTEGRATION_DECISIONS.md).
+
+> **Policy hủy mới 05/11/2026:** chủ động hủy hoàn 30% cọc, làm tròn xuống số xu
+> nguyên; phần còn lại mất. No-show vẫn mất toàn bộ. Không hoàn bù giao dịch cũ.
+> [Contract và ledger](BACKEND_POLICIES.md#chủ-động-hủy-đăng-ký--cập-nhật-05112026).
+
+> **API bổ sung 05/11/2026:** [contract trước tích hợp](PREINTEGRATION_DECISIONS.md)
+> thêm manualCode vào QR responses, verifyRegisteredCode/verifyWalkInCode và
+> notifications event/new/schedule/reminder; protected API nhận mọi email hợp lệ từ Firebase Auth token.
+> Các ghi chú 34 Functions/no manual/no follower fanout ở snapshot cũ được thay thế.
+
 Ngày 04/11/2026. Implementation: `functions/src/`. **Project hiện tại:
 `prm393-31822` (evia, Blaze)**. Emulator/tests dùng `demo-evia-backend`.
 Đã deploy 34 Functions; 34 Cloud Run latest revisions READY, 2 Scheduler jobs ENABLED. Rules smoke đạt, 14 indexes READY; xem [release mới](backend-release.md).
@@ -117,7 +137,7 @@ owner cho mỗi event ứng viên; cần projection khi lượng sự kiện tă
 | Callable | Request | Kết quả chính |
 |---|---|---|
 | `registerForEvent` | `{eventId,requestId,expectedDepositCoins,acceptedTermsVersion,attendeeInput:{fullName,studentId,universityEmail,phoneNumber?}}` | `{registrationId,ticketId,wallet}` |
-| `cancelRegistration` | `{eventId,requestId}` | `{registrationId,state:'cancelled',wallet}` |
+| `cancelRegistration` | `{eventId,requestId}` | `{registrationId,state:'cancelled',depositRefunded,depositForfeited,wallet}` |
 | `getTicketQr` | `{eventId}` | `{ticketId,ticketNumber,qrPayload,expiresAt}`; owner vé active, TTL 120 giây |
 | `issueWalkInQr` | `{eventId}` | `{eventId,qrPayload,expiresAt}`; staff được phân công, TTL tối đa 60 giây |
 | `verifyRegisteredTicket` | `{qrPayload,requestId}` | `{attendanceId,eventId,coinsGranted,depositRefunded}`; không lộ ví sinh viên cho staff |
@@ -129,8 +149,14 @@ owner cho mỗi event ứng viên; cần projection khi lượng sự kiện tă
 Không Waitlist. Vé cuối được cấp trong transaction; full trả `EVENT_FULL` không
 đổi tiền/counter. Giá cọc/terms lệch trả `QUOTE_CHANGED`/`TERMS_CHANGED` để client
 tải lại và yêu cầu người dùng xác nhận. Mặc định đóng đăng ký tại startAt; có thể
-cấu hình `registrationClosesAt`. Hủy mất cọc, vé revoked và mở đúng một chỗ.
-Cùng UID được đăng ký lại sau hủy bằng requestId mới nếu còn chỗ và chưa đóng đăng ký; cọc cũ không hoàn, lần mới giữ cọc mới. Mỗi lần có ticketId mới; snapshot lần hủy chuyển vào `registrations/{id}/history/{oldTicketId}` (server-only). QR vé cũ vẫn revoked. No-show được job xử lý sau cả endAt và checkInEndAt, không hoàn cọc; xem policy/jobs.
+cấu hình `registrationClosesAt`. Hủy hoàn 30% cọc làm tròn xuống, vé revoked và mở đúng một chỗ.
+Cùng UID được đăng ký lại sau hủy bằng requestId mới nếu còn chỗ và chưa đóng đăng ký; cọc cũ đã hoàn 30% làm tròn xuống, lần mới giữ cọc mới. Mỗi lần có ticketId mới; snapshot lần hủy chuyển vào `registrations/{id}/history/{oldTicketId}` (server-only). QR vé cũ vẫn revoked. No-show được job xử lý sau cả endAt và checkInEndAt, không hoàn cọc; xem policy/jobs.
+
+Hủy mới: registration lưu `cancellationRefundCoins`, `cancellationForfeitedCoins`,
+`cancellationPolicyVersion=refund-30-floor-v1`, `depositSettlement=partially_refunded`
+(cọc 0: `none`). Ledger `deposit_partial_refund` ghi `deltaAvailable=floor(cọc*3/10)`,
+`deltaHeld=-cọc`. Cọc lấy từ registration snapshot, không lấy giá event vừa sửa.
+Giao dịch/receipt đã settle trước release giữ nguyên, không hoàn bù.
 
 QR là token opaque ngẫu nhiên, hash nằm private; không parse token để cấp xu
 ở app. Staff phải có custom claim `staff:true` **và** active document
@@ -145,7 +171,9 @@ transaction. Walk-in: sinh viên quét QR venue trong cửa sổ check-in; chỉ
 attendance/UID/event dù đổi QR/requestId. Replay khác request trả
 `ALREADY_CHECKED_IN`; token hết hạn/sai/revoked trả `QR_INVALID`; ngoài giờ trả
 `OUTSIDE_CHECKIN_WINDOW`. QR TTL giảm replay, **không chứng minh hiện diện vật lý**.
-Không manual code, không milestone.
+Có manual fallback theo [contract mới](PREINTEGRATION_DECISIONS.md). Event Milestones bổ sung 05/11/2026: xem
+[3 API và receipt contract](EVENT_MILESTONES.md). Claim gửi expectedVersion;
+không dùng requestId mới để nhận lại cùng milestone.
 
 Daily theo **Asia/Ho_Chi_Minh**: 5/10/15/30/50/70/100; ngày 8+100; nghỉ một ngày
 reset streak; cùng ngày trả receipt cũ. OperationKind: `register`, `cancel`,
@@ -180,7 +208,8 @@ Android dùng notification ID làm tag; inbox deterministic chống tạo trùng
 Một user tối đa 10 installations; token được chuyển khỏi account cũ khi account
 mới đăng ký token đó. Gỡ token logout và đăng ký lại khi refresh. FCM bị bỏ qua
 rõ ràng trong Emulator; push thật/permission/deep-link/background **chưa kiểm chứng**.
-Chưa có follower fanout/new-event notifications hoặc reminder scheduler.
+Đã bổ sung follower new-event fanout, schedule updates và reminder trước 72 giờ;
+xem PREINTEGRATION_DECISIONS.md. Native push/mobile routing vẫn chờ nối adapter.
 
 Storage: upload PDF tại `reports/{uid}/{unique-id}.pdf`, MIME `application/pdf`,
 0 < size ≤ 5 MiB; owner authenticated đọc/tạo, không overwrite/delete/cross-UID.

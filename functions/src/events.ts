@@ -2,14 +2,22 @@ import { randomBytes } from 'node:crypto';
 import { Firestore, Timestamp, DocumentData, Transaction } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import { Actor, authenticated, activeUser, changeWallet, coins, fail, id, key, ledger, notification, operation, publicEvent, requestId, required, walletData } from './shared.js';
+import { emailAddress, fptStudentId } from './identity.js';
 
-const attendee = z.object({ fullName: z.string().trim().min(1).max(100), studentId: z.string().trim().min(1).max(64), universityEmail: z.email().max(254), phoneNumber: z.string().regex(/^\+?[0-9 ()-]{7,24}$/).optional() }).strict();
+const attendee = z.object({ fullName: z.string().trim().min(1).max(100), studentId: fptStudentId, universityEmail: emailAddress, phoneNumber: z.string().regex(/^\+?[0-9 ()-]{7,24}$/).optional() }).strict();
 const eventRequest = z.object({ eventId: id, requestId }).strict();
 function scope(event: DocumentData) {
   if (event.audience?.scope && event.audience.scope !== 'everyone') fail('VERIFIED_AUDIENCE_DEFERRED');
 }
 function checkWindow(event: DocumentData, now: Timestamp) {
   if (!(event.checkInStartAt instanceof Timestamp) || !(event.checkInEndAt instanceof Timestamp) || now.toMillis() < event.checkInStartAt.toMillis() || now.toMillis() >= event.checkInEndAt.toMillis()) fail('OUTSIDE_CHECKIN_WINDOW');
+}
+const codeInput = z.string().trim().max(32).transform(value => value.replace(/[\s-]/g, '').toUpperCase()).pipe(z.string().regex(/^[A-Z2-9]{8}$/));
+function createCode(tx: Transaction, db: Firestore, tokenId: string, mode: string, expiresAt: Timestamp) {
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const code = [...randomBytes(8)].map(byte => alphabet[byte & 31]).join('');
+  tx.create(db.doc(`checkin_codes/${key(code)}`), { tokenId, mode, expiresAt });
+  return `${code.slice(0, 4)}-${code.slice(4)}`;
 }
 export async function staff(tx: Transaction, db: Firestore, actor: Actor | null, eventId: string, permission: string) {
   const uid = authenticated(actor);
@@ -82,12 +90,14 @@ export function events(db: Firestore, clock: () => Date) {
         if (reg.state !== 'registered') fail('CANNOT_CANCEL');
         const ticketRef = db.doc(`tickets/${reg.ticketId}`), ticket = await tx.get(ticketRef);
         if (ticket.get('status') !== 'active' || event.registeredCount < 1) fail('REGISTRATION_INTEGRITY_ERROR', 'internal');
-        const balance = changeWallet(tx, walletRef, walletData(wallet.data()), 0, -reg.depositCoins, now);
-        tx.update(regRef, { state: 'cancelled', cancelledAt: now, depositSettlement: reg.depositCoins ? 'forfeited' : 'none' });
+        if (!coins.safeParse(reg.depositCoins).success) fail('REGISTRATION_INTEGRITY_ERROR', 'internal');
+        const depositRefunded = Math.floor(reg.depositCoins * 3 / 10), depositForfeited = reg.depositCoins - depositRefunded;
+        const balance = changeWallet(tx, walletRef, walletData(wallet.data()), depositRefunded, -reg.depositCoins, now);
+        tx.update(regRef, { state: 'cancelled', cancelledAt: now, depositSettlement: reg.depositCoins ? 'partially_refunded' : 'none', cancellationRefundCoins: depositRefunded, cancellationForfeitedCoins: depositForfeited, cancellationPolicyVersion: 'refund-30-floor-v1' });
         tx.update(ticketRef, { status: 'revoked', revokedAt: now });
         tx.update(eventRef, { registeredCount: event.registeredCount - 1, updatedAt: now });
-        if (reg.depositCoins) ledger(tx, db, uid, op, 'deposit_forfeit', 0, -reg.depositCoins, registrationId, now);
-        return { registrationId, state: 'cancelled', wallet: balance };
+        if (reg.depositCoins) ledger(tx, db, uid, op, 'deposit_partial_refund', depositRefunded, -reg.depositCoins, registrationId, now);
+        return { registrationId, state: 'cancelled', depositRefunded, depositForfeited, wallet: balance };
       });
     },
     getTicketQr: async (actor: Actor | null, raw: unknown) => {
@@ -100,7 +110,8 @@ export function events(db: Firestore, clock: () => Date) {
         if (reg.state !== 'registered' || ticket.status !== 'active') fail('NO_ACTIVE_TICKET');
         const expiresAt = Timestamp.fromMillis(now.toMillis() + 120_000);
         tx.create(db.doc(`checkin_tokens/${tokenId}`), { eventId, uid, ticketId: reg.ticketId, mode: 'registered', tokenHash: key(secret), validFrom: now, validUntil: expiresAt, revoked: false, issuedBy: uid });
-        return { ticketId: reg.ticketId, ticketNumber: ticket.ticketNumber, qrPayload: `evia:ticket:${tokenId}:${secret}`, expiresAt };
+        const manualCode = createCode(tx, db, tokenId, 'registered', expiresAt);
+        return { ticketId: reg.ticketId, ticketNumber: ticket.ticketNumber, qrPayload: `evia:ticket:${tokenId}:${secret}`, manualCode, expiresAt };
       });
     },
     issueWalkInQr: async (actor: Actor | null, raw: unknown) => {
@@ -113,11 +124,14 @@ export function events(db: Firestore, clock: () => Date) {
         checkWindow(event, now);
         const expiresAt = Timestamp.fromMillis(Math.min(now.toMillis() + 60_000, event.checkInEndAt.toMillis()));
         tx.create(db.doc(`checkin_tokens/${tokenId}`), { eventId, mode: 'walkin', tokenHash: key(secret), validFrom: now, validUntil: expiresAt, revoked: false, issuedBy: actor!.uid });
-        return { eventId, qrPayload: `evia:walkin:${tokenId}:${secret}`, expiresAt };
+        const manualCode = createCode(tx, db, tokenId, 'walkin', expiresAt);
+        return { eventId, qrPayload: `evia:walkin:${tokenId}:${secret}`, manualCode, expiresAt };
       });
     },
     verifyRegisteredTicket: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true),
     verifyWalkInQr: async (actor: Actor | null, raw: unknown) => verify(actor, raw, false),
+    verifyRegisteredCode: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true, true),
+    verifyWalkInCode: async (actor: Actor | null, raw: unknown) => verify(actor, raw, false, true),
   };
 
   async function follow(actor: Actor | null, raw: unknown, following: boolean) {
@@ -136,24 +150,52 @@ export function events(db: Firestore, clock: () => Date) {
     return { organizerId, following };
   }
 
-  async function verify(actor: Actor | null, raw: unknown, registered: boolean) {
-    const input = z.object({ qrPayload: z.string().max(512).regex(/^evia:(ticket|walkin):[A-Za-z0-9_-]{32}:[A-Za-z0-9_-]{43}$/), requestId }).strict().parse(raw);
+  async function verify(actor: Actor | null, raw: unknown, registered: boolean, manual = false) {
+    const input = manual
+      ? z.object({ code: codeInput, requestId, expectedEventId: id.optional() }).strict().parse(raw)
+      : z.object({ qrPayload: z.string().max(512).regex(/^evia:(ticket|walkin):[A-Za-z0-9_-]{32}:[A-Za-z0-9_-]{43}$/), requestId, expectedEventId: id.optional() }).strict().parse(raw);
     const scannerUid = authenticated(actor), now = Timestamp.fromDate(clock());
-    const [, mode, tokenId, secret] = input.qrPayload.split(':');
-    if (mode !== (registered ? 'ticket' : 'walkin')) fail('QR_INVALID');
+    const kind = registered ? 'verify-ticket' : 'verify-walkin';
+    let tokenId: string, secret = '';
+    if ('code' in input) {
+      if (registered && actor?.token.staff !== true) fail('FORBIDDEN_STAFF', 'permission-denied');
+      const receipt = (await db.doc(`operation_receipts/${key(scannerUid, kind, input.requestId)}`).get()).data();
+      if (receipt) {
+        if (registered) await db.runTransaction(tx => staff(tx, db, actor, receipt.result.eventId, 'verify_ticket'));
+        return operation(db, scannerUid, kind, input.requestId, input, now, async () => fail('RECEIPT_INTEGRITY_ERROR', 'internal'));
+      }
+      // Count failed guesses in a separate committed transaction so a later rejection cannot roll them back.
+      await db.runTransaction(async tx => {
+        await activeUser(tx, db, scannerUid);
+        const ref = db.doc(`code_attempts/${key(scannerUid)}`), prior = (await tx.get(ref)).data();
+        const elapsed = prior?.windowStart instanceof Timestamp ? now.toMillis() - prior.windowStart.toMillis() : 60_000;
+        const sameWindow = elapsed >= 0 && elapsed < 60_000;
+        if (sameWindow && prior!.attempts >= 5) fail('CODE_RATE_LIMITED', 'resource-exhausted', { retryAfterSeconds: Math.ceil((60_000 - elapsed) / 1000) });
+        tx.set(ref, { windowStart: sameWindow ? prior!.windowStart : now, attempts: sameWindow ? prior!.attempts + 1 : 1 });
+      });
+      const code = required((await db.doc(`checkin_codes/${key(input.code)}`).get()).data(), 'CODE_INVALID');
+      if (code.mode !== (registered ? 'registered' : 'walkin')) fail('CODE_INVALID');
+      tokenId = code.tokenId;
+    } else {
+      const [, mode, token, parsedSecret] = input.qrPayload.split(':');
+      if (mode !== (registered ? 'ticket' : 'walkin')) fail('QR_INVALID');
+      tokenId = token; secret = parsedSecret;
+    }
     if (registered) {
       const meta = required((await db.doc(`checkin_tokens/${tokenId}`).get()).data(), 'QR_INVALID');
       // Recheck scope even when the operation returns a previously completed receipt.
       await db.runTransaction(tx => staff(tx, db, actor, meta.eventId, 'verify_ticket'));
     }
-    return operation(db, scannerUid, registered ? 'verify-ticket' : 'verify-walkin', input.requestId, input, now, async (tx, op) => {
+    return operation(db, scannerUid, kind, input.requestId, input, now, async (tx, op) => {
       const token = required((await tx.get(db.doc(`checkin_tokens/${tokenId}`))).data(), 'QR_INVALID');
+      if (input.expectedEventId && input.expectedEventId !== token.eventId) fail('QR_EVENT_MISMATCH', 'invalid-argument');
       if (registered) await staff(tx, db, actor, token.eventId, 'verify_ticket');
       const uid = registered ? token.uid : scannerUid;
       await activeUser(tx, db, uid);
       const event = publicEvent((await tx.get(db.doc(`events/${token.eventId}`))).data()); scope(event);
       checkWindow(event, now);
-      if (token.mode !== (registered ? 'registered' : 'walkin') || token.tokenHash !== key(secret) || token.revoked || now.toMillis() < token.validFrom.toMillis() || now.toMillis() >= token.validUntil.toMillis()) fail('QR_INVALID');
+      if (token.mode !== (registered ? 'registered' : 'walkin') || !manual && token.tokenHash !== key(secret) || token.revoked) fail(manual ? 'CODE_INVALID' : 'QR_INVALID');
+      if (now.toMillis() < token.validFrom.toMillis() || now.toMillis() >= token.validUntil.toMillis()) fail(manual ? 'CODE_EXPIRED' : 'QR_INVALID');
       const attendanceId = key(uid, token.eventId), attendanceRef = db.doc(`attendance/${attendanceId}`), walletRef = db.doc(`wallets/${uid}`);
       const [prior, wallet] = await tx.getAll(attendanceRef, walletRef);
       if (prior.exists) fail('ALREADY_CHECKED_IN', 'already-exists');

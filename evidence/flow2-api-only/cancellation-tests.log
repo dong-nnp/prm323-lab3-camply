@@ -1,0 +1,4 @@
+00:00 +0: loading D:/project/prm323-lab3/prm323-lab3-camply/test/viewmodels/flow2_view_model_test.dart
+00:00 +0: cancellation waits for server, blocks duplicate taps and reloads account
+00:00 +1: timeout retries same cancellation id through receipt, without second mutation
+00:00 +2: All tests passed!

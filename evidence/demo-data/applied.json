@@ -1,0 +1,103 @@
+{
+  "project": "prm393-31822",
+  "batch": "evia-demo-20261105-v1",
+  "completedAt": "2026-11-05T05:14:17.803Z",
+  "catalogDigest": "ee07df1a99bdfdc73577a9bc1795cb068587ba9b3d6647a63cfd63fc9005a4da",
+  "counts": {
+    "organizers": 5,
+    "events": 12,
+    "rewards": 5,
+    "interests": 10,
+    "milestones": 0
+  },
+  "createdThisRun": 0,
+  "catalogDocumentPaths": [
+    "organizers/demo-tech-club",
+    "organizers/demo-music-club",
+    "organizers/demo-creative-club",
+    "organizers/demo-sports-club",
+    "organizers/demo-student-union",
+    "events/demo-live-registration",
+    "events/demo-live-walkin",
+    "events/demo-mobile-workshop",
+    "events/demo-career-talk",
+    "events/demo-music-night",
+    "events/demo-photo-walk",
+    "events/demo-badminton",
+    "events/demo-green-campus",
+    "events/demo-design-thinking",
+    "events/demo-full-event",
+    "events/demo-last-ticket",
+    "events/demo-past-event",
+    "rewards/demo-cafe",
+    "rewards/demo-snack",
+    "rewards/demo-tote",
+    "rewards/demo-cinema",
+    "rewards/demo-hoodie",
+    "interests/technology",
+    "interests/music",
+    "interests/arts",
+    "interests/sports",
+    "interests/volunteer",
+    "interests/career",
+    "interests/business",
+    "interests/gaming",
+    "interests/photography",
+    "interests/environment"
+  ],
+  "operators": [
+    {
+      "uid": "evia-demo-staff-v1",
+      "role": "staff",
+      "claims": {
+        "staff": true,
+        "demoSeedBatchId": "evia-demo-20261105-v1"
+      },
+      "assignedDocuments": [
+        "staff_assignments/f45f2f93925456b09eea18a096d55bf96ea9d04094893525642c9d003550c5e6",
+        "staff_assignments/cfd87decdd24aab53a1bc4a315470cf1ab9b45fdb040ab4e9e20a684dbf113da",
+        "staff_assignments/798ac6d6b3abce8127c1e0d620c5c07582a5cc9ac45902d5cbd9423bf986eb45",
+        "staff_assignments/3bc3576a6447a6fc2830fd8884fff41644752e776da462f1c0b3ea38b0f2c235",
+        "staff_assignments/3e70f87b3aac5eb02bc90a7f61743f73fc8aea00cc8d7ecd5aaa176057a0f5cb",
+        "staff_assignments/8b64242b2cbd3924e1e0f856a581bad0387cacf948e04557e95d2103f6812ea1",
+        "staff_assignments/437528757c4e1e1b7221fe5a7232c852d0f4e2dcf9f181bb5588f5c6fefadbb2",
+        "staff_assignments/5ba09a9bebd25a97680794ca31c5f1344213b591ad10307406875e33d6362ad6",
+        "staff_assignments/4dcb9dcc3972fd9b17443ec10af1836d6f68b12af479db81f50d4b10214a35b0",
+        "staff_assignments/7b91c392512b9ecbf84bdb3eb225e1252055526cbe747cf503094074dc4fa247",
+        "staff_assignments/cc1829b80842969ba5da35236ee94c81065a567bb4674f7823247edae5e3e484"
+      ],
+      "passwordSignInPassed": true,
+      "onboardingCompleted": true,
+      "availableCoins": 200,
+      "heldCoins": 0,
+      "verifiedEventCount": 0,
+      "emailVerified": false
+    },
+    {
+      "uid": "evia-demo-admin-v1",
+      "role": "admin",
+      "claims": {
+        "admin": true,
+        "demoSeedBatchId": "evia-demo-20261105-v1"
+      },
+      "assignedDocuments": [
+        "voucher_admins/evia-demo-admin-v1",
+        "milestone_admins/evia-demo-admin-v1"
+      ],
+      "passwordSignInPassed": true,
+      "onboardingCompleted": true,
+      "availableCoins": 200,
+      "heldCoins": 0,
+      "verifiedEventCount": 0,
+      "emailVerified": false
+    }
+  ],
+  "credentialsPath": ".local/demo-operators-20261105/accounts.json",
+  "boundaries": [
+    "Generated data is intentionally demo, not real FPT events or sponsor commitments",
+    "No email, SMS, verification or reset email was sent",
+    "Only normal one-time 200 signup coins per operator, no manual balance grants or fabricated attendance",
+    "No Google Cloud IAM roles or billing permissions were granted",
+    "Images are optional and omitted; mobile should show its standard placeholders"
+  ]
+}

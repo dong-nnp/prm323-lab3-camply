@@ -13,20 +13,41 @@ import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/authenticated_action.dart';
 import '../../widgets/coin_icon.dart';
+import '../../widgets/status_widgets.dart';
 
 class OrganizerProfileScreen extends ConsumerWidget {
-  const OrganizerProfileScreen({super.key});
+  const OrganizerProfileScreen({this.organizerId, super.key});
+  final String? organizerId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const screen = '2083:6080';
     final state = ref.watch(profileViewModelProvider),
         vm = ref.read(profileViewModelProvider.notifier);
+    ref.watch(eviaViewModelProvider);
+    final catalog = ref.read(eviaViewModelProvider.notifier);
+    final id = organizerId ?? 'union';
+    final organizer = catalog.live
+        ? catalog.catalog!.organizers.where((o) => o['id'] == id).firstOrNull
+        : null;
+    if (catalog.live && organizer == null) {
+      return const EviaPage(
+        child: Center(child: AppErrorWidget(message: 'Organizer not found.')),
+      );
+    }
     final following =
         ref.watch(hasAuthenticatedSessionProvider) &&
-        ref.watch(
-          eviaViewModelProvider.select((s) => s.followed.contains('union')),
-        );
-    final events = state.organizerPast
+        ref.watch(eviaViewModelProvider.select((s) => s.followed.contains(id)));
+    final events = catalog.live
+        ? catalog.catalog!.events
+              .where(
+                (e) =>
+                    e.organizerId == id &&
+                    e.end.isBefore(DateTime.now().toUtc()) ==
+                        state.organizerPast,
+              )
+              .map((e) => e.presentation(catalog.catalog!.organizerName(id)))
+              .toList()
+        : state.organizerPast
         ? [RegistrationMockData.arts]
         : [RegistrationMockData.club, RegistrationMockData.leadership];
     return EviaPage(
@@ -38,7 +59,9 @@ class OrganizerProfileScreen extends ConsumerWidget {
           tooltip: 'Copy organizer information',
           onPressed: () => copyActivityCode(
             context,
-            'Student Union — Official campus student organization. 2 upcoming events: Campus Club Fair and Student Leadership Workshop.',
+            organizer == null
+                ? 'Student Union — Official campus student organization. 2 upcoming events: Campus Club Fair and Student Leadership Workshop.'
+                : '${organizer['name']} — ${organizer['description'] ?? ''}',
           ),
           icon: const ActivityIcon(screen, 'imgContainer8'),
         ),
@@ -70,7 +93,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                           if (!ensureAuthenticated(context, ref)) return;
                           ref
                               .read(eviaViewModelProvider.notifier)
-                              .toggleFollowed('union');
+                              .toggleFollowed(id);
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -88,13 +111,17 @@ class OrganizerProfileScreen extends ConsumerWidget {
                     spacing: AppSpacing.sm,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const Text('Student Union', style: EviaTheme.section),
+                      Text(
+                        organizer?['name'] as String? ?? 'Student Union',
+                        style: EviaTheme.section,
+                      ),
                       const EventBadge('STUDENT ORGANIZATION'),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    RegistrationMockData.organizerDescription,
+                    organizer?['description'] as String? ??
+                        RegistrationMockData.organizerDescription,
                     maxLines: state.expandedOrganizer ? null : 2,
                     overflow: state.expandedOrganizer
                         ? null
@@ -113,7 +140,12 @@ class OrganizerProfileScreen extends ConsumerWidget {
                   const Text('Events', style: EviaTheme.section),
                   const SizedBox(height: AppSpacing.sm),
                   ActivityTabs(
-                    labels: const ['Upcoming  2', 'Past  1'],
+                    labels: catalog.live
+                        ? [
+                            'Upcoming  ${catalog.catalog!.events.where((e) => e.organizerId == id && e.end.isAfter(DateTime.now().toUtc())).length}',
+                            'Past  ${catalog.catalog!.events.where((e) => e.organizerId == id && !e.end.isAfter(DateTime.now().toUtc())).length}',
+                          ]
+                        : const ['Upcoming  2', 'Past  1'],
                     selected: state.organizerPast ? 1 : 0,
                     onSelected: (index) => vm.organizerTab(index == 1),
                   ),
@@ -140,7 +172,10 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                         borderRadius: BorderRadius.circular(
                                           AppRadius.medium,
                                         ),
-                                        child: Image.asset(
+                                        child: catalogImage(
+                                          catalog.live
+                                              ? events[index].image
+                                              : null,
                                           state.organizerPast
                                               ? RegistrationMockData
                                                     .saved
@@ -148,7 +183,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                                     .image
                                               : FlowAssets.image(
                                                   screen,
-                                                  index + 1,
+                                                  (index % 2) + 1,
                                                 ),
                                           fit: BoxFit.cover,
                                         ),
@@ -186,7 +221,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                         const SizedBox(width: AppSpacing.xs),
                                         Expanded(
                                           child: Text(
-                                            state.organizerPast
+                                            catalog.live || state.organizerPast
                                                 ? '${events[index].date} · ${events[index].time}'
                                                 : '${index == 0 ? 'Tue, Nov 10' : 'Wed, Nov 18'}, 2026 · ${events[index].time}',
                                             style: EviaTheme.caption,

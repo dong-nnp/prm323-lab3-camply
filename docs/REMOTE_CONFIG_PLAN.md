@@ -1,8 +1,14 @@
 # Phạm vi cấu hình từ xa — Evia
 
-Cập nhật: **04/11/2026**. Trạng thái: **hợp đồng dự kiến, chưa tích hợp runtime hoặc publish Firebase**.
+Cập nhật: **05/11/2026**. Hai key Event Milestones đã publish lên Firebase;
+Flutter Remote Config runtime vẫn pending. Các key Discover/banner bên dưới
+vẫn là đề xuất, chưa publish.
 
-Mục tiêu: khoanh vùng biến để Flutter hỗ trợ trước; sau này web admin có thể thay giá trị mà không build lại app. Hiện `RemoteConfigService` vẫn pending và `firebase/remote-config-defaults.json` vẫn là `{}`. Các defaults dưới đây là đề xuất triển khai, không phải giá trị đang chạy.
+Mục tiêu: khoanh vùng biến để Flutter hỗ trợ trước; sau này web admin có thể thay giá trị mà không build lại app. Hiện `RemoteConfigService` vẫn pending.
+`firebase/remote-config-defaults.json` có đúng hai key đã chốt:
+`event_milestones_enabled=true` và `event_milestones_intro` (nội dung giới thiệu).
+[Hợp đồng thành tựu](EVENT_MILESTONES.md) ghi rõ quyền admin và giới hạn.
+Số xu/điều kiện/danh sách do Firestore + backend quản lý, không lấy từ client config.
 
 ## 1. Các biến dùng Firebase Remote Config
 
@@ -25,6 +31,7 @@ Những giá trị sau cũng có thể thay từ xa trong tương lai mà không
 
 | Nhóm biến | Nguồn hiện tại | Phạm vi quản lý tương lai và giới hạn |
 |---|---|---|
+| Thành tựu: tên, mô tả, requiredEvents, rewardCoins, sortOrder, active | `milestones/{id}`, API `upsertEventMilestone` | Admin custom claim + active milestone_admins, expectedVersion và audit; snapshots đã claim không đổi. Metric mới ngoài verified_events vẫn cần backend code |
 | Sự kiện: `capacity`, `depositCoins`, `attendanceRewardCoins`, `registrationClosesAt`, `checkInStartAt`, `checkInEndAt`, `status`, `visibility`, `featured` | Event records; schema tại `functions/src/catalog.ts` | Admin sửa qua endpoint có quyền; capacity không được thấp hơn số vé đã cấp. Thay tiền/điều kiện phải có quy tắc cho vé đã cấp, không tự sửa snapshot/ledger cũ |
 | Nội dung sự kiện/CLB: title/name, description, venue, schedule, image/logo | Event/organizer records | Quản lý nội dung dữ liệu, không đặt toàn bộ catalog trong Remote Config |
 | Phần thưởng: `priceCoins`, `stockRemaining`, `status`, `validDays`, `termsVersion`, `termsText` | Reward records | Backend kiểm tra giá/stock trong transaction; giữ lịch sử redemption/voucher đã phát hành. Café hiện chốt 200 xu, tài liệu này không cho phép tự đổi policy |
@@ -37,7 +44,7 @@ Remote Config phía client không chứa secrets, credentials, role/staff permis
 ## 3. Hợp đồng Flutter khi tích hợp
 
 - Adapter Remote Config trong service layer gọi SDK; DI inject qua interface. ViewModel nhận presentation state, View chỉ render.
-- Khi triển khai mới thêm các defaults đã thống nhất vào `firebase/remote-config-defaults.json` và nạp chúng bằng SDK; hiện chưa đổi file defaults để tránh hiểu nhầm runtime đã hỗ trợ.
+- Nạp hai defaults milestone đã chốt từ `firebase/remote-config-defaults.json` khi nối SDK. Các key đề xuất Discover/banner chỉ thêm khi task triển khai chúng; defaults/publish không chứng minh runtime đã hỗ trợ.
 - Validate kiểu/range trước khi áp dụng. Dùng giá trị hợp lệ đã activate gần nhất; nếu chưa có thì dùng in-app default. Lỗi mạng/fetch không làm app kẹt hoặc crash.
 - Fetch lúc khởi động/resume theo chính sách cache; nếu tích hợp real-time updates thì cũng cần activate và cập nhật state. Không hứa mọi điện thoại đổi tức thì, nhất là khi offline hoặc app đã đóng.
 - Áp dụng snapshot mới ở ranh giới an toàn: trước khi tải trang danh mục mới; reset cursor/danh sách khi đổi page size để tránh ghép các trang không nhất quán. Không thay giữa transaction đang xác nhận.

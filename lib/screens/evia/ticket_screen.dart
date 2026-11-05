@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/mock/activity_mock_data.dart';
+
+import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../core/providers/service_providers.dart';
+import '../../core/utils/exception_mapper.dart';
+import '../../models/flow1_models.dart';
+import '../../models/activity_models.dart';
+import '../../viewmodels/flow1_view_model.dart';
+import '../../widgets/status_widgets.dart';
+
+import 'package:flutter/foundation.dart';
+
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
@@ -14,10 +26,41 @@ class TicketScreen extends ConsumerWidget {
   final String eventId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ref.read(activityViewModelProvider.notifier).event(eventId);
-    final cancelled = ref.watch(
-      activityViewModelProvider.select((s) => s.cancelled.contains(event.id)),
-    );
+    final live = ref.watch(realBackendEnabledProvider);
+    final remote = live ? ref.watch(flow1TicketProvider(eventId)) : null;
+    if (remote != null &&
+        (remote.isLoading || remote.hasError || !remote.hasValue)) {
+      return EviaPage(
+        child: Center(
+          child: remote.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(remote.error!).message,
+                  onRetry: () => ref.invalidate(flow1TicketProvider(eventId)),
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final ticket = remote?.asData?.value;
+    final details = ticket == null ? null : jsonMap(ticket['ticket']);
+    final registration = ticket == null
+        ? null
+        : jsonMap(ticket['registration']);
+    final person = registration == null
+        ? null
+        : jsonMap(registration['attendeeSnapshot']);
+    final qr = ticket?['qr'] == null ? null : jsonMap(ticket!['qr']);
+    final event = live
+        ? ticket!['eventPresentation'] as RegisteredEvent
+        : ref.read(activityViewModelProvider.notifier).event(eventId);
+    final cancelled = live
+        ? (registration?['state'] == 'cancelled' ||
+              details?['status'] == 'revoked')
+        : ref.watch(
+            activityViewModelProvider.select(
+              (s) => s.cancelled.contains(event.id),
+            ),
+          );
     return EviaPage(
       header: const ActivityHeader(
         'My Ticket',
@@ -82,7 +125,9 @@ class TicketScreen extends ConsumerWidget {
                               const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: Text(
-                                  'Organized by Student Union',
+                                  live
+                                      ? 'Organized by ${ref.read(flow1ViewModelProvider).asData?.value.organizerName(Flow1Event(jsonMap(ticket!['event'])).organizerId) ?? 'Organizer'}'
+                                      : 'Organized by Student Union',
                                   style: EviaTheme.caption.copyWith(
                                     color: AppColors.surface,
                                   ),
@@ -121,38 +166,41 @@ class TicketScreen extends ConsumerWidget {
                                       ? 'Main Stadium · Gate 4'
                                       : event.venue,
                                 ),
-                                const Row(
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: _TicketField(
                                         'ATTENDEE',
-                                        ActivityMockData.attendee,
+                                        person?['fullName'] as String? ??
+                                            ActivityMockData.attendee,
                                       ),
                                     ),
-                                    SizedBox(width: AppSpacing.lg),
+                                    const SizedBox(width: AppSpacing.lg),
                                     Expanded(
                                       child: _TicketField(
                                         'STUDENT ID',
-                                        ActivityMockData.studentId,
+                                        person?['studentId'] as String? ??
+                                            ActivityMockData.studentId,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const Row(
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
+                                    const Expanded(
                                       child: _TicketField(
                                         'PASS TYPE',
                                         'General',
                                       ),
                                     ),
-                                    SizedBox(width: AppSpacing.lg),
+                                    const SizedBox(width: AppSpacing.lg),
                                     Expanded(
                                       child: _TicketField(
                                         'TICKET NO.',
-                                        ActivityMockData.ticketNumber,
+                                        details?['ticketNumber'] as String? ??
+                                            ActivityMockData.ticketNumber,
                                       ),
                                     ),
                                   ],
@@ -161,12 +209,38 @@ class TicketScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          const EviaCard(
-                            padding: EdgeInsets.all(AppSpacing.md),
-                            child: ActivityIcon(
-                              '2083:2345',
-                              'imgSvgTicketQrCode',
-                            ),
+                          EviaCard(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            child: live
+                                ? (details?['status'] == 'checked_in'
+                                      ? const SizedBox(
+                                          width: 208,
+                                          height: 208,
+                                          child: Center(
+                                            child: Text('Attendance confirmed'),
+                                          ),
+                                        )
+                                      : (qr != null &&
+                                                DateTime.parse(
+                                                  qr['expiresAt'] as String,
+                                                ).isAfter(
+                                                  DateTime.now().toUtc(),
+                                                )
+                                            ? QrImageView(
+                                                data: qr['qrPayload'] as String,
+                                                size: 208,
+                                                padding: EdgeInsets.zero,
+                                              )
+                                            : AppErrorWidget(
+                                                message: 'Ticket QR is unavailable. Please retry.',
+                                                onRetry: () => ref.invalidate(
+                                                  flow1TicketProvider(eventId),
+                                                ),
+                                              )))
+                                : const ActivityIcon(
+                                    '2083:2345',
+                                    'imgSvgTicketQrCode',
+                                  ),
                           ),
                         ],
                       ),
@@ -175,6 +249,33 @@ class TicketScreen extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: AppSpacing.lg),
+            if (kDebugMode &&
+                live &&
+                ref
+                    .read(activityViewModelProvider.notifier)
+                    .demoCheckInAvailable(eventId) &&
+                details?['status'] == 'active')
+              TextButton(
+                onPressed:
+                    ref.watch(activityViewModelProvider).checkingInEventId !=
+                        null
+                    ? null
+                    : () async {
+                        final vm = ref.read(activityViewModelProvider.notifier);
+                        await vm.demoAttend(eventId);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                ref.read(activityViewModelProvider).message ??
+                                    'Please retry.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                child: const Text('Demo: xác nhận đã quét'),
+              ),
             const ActivityInfo(
               'Show this QR code and your student ID at the entrance.',
               color: AppColors.surface,

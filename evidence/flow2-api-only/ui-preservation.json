@@ -1,0 +1,114 @@
+[
+  {
+    "screen": "my-events",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "my-events",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "calendar",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "calendar",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "cancel",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "cancel",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "past",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "past",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "check-in",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "check-in",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "ticket",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "ticket",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "notifications",
+    "width": 360.0,
+    "height": 884,
+    "beforeBytes": 1272960,
+    "afterBytes": 1272960,
+    "differentRgbaBytes": 0
+  },
+  {
+    "screen": "notifications",
+    "width": 412.0,
+    "height": 884,
+    "beforeBytes": 1456832,
+    "afterBytes": 1456832,
+    "differentRgbaBytes": 0
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "milestones": [
+    {"id":"first-event","title":"First Event","description":"Attend 1 verified campus event.","metric":"verified_events","requiredEvents":1,"rewardCoins":50,"sortOrder":1,"active":true},
+    {"id":"explorer","title":"Explorer","description":"Attend 3 verified campus events.","metric":"verified_events","requiredEvents":3,"rewardCoins":100,"sortOrder":2,"active":true},
+    {"id":"active-student","title":"Active Student","description":"Attend 5 verified campus events.","metric":"verified_events","requiredEvents":5,"rewardCoins":150,"sortOrder":3,"active":true},
+    {"id":"campus-regular","title":"Campus Regular","description":"Attend 10 verified campus events.","metric":"verified_events","requiredEvents":10,"rewardCoins":300,"sortOrder":4,"active":true},
+    {"id":"campus-star","title":"Campus Star","description":"Attend 20 verified campus events.","metric":"verified_events","requiredEvents":20,"rewardCoins":500,"sortOrder":5,"active":true}
+  ]
+}

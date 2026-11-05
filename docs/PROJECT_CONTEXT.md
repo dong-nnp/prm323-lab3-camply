@@ -1,5 +1,38 @@
 # EVIA — PROJECT CONTEXT / SOURCE OF TRUTH FOR CODEX
 
+> **Flow 2 — 05/11/2026:** đã nối cancellation hoàn 30% làm tròn xuống, Going,
+> My Events/lịch, check-in walk-in và inbox + Firebase Cloud Messaging vào màn
+> hiện có. Owner cho phép nút demo nhỏ trên vé và xin quyền khi mở Notifications.
+> `demoConfirmAttendance` chỉ chấp nhận user/event được server đánh dấu demo;
+> không hạ quyền staff của QR thật. [Evidence](../evidence/flow2-api-only/) ghi
+> riêng local/cloud/native và phần chưa nghiệm thu. Flow 3 chưa tích hợp.
+
+> **Email mở rộng 05/11/2026:** owner bỏ giới hạn domain email. Mọi địa chỉ
+> đúng định dạng đều được đăng ký/đăng nhập/tham gia. MSSV vẫn hai chữ + sáu số;
+> quyền staff/admin và điều kiện sự kiện giữ nguyên. [Contract](PREINTEGRATION_DECISIONS.md).
+
+> **Policy hủy mới 05/11/2026:** chủ động hủy hoàn 30% cọc, làm tròn xuống số xu
+> nguyên; phần còn lại mất. No-show vẫn mất toàn bộ. Không hoàn bù giao dịch cũ.
+> [Contract và ledger](BACKEND_POLICIES.md#chủ-động-hủy-đăng-ký--cập-nhật-05112026).
+
+> **Dữ liệu và operators demo mới 05/11/2026:** owner đã cho phép generate và
+> ghi live Firestore. 10 interests, 5 organizers, 12 events, 5 rewards demo;
+> giữ 5 milestones. Staff/admin Firebase Auth đã tạo, onboard, đúng app roles;
+> không cấp Google Cloud IAM. [Nguồn và ranh giới](DEMO_DATA.md) thay thế các
+> blocker thiếu dữ liệu/không seed trước đó. Mobile SDK integration vẫn pending.
+
+> **Quyết định mới sau review UI/backend 05/11/2026:**
+> [PREINTEGRATION_DECISIONS.md](PREINTEGRATION_DECISIONS.md) là nguồn mới nhất
+> cho email domain mở, QR + nhập mã dự phòng, notifications mới và giới hạn tích hợp.
+> Feedback/mục tiêu học kỳ vẫn bỏ; Café chưa có dữ liệu thật để tạo record.
+> Các ghi chú QR-only/no reminder/định dạng STU cũ đã được thay thế.
+
+> **Release bổ sung 05/11/2026:** [Event Milestones](EVENT_MILESTONES.md) đã deploy:
+> 37 Functions ACTIVE, index mới READY, 5 policies và 2 Remote Config keys version 1.
+> 41/41 Emulator tests PASS; cloud metadata/security/query đã kiểm chứng.
+> Quyết định bỏ milestones bên dưới/ở tài liệu cũ bị thay thế; Flutter/admin UI
+> vẫn chưa nối tính năng này. Các bằng chứng 34 Functions phía dưới là lịch sử.
+
 > **Release mới nhất 04/11/2026:** 34 Functions ACTIVE cùng hash source, 34 Cloud Run latest revisions READY; 2 Scheduler jobs ENABLED, timezone/IAM/target đã kiểm tra. [Release evidence](backend-release.md). Ghi chú 32 Functions hoặc local-only phía dưới là lịch sử trước release; UI/data/instrumentation vẫn pending.
 
 > **Project hiện tại:** `prm393-31822` (evia, Blaze), theo yêu cầu chuyển của người dùng.
@@ -54,9 +87,10 @@
 - FD-13 requires **at least 3 distinct interests** to complete/save authenticated
   onboarding/preferences. No Skip for that step; guest public browsing remains.
 - FD-06 will be corrected by the design team; no Figma edit was performed here.
-- FD-03 milestones are **removed entirely**, including progress, claims and bonus
-  Coin. FD-11 is **QR-only** for now: no manual-code entry; contact staff on scan
-  failure. FD-12 mới chốt admin xác nhận voucher tại nhà tài trợ; xem BACKEND_POLICIES.md.
+- FD-03 was superseded on 05/11/2026: Event Milestones are restored with manual
+  claims; see [confirmed feature contract](EVENT_MILESTONES.md). FD-11 now supports
+  QR and short-lived manual fallback codes with the same staff/event/attendance
+  checks; see PREINTEGRATION_DECISIONS.md. FD-12: authorized admin verifies sponsor vouchers.
 
 ## 2. Product and scope
 
@@ -76,13 +110,14 @@ Evia helps students **discover campus events**, **participate and check in**, **
 
 - **Registered event:** event-specific **deposit**, illustration **50 Coin**. The student displays **personal ticket QR**; the **organizer/staff scans it**, with event-scoped authenticated verification via backend. A successful *verified* check-in refunds the held deposit and separately awards the configured event reward (illustration **+200 Coin**), e.g. available +250 from this moment; no double credit.
 - **Walk-in event:** student attends without preregistration, scans the **organizer's QR displayed at the venue** using Evia. Backend verifies event, check-in window, user, token and uniqueness; awards the event-specific reward only once. An `I'm Going` intent does not grant coins or reserve a slot.
-- **Cancel a registered event:** forfeits the held deposit (owner-confirmed in the user-authored flow), revokes ticket, gives no attendance reward. **No-show forfeits held deposit** after event/check-in close; **re-registration is allowed while capacity remains**, with a new ticket and a new deposit. Owner confirmed in current chat; local implementation pending cloud deployment.
+- **Cancel a registered event:** refunds 30% of the original held deposit, rounded down to whole coins, forfeits the remainder, revokes ticket and gives no attendance reward (owner updated 05/11/2026). **No-show forfeits held deposit** after event/check-in close; **re-registration is allowed while capacity remains**, with a new ticket and a new deposit. Updated cancellation deployed 05/11/2026; active Cloud Run revision and terms evidence in evidence/cancellation-refund/.
 - **Daily Check-in:** per consecutive local day, **day 1–7** grants `[5, 10, 15, 30, 50, 70, 100]` Coin; **day 8 and later +100 Coin/day** while maintaining streak. Once per day per user. After missing a day, the next check-in restarts at day 1 (+5); previously earned coins remain.
 - **Monthly Gift:** **+200 Coin** per eligible month, **at most once per UID/month**. Owner confirmed automatic credit for all user accounts on day 1 monthly. Local scheduler uses 00:00 Asia/Ho_Chi_Minh; accounts initialized after the cutoff start next month. No onboarding requirement for the job. See [policy/job details](BACKEND_POLICIES.md); not deployed yet.
 - **New account bonus:** owner confirmed **200 Coin**, exactly once per UID on first account initialization. Atomic user + wallet + append-only signup ledger in `functions/src/accounts.ts`; no client-controlled grant amount.
-- **Event Milestones:** removed by the owner after Figma review. No milestone
-  screen/claims/progress model or milestone Coin grants in the target app/backend.
-  Verified attendance still exists for event check-in and its event-specific reward.
+- **Event Milestones (owner-confirmed 05/11/2026):** lifetime verified events,
+  including historical attendance; 1/3/5/10/20 events award 50/100/150/300/500 Coin.
+  User presses Claim, once per UID/milestone; extra to event reward. Admin-managed
+  Firestore catalog, UI-only Remote Config. [API/policy](EVENT_MILESTONES.md).
 
 ### Flow 3 — Wallet, redemption, My Rewards
 
@@ -105,20 +140,20 @@ Evia helps students **discover campus events**, **participate and check in**, **
 | Figma sample values | **ILLUSTRATIVE** | Do not hard-code/seed screen content as real business data. |
 | Interests | **CONFIRMED** | Minimum 3 distinct valid interests to complete/save; no onboarding Skip. |
 | Student/club verification | **DEFERRED** | No real verified badges or verified-eligibility feature in the current phase. |
-| FD-09 extra business paths | **OUT OF SCOPE** | No ticket-email delivery, fixed 2–3-day reminders, feedback Coin bonus, missions or seasonal targets. Required FCM/Auth emails are separate. |
+| FD-09 extra business paths | **UPDATED 05/11/2026** | Event reminders at 72 hours are approved. Ticket-email delivery, feedback Coin bonus, missions and seasonal targets remain excluded. |
 | Assigned seats / VIP | **OUT OF SCOPE** | General admission capacity only; no row/seat inventory or tiers. |
 | QR ownership | **CONFIRMED** | Staff scans registered ticket; student scans walk-in event QR. |
 | Daily rewards | **CONFIRMED** | 5/10/15/30/50/70/100; day 8+100; reset after missed day; Asia/Ho_Chi_Minh calendar. |
 | Monthly gift amount | **CONFIRMED** | 200 per eligible month, at most once. |
-| Cancellation deposit | **CONFIRMED FOR CANCEL** | Forfeit held deposit, no refund, revoke ticket. |
+| Cancellation deposit | **CONFIRMED FOR CANCEL** | Refund floor(depositCoins × 30%), forfeit the remainder, revoke ticket. |
 | Bonus on first account | **CONFIRMED** | 200 Coin once per UID, server-owned policy. |
 | Event deposit/reward values | **ILLUSTRATIVE** | 50 deposit and 200 attendance reward are examples; define per-event server-side. |
 | No-show handling | **CONFIRMED** | Held deposit forfeited after event/check-in end, no available debit. Local hourly job, not deployed. |
 | Re-register after cancel | **CONFIRMED** | Allowed if slot still available and registration open; new requestId/ticket/deposit; retain history. |
 | Monthly eligibility/schedule | **CONFIRMED** | All initialized app accounts at month cutoff, +200 automatically on day 1, Asia/Ho_Chi_Minh. Local only until deployment. |
 | Voucher use authority | **CONFIRMED** | Voucher at sponsor, authorized admin marks used once. No separate café cashier UI in this task. |
-| Event Milestones | **REMOVED** | No milestone feature, progress, claims or extra Coin awards. |
-| Walk-in manual entry | **REMOVED FOR NOW** | QR only; no Enter code endpoint/UI; contact staff if scanning fails. |
+| Event Milestones | **CONFIRMED 05/11/2026** | Lifetime verified events; manual claim once per milestone, 1/3/5/10/20 → 50/100/150/300/500 Coin. See EVENT_MILESTONES.md. |
+| Manual check-in fallback | **CONFIRMED 05/11/2026** | QR + expiring eight-character code; student venue code or event-scoped staff ticket code; same one-time attendance and reward. |
 | Walk-in QR rotation strategy | **OPEN technical design** | Implement a secure demo approach with documented threat model; get approval before claiming real-world anti-fraud. |
 | Operator-side ticket verifier | **NEEDED FOR DEMO** | Minimal event-scoped authenticated tooling, not full admin; security cannot be bypassed. |
 | Flutter vs Figma fidelity | **GAP** | 44 Figma frames, errors and variants; record divergences, seek approval to update Figma. |
