@@ -129,6 +129,37 @@ class Flow1Repository {
     }
   }
 
+  Future<Map<String, dynamic>> loadRewards() async {
+    final rows = await Future.wait([
+      backend.call('getAccount'),
+      backend.call('getEventMilestones'),
+      _pages('getPublicCatalog', {'kind': 'rewards'}),
+      _pages('listOwned', {'kind': 'redemptions'}),
+      _pages('listOwned', {'kind': 'vouchers'}),
+      _pages('listOwned', {'kind': 'ledger'}),
+    ]);
+    return {
+      'account': rows[0],
+      'milestones': rows[1],
+      'rewards': rows[2],
+      'redemptions': rows[3],
+      'vouchers': rows[4],
+      'ledger': rows[5],
+    };
+  }
+
+  Future<Map<String, dynamic>> claimDaily() =>
+      backend.call('claimDailyCheckin');
+  Future<Map<String, dynamic>> claimMilestone(String id, int version) =>
+      backend.call('claimEventMilestone', {
+        'milestoneId': id,
+        'expectedVersion': version,
+      });
+  Future<Map<String, dynamic>> redeem(Map<String, dynamic> input) =>
+      backend.call('redeemReward', input);
+  Future<Map<String, dynamic>> voucherCode(String id) =>
+      backend.call('getVoucherCode', {'voucherId': id});
+
   Future<List<Flow1Event>> search(
     String q,
     String category,

@@ -14,6 +14,8 @@ import 'authentication_view_model.dart';
 import '../models/flow1_models.dart';
 import '../core/errors/app_exception.dart';
 import 'flow1_view_model.dart';
+import 'flow3_view_model.dart';
+import '../models/flow3_models.dart';
 
 class ActivityState {
   ActivityState({
@@ -136,6 +138,62 @@ final activityViewModelProvider =
     NotifierProvider<ActivityViewModel, ActivityState>(ActivityViewModel.new);
 
 class ActivityViewModel extends Notifier<ActivityState> {
+  bool get rewardsLive => ref.read(realBackendEnabledProvider);
+  Flow3Snapshot? get rewardsData =>
+      rewardsLive ? ref.read(flow3ViewModelProvider).asData?.value : null;
+  bool get rewardsBusy => rewardsData?.busy != null;
+  int get rewardAvailable =>
+      rewardsLive ? rewardsData?.availableCoins ?? 0 : state.available;
+  int get rewardHeld =>
+      rewardsLive ? rewardsData?.heldCoins ?? 0 : state.deposits;
+  bool get dailySaving => rewardsData?.busy == 'daily';
+  bool get dailyClaimed => rewardsLive
+      ? rewardsData?.daily['alreadyClaimed'] == true
+      : state.dailyClaimed;
+  DailyPresentation get dailyProgress => rewardsLive
+      ? rewardsData!.dailyPresentation
+      : ActivityMockData.dailyCheckInPreview;
+  int get verifiedCount =>
+      rewardsLive ? rewardsData?.verifiedCount ?? 0 : state.verified.length;
+  List<RedemptionReceipt> get rewardReceipts =>
+      rewardsLive ? rewardsData?.receipts ?? [] : state.receipts;
+  List<RedemptionReceipt> get availableReceipts =>
+      rewardReceipts.where((r) => r.available(DateTime.now().toUtc())).toList();
+  List<({CampusReward reward, String status})> get archivedReceipts =>
+      rewardsLive
+      ? rewardReceipts
+            .where((r) => !r.available(DateTime.now().toUtc()))
+            .map(
+              (r) => (
+                reward: r.reward,
+                status: r.expired(DateTime.now().toUtc()) && r.status != 'used'
+                    ? 'Expired'
+                    : r.status == 'used'
+                    ? 'Used'
+                    : 'Unavailable',
+              ),
+            )
+            .toList()
+      : ActivityMockData.archivedRewards;
+  RedemptionReceipt? get lastReceipt => rewardsLive
+      ? rewardReceipts
+            .where((r) => r.id == rewardsData?.lastRedemptionId)
+            .firstOrNull
+      : state.receipt;
+  String receiptStatus(RedemptionReceipt r) => r.status == 'used'
+      ? 'Used'
+      : r.expired(DateTime.now().toUtc())
+      ? 'Expired'
+      : r.status == 'revoked'
+      ? 'Unavailable'
+      : r.reward.fulfillmentType == 'physical'
+      ? 'Ready for collection'
+      : 'Available';
+  Future<bool> claimDailyRemote() =>
+      ref.read(flow3ViewModelProvider.notifier).claimDaily();
+  Future<bool> redeemRemote(String id) =>
+      ref.read(flow3ViewModelProvider.notifier).redeem(reward(id));
+
   final _cancelRequests = <String, String>{};
   final _attendanceRequests = <String, String>{};
   String? get _uid =>
@@ -150,6 +208,9 @@ class ActivityViewModel extends Notifier<ActivityState> {
       );
     }
     if (ref.watch(realBackendEnabledProvider)) {
+      ref.listen(flow3ViewModelProvider, (_, _) {
+        state = state.copy();
+      }, weak: true);
       ref.listen(authenticationViewModelProvider, (previous, next) {
         if (previous?.asData?.value.userId != next.asData?.value.userId) {
           _cancelRequests.clear();
@@ -384,10 +445,20 @@ class ActivityViewModel extends Notifier<ActivityState> {
       return ActivityMockData.events.first;
     },
   );
-  CampusReward reward(String id) => ActivityMockData.rewards.firstWhere(
-    (r) => r.id == id,
-    orElse: () => ActivityMockData.rewards.first,
-  );
+  CampusReward reward(String id) =>
+      (rewardsLive ? rewardsData?.rewards ?? [] : ActivityMockData.rewards)
+          .firstWhere(
+            (r) => r.id == id,
+            orElse: () {
+              if (rewardsLive) {
+                throw const AppException(
+                  code: 'REWARD_NOT_FOUND',
+                  message: 'Reward unavailable.',
+                );
+              }
+              return ActivityMockData.rewards.first;
+            },
+          );
   void selectTab(bool past) => state = state.copy(past: past, clearDate: true);
   void showAll() => state = state.copy(clearDate: true);
   void selectDate(DateTime value) => state = state.copy(
@@ -652,32 +723,53 @@ class ActivityViewModel extends Notifier<ActivityState> {
   void searchRewards(String value) => state = state.copy(rewardQuery: value);
   void historyFilter(String value) => state = state.copy(historyFilter: value);
   void selectLockerTab(bool used) => state = state.copy(usedRewards: used);
-  List<CampusReward> get visibleRewards => ActivityMockData.rewards
-      .where(
-        (reward) =>
-            (state.rewardCategory == 'All' ||
-                reward.category == state.rewardCategory) &&
-            reward.title.toLowerCase().contains(
-              state.rewardQuery.toLowerCase().trim(),
-            ),
-      )
-      .toList();
-  List<CoinEntry> get history => state.transactions
-      .where(
-        (entry) => switch (state.historyFilter) {
-          'Earned' => entry.kind == CoinKind.earned,
-          'Spent' => entry.kind == CoinKind.spent,
-          'Deposits' =>
-            entry.kind == CoinKind.deposit || entry.kind == CoinKind.refund,
-          _ => true,
-        },
-      )
-      .toList();
-  bool canRedeem(String id) =>
-      demoAvailable &&
-      !state.redeemed.contains(id) &&
-      state.available >= reward(id).redeemCost;
-  String rewardStatus(String id) => !demoAvailable
+  List<CampusReward> get visibleRewards =>
+      (rewardsLive ? rewardsData?.rewards ?? [] : ActivityMockData.rewards)
+          .where(
+            (reward) =>
+                (state.rewardCategory == 'All' ||
+                    reward.category == state.rewardCategory) &&
+                reward.title.toLowerCase().contains(
+                  state.rewardQuery.toLowerCase().trim(),
+                ),
+          )
+          .toList();
+  List<CoinEntry> get history =>
+      (rewardsLive ? rewardsData?.history ?? [] : state.transactions)
+          .where(
+            (entry) => switch (state.historyFilter) {
+              'Earned' => entry.kind == CoinKind.earned,
+              'Spent' => entry.kind == CoinKind.spent,
+              'Deposits' =>
+                entry.kind == CoinKind.deposit || entry.kind == CoinKind.refund,
+              _ => true,
+            },
+          )
+          .toList();
+  bool canRedeem(String id) => rewardsLive
+      ? !rewardsBusy &&
+            rewardsData?.rewards.any(
+                  (r) =>
+                      r.id == id &&
+                      r.active &&
+                      r.stock > 0 &&
+                      r.redeemCost <= rewardAvailable,
+                ) ==
+                true
+      : demoAvailable &&
+            !state.redeemed.contains(id) &&
+            state.available >= reward(id).redeemCost;
+  String rewardStatus(String id) => rewardsLive
+      ? rewardsBusy
+            ? 'Processing…'
+            : !reward(id).active
+            ? 'Unavailable'
+            : reward(id).stock < 1
+            ? 'Out of stock'
+            : rewardAvailable < reward(id).redeemCost
+            ? 'Not enough coins'
+            : 'Available'
+      : !demoAvailable
       ? 'Preview'
       : state.redeemed.contains(id)
       ? 'Redeemed'
@@ -686,16 +778,19 @@ class ActivityViewModel extends Notifier<ActivityState> {
       : 'Available';
 
   RedemptionReceipt? voucher(String? code) {
-    if (state.receipts.isEmpty) return null;
-    if (code == null) return state.receipts.first;
-    for (final item in state.receipts) {
+    if (rewardReceipts.isEmpty) return null;
+    if (code == null) return rewardsLive ? null : rewardReceipts.first;
+    for (final item in rewardReceipts) {
       if (item.code == code) return item;
     }
     return null;
   }
 
-  String dateLabel(DateTime date) =>
-      '${_months[date.month - 1]} ${date.day}, ${date.year}';
+  String dateLabel(DateTime date) {
+    final local = rewardsLive ? vietnamTime(date) : date;
+    return '${_months[local.month - 1]} ${local.day}, ${local.year}';
+  }
+
   static const _months = [
     'Jan',
     'Feb',
@@ -717,6 +812,20 @@ class ActivityViewModel extends Notifier<ActivityState> {
       ? 'Validity not configured'
       : 'Valid until ${dateLabel(receipt.expiresOn!)}';
   List<MilestoneProgress> get milestones {
+    if (rewardsLive) {
+      return (rewardsData?.milestones ?? [])
+          .map(
+            (m) => MilestoneProgress(
+              m.milestone,
+              reached: m.reached,
+              next: m.next,
+              remaining: m.remaining,
+              claimed: m.claimed,
+              claiming: rewardsData?.busy == 'milestone:${m.milestone.id}',
+            ),
+          )
+          .toList();
+    }
     final count = state.verified.length;
     final next = ActivityMockData.milestones
         .where((m) => m.events > count)
@@ -735,6 +844,15 @@ class ActivityViewModel extends Notifier<ActivityState> {
   }
 
   Future<bool> claimMilestone(String id) async {
+    if (rewardsLive) {
+      final milestone = milestones
+          .where((m) => m.milestone.id == id)
+          .firstOrNull;
+      if (milestone == null || !milestone.canClaim || rewardsBusy) return false;
+      return ref
+          .read(flow3ViewModelProvider.notifier)
+          .claimMilestone(id, milestone.milestone.version);
+    }
     if (!ref.read(hasAuthenticatedSessionProvider) ||
         state.claimingMilestoneId != null) {
       return false;
@@ -781,9 +899,8 @@ class ActivityViewModel extends Notifier<ActivityState> {
       'Getting started';
   int get milestoneTarget =>
       nextMilestone?.milestone.events ??
-      ActivityMockData.milestones.last.events;
-  double get milestoneFraction =>
-      (state.verified.length / milestoneTarget).clamp(0, 1);
+      (milestones.isEmpty ? 1 : milestones.last.milestone.events);
+  double get milestoneFraction => (verifiedCount / milestoneTarget).clamp(0, 1);
   int get milestonePercent => (milestoneFraction * 100).round();
   List<CoinHistoryGroup> get historyGroups {
     final entries = [...history]

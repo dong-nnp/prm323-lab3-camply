@@ -5,7 +5,8 @@
 > phép thêm nút nhỏ xác nhận đã quét trên vé trong debug để demo, thay màn staff.
 > Nút gọi callable riêng, chỉ account/event demo do server bật; không đổi guard
 > staff của QR thật. [Phạm vi, kiểm tra và giới hạn](../evidence/flow2-api-only/).
-> Flow 3 vẫn chưa tích hợp. Các ghi chú “hủy/check-in chưa nối” bên dưới là snapshot Flow 1.
+> Flow 3 đã nối ngày 06/11/2026: [contract, demo và giới hạn](FLOW3_INTEGRATION.md).
+> Các ghi chú “hủy/check-in/rewards chưa nối” bên dưới là snapshot Flow 1.
 
 > **Sửa phạm vi theo owner 05/11/2026:** chỉ nối API vào các màn hiện có.
 > Đã gỡ `Flow1Screen` và route replacement. Không tạo/sắp xếp lại màn, không đổi

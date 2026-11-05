@@ -1,0 +1,40 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T17:34:19.640Z",
+  "accountRole": "seeded demo staff",
+  "before": {
+    "heldCoins": 0,
+    "version": 7,
+    "availableCoins": 245,
+    "updatedAt": "2026-11-05T14:55:17.855Z"
+  },
+  "after": {
+    "heldCoins": 0,
+    "version": 10,
+    "availableCoins": 100,
+    "updatedAt": "2026-11-05T17:34:13.812Z"
+  },
+  "daily": {
+    "dayKey": "2026-11-06",
+    "coins": 5,
+    "replayIdentical": true
+  },
+  "milestone": {
+    "id": "first-event",
+    "coins": 50,
+    "replayIdentical": true
+  },
+  "redemption": {
+    "id": "7cbb72a371c6a07b547d64178e8d1b1b2a3117d4e1790c09c219718831e970e3",
+    "cost": 200,
+    "replayIdentical": true
+  },
+  "voucher": {
+    "id": "998059687f52ed04abe2c942c2a405ef1dfd3fe53c5b5fa421cfe46873220f46",
+    "status": "used",
+    "usedCodeRejected": true,
+    "replayIdentical": true
+  },
+  "singleDebitLedger": true,
+  "ownerAccountUntouched": true
+}

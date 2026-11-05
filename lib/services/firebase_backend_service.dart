@@ -30,11 +30,23 @@ class FirebaseBackendService implements BackendService {
           ? details['code'] as String
           : error.code;
       const messages = {
+        'PRICE_CHANGED':
+            'The price changed. Review the new price before confirming again.',
+        'OUT_OF_STOCK': 'This reward is out of stock. No coins were charged.',
+        'REWARD_INACTIVE': 'This reward is no longer available.',
+        'REWARD_NOT_FOUND': 'This reward is unavailable.',
+        'MILESTONE_CHANGED': 'This milestone changed. Review the updated reward before claiming.',
+        'MILESTONE_NOT_UNLOCKED':
+            'Attend more verified events to unlock this milestone.',
+        'MILESTONE_INACTIVE': 'This milestone is no longer active.',
+        'EXPIRED': 'This voucher has expired.',
+        'USED': 'This voucher has already been used.',
+
         'EVENT_FULL': 'This event is full. No coins were charged.',
         'EVENT_NOT_OPEN': 'Registration has closed for this event.',
         'QUOTE_CHANGED': 'The deposit has changed. Review the updated event before confirming again.',
-        'TERMS_CHANGED': 'The terms have changed. Review the updated event before confirming again.',
-        'INSUFFICIENT_COINS': 'Not enough available coins for this deposit.',
+        'TERMS_CHANGED': 'The terms have changed. Review the updated details before confirming again.',
+        'INSUFFICIENT_COINS': 'Not enough available coins.',
         'ALREADY_REGISTERED':
             'You are already registered. Open your ticket in My Events.',
         'ONBOARDING_REQUIRED': 'Save at least 3 interests before continuing.',

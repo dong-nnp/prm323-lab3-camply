@@ -103,11 +103,13 @@ export function accounts(db: Firestore, clock: () => Date) {
     },
     getAccount: async (actor: Actor | null, raw: unknown) => {
       empty.parse(raw); const uid = authenticated(actor);
-      const [user, wallet] = await db.getAll(db.doc(`users/${uid}`), db.doc(`wallets/${uid}`));
+      const [user, wallet, daily] = await db.getAll(db.doc(`users/${uid}`), db.doc(`wallets/${uid}`), db.doc(`users/${uid}/reward_state/daily`));
       const profile = required(user.data(), 'ACCOUNT_NOT_INITIALIZED');
       if (profile.accountStatus !== 'active') fail('ACCOUNT_DISABLED', 'permission-denied');
       const interests = await db.collection('interests').where('status', '==', 'active').orderBy(FieldPath.documentId()).limit(100).get();
-      return { profile, wallet: walletData(wallet.data()), interestOptions: interests.docs.map(d => ({ id: d.id, label: d.get('label') })) };
+      const now = clock();
+      const grant = dailyGrant(now, daily.exists ? daily.data() as { lastLocalDate: string; streakDay: number } : null);
+      return { profile, wallet: walletData(wallet.data()), daily: { ...grant, serverTime: now.toISOString(), timezone: PRODUCT_TIMEZONE }, interestOptions: interests.docs.map(d => ({ id: d.id, label: d.get('label') })) };
     },
   };
 }

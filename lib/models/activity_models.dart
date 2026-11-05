@@ -39,12 +39,19 @@ class CampusReward {
     required this.instructions,
     required this.terms,
     this.validDays,
+    this.stock = 0,
+    this.termsVersion = '',
+    this.fulfillmentType = 'voucher',
+    this.active = true,
   });
   final String id, title, category, image;
   final int redeemCost;
   int get catalogCost => redeemCost;
   final String description, location, instructions, terms;
   final int? validDays;
+  final int stock;
+  final String termsVersion, fulfillmentType;
+  final bool active;
 }
 
 enum CoinKind { earned, spent, deposit, refund }
@@ -57,11 +64,13 @@ class CoinEntry {
     this.kind,
     this.icon, {
     this.date,
+    this.amountLabel,
   });
   final String title, subtitle;
   final int amount, icon;
   final CoinKind kind;
   final DateTime? date;
+  final String? amountLabel;
 }
 
 class RedemptionReceipt {
@@ -72,12 +81,20 @@ class RedemptionReceipt {
     this.code, {
     required this.redeemedOn,
     this.expiresOn,
+    this.id = '',
+    this.voucherId,
+    this.status = 'unused',
   });
   final CampusReward reward;
   final int cost, balance;
   final String code;
   final DateTime redeemedOn;
   final DateTime? expiresOn;
+  final String id, status;
+  final String? voucherId;
+  bool expired(DateTime now) => expiresOn != null && !expiresOn!.isAfter(now);
+  bool available(DateTime now) =>
+      status != 'used' && status != 'revoked' && !expired(now);
 }
 
 class CoinHistoryGroup {

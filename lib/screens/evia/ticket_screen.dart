@@ -27,6 +27,7 @@ class TicketScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final live = ref.watch(realBackendEnabledProvider);
+    if (live) ref.watch(flow1ViewModelProvider);
     final remote = live ? ref.watch(flow1TicketProvider(eventId)) : null;
     if (remote != null &&
         (remote.isLoading || remote.hasError || !remote.hasValue)) {
@@ -67,6 +68,41 @@ class TicketScreen extends ConsumerWidget {
         screen: '2083:2345',
         backAsset: 'imgContainer2',
       ),
+      footer:
+          kDebugMode &&
+              live &&
+              ref
+                  .read(activityViewModelProvider.notifier)
+                  .demoCheckInAvailable(eventId) &&
+              details?['status'] == 'active'
+          ? Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.xs,
+              ),
+              child: TextButton(
+                onPressed:
+                    ref.watch(activityViewModelProvider).checkingInEventId !=
+                        null
+                    ? null
+                    : () async {
+                        final vm = ref.read(activityViewModelProvider.notifier);
+                        await vm.demoAttend(eventId);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                ref.read(activityViewModelProvider).message ??
+                                    'Please retry.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                child: const Text('Demo: xác nhận đã quét'),
+              ),
+            )
+          : null,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -249,33 +285,6 @@ class TicketScreen extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: AppSpacing.lg),
-            if (kDebugMode &&
-                live &&
-                ref
-                    .read(activityViewModelProvider.notifier)
-                    .demoCheckInAvailable(eventId) &&
-                details?['status'] == 'active')
-              TextButton(
-                onPressed:
-                    ref.watch(activityViewModelProvider).checkingInEventId !=
-                        null
-                    ? null
-                    : () async {
-                        final vm = ref.read(activityViewModelProvider.notifier);
-                        await vm.demoAttend(eventId);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                ref.read(activityViewModelProvider).message ??
-                                    'Please retry.',
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                child: const Text('Demo: xác nhận đã quét'),
-              ),
             const ActivityInfo(
               'Show this QR code and your student ID at the entrance.',
               color: AppColors.surface,
