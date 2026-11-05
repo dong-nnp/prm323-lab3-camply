@@ -12,6 +12,12 @@
 > SDK vẫn chỉ ở service; loading/error/retry dùng widget hiện có. Auth/lifecycle,
 > duplicate actions và khôi phục receipt nằm ở ViewModel. Các mô tả pending/
 > preview của Rewards dưới đây là lịch sử. [Contract](FLOW3_INTEGRATION.md).
+> **Evia Admin web.** `admin/` là web Vite riêng. Firebase Auth xác minh
+> custom claim admin trước khi hiển thị giao diện và backend kiểm tra lại
+> từng callable. Web gọi API quản trị catalog, Remote Config, GA4 Data API
+> và báo cáo Crashlytics từ BigQuery qua Functions. Mobile đọc nội dung
+> milestone qua ViewModel → repository → RemoteConfigService. Crash test
+> dùng WebUSB tới Android QA đã bật collection. [Phạm vi và vận hành](ADMIN_WEB_PLAN.md).
 
 > **Ticket cache fix — 05/11/2026:** ticket provider tạo event presentation từ
 > response `getTicket`; View không dùng My Events cache để kết luận có vé hay

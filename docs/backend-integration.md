@@ -10,6 +10,9 @@
 > Nam và số xu. Chỉ Function này được deploy lại trong task; các mutation/owner
 > query có sẵn được dùng lại. [Contract/call chain](FLOW3_INTEGRATION.md) ·
 > [Evidence](../evidence/flow3-api-only/).
+> **Admin web.** Xem [phạm vi dùng API hiện có](ADMIN_WEB_PLAN.md) và
+> [hướng dẫn chạy](../admin/README.md). Mobile Flow 1/2 đã nối catalog, đăng ký và FCM
+> trong chế độ live. Các ghi chú chưa nối mobile phía dưới mô tả mốc cũ.
 
 > **Flow 2 — 05/11/2026:** `verifyWalkInQr`/`verifyWalkInCode` bổ sung
 > `expectedEventId?:string` tương thích caller cũ; khác event lỗi

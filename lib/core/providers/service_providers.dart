@@ -12,6 +12,7 @@ import '../../services/firebase_initializer.dart';
 import '../../services/messaging_service.dart';
 import '../../services/pending_firebase_services.dart';
 import '../../services/remote_config_service.dart';
+import '../../services/firebase_remote_config_service.dart';
 import '../../services/storage_service.dart';
 import '../../services/campus_service.dart';
 import '../../services/backend_service.dart';
@@ -84,7 +85,9 @@ final crashReportingServiceProvider = Provider<CrashReportingService>(
   (ref) => ref.watch(_pendingServicesProvider),
 );
 final remoteConfigServiceProvider = Provider<RemoteConfigService>(
-  (ref) => ref.watch(_pendingServicesProvider),
+  (ref) => ref.watch(realBackendEnabledProvider)
+      ? FirebaseRemoteConfigService(ref.watch(_firebaseReadyProvider))
+      : ref.watch(_pendingServicesProvider),
 );
 final campusServiceProvider = Provider<CampusService>(
   (ref) => ref.watch(_pendingServicesProvider),
