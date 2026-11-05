@@ -96,6 +96,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ).toString();
         }
       }
+      if (!auth.isLoading &&
+          state.uri.path == AppRoutes.discover &&
+          session?.status != AuthStatus.signedIn) {
+        return AppRoutes.guestDiscover;
+      }
       if (session?.status == AuthStatus.signedIn &&
           [
             AppRoutes.home,

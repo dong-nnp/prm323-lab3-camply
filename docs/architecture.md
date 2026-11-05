@@ -341,6 +341,15 @@ Draft filters chỉ áp dụng sau **Apply Filters**; đóng màn hình không s
 đang dùng. Follow/bookmark dùng chung state giữa các màn hình. Các URL demo trực
 tiếp không thay đổi `AuthSession`, không vượt qua guard cho protected routes.
 
+Discover Guest nhúng nội dung Explore vào cùng route và dùng chung
+`EviaViewModel` với trang bộ lọc. Mở chi tiết truyền khóa sự kiện qua route.
+`RegistrationViewModel.findEvent` phân giải ID Firebase khi bật backend thật;
+`RegistrationMockData.findEvent` chỉ phân giải dữ liệu preview, gồm các bản
+tham chiếu AI có khác biệt về địa điểm và chính sách tham dự. Following lấy
+đăng ký từ `ActivityViewModel` và trạng thái Follow từ `EviaViewModel`; khi
+bật backend thật, cả hai phản ánh dữ liệu server. ViewModel xóa trạng thái tài
+khoản trước khi đổi phiên. `detailKey` giữ đúng sự kiện khi mở tab Schedule.
+
 `FigmaAssets` ánh xạ exports cục bộ, `EviaTheme` bổ sung tokens, `evia_widgets.dart`
 và `evia_brand.dart` chứa các thành phần giao diện dùng lại. Không thêm tải font
 runtime, tracking hoặc Firebase SDK calls trong View/ViewModel.

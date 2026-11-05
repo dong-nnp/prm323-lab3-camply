@@ -20,6 +20,8 @@ import 'package:prm393_lab03/core/errors/app_exception.dart';
 import 'package:prm393_lab03/core/providers/service_providers.dart';
 import 'package:prm393_lab03/models/auth_session.dart';
 import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
+import 'package:prm393_lab03/models/flow1_models.dart';
+import 'package:prm393_lab03/widgets/event_flow_widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../helpers/flow1_backend.dart';
@@ -74,6 +76,60 @@ Future<ProviderContainer> open(
 }
 
 void main() {
+  testWidgets(
+    'merged Following uses server registrations and keeps the event ID',
+    (tester) async {
+      final backend = Flow1TestBackend()..registered = true;
+      await open(tester, backend, '/following/events');
+      expect(find.text('Server event title'), findsOneWidget);
+      expect(find.text('Server club'), findsWidgets);
+      expect(find.text('Campus Music Night'), findsNothing);
+      await tester.tap(find.text('Server event title'));
+      await tester.pumpAndSettle();
+      expect(find.byType(EventDetailsScreen), findsOneWidget);
+      expect(
+        tester
+            .widget<EventDetailsScreen>(find.byType(EventDetailsScreen))
+            .eventId,
+        'server-event-17',
+      );
+      expect(
+        tester.widget<EventDetailsScreen>(find.byType(EventDetailsScreen)).tab,
+        'schedule',
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('merged event summary accepts a remote image URL', (
+    tester,
+  ) async {
+    final event = Flow1Event({
+      ...testEvent(),
+      'imageUrl': 'https://example.invalid/event.jpg',
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: FlowEventSummary(
+            screen: '2083:5709',
+            event: event.presentation('Server club'),
+            form: true,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widgetList<Image>(find.byType(Image))
+          .any((image) => image.image is NetworkImage),
+      isTrue,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('live catalog keeps the original Discover and its cards', (
     tester,
   ) async {

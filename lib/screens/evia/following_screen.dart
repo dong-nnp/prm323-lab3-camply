@@ -7,6 +7,7 @@ import '../../models/evia_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
+import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/status_widgets.dart';
@@ -18,10 +19,12 @@ class EviaFollowingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(eviaViewModelProvider);
     final vm = ref.read(eviaViewModelProvider.notifier);
+    if (!organizers) ref.watch(activityViewModelProvider);
+    final events = organizers ? const <CampusEvent>[] : vm.followingEvents;
     return EviaPage(
       header: EviaHeader(
         title: organizers ? 'Followed Organizers' : 'Following',
-        subtitle: 'Events and organizers you follow',
+        subtitle: 'Your registrations and followed organizers',
         backAsset: FigmaIcon(
           organizers ? '2083:1873' : '2083:1582',
           'imgContainer${organizers ? 12 : 13}',
@@ -29,7 +32,7 @@ class EviaFollowingScreen extends ConsumerWidget {
         trailing: organizers
             ? IconButton(
                 tooltip: 'Profile',
-                onPressed: () => context.push('/'),
+                onPressed: () => context.push('/profile'),
                 icon: const CircleAvatar(
                   backgroundColor: AppColors.primary,
                   child: FigmaIcon('2083:1873', 'imgContainer13'),
@@ -98,7 +101,7 @@ class EviaFollowingScreen extends ConsumerWidget {
                           Text('Stay in the loop', style: EviaTheme.label),
                           SizedBox(height: AppSpacing.xs),
                           Text(
-                            'Following organizers notifies you of newly published events and pins them to your “From Your Following” Discover feed.',
+                            'Follow campus organizers to find them again in this list.',
                             style: EviaTheme.caption,
                           ),
                         ],
@@ -112,18 +115,14 @@ class EviaFollowingScreen extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    for (final name
-                        in (vm.live
-                            ? [
-                                'All',
-                                ...vm.followedOrganizers.map((o) => o.name),
-                              ]
-                            : [
-                                'All',
-                                'Student Union',
-                                'Photography Club',
-                                'Robotics Society',
-                              ]))
+                    for (final name in [
+                      'All',
+                      ...vm.registeredEvents
+                          .map((event) => event.organizer)
+                          .whereType<String>()
+                          .where((name) => name.isNotEmpty)
+                          .toSet(),
+                    ])
                       Padding(
                         padding: const EdgeInsets.only(right: AppSpacing.sm),
                         child: EviaPill(
@@ -144,7 +143,7 @@ class EviaFollowingScreen extends ConsumerWidget {
               Row(
                 children: [
                   const Expanded(
-                    child: Text('Upcoming Events', style: EviaTheme.section),
+                    child: Text('Registered Events', style: EviaTheme.section),
                   ),
                   Flexible(
                     child: TextButton(
@@ -169,8 +168,12 @@ class EviaFollowingScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              for (final event
-                  in ref.read(eviaViewModelProvider.notifier).followingEvents)
+              if (events.isEmpty)
+                const AppEmptyWidget(
+                  title: 'No registered events',
+                  message: 'Your confirmed registrations will appear here.',
+                ),
+              for (final event in events)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: _FollowingEvent(event: event),
@@ -297,6 +300,7 @@ class _FollowingEvent extends StatelessWidget {
   final CampusEvent event;
   @override
   Widget build(BuildContext context) => EviaCard(
+    onTap: () => showEvent(context, event),
     padding: const EdgeInsets.all(AppSpacing.md),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,10 +315,7 @@ class _FollowingEvent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: InkWell(
-                      onTap: () => showEvent(context, event),
-                      child: Text(event.title, style: EviaTheme.cardTitle),
-                    ),
+                    child: Text(event.title, style: EviaTheme.cardTitle),
                   ),
                   BookmarkButton(
                     event: event,
@@ -324,21 +325,24 @@ class _FollowingEvent extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.xs),
-              Row(
-                children: [
-                  FigmaIcon(
-                    '2083:1582',
-                    event.id == 'club' ? 'imgContainer3' : 'imgContainer6',
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Expanded(
-                    child: Text(
-                      event.organizer!,
-                      style: EviaTheme.label.copyWith(color: AppColors.primary),
+              if (event.organizer case final name? when name.isNotEmpty)
+                Row(
+                  children: [
+                    FigmaIcon(
+                      '2083:1582',
+                      event.id == 'club' ? 'imgContainer3' : 'imgContainer6',
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: EviaTheme.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               EventMeta(
                 event.date,
                 screen: '2083:1582',

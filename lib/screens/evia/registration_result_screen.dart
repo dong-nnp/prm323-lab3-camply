@@ -53,7 +53,9 @@ class RegistrationResultScreen extends ConsumerWidget {
         ),
       );
     }
-    final event = going && !live ? RegistrationMockData.club : vm.event(id);
+    final event = going && !live && state.status != RegistrationStatus.going
+        ? RegistrationMockData.club
+        : vm.event(id);
     void back() {
       vm.backToForm();
       context.go(
@@ -169,14 +171,15 @@ class RegistrationResultScreen extends ConsumerWidget {
                   body: "When check-in opens, scan the organizer's QR code at the venue to verify your attendance.",
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _ResultNotice(
-                  screen: screen,
-                  icon: 'imgContainer3',
-                  title: 'Earn +${event.coins} coins after verified check-in',
-                  leading: const CoinIcon(),
-                  body: 'Coins and milestone progress are credited upon scanning the event QR at the door.',
-                  color: AppColors.warningSurface,
-                ),
+                if (event.coins > 0)
+                  _ResultNotice(
+                    screen: screen,
+                    icon: 'imgContainer3',
+                    title: 'Earn +${event.coins} coins after verified check-in',
+                    leading: const CoinIcon(),
+                    body: 'Coins and milestone progress are credited upon scanning the event QR at the door.',
+                    color: AppColors.warningSurface,
+                  ),
                 const SizedBox(height: AppSpacing.md),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -202,14 +205,13 @@ class RegistrationResultScreen extends ConsumerWidget {
                   ),
                 )
               else ...[
-                _ResultNotice(
-                  screen: screen,
-                  icon: 'imgContainer2',
-                  title: live
-                      ? '${event.deposit} coins on hold'
-                      : '100 coins on hold',
-                  body: 'Your event deposit is temporarily locked.',
-                ),
+                if (event.deposit > 0)
+                  _ResultNotice(
+                    screen: screen,
+                    icon: 'imgContainer2',
+                    title: '${event.deposit} coins on hold',
+                    body: 'Your event deposit is temporarily locked.',
+                  ),
                 const SizedBox(height: AppSpacing.md),
                 _ResultNotice(
                   screen: screen,
@@ -250,7 +252,16 @@ class RegistrationResultScreen extends ConsumerWidget {
               OutlinedButton(
                 onPressed: () => context.go(
                   going || full
-                      ? '/event/about?event=${event.id}'
+                      ? Uri(
+                          path: '/event/schedule',
+                          queryParameters: {
+                            'event':
+                                going &&
+                                    state.status != RegistrationStatus.going
+                                ? event.id
+                                : state.eventId,
+                          },
+                        ).toString()
                       : '/discover',
                 ),
                 child: Row(

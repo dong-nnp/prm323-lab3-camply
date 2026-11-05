@@ -285,6 +285,7 @@ class _EviaLoginScreenState extends ConsumerState<EviaLoginScreen> {
                               children: [
                                 const Expanded(child: Divider()),
                                 Flexible(
+                                  flex: 3,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: AppSpacing.md,

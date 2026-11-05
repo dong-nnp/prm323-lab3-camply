@@ -117,7 +117,15 @@ class _RegistrationFormScreenState
         ),
       );
     }
-    final event = vm.event(id);
+    final event = vm.findEvent(id);
+    if (event == null) {
+      return const EviaPage(
+        header: ActivityHeader('Event Registration'),
+        child: Center(child: Text('Event not found.')),
+      );
+    }
+    final hasDeposit = event.deposit > 0;
+
     final data = {
       'name': state.name,
       'studentId': state.studentId,
@@ -172,12 +180,16 @@ class _RegistrationFormScreenState
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
-          if (!legacy) ...[
+          if (!legacy && hasDeposit) ...[
             _DepositSummary(screen: screen),
             const SizedBox(height: AppSpacing.lg),
           ],
           if (widget.view != 'loading') ...[
-            _RegistrationNotice(screen: screen, legacy: legacy),
+            _RegistrationNotice(
+              screen: screen,
+              legacy: legacy,
+              hasDeposit: hasDeposit,
+            ),
             const SizedBox(height: AppSpacing.lg),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +197,9 @@ class _RegistrationFormScreenState
                 if (screen == '2083:5709')
                   Semantics(
                     checked: state.agreed,
-                    label: 'Accept registration and deposit terms',
+                    label: hasDeposit
+                        ? 'Accept registration and deposit terms'
+                        : 'Accept registration terms',
                     child: InkWell(
                       onTap: loading || vm.pendingConfirmation
                           ? null
@@ -244,14 +258,17 @@ class _RegistrationFormScreenState
                               InkWell(
                                 onTap: () => _terms(
                                   context,
+                                  hasDeposit,
                                   vm.live
                                       ? (vm.remoteEvent(id).terms?['text']
                                             as String?)
                                       : null,
                                 ),
-                                child: const Text(
-                                  'event registration and deposit terms.',
-                                  style: TextStyle(
+                                child: Text(
+                                  hasDeposit
+                                      ? 'event registration and deposit terms.'
+                                      : 'event registration terms.',
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     decoration: TextDecoration.underline,
                                   ),
@@ -374,10 +391,17 @@ class _RegistrationFormScreenState
   }
 }
 
-void _terms(BuildContext context, [String? serverTerms]) => showActivityHelp(
+void _terms(
+  BuildContext context,
+  bool hasDeposit, [
+  String? serverTerms,
+]) => showActivityHelp(
   context,
-  'Registration and deposit terms',
-  serverTerms ?? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit.',
+  hasDeposit ? 'Registration and deposit terms' : 'Registration terms',
+  serverTerms ??
+      (hasDeposit
+          ? 'A 100-coin deposit is temporarily held for this event. Attendance rewards are credited only after verified check-in. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit.'
+          : 'Review your registration information and cancel your registration if you cannot attend.'),
 );
 
 class _RegistrationField extends ConsumerWidget {
@@ -650,9 +674,13 @@ class _DepositSummary extends ConsumerWidget {
 }
 
 class _RegistrationNotice extends ConsumerWidget {
-  const _RegistrationNotice({required this.screen, required this.legacy});
+  const _RegistrationNotice({
+    required this.screen,
+    required this.legacy,
+    required this.hasDeposit,
+  });
   final String screen;
-  final bool legacy;
+  final bool legacy, hasDeposit;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.read(registrationViewModelProvider.notifier);
@@ -687,7 +715,9 @@ class _RegistrationNotice extends ConsumerWidget {
                   text ??
                       (legacy
                           ? "We'll ask you to confirm your attendance 2–3 days before the event."
-                          : "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit."),
+                          : hasDeposit
+                          ? "A 100-coin deposit will be temporarily held. Check in at the event to receive attendance rewards. Cancelling returns 30% of the deposit, rounded down. No-show forfeits the deposit."
+                          : "Review your information before confirming your registration."),
                   style: FlowTheme.helpText,
                 ),
                 if (legacy) ...[
@@ -698,8 +728,12 @@ class _RegistrationNotice extends ConsumerWidget {
                   ),
                 ] else
                   TextButton(
-                    onPressed: () => _terms(context, text),
-                    child: const Text('View deposit & cancellation policy →'),
+                    onPressed: () => _terms(context, hasDeposit, text),
+                    child: Text(
+                      hasDeposit
+                          ? 'View deposit & cancellation policy →'
+                          : 'View registration terms →',
+                    ),
                   ),
               ],
             ),

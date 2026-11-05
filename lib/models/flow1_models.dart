@@ -100,6 +100,8 @@ class Flow1Event {
     walkIn: walkIn,
     past: end.isBefore(DateTime.now().toUtc()),
     spots: spots,
+    audience: 'Open to Public',
+    policy: walkIn ? 'Walk-in allowed' : 'Registration required',
     image: imageUrl,
   );
 }

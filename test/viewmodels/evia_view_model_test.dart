@@ -1,7 +1,14 @@
+import 'dart:async';
+
+import 'package:prm393_lab03/models/auth_session.dart';
+import 'package:prm393_lab03/models/activity_models.dart';
+import 'package:prm393_lab03/viewmodels/activity_view_model.dart';
 import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/viewmodels/evia_view_model.dart';
+
+import '../helpers/startup_test_auth.dart';
 
 void main() {
   late ProviderContainer container;
@@ -71,9 +78,66 @@ void main() {
     vm.toggleSaved('ai');
     expect(container.read(eviaViewModelProvider).saved, isNot(contains('ai')));
     vm.toggleFollowed('union');
+    expect(container.read(eviaViewModelProvider).followed, contains('union'));
+    vm.toggleFollowed('union');
     expect(
       container.read(eviaViewModelProvider).followed,
       isNot(contains('union')),
     );
   });
+
+  test(
+    'switching accounts clears registered events and followed organizers',
+    () async {
+      final sessions = StreamController<AuthSession>();
+      final accountContainer = ProviderContainer(
+        overrides: [
+          authenticationViewModelProvider.overrideWith(
+            () => StartupTestAuth(sessions.stream),
+          ),
+        ],
+      );
+      addTearDown(() async {
+        accountContainer.dispose();
+        await sessions.close();
+      });
+      accountContainer.listen(authenticationViewModelProvider, (_, _) {});
+      final auth = accountContainer.read(
+        authenticationViewModelProvider.future,
+      );
+      sessions.add(const AuthSession.signedIn('first-user'));
+      await auth;
+      final accountVm = accountContainer.read(eviaViewModelProvider.notifier);
+      accountVm.toggleFollowed('union');
+      expect(
+        accountContainer
+            .read(activityViewModelProvider.notifier)
+            .addRegistration(
+              RegisteredEvent(
+                id: 'design',
+                title: 'Design Thinking Bootcamp',
+                category: 'Arts',
+                dateLabel: 'Nov 4 · 09:00',
+                venue: 'Room A203',
+                start: DateTime(2026, 11, 4, 9),
+              ),
+            ),
+        isTrue,
+      );
+      expect(accountVm.followedOrganizers.single.id, 'union');
+      expect(accountVm.followingEvents.single.id, 'design');
+      sessions.add(const AuthSession.signedIn('second-user'));
+      await accountContainer.pump();
+      expect(
+        accountContainer
+            .read(eviaViewModelProvider.notifier)
+            .followedOrganizers,
+        isEmpty,
+      );
+      expect(
+        accountContainer.read(eviaViewModelProvider.notifier).followingEvents,
+        isEmpty,
+      );
+    },
+  );
 }

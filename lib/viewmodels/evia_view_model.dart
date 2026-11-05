@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/mock/evia_mock_data.dart';
 import '../core/providers/repository_providers.dart';
 import '../core/utils/exception_mapper.dart';
+import '../data/mock/registration_mock_data.dart';
 import '../models/evia_models.dart';
 import '../models/auth_session.dart';
 import '../core/constants/app_routes.dart';
@@ -11,12 +12,13 @@ import 'authentication_view_model.dart';
 import '../core/providers/service_providers.dart';
 import '../models/flow1_models.dart';
 import 'flow1_view_model.dart';
+import 'activity_view_model.dart';
 
 class EviaState {
   const EviaState({
     this.interests = EviaMockData.initialInterests,
     this.saved = EviaMockData.initialSaved,
-    this.followed = EviaMockData.initialFollowed,
+    this.followed = const {},
     this.history = EviaMockData.recentSearches,
     this.query = '',
     this.category = 'All',
@@ -101,6 +103,13 @@ class EviaViewModel extends Notifier<EviaState> {
       .toSet();
   @override
   EviaState build() {
+    if (!ref.read(realBackendEnabledProvider)) {
+      ref.watch(
+        authenticationViewModelProvider.select(
+          (auth) => auth.asData?.value.userId,
+        ),
+      );
+    }
     if (!ref.watch(realBackendEnabledProvider)) return const EviaState();
     ref.listen(flow1ViewModelProvider, (_, next) {
       final data = next.asData?.value;
@@ -214,13 +223,19 @@ class EviaViewModel extends Notifier<EviaState> {
     history: state.history.where((e) => e != value).toList(),
   );
   void clearHistory() => state = state.copyWith(history: []);
-  void updateQuery(String value) =>
-      state = state.copyWith(query: value, results: value.trim().isNotEmpty);
+  void updateQuery(String value) => state = state.copyWith(
+    query: value,
+    results:
+        value.trim().isNotEmpty ||
+        state.filters.isActive ||
+        state.category != 'All',
+  );
   void submitSearch(String value) {
     final query = value.trim();
     state = state.copyWith(
       query: query,
-      results: query.isNotEmpty,
+      results:
+          query.isNotEmpty || state.filters.isActive || state.category != 'All',
       history: query.isEmpty
           ? state.history
           : [query, ...state.history.where((e) => e != query)].take(5).toList(),
@@ -251,8 +266,11 @@ class EviaViewModel extends Notifier<EviaState> {
   void setEligible(bool value) =>
       state = state.copyWith(draft: state.draft.withEligibility(value));
   void resetDraft() => state = state.copyWith(draft: const EventFilters());
-  void applyFilters() =>
-      state = state.copyWith(filters: state.draft, results: true);
+  void applyFilters() => state = state.copyWith(
+    filters: state.draft,
+    category: 'All',
+    results: true,
+  );
   void clearFilters() => state = state.copyWith(
     filters: const EventFilters(),
     draft: const EventFilters(),
@@ -267,38 +285,53 @@ class EviaViewModel extends Notifier<EviaState> {
   void togglePassword() =>
       state = state.copyWith(showPassword: !state.showPassword);
   bool get canContinue => state.interests.length >= 3;
-  List<CampusEvent> get followedEventFeed => live
-      ? events.where((e) => state.followed.contains(e.organizerId)).toList()
-      : EviaMockData.followingEvents
+  List<CampusEvent> get registeredEvents {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return [];
+    final activity = ref.read(activityViewModelProvider);
+    final registered =
+        activity.registrations
             .where(
-              (event) => state.followed.contains(
-                event.organizer == 'Student Union' ? 'union' : 'photography',
-              ),
+              (event) =>
+                  !event.walkIn && !activity.cancelled.contains(event.id),
             )
-            .toList();
-  List<CampusEvent> get followingEvents {
-    if (live) {
-      final selected = followedEventFeed
-          .where(
-            (e) => state.organizer == 'All' || e.organizer == state.organizer,
-          )
-          .toList();
-      return state.descending ? selected.reversed.toList() : selected;
-    }
-    final events = EviaMockData.followingEvents
-        .where(
-          (event) =>
-              (state.organizer == 'All' ||
-                  event.organizer == state.organizer) &&
-              state.followed.contains(
-                event.organizer == 'Student Union' ? 'union' : 'photography',
-              ),
-        )
-        .toList();
+            .toList()
+          ..sort((a, b) => a.start.compareTo(b.start));
+    final events = [
+      for (final event in registered)
+        CampusEvent(
+          id: event.id,
+          detailKey: event.detailKey,
+          title: event.title,
+          category: event.category,
+          date: event.dateLabel,
+          location: event.venue,
+          organizer: live
+              ? catalog?.organizerName(
+                  catalog!.myEvents
+                          .map((item) => Flow1Event(jsonMap(item['event'])))
+                          .where((item) => item.id == event.id)
+                          .firstOrNull
+                          ?.organizerId ??
+                      '',
+                )
+              : RegistrationMockData.findEvent(event.detailKey)?.organizer,
+          policy: 'Registered',
+          coins: event.coins,
+          image: event.image,
+        ),
+    ];
     return state.descending ? events.reversed.toList() : events;
   }
 
+  List<CampusEvent> get followingEvents => registeredEvents
+      .where(
+        (event) =>
+            state.organizer == 'All' || event.organizer == state.organizer,
+      )
+      .toList();
+
   List<CampusOrganizer> get followedOrganizers {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return [];
     final organizers = [...allOrganizers]
         .where((o) => state.followed.contains(o.id))
         .toList();
@@ -426,16 +459,7 @@ class EviaViewModel extends Notifier<EviaState> {
   }
 
   List<CampusEvent> get searchResults {
-    final catalog = <String, CampusEvent>{
-      for (final event in [
-        EviaMockData.music,
-        ...EviaMockData.upcoming,
-        ...EviaMockData.followingEvents,
-        ...EviaMockData.searchEvents,
-      ])
-        event.id: event,
-    };
-    final events = catalog.values.where((event) {
+    final events = EviaMockData.catalog.where((event) {
       final q = state.query.toLowerCase().trim();
       final matchesQuery =
           q.isEmpty ||
@@ -457,26 +481,16 @@ class EviaViewModel extends Notifier<EviaState> {
                   state.filters.policy.toLowerCase()) &&
           _matchesDetails(event);
     }).toList();
-    events.sort((a, b) => _start(a).compareTo(_start(b)));
+    events.sort(
+      (a, b) => EviaMockData.startOf(a).compareTo(EviaMockData.startOf(b)),
+    );
     if (state.descending) return events.reversed.toList();
     return events;
   }
 
-  DateTime _start(CampusEvent event) {
-    final date = RegExp(r'^(Oct|Nov) (\d+)').firstMatch(event.date)!;
-    final time = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(event.date)!;
-    return DateTime(
-      2026,
-      date[1] == 'Oct' ? 10 : 11,
-      int.parse(date[2]!),
-      int.parse(time[1]!),
-      int.parse(time[2]!),
-    );
-  }
-
   bool _matchesDetails(CampusEvent event) {
     final filters = state.filters;
-    final start = _start(event);
+    final start = EviaMockData.startOf(event);
     final anchor = EviaMockData.referenceDate;
     final weekEnd = anchor.add(const Duration(days: 7));
     final matchesDate = switch (filters.date) {

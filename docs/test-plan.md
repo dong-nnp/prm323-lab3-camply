@@ -503,3 +503,28 @@ Validation for this change:
 - Kết quả này thay cho 5 lỗi UI được ghi ở lượt tài khoản mock trước đó.
 - Chưa kiểm chứng từng thao tác bằng tay trên điện thoại; widget tests không phải
   native E2E. Không chạy Google/QR camera/email/backend nghiệp vụ thật.
+
+## Luồng Discover, Search và Following — 05/11/2026
+
+Đã kiểm tra Skip mở Discover Guest, Search & Explore mở cùng route, Filter
+mở riêng và Apply giữ truy vấn. Mở kết quả sang Schedule, đổi Location và
+quay lại giữ đúng danh sách. Their Events lấy đăng ký xác nhận trong phiên.
+Organizers lấy trạng thái Follow. Guest được chuyển tới Login khi mở Following.
+Đã kiểm tra đổi tài khoản và màn hình ở 360/412dp với cỡ chữ 1x/2x.
+
+Full suite đạt 132 test trước khi siết danh sách Their Events để chỉ nhận
+đăng ký xác nhận. Sau thay đổi cuối, 31 test liên quan Evia và Registration
+đạt, gồm kiểm tra Going không xuất hiện trong Their Events. Analyze sạch.
+Các ca đăng nhập dùng phiên kiểm thử, không xác nhận tích hợp auth/backend thật.
+
+### Validation hợp nhất `origin/main` vào backend — 05/11/2026
+
+- Hợp nhất điều hướng Discover Guest, Search, Schedule và Their Events với
+  adapters Firebase hiện có; giữ onboarding lưu server, không Waitlist, hoàn
+  cọc 30% làm tròn xuống và bản sửa vé không phụ thuộc cache My Events.
+- `flutter pub get`, `dart format lib test`, `flutter analyze`: đạt.
+- `flutter test`: **200/200 đạt**, gồm hai ca hồi quy mới cho Their Events đọc
+  đăng ký server/mở đúng ID và widget tóm tắt nhận ảnh URL.
+- `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=DEMO_AUTH=false --target-platform android-arm64 --no-pub`: đạt.
+- Chưa cài/chạy lại bản merge trên điện thoại và chưa kiểm tra Firebase trực tiếp
+  trong lượt này. Không thay đổi hay deploy Functions/Rules.

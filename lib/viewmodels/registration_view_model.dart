@@ -68,6 +68,13 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       ref.read(flow1RegistrationProvider(state.eventId)).uncertain;
   @override
   RegistrationState build() {
+    if (!ref.read(realBackendEnabledProvider)) {
+      ref.watch(
+        authenticationViewModelProvider.select(
+          (auth) => auth.asData?.value.userId,
+        ),
+      );
+    }
     ref.onDispose(() {
       _generation++;
       _requestSubscription?.close();
@@ -105,23 +112,23 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
         data.events.firstWhere((e) => e.id == id);
   }
 
-  EventPresentation event(String id) => live
-      ? remoteEvent(id).presentation(
-          ref
-              .read(flow1ViewModelProvider)
-              .requireValue
-              .organizerName(remoteEvent(id).organizerId),
-        )
-      : [
-          RegistrationMockData.music,
-          RegistrationMockData.club,
-          RegistrationMockData.innovation,
-          RegistrationMockData.arts,
-          RegistrationMockData.leadership,
-        ].firstWhere(
-          (e) => e.id == id,
-          orElse: () => RegistrationMockData.music,
-        );
+  EventPresentation? findEvent(String id) {
+    if (!live) return RegistrationMockData.findEvent(id);
+    final data = ref.read(flow1ViewModelProvider).asData?.value;
+    final event =
+        ref.read(flow1EventProvider(id)).asData?.value ??
+        data?.events.where((event) => event.id == id).firstOrNull;
+    return event?.presentation(
+      data?.organizerName(event.organizerId) ?? 'Organizer',
+    );
+  }
+
+  EventPresentation event(String id) =>
+      findEvent(id) ??
+      (live
+          ? (throw StateError('Event not found: $id'))
+          : RegistrationMockData.music);
+
   void preset(String view, String eventId) {
     if (live) {
       final profile = ref.read(flow1ViewModelProvider).requireValue.profile;
@@ -207,7 +214,10 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       errors['phone'] = 'Please enter a valid phone number.';
     }
     if (!state.agreed) {
-      errors['terms'] = 'Please accept the registration and deposit terms.';
+      final deposit = findEvent(state.eventId)?.deposit ?? 0;
+      errors['terms'] = deposit > 0
+          ? 'Please accept the registration and deposit terms.'
+          : 'Please accept the registration terms.';
     }
     state = state.copy(errors: errors);
     return errors.isEmpty;
@@ -266,7 +276,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       );
       return status;
     }
-    final selected = event(state.eventId);
+    final selected = findEvent(state.eventId);
+    if (selected == null) {
+      state = state.copy(
+        status: RegistrationStatus.failed,
+        message: 'Event not found.',
+      );
+      return state.status;
+    }
     final generation = _generation;
     state = state.copy(status: RegistrationStatus.loading);
     await Future<void>.delayed(ref.read(registrationDelayProvider));
@@ -284,12 +301,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     final added = activity.addRegistration(
       RegisteredEvent(
         id: selected.id,
+        detailKey: state.eventId,
         title: selected.title,
         category: selected.category,
         dateLabel: '${selected.date} · ${selected.time}',
         venue: selected.venue,
         start: selected.start,
         coins: selected.coins,
+        image: selected.image,
       ),
       deposit: selected.deposit,
     );
@@ -318,12 +337,14 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
       }
       return result;
     }
-    final selected = RegistrationMockData.club;
+    final selected = findEvent(eventId ?? 'club-live');
+    if (selected == null || !selected.walkIn) return false;
     ref
         .read(activityViewModelProvider.notifier)
         .addRegistration(
           RegisteredEvent(
             id: selected.id,
+            detailKey: eventId,
             title: selected.title,
             category: selected.category,
             dateLabel: '${selected.date} · ${selected.time}',

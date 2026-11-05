@@ -142,6 +142,13 @@ class ActivityViewModel extends Notifier<ActivityState> {
       ref.read(authenticationViewModelProvider).asData?.value.userId;
   @override
   ActivityState build() {
+    if (!ref.read(realBackendEnabledProvider)) {
+      ref.watch(
+        authenticationViewModelProvider.select(
+          (auth) => auth.asData?.value.userId,
+        ),
+      );
+    }
     if (ref.watch(realBackendEnabledProvider)) {
       ref.listen(authenticationViewModelProvider, (previous, next) {
         if (previous?.asData?.value.userId != next.asData?.value.userId) {
@@ -261,7 +268,10 @@ class ActivityViewModel extends Notifier<ActivityState> {
     ...state.transactions,
   ];
   List<RegisteredEvent> get allEvents => [
-    if (!ref.read(realBackendEnabledProvider)) ...ActivityMockData.events,
+    if (!ref.read(realBackendEnabledProvider))
+      ...ActivityMockData.events.where(
+        (event) => !state.registrations.any((entry) => entry.id == event.id),
+      ),
     ...state.registrations,
   ];
   bool addRegistration(RegisteredEvent event, {int deposit = 0}) {
@@ -269,7 +279,7 @@ class ActivityViewModel extends Notifier<ActivityState> {
       state = state.copy(message: 'Log in to register for events.');
       return false;
     }
-    final existing = allEvents.any((item) => item.id == event.id);
+    final existing = state.registrations.any((item) => item.id == event.id);
     if (existing && !state.cancelled.contains(event.id)) return true;
     if (deposit < 0 || (deposit > 0 && !demoAvailable)) {
       state = state.copy(message: coinServiceMessage);

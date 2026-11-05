@@ -311,6 +311,17 @@ page `2083:272`. Mapping đầy đủ ở `docs/design-traceability.md`.
 | `/filters` | Advanced Event Filters |
 | `/following/events` | Following — Their Events |
 | `/following/organizers` | Following — Organizers |
+| `/event/schedule?event=<key>` | Chi tiết sự kiện đã chọn, mở tab Schedule |
+
+**Skip** ở Login và **Explore as Guest** ở Welcome mở Discover Guest. Ô tìm
+kiếm mở Search & Explore ngay trong Discover. **Filter events** mở bộ lọc
+riêng, **Apply Filters** quay lại phần tìm kiếm và giữ truy vấn. Chạm thẻ sự
+kiện mở Schedule với dữ liệu của thẻ, các tab About và Location giữ cùng sự kiện.
+
+Hai tab Following cần đăng nhập. Khi bật backend thật, **Their Events** đọc các
+đăng ký từ Firebase qua `ActivityViewModel`; **Organizers** đọc các đơn vị tài
+khoản đã Follow. Chế độ preview dùng trạng thái trong phiên. Đổi tài khoản
+khởi tạo lại hai danh sách; Going và đăng ký đã hủy không thuộc Their Events.
 
 Screens ở `lib/screens/evia/`, state/actions ở `lib/viewmodels/evia_view_model.dart`.
 Mock content nằm riêng trong `lib/data/mock/evia_mock_data.dart`; models thuần Dart

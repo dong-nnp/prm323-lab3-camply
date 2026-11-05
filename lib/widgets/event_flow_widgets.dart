@@ -90,7 +90,21 @@ class FlowEventSummary extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.medium),
               child: Stack(
                 children: [
-                  if (legacyError || screen == '2083:5329')
+                  if (event.id != 'music-live' && event.id != 'club-live')
+                    Positioned.fill(
+                      child: switch (event.image) {
+                        final image? => catalogImage(
+                          image,
+                          FlowAssets.image(screen, 0),
+                          fit: BoxFit.cover,
+                        ),
+                        null => const ColoredBox(
+                          color: AppColors.primarySoft,
+                          child: Icon(Icons.event_outlined),
+                        ),
+                      },
+                    )
+                  else if (legacyError || screen == '2083:5329')
                     Positioned(
                       left: -28,
                       top: -73,
