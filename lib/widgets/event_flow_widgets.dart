@@ -198,20 +198,3 @@ class FlowEventSummary extends StatelessWidget {
     );
   }
 }
-
-class LayeredFlowCoin extends StatelessWidget {
-  const LayeredFlowCoin({required this.screen, this.symbol = '\$', super.key});
-  final String screen, symbol;
-  @override
-  Widget build(BuildContext context) => Stack(
-    alignment: Alignment.center,
-    children: [
-      ActivityIcon(screen, 'imgVector'),
-      ActivityIcon(screen, 'imgVector1'),
-      Text(
-        symbol,
-        style: FlowTheme.footnote.copyWith(color: AppColors.warning),
-      ),
-    ],
-  );
-}

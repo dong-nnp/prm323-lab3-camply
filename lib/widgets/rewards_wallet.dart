@@ -8,6 +8,7 @@ import '../theme/evia_theme.dart';
 import '../theme/activity_theme.dart';
 import '../viewmodels/activity_view_model.dart';
 import 'activity_widgets.dart';
+import 'coin_icon.dart';
 
 class RewardsWallet extends ConsumerWidget {
   const RewardsWallet({required this.screen, super.key});
@@ -55,10 +56,9 @@ class RewardsWallet extends ConsumerWidget {
                           Row(
                             children: [
                               if (!history)
-                                ActivityIcon(
-                                  screen,
-                                  earn ? 'imgSvg' : 'imgContainer',
-                                ),
+                                earn
+                                    ? const ActivityIcon('2083:3522', 'imgSvg')
+                                    : const CoinIcon(),
                               const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
@@ -73,10 +73,7 @@ class RewardsWallet extends ConsumerWidget {
                           const SizedBox(height: AppSpacing.sm),
                           Row(
                             children: [
-                              if (earn)
-                                const _CoinStack()
-                              else if (history)
-                                ActivityIcon(screen, 'imgSvg'),
+                              const CoinIcon(size: AppSpacing.xxl),
                               const SizedBox(width: AppSpacing.xs),
                               Flexible(
                                 child: Text(
@@ -84,20 +81,16 @@ class RewardsWallet extends ConsumerWidget {
                                   style: ActivityTheme.balance,
                                 ),
                               ),
-                              if (!earn && !history)
-                                Container(
-                                  padding: const EdgeInsets.all(AppSpacing.xs),
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.accent,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: ActivityIcon(screen, 'imgContainer1'),
-                                ),
                             ],
                           ),
                           if (!history)
                             TextButton(
-                              onPressed: () => context.push('/rewards/history'),
+                              onPressed: () {
+                                ref
+                                    .read(activityViewModelProvider.notifier)
+                                    .historyFilter('All');
+                                context.push('/rewards/history');
+                              },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -143,11 +136,12 @@ class RewardsWallet extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
-                    onTap: () => showActivityHelp(
-                      context,
-                      'Coins in deposits',
-                      '${state.deposits} coins are temporarily locked for your registered events. They are separate from your available balance.',
-                    ),
+                    onTap: () {
+                      ref
+                          .read(activityViewModelProvider.notifier)
+                          .historyFilter('Deposits');
+                      if (!history) context.push('/rewards/history');
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       child: Row(
@@ -178,8 +172,10 @@ class RewardsWallet extends ConsumerWidget {
                             ),
                           ),
                           Flexible(
+                            fit: FlexFit.tight,
                             child: Text(
                               '${state.deposits} coins',
+                              textAlign: TextAlign.right,
                               style: EviaTheme.label,
                             ),
                           ),
@@ -204,56 +200,4 @@ class RewardsWallet extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _CoinStack extends StatelessWidget {
-  const _CoinStack();
-  @override
-  Widget build(BuildContext context) => const SizedBox.square(
-    dimension: 36,
-    child: Stack(
-      children: [
-        Positioned(
-          left: 4,
-          top: 22.5,
-          child: ActivityIcon('2083:3522', 'imgVector'),
-        ),
-        Positioned(
-          left: 4,
-          top: 21,
-          child: ActivityIcon('2083:3522', 'imgVector1'),
-        ),
-        Positioned(
-          left: 4,
-          top: 16.5,
-          child: ActivityIcon('2083:3522', 'imgVector2'),
-        ),
-        Positioned(
-          left: 4,
-          top: 10.5,
-          child: ActivityIcon('2083:3522', 'imgVector3'),
-        ),
-        Positioned(
-          left: 4,
-          top: 9,
-          child: ActivityIcon('2083:3522', 'imgVector1'),
-        ),
-        Positioned(
-          left: 4,
-          top: 4.5,
-          child: ActivityIcon('2083:3522', 'imgVector4'),
-        ),
-        Positioned(
-          left: 6,
-          top: 5.4,
-          child: ActivityIcon('2083:3522', 'imgVector5'),
-        ),
-        Positioned(
-          left: 15,
-          top: 6.5,
-          child: ActivityIcon('2083:3522', 'imgVector6'),
-        ),
-      ],
-    ),
-  );
 }

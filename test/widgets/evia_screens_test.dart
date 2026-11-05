@@ -61,7 +61,12 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(const ProviderScope(child: LabApp()));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [initialLocationProvider.overrideWithValue('/login')],
+          child: const LabApp(),
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
@@ -114,7 +119,7 @@ void main() {
       final container = ProviderScope.containerOf(
         tester.element(find.byType(LabApp)),
       );
-      container.read(routerProvider).go('/');
+      container.read(routerProvider).go('/login');
       await tester.pumpAndSettle();
       final login = find.text('Log in');
       await tester.ensureVisible(login);

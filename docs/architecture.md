@@ -42,10 +42,15 @@ chưa có adapter/data model nghiệp vụ trong app. Dependency flow và sáu
 
 Ứng dụng Android `prm393_lab03` dùng MVVM, Riverpod cho state và dependency
 injection, go_router cho navigation. Foundation kiểm tra cấu hình khởi động ở
-`/foundation`; root là Evia login. Bộ 44 màn hình/trạng thái dùng presentation data demo được
+`/foundation`; entry mặc định là S00 `/splash`, S01 Welcome ở `/`, Login ở `/login`.
+Bộ 44 màn hình/trạng thái dùng presentation data demo được
 người dùng cho phép; chưa có nguồn dữ liệu sự kiện thật hoặc authentication flow.
 
 ## Cấu trúc
+
+Android debug build tracking nằm trong `android/app/build.gradle.kts`; chỉ tối ưu
+task graph/copy artifacts, không thay MVVM, runtime state hay logic Flutter.
+Xem [Build performance](build-performance.md) để biết phạm vi và validation.
 
 ```text
 lib/
@@ -174,6 +179,25 @@ Providers là composition root duy nhất được biết concrete adapters.
 
 ## Khởi động và lỗi
 
+S00 dùng `startupDestinationProvider` để kết hợp `BootstrapViewModel`,
+`AuthenticationViewModel` và trạng thái personalization theo user trong
+`EviaViewModel`. View chỉ điều phối animation/ảnh sẵn sàng và điều hướng một lần;
+không tự gọi service, không dùng timer đơn độc để quyết định route.
+`EviaSplashLogo` chỉ quản lý presentation: ba lớp ảnh dùng chung tọa độ alpha,
+ticket translateX từ tâm viewport về vị trí cuối, wordmark clip trái→phải, rays
+pulse một lần. Chờ các ảnh cần dùng decode rồi mới chạy controller. Reduced
+motion dùng nguyên PNG đầy đủ tĩnh. Không thay đổi startup provider/auth flow
+khi thay implementation animation.
+Bootstrap loading hoặc auth chưa xác định giữ logo; bootstrap lỗi đến foundation.
+Auth unavailable/signed out/lỗi đến Welcome. Signed in đến Interests hoặc Discover
+theo `AuthSession.personalizationHandled` và thao tác Continue/Skip trong phiên.
+Không dùng các interests demo làm bằng chứng đã hoàn tất onboarding.
+
+Chưa có account-profile adapter/persistence: field personalization phải được
+adapter thật cung cấp khi tích hợp. Trạng thái hoàn tất trong phiên được tách
+theo user ID, không đổi session và không xóa sở thích. Không ghi nhận đây là
+đồng bộ backend. Các deep link UI hiện có vẫn giữ nguyên.
+
 Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `BootstrapViewModel` → `BootstrapRepository`
 → `FirebaseInitializer`.
 
@@ -192,15 +216,52 @@ Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-in
 
 ## Navigation và authentication
 
-Các route UI demo Evia và `/foundation` là công khai. `AuthenticationViewModel` quan sát
+Các route entry, nội dung sự kiện công khai và `/foundation` không cần đăng nhập.
+Các route cá nhân/thao tác tài khoản áp dụng guard S01 bên dưới. `AuthenticationViewModel` quan sát
 `AuthenticationRepository.watchSession`; adapter pending phát trạng thái
 `unavailable`, không giả định người dùng đã đăng nhập.
 
 Router giữ nguyên instance khi auth thay đổi và refresh redirect bằng listenable.
 Guard từ chối protected routes khi session chưa biết, signed out, unavailable
-hoặc stream lỗi; tạm quay về `/`. Danh sách protected paths hiện rỗng. Khi thêm
-auth flow, thay fallback bằng route đăng nhập và đăng ký routes được bảo vệ;
-quy tắc backend vẫn phải được bảo vệ bằng Firebase Rules, không chỉ UI guard.
+hoặc stream lỗi; đến `/login` với query `from` giữ deep link nội bộ an toàn.
+Các nhóm `/registration`, `/my-events`, `/profile`, `/following` và voucher/
+locker/confirm/success được bảo vệ. Organizer/event details/search vẫn công khai.
+`ensureAuthenticated` chuyển action công khai cần tài khoản đến Login; các
+ViewModel cũng kiểm tra `hasAuthenticatedSessionProvider` trước khi mutate.
+Không dùng việc UI hiển thị fixtures làm bằng chứng session đã đăng nhập.
+Backend vẫn phải bảo vệ bằng authorization/Firebase Rules, không chỉ UI guard.
+
+S01 dùng `WelcomeTokens` cục bộ và AppButton, PNG logo/hero riêng, SafeArea và
+scroll. Màn đăng nhập cũ chuyển sang `/login`; `/signup` là form Create Account,
+adapter tạo tài khoản vẫn pending. Không phát sinh tài khoản hoặc response giả. Khi session thật
+đăng nhập trên các entry screens, router bỏ qua Welcome và dùng trạng thái
+personalization hiện có để đến Interests/Discover. S00 animation không thay đổi.
+
+Sign Up: View giữ controllers/focus/keyboard layout; `SignUpViewModel` auto-dispose
+quản lý validation, trạng thái loading, chống gửi lặp, lỗi inline và checkbox.
+Không lưu password trong presentation state hoặc logs. Data access đi qua
+AuthenticationRepository → AuthenticationService.createAccount/signInWithGoogle.
+Service trả AccountCreationResult (signedIn/verificationRequired), không có SDK types.
+minimumPasswordLength nullable thuộc adapter; null là chưa biết policy, không phải 0.
+Pending adapter ném AppException và không trả tài khoản giả. Email conflicts/weak
+password được map thành lỗi field an toàn. Khi verificationRequired, giữ form và
+hướng dẫn xác minh rồi Log In; adapter không được phát session dùng được trước đó.
+Khi signedIn, VM chờ session stream; router hiện có quyết định Interests/Discover.
+Google tái sử dụng contract có sẵn, không tự tạo/link tài khoản bằng email phía UI.
+Terms/Privacy chưa có destination nên không có link/trang pháp lý giả.
+Sign Up dùng logo/tagline như Login, không collage; consent sau fields, Google sau Create Account.
+Feedback gửi form được cuộn vào vùng nhìn thấy khi cần. Login giữ nguyên layout.
+
+Welcome → Login dùng CustomTransitionPage với slide nhẹ từ phải + fade, 280ms;
+pop chạy ngược 220ms, giữ Welcome trong back stack. Tokens nằm ở `AppMotion`.
+Reduced motion đặt cả hai duration về zero. Không thay bố cục Login hoặc auth flow.
+
+Login giữ bố cục đầy đủ khi bàn phím ảo đóng. Khi `viewInsets.bottom > 0`, chỉ
+header chuyển sang dạng gọn: ẩn collage/tagline/Skip, logo thu nhỏ,
+form đi lên trong 180ms. Focus không tự kích hoạt dạng gọn (hỗ trợ bàn phím cứng).
+Các field/controllers/focus nodes giữ nguyên; chuyển Email → Password không tạo
+lại form. Sau reflow chỉ cuộn nếu ô đang nhập bị che; đóng bàn phím không ép cuộn
+về đầu. Đây là presentation state trong View, không thay auth/business rules.
 
 ## Evia presentation flow
 
@@ -224,27 +285,27 @@ runtime, tracking hoặc Firebase SDK calls trong View/ViewModel.
 
 ### My Events / Rewards presentation
 
-`ActivityViewModel` quản lý tab, ngày/tuần/lịch tháng, draft ngày, cancelled IDs,
-available/deposit balances, daily check-in, verified event IDs, redemption receipt,
-reward search/category và transaction filters. Models nằm trong
-`activity_models.dart`, fixtures trong `data/mock/activity_mock_data.dart`.
-User đã cho phép tiếp tục dùng mock data tách riêng; không thêm service giả trả
-thành công, Firebase calls hoặc quyền camera.
+`ActivityViewModel` manages presentation filters, calendar selections, demo
+cancellations, reward search and voucher selection. Coin balances, transactions,
+verified events and receipts are static preview fixtures in `ActivityMockData`.
 
-`MyEventsScreen` render các preset Figma và chuyển date/cancel actions cho VM.
-`MonthlyCalendar` giữ lựa chọn draft qua VM đến **Apply date**. Ticket chặn hiển
-thị QR nếu registration đã hủy. Check-in preview chỉ xác nhận mã fixture; VM
-chặn credit lặp bằng verified IDs. Daily reward và redemption được chặn lặp
-bằng state, số xu/deposit và receipt cập nhật trong cùng một state assignment.
+Check-in and redemption report unavailable without mutating financial state.
+Registration requiring a deposit also waits for the coin API. Local currency
+persistence and streak calculations are removed. Daily Check-in displays a day-8
+fixture and the proposed reward schedule only; it does not confirm real rewards.
 
-`RewardsScreen`, details/confirmation, locker/voucher/success, milestones/history
-cùng quan sát một provider nên phản ánh cùng ví xu. Clipboard copy là platform UI
-action trong widget; không gọi SDK hay HTTP. Available/deposits được tách biệt.
-Các route reference công khai phục vụ UI demo, không cấp quyền backend.
+Rewards share one provider and wallet widget. Locker opens the matching sample
+voucher, rejects unknown codes and returns to catalog on Back. Future API work
+must follow View -> ViewModel -> Repository -> Service interface -> SDK adapter;
+the backend owns balances, streaks, transactions and voucher issuance.
 
 `ActivityAssets`, `ActivityIcon` và `RewardsWallet` dùng exports theo từng Figma
 node. `ActivityTheme` chứa measurements/colors bổ sung. Font button ghi rõ Roboto
 fallback để widget render dùng cùng family với app thay vì fallback khác.
+
+`CoinIcon` là widget dùng chung cho các biểu tượng xu: một SVG đã bundle, có size
+và tint theo ngữ cảnh. Screens dùng widget này thay vì chọn riêng asset xu hoặc
+ghép các vector/ký tự, giữ cách biểu diễn tiền xu nhất quán.
 
 Override `firebaseInitializerProvider`, `authenticationServiceProvider` hoặc
 provider của từng service bằng fake trong `ProviderScope`/`ProviderContainer`.

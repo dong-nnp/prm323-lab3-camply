@@ -11,14 +11,18 @@ import '../theme/evia_theme.dart';
 import '../theme/activity_theme.dart';
 
 class ActivityIcon extends StatelessWidget {
-  const ActivityIcon(this.screen, this.name, {super.key});
+  const ActivityIcon(this.screen, this.name, {this.color, super.key});
   final String screen, name;
+  final Color? color;
   @override
   Widget build(BuildContext context) => SvgPicture.asset(
     ActivityAssets.path(
       screen,
       name == 'imgContainer0' ? 'imgContainer' : name,
     ),
+    colorFilter: color == null
+        ? null
+        : ColorFilter.mode(color!, BlendMode.srcIn),
   );
 }
 
@@ -28,11 +32,13 @@ class ActivityHeader extends StatelessWidget {
     this.screen,
     this.backAsset,
     this.trailing,
+    this.onBack,
     super.key,
   });
   final String title;
   final String? screen, backAsset;
   final Widget? trailing;
+  final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) => Container(
     color: AppColors.surface,
@@ -44,8 +50,9 @@ class ActivityHeader extends StatelessWidget {
       children: [
         IconButton(
           tooltip: 'Back',
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/discover'),
+          onPressed:
+              onBack ??
+              () => context.canPop() ? context.pop() : context.go('/discover'),
           icon: screen != null && backAsset != null
               ? ActivityIcon(screen!, backAsset!)
               : const Icon(Icons.arrow_back),
@@ -168,7 +175,10 @@ class ActivityTabs extends StatelessWidget {
                 child: InkWell(
                   onTap: () => onSelected(i),
                   borderRadius: BorderRadius.circular(AppRadius.small),
-                  child: Padding(
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      minHeight: AppSizes.minimumTouchTarget,
+                    ),
                     padding: const EdgeInsets.all(AppSpacing.md),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

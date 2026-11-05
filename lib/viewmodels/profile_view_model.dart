@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/mock/registration_mock_data.dart';
 import '../models/registration_models.dart';
 import 'evia_view_model.dart';
+import 'authentication_view_model.dart';
 
 class ProfileState {
   const ProfileState({
@@ -53,11 +54,18 @@ class ProfileViewModel extends Notifier<ProfileState> {
   @override
   ProfileState build() =>
       ProfileState(draftInterests: ref.read(eviaViewModelProvider).interests);
-  void toggleSaved(String id) => state = state.copy(
-    saved: state.saved.contains(id)
-        ? ({...state.saved}..remove(id))
-        : {...state.saved, id},
-  );
+  void toggleSaved(String id) {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copy(message: 'Log in to save events.');
+      return;
+    }
+    state = state.copy(
+      saved: state.saved.contains(id)
+          ? ({...state.saved}..remove(id))
+          : {...state.saved, id},
+    );
+  }
+
   void filterSaved(String filter) => state = state.copy(savedFilter: filter);
   int savedCount(String filter) => RegistrationMockData.saved
       .where(

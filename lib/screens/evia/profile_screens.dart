@@ -14,6 +14,7 @@ import '../../viewmodels/registration_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -620,12 +621,7 @@ class SavedEventsScreen extends ConsumerWidget {
                                       style: EviaTheme.caption,
                                     ),
                                   ),
-                                  ActivityIcon(
-                                    screen,
-                                    entry.event.past
-                                        ? 'imgContainer5'
-                                        : 'imgContainer2',
-                                  ),
+                                  const CoinIcon(),
                                   Text(
                                     '+${entry.event.coins}',
                                     style: EviaTheme.caption,

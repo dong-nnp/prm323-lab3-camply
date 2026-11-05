@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Camply Lab 2: handoff/flutter-handoff.md and design/DESIGN.md.
 abstract final class AppColors {
+  static const entryBackground = surface;
+  static const splashBackground = entryBackground;
   static const primary = Color(0xFF2457F5);
   static const primaryPressed = Color(0xFF1745D5);
   static const primarySoft = Color(0xFFEAF0FF);

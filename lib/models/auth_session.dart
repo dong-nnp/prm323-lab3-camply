@@ -4,15 +4,23 @@ enum AuthStatus { unavailable, signedOut, signedIn }
 final class AuthSession {
   const AuthSession.unavailable()
     : status = AuthStatus.unavailable,
+      personalizationHandled = false,
       userId = null;
 
-  const AuthSession.signedOut() : status = AuthStatus.signedOut, userId = null;
+  const AuthSession.signedOut()
+    : status = AuthStatus.signedOut,
+      personalizationHandled = false,
+      userId = null;
 
-  const AuthSession.signedIn(String uid)
+  const AuthSession.signedIn(String uid, {this.personalizationHandled = false})
     : assert(uid != ''),
       status = AuthStatus.signedIn,
       userId = uid;
 
   final AuthStatus status;
   final String? userId;
+
+  /// Populate from the real account profile when its adapter is integrated.
+  /// Never infer completion from the demo interest selections.
+  final bool personalizationHandled;
 }

@@ -57,3 +57,33 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// Flutter 3.47 copies the packaged APK in an assembleDebug doLast action without
+// declaring its inputs/outputs. Track that copy so unchanged APKs are reused.
+// Keep Flutter's action: changed inputs or a missing/modified destination still
+// cause the APK to be copied. Scope this to our unflavored, non-split debug APK;
+// release/profile and split-per-ABI builds keep Flutter's default behavior.
+androidComponents {
+    onVariants(selector().withBuildType("debug")) { variant ->
+        if (variant.name == "debug" && project.findProperty("split-per-abi") != "true") {
+            val packagedApk = variant.artifacts.get(com.android.build.api.artifact.SingleArtifact.APK)
+            val flutterApk = layout.buildDirectory.file("outputs/flutter-apk/app-debug.apk")
+            tasks.matching { it.name == "assembleDebug" }.configureEach {
+                inputs.dir(packagedApk).withPropertyName("packagedDebugApk")
+                outputs.file(flutterApk).withPropertyName("flutterDebugApk")
+            }
+            // Flutter otherwise deletes/re-copies the merged asset directory on
+            // every launch, even when compileFlutterBuildDebug is UP-TO-DATE.
+            // Run compilation first and keep cleaning for every other outcome
+            // (including FROM-CACHE). Android asset changes and missing outputs
+            // are still handled by mergeDebugAssets/copyFlutterAssetsDebug.
+            tasks.matching { it.name == "cleanMergeDebugAssets" }.configureEach {
+                val compileFlutter = tasks.named("compileFlutterBuildDebug")
+                dependsOn(compileFlutter)
+                onlyIf("Flutter asset bundle is not already up-to-date") {
+                    compileFlutter.get().state.skipMessage != "UP-TO-DATE"
+                }
+            }
+        }
+    }
+}

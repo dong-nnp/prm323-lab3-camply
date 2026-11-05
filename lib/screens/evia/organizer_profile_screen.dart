@@ -7,9 +7,12 @@ import '../../data/mock/registration_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
+import '../../viewmodels/authentication_view_model.dart';
 import '../../viewmodels/profile_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/authenticated_action.dart';
+import '../../widgets/coin_icon.dart';
 
 class OrganizerProfileScreen extends ConsumerWidget {
   const OrganizerProfileScreen({super.key});
@@ -18,9 +21,11 @@ class OrganizerProfileScreen extends ConsumerWidget {
     const screen = '2083:6080';
     final state = ref.watch(profileViewModelProvider),
         vm = ref.read(profileViewModelProvider.notifier);
-    final following = ref.watch(
-      eviaViewModelProvider.select((s) => s.followed.contains('union')),
-    );
+    final following =
+        ref.watch(hasAuthenticatedSessionProvider) &&
+        ref.watch(
+          eviaViewModelProvider.select((s) => s.followed.contains('union')),
+        );
     final events = state.organizerPast
         ? [RegistrationMockData.arts]
         : [RegistrationMockData.club, RegistrationMockData.leadership];
@@ -61,9 +66,12 @@ class OrganizerProfileScreen extends ConsumerWidget {
                         child: ActivityIcon(screen, 'imgContainer'),
                       ),
                       OutlinedButton(
-                        onPressed: () => ref
-                            .read(eviaViewModelProvider.notifier)
-                            .toggleFollowed('union'),
+                        onPressed: () {
+                          if (!ensureAuthenticated(context, ref)) return;
+                          ref
+                              .read(eviaViewModelProvider.notifier)
+                              .toggleFollowed('union');
+                        },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -225,10 +233,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const ActivityIcon(
-                                          screen,
-                                          'imgContainer4',
-                                        ),
+                                        const CoinIcon(),
                                         Text(
                                           '+${events[index].coins} coins',
                                           style: EviaTheme.caption.copyWith(
@@ -243,6 +248,9 @@ class OrganizerProfileScreen extends ConsumerWidget {
                               IconButton(
                                 tooltip: 'Save ${events[index].title}',
                                 onPressed: () {
+                                  if (!ensureAuthenticated(context, ref)) {
+                                    return;
+                                  }
                                   vm.toggleSaved(events[index].id);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

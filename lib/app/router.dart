@@ -4,8 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../core/constants/app_routes.dart';
 import '../core/constants/app_strings.dart';
+import '../theme/splash_tokens.dart';
+import '../theme/app_motion.dart';
 import '../screens/foundation_screen.dart';
 import '../screens/evia/login_screen.dart';
+import '../screens/evia/welcome_screen.dart';
+import '../screens/evia/sign_up_screen.dart';
+import '../screens/evia/splash_screen.dart';
 import '../screens/evia/interests_screen.dart';
 import '../screens/evia/discover_screen.dart';
 import '../screens/evia/explore_screen.dart';
@@ -25,11 +30,13 @@ import '../screens/evia/registration_result_screen.dart';
 import '../screens/evia/organizer_profile_screen.dart';
 import '../screens/evia/profile_screens.dart';
 import '../viewmodels/authentication_view_model.dart';
+import '../viewmodels/evia_view_model.dart';
+import '../models/auth_session.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/status_widgets.dart';
 import 'authentication_guard.dart';
 
-final initialLocationProvider = Provider<String>((ref) => AppRoutes.home);
+final initialLocationProvider = Provider<String>((ref) => AppRoutes.splash);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier(0);
@@ -40,11 +47,51 @@ final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
     initialLocation: ref.watch(initialLocationProvider),
     refreshListenable: refresh,
-    redirect: (context, state) => AuthenticationGuard.redirect(
-      requiresAuthentication: AppRoutes.protectedPaths.contains(state.uri.path),
-      session: ref.read(authenticationViewModelProvider).asData?.value,
-    ),
+    redirect: (context, state) {
+      final auth = ref.read(authenticationViewModelProvider);
+      final session = auth.isLoading ? null : auth.asData?.value;
+      if (session?.status == AuthStatus.signedIn &&
+          [
+            AppRoutes.home,
+            AppRoutes.login,
+            AppRoutes.signUp,
+          ].contains(state.uri.path)) {
+        final handled =
+            session!.personalizationHandled ||
+            ref
+                .read(eviaViewModelProvider)
+                .personalizedUsers
+                .contains(session.userId);
+        if (!handled) return AppRoutes.interests;
+        final from = state.uri.queryParameters['from'];
+        final target = from == null ? null : Uri.tryParse(from);
+        if (target != null &&
+            !target.hasAuthority &&
+            !target.hasScheme &&
+            target.path.startsWith('/') &&
+            AppRoutes.requiresAuthentication(target.path)) {
+          return from;
+        }
+        return AppRoutes.discover;
+      }
+      final redirect = AuthenticationGuard.redirect(
+        requiresAuthentication: AppRoutes.requiresAuthentication(
+          state.uri.path,
+        ),
+        session: session,
+      );
+      return redirect == null
+          ? null
+          : Uri(
+              path: redirect,
+              queryParameters: {'from': state.uri.toString()},
+            ).toString();
+    },
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (_, _) => const EviaSplashScreen(),
+      ),
       for (final tab in ['about', 'schedule', 'location'])
         GoRoute(
           path: '/event/$tab',
@@ -150,7 +197,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/rewards/voucher',
-        builder: (_, _) => const RewardVoucherScreen(),
+        builder: (_, state) =>
+            RewardVoucherScreen(code: state.uri.queryParameters['code']),
       ),
       GoRoute(
         path: '/rewards/milestones',
@@ -163,7 +211,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.home,
         name: AppRoutes.homeName,
-        builder: (context, state) => const EviaLoginScreen(),
+        pageBuilder: (context, state) =>
+            _startupPage(context, state, const EviaWelcomeScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        name: 'login',
+        pageBuilder: (context, state) => _loginPage(context, state),
+      ),
+      GoRoute(
+        path: AppRoutes.signUp,
+        builder: (_, _) => const EviaSignUpScreen(),
       ),
       GoRoute(
         path: AppRoutes.foundation,
@@ -171,11 +229,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.interests,
-        builder: (_, _) => const EviaInterestsScreen(),
+        pageBuilder: (context, state) =>
+            _startupPage(context, state, const EviaInterestsScreen()),
       ),
       GoRoute(
         path: AppRoutes.discover,
-        builder: (_, _) => const EviaDiscoverScreen(),
+        pageBuilder: (context, state) =>
+            _startupPage(context, state, const EviaDiscoverScreen()),
       ),
       GoRoute(
         path: AppRoutes.guestDiscover,
@@ -215,3 +275,47 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+CustomTransitionPage<void> _startupPage(
+  BuildContext context,
+  GoRouterState state,
+  Widget child,
+) => CustomTransitionPage<void>(
+  key: state.pageKey,
+  transitionDuration: MediaQuery.disableAnimationsOf(context)
+      ? Duration.zero
+      : SplashTokens.transition,
+  reverseTransitionDuration: Duration.zero,
+  child: child,
+  transitionsBuilder: (_, animation, _, child) =>
+      FadeTransition(opacity: animation, child: child),
+);
+
+CustomTransitionPage<void> _loginPage(
+  BuildContext context,
+  GoRouterState state,
+) {
+  final reducedMotion = MediaQuery.disableAnimationsOf(context);
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    transitionDuration: reducedMotion ? Duration.zero : AppMotion.loginEnter,
+    reverseTransitionDuration: reducedMotion
+        ? Duration.zero
+        : AppMotion.loginExit,
+    child: const EviaLoginScreen(),
+    transitionsBuilder: (context, animation, _, child) {
+      final eased = animation.drive(CurveTween(curve: AppMotion.loginCurve));
+      return FadeTransition(
+        opacity: eased,
+        child: SlideTransition(
+          textDirection: Directionality.of(context),
+          position: Tween<Offset>(
+            begin: AppMotion.loginOffset,
+            end: Offset.zero,
+          ).animate(eased),
+          child: child,
+        ),
+      );
+    },
+  );
+}

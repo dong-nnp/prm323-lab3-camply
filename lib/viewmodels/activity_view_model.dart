@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/activity_mock_data.dart';
 import '../models/activity_models.dart';
+import 'authentication_view_model.dart';
 
 class ActivityState {
   ActivityState({
@@ -13,7 +14,6 @@ class ActivityState {
     this.cancelled = const {},
     this.available = ActivityMockData.balance,
     this.deposits = ActivityMockData.deposits,
-    this.checkedInToday = false,
     this.redeemed = const {},
     this.verified = ActivityMockData.initialVerified,
     this.rewardCategory = 'All',
@@ -22,12 +22,16 @@ class ActivityState {
     this.usedRewards = false,
     this.flashlight = false,
     this.message,
-    this.receipt,
-    this.transactions = ActivityMockData.history,
+    RedemptionReceipt? receipt,
+    List<CoinEntry>? transactions,
+    List<RedemptionReceipt>? receipts,
     this.registrations = const [],
   }) : week = week ?? DateTime(2026, 10, 26),
-       calendarMonth = calendarMonth ?? DateTime(2026, 11);
-  final bool past, checkedInToday, usedRewards, flashlight;
+       calendarMonth = calendarMonth ?? DateTime(2026, 11),
+       transactions = transactions ?? ActivityMockData.history,
+       receipt = receipt ?? ActivityMockData.referenceReceipt,
+       receipts = receipts ?? [ActivityMockData.referenceReceipt];
+  final bool past, usedRewards, flashlight;
   final DateTime? selectedDate, draftDate;
   final DateTime week, calendarMonth;
   final Set<String> cancelled, redeemed, verified;
@@ -35,6 +39,7 @@ class ActivityState {
   final String rewardCategory, rewardQuery, historyFilter;
   final String? message;
   final RedemptionReceipt? receipt;
+  final List<RedemptionReceipt> receipts;
   final List<CoinEntry> transactions;
   final List<RegisteredEvent> registrations;
   ActivityState copy({
@@ -47,7 +52,6 @@ class ActivityState {
     Set<String>? cancelled,
     int? available,
     int? deposits,
-    bool? checkedInToday,
     Set<String>? redeemed,
     Set<String>? verified,
     String? rewardCategory,
@@ -57,6 +61,7 @@ class ActivityState {
     bool? flashlight,
     String? message,
     RedemptionReceipt? receipt,
+    List<RedemptionReceipt>? receipts,
     List<CoinEntry>? transactions,
     List<RegisteredEvent>? registrations,
   }) => ActivityState(
@@ -68,7 +73,6 @@ class ActivityState {
     cancelled: cancelled ?? this.cancelled,
     available: available ?? this.available,
     deposits: deposits ?? this.deposits,
-    checkedInToday: checkedInToday ?? this.checkedInToday,
     redeemed: redeemed ?? this.redeemed,
     verified: verified ?? this.verified,
     rewardCategory: rewardCategory ?? this.rewardCategory,
@@ -78,6 +82,7 @@ class ActivityState {
     flashlight: flashlight ?? this.flashlight,
     message: message,
     receipt: receipt ?? this.receipt,
+    receipts: receipts ?? this.receipts,
     transactions: transactions ?? this.transactions,
     registrations: registrations ?? this.registrations,
   );
@@ -94,16 +99,19 @@ class ActivityViewModel extends Notifier<ActivityState> {
     ...state.registrations,
   ];
   bool addRegistration(RegisteredEvent event, {int deposit = 0}) {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copy(message: 'Log in to register for events.');
+      return false;
+    }
     if (allEvents.any((existing) => existing.id == event.id)) {
       state = state.copy(cancelled: {...state.cancelled}..remove(event.id));
       return true;
     }
-    if (state.available < deposit) return false;
-    state = state.copy(
-      registrations: [...state.registrations, event],
-      available: state.available - deposit,
-      deposits: state.deposits + deposit,
-    );
+    if (deposit > 0) {
+      state = state.copy(message: coinServiceMessage);
+      return false;
+    }
+    state = state.copy(registrations: [...state.registrations, event]);
     return true;
   }
 
@@ -203,51 +211,12 @@ class ActivityViewModel extends Notifier<ActivityState> {
   }
 
   void toggleFlashlight() => state = state.copy(flashlight: !state.flashlight);
+  static const coinServiceMessage =
+      'Coin service is not connected yet. Preview data only.';
+  bool get coinServiceAvailable => false;
   bool checkIn(String code) {
-    if (code.trim().toUpperCase() != ActivityMockData.demoCheckInCode) {
-      state = state.copy(
-        message: 'Code not recognized. Check the code and try again.',
-      );
-      return false;
-    }
-    if (state.verified.contains('club')) {
-      state = state.copy(message: 'Your attendance is already confirmed.');
-      return true;
-    }
-    state = state.copy(
-      verified: {...state.verified, 'club'},
-      available: state.available + 80,
-      message: 'Attendance confirmed. +80 coins',
-      transactions: [
-        const CoinEntry(
-          'Campus Club Fair',
-          'Event check-in · Nov 10',
-          80,
-          CoinKind.earned,
-          2,
-        ),
-        ...state.transactions,
-      ],
-    );
-    return true;
-  }
-
-  void dailyCheckIn() {
-    if (state.checkedInToday) return;
-    state = state.copy(
-      checkedInToday: true,
-      available: state.available + 10,
-      transactions: [
-        const CoinEntry(
-          'Daily Check-in',
-          'Daily reward · Today',
-          10,
-          CoinKind.earned,
-          3,
-        ),
-        ...state.transactions,
-      ],
-    );
+    state = state.copy(message: coinServiceMessage);
+    return false;
   }
 
   void selectRewardCategory(String value) =>
@@ -275,39 +244,91 @@ class ActivityViewModel extends Notifier<ActivityState> {
         },
       )
       .toList();
-  bool canRedeem(String id) =>
-      state.available >= reward(id).redeemCost && !state.redeemed.contains(id);
-  bool redeem(String id) {
-    if (!canRedeem(id)) {
-      state = state.copy(
-        message: state.redeemed.contains(id)
-            ? 'This reward has already been redeemed.'
-            : 'You need more available coins.',
-      );
-      return false;
+  bool canRedeem(String id) => false;
+  String rewardStatus(String id) => 'Preview';
+
+  RedemptionReceipt? voucher(String? code) {
+    if (state.receipts.isEmpty) return null;
+    if (code == null) return state.receipts.first;
+    for (final item in state.receipts) {
+      if (item.code == code) return item;
     }
-    final selected = reward(id);
-    final balance = state.available - selected.redeemCost;
-    state = state.copy(
-      available: balance,
-      redeemed: {...state.redeemed, id},
-      receipt: RedemptionReceipt(
-        selected,
-        selected.redeemCost,
-        balance,
-        ActivityMockData.voucherCode,
-      ),
-      transactions: [
-        CoinEntry(
-          selected.title,
-          'Reward redemption · Today',
-          -selected.redeemCost,
-          CoinKind.spent,
-          6,
+    return null;
+  }
+
+  String dateLabel(DateTime date) =>
+      '${_months[date.month - 1]} ${date.day}, ${date.year}';
+  static const _months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  String validityLabel(CampusReward reward) => reward.validDays == null
+      ? 'Validity not configured'
+      : 'Valid for ${reward.validDays} days after redemption';
+  String expiryLabel(RedemptionReceipt receipt) => receipt.expiresOn == null
+      ? 'Validity not configured'
+      : 'Valid until ${dateLabel(receipt.expiresOn!)}';
+  List<MilestoneProgress> get milestones {
+    final count = state.verified.length;
+    final next = ActivityMockData.milestones
+        .where((m) => m.events > count)
+        .firstOrNull;
+    return [
+      for (final m in ActivityMockData.milestones)
+        MilestoneProgress(
+          m,
+          reached: count >= m.events,
+          next: m == next,
+          remaining: (m.events - count).clamp(0, m.events),
         ),
-        ...state.transactions,
-      ],
-    );
-    return true;
+    ];
+  }
+
+  int get unlockedMilestones => milestones.where((m) => m.reached).length;
+  MilestoneProgress? get nextMilestone =>
+      milestones.where((m) => m.next).firstOrNull;
+  String get currentAchievement =>
+      milestones.where((m) => m.reached).lastOrNull?.milestone.title ??
+      'Getting started';
+  int get milestoneTarget =>
+      nextMilestone?.milestone.events ??
+      ActivityMockData.milestones.last.events;
+  double get milestoneFraction =>
+      (state.verified.length / milestoneTarget).clamp(0, 1);
+  int get milestonePercent => (milestoneFraction * 100).round();
+  List<CoinHistoryGroup> get historyGroups {
+    final entries = [...history]
+      ..sort(
+        (a, b) => (b.date ?? ActivityMockData.referenceDate).compareTo(
+          a.date ?? ActivityMockData.referenceDate,
+        ),
+      );
+    final groups = <String, List<CoinEntry>>{};
+    for (final entry in entries) {
+      final date = entry.date;
+      final label = date == null
+          ? 'Date unavailable'
+          : '${_months[date.month - 1]} ${date.year}';
+      groups.putIfAbsent(label, () => []).add(entry);
+    }
+    return [
+      for (final group in groups.entries)
+        CoinHistoryGroup(group.key, List.unmodifiable(group.value)),
+    ];
+  }
+
+  bool redeem(String id) {
+    state = state.copy(message: coinServiceMessage);
+    return false;
   }
 }

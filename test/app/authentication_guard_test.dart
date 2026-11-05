@@ -27,7 +27,7 @@ void main() {
             requiresAuthentication: true,
             session: session,
           ),
-          AppRoutes.home,
+          AppRoutes.login,
         );
       }
     },

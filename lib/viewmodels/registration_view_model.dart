@@ -4,6 +4,7 @@ import '../data/mock/registration_mock_data.dart';
 import '../models/registration_models.dart';
 import '../models/activity_models.dart';
 import 'activity_view_model.dart';
+import 'authentication_view_model.dart';
 
 class RegistrationState {
   const RegistrationState({
@@ -146,6 +147,13 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
   Future<RegistrationStatus> submit({
     RegistrationOutcome outcome = RegistrationOutcome.success,
   }) async {
+    if (!ref.read(hasAuthenticatedSessionProvider)) {
+      state = state.copy(
+        status: RegistrationStatus.failed,
+        message: 'Log in to register for events.',
+      );
+      return state.status;
+    }
     if (state.status == RegistrationStatus.loading) return state.status;
     if (!validate()) return RegistrationStatus.idle;
     final selected = event(state.eventId);
@@ -178,7 +186,7 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
     if (!added) {
       state = state.copy(
         status: RegistrationStatus.failed,
-        message: 'Not enough available coins for the event deposit.',
+        message: ActivityViewModel.coinServiceMessage,
       );
       return state.status;
     }
@@ -188,6 +196,7 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
 
   void backToForm() => state = state.copy(status: RegistrationStatus.idle);
   void markGoing() {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return;
     final selected = RegistrationMockData.club;
     ref
         .read(activityViewModelProvider.notifier)
@@ -208,6 +217,7 @@ class RegistrationViewModel extends Notifier<RegistrationState> {
   }
 
   void joinWaitlist() {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return;
     final selected = event(state.eventId);
     ref
         .read(activityViewModelProvider.notifier)

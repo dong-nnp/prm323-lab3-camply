@@ -68,6 +68,9 @@ Google Sign-In và sáu service adapters chưa được tích hợp thật.
 
 ## Yêu cầu môi trường
 
+Android debug build có theo dõi input/output APK và tái sử dụng assets khi không
+đổi. Chi tiết phạm vi, số đo và kiểm tra tránh APK cũ: [Build performance](docs/build-performance.md).
+
 - Flutter **stable 3.47.8** / Dart **3.13.7** là bộ SDK đã dùng để tạo source.
   `pubspec.yaml` yêu cầu Dart `^3.13.7`; dùng Flutter stable có Dart tương thích.
 - Android Studio, Android SDK/command-line tools, JDK tương thích với Flutter
@@ -87,12 +90,51 @@ flutter run -d DEVICE_ID
 ```
 
 Thay `DEVICE_ID` bằng ID từ `flutter devices`. Mặc định không cần
-`google-services.json` hay `firebase_options.dart`; app mở màn hình Evia login.
-Chọn **Skip** để xem Discover Guest; **Sign up** mở chọn sở thích và **Continue**
-mở Discover demo. Đây là điều hướng UI, không tạo tài khoản/session đăng nhập.
+`google-services.json` hay `firebase_options.dart`; app mở S00 Splash rồi S01 Welcome.
+Welcome (`/`) có đúng ba actions: **Get Started** → `/signup`, **Log In** → `/login`,
+**Explore as Guest** → `/discover/guest`. Màn Login cũ giữ tại `/login`.
+`/signup` có form Create Account dùng cùng styles, logo và tagline với Login,
+không collage, bốn fields và lỗi inline. Thứ tự: fields → Terms checkbox →
+Create Account → Google → Log In. Checkbox dùng chung cho hai cách đăng ký,
+mặc định chưa chọn. Login giữ nguyên giao diện có collage.
+Create Account gọi SignUpViewModel → AuthenticationRepository → AuthenticationService.
+**Adapter tạo tài khoản và Google vẫn pending:** form hợp lệ báo chưa khả dụng,
+không tạo tài khoản/session giả hoặc tự chuyển đến Interests. Backend có thể trả
+yêu cầu xác minh email; khi thành công, router chỉ chuyển sau session thật xuất hiện.
+Độ dài mật khẩu tối thiểu lấy từ adapter khi có; chưa cấu hình thì chỉ kiểm tra
+bắt buộc/khớp mật khẩu, không tự đặt quy tắc giả. Chưa có URL Terms/Privacy nên
+hiển thị văn bản, không tạo link hoặc trang pháp lý giả.
+Guest được duyệt/tìm kiếm/lọc sự kiện, xem details và organizer công khai.
+Lưu/follow/đăng ký/Going/check-in và các route dữ liệu cá nhân yêu cầu đăng nhập;
+ViewModel cũng chặn mutation khi session chưa rõ/unavailable/signed out/lỗi.
+Đây là điều hướng UI, không tạo tài khoản/session đăng nhập giả.
 Màn hình trạng thái Firebase và nút kiểm tra lại vẫn có ở `/foundation`.
 
-Flutter bootstrap qua `ProviderScope` → `MaterialApp.router` → Evia login.
+Flutter bootstrap qua `ProviderScope` → `MaterialApp.router` → `/splash`.
+Splash dùng artwork PNG EVIA chính thức, nền trắng #FFFFFF giống Welcome.
+Login giữ nền và trang trí gốc theo yêu cầu. Vé xuất hiện giữa màn hình
+(0–300ms), trượt trái (300–800ms) trong lúc chữ “via” được wipe từ trái sang phải
+(350–800ms); hai tia lime xuất hiện/pulse một lần (700–950ms), rồi giữ đến 1200ms.
+Các lớp trong `assets/splash/` được tách nguyên pixel từ PNG gốc bằng
+`python tool/derive_splash_layers.py` (tool phát triển cần Pillow). Script kiểm tra
+ghép lại trùng RGBA ảnh nguồn. Không vẽ lại chữ, không crossfade sang ảnh khác.
+Giảm chuyển động hiển thị PNG đầy đủ tĩnh. Chỉ điều hướng khi logo và initialization/auth
+đã sẵn sàng; initialization lỗi mở `/foundation` để Retry.
+
+Session chưa đăng nhập/unavailable/lỗi đến Welcome (`/`). Session thật đã đăng
+nhập đến `/interests` nếu chưa xử lý personalization, hoặc `/discover` nếu đã
+hoàn tất/bỏ qua. Khi session thật đăng nhập thành công trên Welcome/Login/Sign Up,
+router cũng áp dụng quy tắc này. `AuthSession.personalizationHandled` là field adapter thật cần
+cung cấp từ account profile; không suy ra từ sở thích mẫu. Continue/Skip giữ
+lựa chọn hiện có và đánh dấu theo user trong phiên, không tạo session giả.
+**Giới hạn:** chưa có adapter auth/profile thật; trạng thái này chưa được lưu lên
+backend/qua lần khởi động. Bản mặc định dùng auth unavailable nên đến Welcome.
+Android native splash dùng cùng PNG/nền, tự nhường cho frame Flutter đầu tiên.
+S01 render logo gốc và `assets/EVIA_Welcome_Hero.png` thành hai image riêng, cùng
+text/buttons Flutter thật. `assets/EVIA_S01_Welcome_Reference.png` chỉ là tài liệu
+layout, không bundle hay dùng làm background. Bố cục scroll trên màn thấp/chữ lớn.
+Repository chưa có iOS host; chưa xác minh native splash iOS.
+
 `FIREBASE_ENABLED` mặc định false, được đọc ở compile time. Nếu bật true mà thiếu
 cấu hình hợp lệ, Dart initialization error sẽ chuyển thành error state có Retry,
 không để exception SDK thoát thẳng ra màn hình. Không bật cờ trước khi hoàn tất
@@ -157,9 +199,10 @@ inject dependencies, dễ override để test. Sáu service providers hiện dù
 báo `AppException` thay vì giả thành công. Khởi tạo Firebase Core thành công
 **không tự thay** các adapter pending thành dịch vụ thật.
 
-Các route Evia và `/foundation` đều là route công khai cho bản UI demo.
-Auth session stream và guard fail closed vẫn giữ nguyên; chưa có protected route
-hoặc tích hợp đăng nhập thật. Login hiển thị validation/trạng thái chưa cấu hình.
+Welcome, Login, Sign Up, nội dung sự kiện công khai và `/foundation`
+không yêu cầu đăng nhập. Các route cá nhân/đăng ký/voucher áp dụng auth guard S01.
+Auth session stream và guard fail closed vẫn giữ nguyên; chưa tích hợp adapter
+đăng nhập/đăng ký thật. Login hiển thị validation/trạng thái chưa cấu hình.
 
 ## Bộ màn hình Evia
 
@@ -168,7 +211,9 @@ page `2083:272`. Mapping đầy đủ ở `docs/design-traceability.md`.
 
 | Route | Màn hình |
 |---|---|
-| `/` | Welcome back / Login |
+| `/` | S01 Welcome |
+| `/login` | Welcome back / Login |
+| `/signup` | Create Account form (chờ adapter auth thật) |
 | `/interests` | Discover interests you |
 | `/discover` | Discover — Consistent Event Hierarchy |
 | `/discover/guest` | Discover — Guest Mode |
@@ -219,21 +264,21 @@ repository, nên typography/chiều cao nội dung có thể khác bản Inter t
 | `/rewards/milestones` | Event Milestones |
 | `/rewards/history` | Coin History |
 
-Các route tham chiếu giúp xem từng thiết kế độc lập; trong app có thể đổi tab,
-chọn ngày/tuần/tháng, mở vé, giữ hoặc hủy đăng ký và rời waitlist. Hủy chỉ thay
-đổi dữ liệu demo trong phiên. Màn hình scanner dùng **ảnh mô phỏng** từ Figma,
-không gọi camera hay đèn pin thật. **Enter code** với mã `EVIA-CLUB-2026` xác nhận
-check-in demo một lần và cộng 80 xu; mã sai/nhập lặp không cộng xu.
+Mock data remains visible for UI preview: 420 available coins, 100 deposit coins,
+transaction history and a sample voucher. These are not real transactions.
 
-Daily check-in cộng 10 xu một lần trong phiên. Đổi thưởng trừ available coins,
-giữ nguyên 100 xu deposits, lưu receipt và cập nhật lịch sử. Các thao tác này
-không ghi backend hay tạo voucher dùng ngoài đời. QR/voucher code là mẫu Figma.
-UI state không được lưu qua lần khởi động app mới.
+Local coin/streak persistence and balance mutations have been removed. Check-in,
+redemption and registrations requiring a deposit wait for the coin API; they do
+not report successful transactions or change the preview balance.
 
-Figma có giá café **200 xu trong catalog**, **250 xu trong chi tiết/xác nhận**;
-source giữ riêng `catalogCost` và `redeemCost` để khớp từng frame. Đổi café dùng
-250 xu, từ 420 còn 170. Route success mở trực tiếp dùng receipt tham chiếu;
-đi từ xác nhận sẽ dùng receipt của thao tác vừa thực hiện.
+Daily Check-in previews day 8 with this schedule: days 1-2 +5, days 3-4 +10,
+days 5-6 +15, day 7 onwards +20. The backend must confirm the actual streak,
+missed days and rewards. There is no shared_preferences currency storage.
+
+Cafe pricing is consistently 250 coins. My Rewards contains a sample voucher;
+unknown codes show an empty state. Back returns to Rewards catalog. Coin icons
+share the gold CoinIcon widget. Other event filters and demo cancellation remain
+session-only presentation actions. Scanner imagery and QR codes are previews.
 
 Theme lấy màu, typography, spacing, radius và quy tắc responsive từ Camply Lab 2
 ở dự án liền kề, không sao chép data prototype. Dùng Roboto/system fallback theo

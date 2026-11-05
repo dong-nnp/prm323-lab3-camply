@@ -27,9 +27,10 @@ class EviaLogo extends StatelessWidget {
   );
 }
 
-/// The collage uses the measured rotations/crops of the original Figma artwork.
+/// Login retains the original layout; Sign Up uses the supplied horizontal layout.
 class LoginCollage extends StatelessWidget {
-  const LoginCollage({super.key});
+  const LoginCollage({this.horizontal = false, super.key});
+  final bool horizontal;
   static const _screen = '2083:4509';
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -56,6 +57,48 @@ class LoginCollage extends StatelessWidget {
               ),
             ),
           );
+      if (horizontal) {
+        return SizedBox(
+          height: EviaTheme.signUpCollageHeight * scale,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: 7 * scale,
+                top: 14 * scale,
+                child: photo(
+                  'imgConferenceHallStageWithScreenAndAudienceSeats',
+                  150,
+                  98,
+                  -7,
+                ),
+              ),
+              Positioned(
+                left: 133 * scale,
+                top: 7 * scale,
+                child: photo(
+                  'imgConcertStageWithVibrantVioletAndBlueLights',
+                  142,
+                  104,
+                  5,
+                ),
+              ),
+              Positioned(
+                right: 4 * scale,
+                top: 26 * scale,
+                child: photo(
+                  'imgHackathonLaptopWorkstationsAndBanner',
+                  114,
+                  88,
+                  7,
+                ),
+              ),
+              const Positioned(left: 0, top: 0, child: LimeMark()),
+              const Positioned(right: 0, top: 0, child: LimeMark()),
+            ],
+          ),
+        );
+      }
       return SizedBox(
         height: EviaTheme.collageHeight * scale,
         child: Stack(

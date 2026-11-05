@@ -1,7 +1,10 @@
+import '../helpers/startup_test_auth.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,7 +83,10 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             key: ValueKey(viewport),
-            overrides: [initialLocationProvider.overrideWithValue(route)],
+            overrides: [
+              signedInTestSession,
+              initialLocationProvider.overrideWithValue(route),
+            ],
             child: const LabApp(),
           ),
         );
@@ -99,6 +105,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            signedInTestSession,
             initialLocationProvider.overrideWithValue('/my-events/selected'),
           ],
           child: const LabApp(),
@@ -118,37 +125,27 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets('redemption commits wallet once and opens the saved voucher', (
+  testWidgets('redemption stays disabled while coin API is not connected', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(390, 884);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          signedInTestSession,
           initialLocationProvider.overrideWithValue('/rewards/detail'),
         ],
         child: const LabApp(),
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Redeem for 250 coins'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Confirm Redemption'));
-    await tester.pumpAndSettle();
-    expect(find.text('Redemption Successful!'), findsOneWidget);
+    final button = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Coin API not connected'),
+    );
+    expect(button.onPressed, isNull);
     final container = ProviderScope.containerOf(
       tester.element(find.byType(LabApp)),
     );
-    expect(container.read(activityViewModelProvider).available, 170);
-    expect(container.read(activityViewModelProvider).deposits, 100);
-    await tester.tap(find.text('View My Rewards'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('View Voucher & QR'));
-    await tester.pumpAndSettle();
-    expect(find.text('VOUCHER-CC-82914'), findsOneWidget);
+    expect(container.read(activityViewModelProvider).available, 420);
     expect(tester.takeException(), isNull);
   });
   testWidgets('catalog search remains editable beside its icon', (
@@ -161,6 +158,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          signedInTestSession,
           initialLocationProvider.overrideWithValue('/rewards/catalog'),
         ],
         child: const LabApp(),
@@ -187,7 +185,10 @@ void main() {
           RepaintBoundary(
             key: boundaryKey,
             child: ProviderScope(
-              overrides: [initialLocationProvider.overrideWithValue(entry.key)],
+              overrides: [
+                signedInTestSession,
+                initialLocationProvider.overrideWithValue(entry.key),
+              ],
               child: const LabApp(),
             ),
           ),

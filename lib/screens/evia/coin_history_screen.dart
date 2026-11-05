@@ -8,6 +8,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/rewards_wallet.dart';
+import '../../widgets/coin_icon.dart';
 
 class CoinHistoryScreen extends ConsumerWidget {
   const CoinHistoryScreen({super.key});
@@ -31,7 +32,7 @@ class CoinHistoryScreen extends ConsumerWidget {
             const Row(
               children: [
                 Expanded(child: Text('Transactions', style: EviaTheme.section)),
-                Text('Oct 2026', style: EviaTheme.caption),
+                Text('All dates', style: EviaTheme.caption),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -48,27 +49,31 @@ class CoinHistoryScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xl),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text('OCTOBER 2026 · RECENT', style: EviaTheme.label),
-                ),
-                Text('${vm.history.length} items', style: EviaTheme.caption),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            EviaCard(
-              child: Column(
+            if (vm.historyGroups.isEmpty)
+              const EviaCard(child: Text('No transactions in this category.')),
+            for (final group in vm.historyGroups) ...[
+              Row(
                 children: [
-                  for (var i = 0; i < vm.history.length; i++) ...[
-                    if (i != 0) const Divider(height: AppSpacing.xl),
-                    _CoinEntryRow(entry: vm.history[i]),
-                  ],
-                  if (vm.history.isEmpty)
-                    const Text('No transactions in this category.'),
+                  Expanded(child: Text(group.label, style: EviaTheme.label)),
+                  Text(
+                    '${group.entries.length} items',
+                    style: EviaTheme.caption,
+                  ),
                 ],
               ),
-            ),
+              const SizedBox(height: AppSpacing.md),
+              EviaCard(
+                child: Column(
+                  children: [
+                    for (var i = 0; i < group.entries.length; i++) ...[
+                      if (i != 0) const Divider(height: AppSpacing.xl),
+                      _CoinEntryRow(entry: group.entries[i]),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
           ],
         ),
       ),
@@ -98,7 +103,9 @@ class _CoinEntryRow extends StatelessWidget {
                 : AppColors.errorSurface,
             borderRadius: BorderRadius.circular(AppRadius.medium),
           ),
-          child: ActivityIcon('2083:4356', 'imgContainer${entry.icon}'),
+          child: entry.kind == CoinKind.spent
+              ? const CoinIcon(color: AppColors.error)
+              : ActivityIcon('2083:4356', 'imgContainer${entry.icon}'),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(

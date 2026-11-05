@@ -27,7 +27,14 @@ class EviaInterestsScreen extends ConsumerWidget {
           child: AppButton(
             label: 'Continue',
             trailing: const FigmaIcon('2088:2', 'imgContainer11'),
-            onPressed: ready ? () => context.go('/discover') : null,
+            onPressed: ready
+                ? () {
+                    final destination = ref
+                        .read(eviaViewModelProvider.notifier)
+                        .finishPersonalization();
+                    if (destination != null) context.go(destination);
+                  }
+                : null,
           ),
         ),
       ),
@@ -41,7 +48,12 @@ class EviaInterestsScreen extends ConsumerWidget {
               children: [
                 const EviaLogo(interests: true),
                 TextButton(
-                  onPressed: () => context.go('/discover/guest'),
+                  onPressed: () {
+                    final destination = ref
+                        .read(eviaViewModelProvider.notifier)
+                        .finishPersonalization(skipped: true);
+                    if (destination != null) context.go(destination);
+                  },
                   child: const Text('Skip'),
                 ),
               ],

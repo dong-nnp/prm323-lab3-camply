@@ -11,160 +11,359 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/coin_icon.dart';
 
 class RewardsLockerScreen extends ConsumerWidget {
   const RewardsLockerScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final used = ref.watch(
-      activityViewModelProvider.select((s) => s.usedRewards),
-    );
-    return EviaPage(
-      header: const ActivityHeader(
-        'My Rewards',
-        screen: '2083:3267',
-        backAsset: 'imgContainer5',
-      ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text('Your Rewards', style: EviaTheme.heading),
-            const SizedBox(height: AppSpacing.xs),
-            const Text(
-              "All the rewards you've redeemed",
-              style: EviaTheme.caption,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            ActivityTabs(
-              icons: const [
-                ActivityIcon('2083:3267', 'imgContainer'),
-                ActivityIcon('2083:3267', 'imgContainer1'),
-              ],
-              activeColor: ActivityTheme.action,
-              activeForeground: AppColors.surface,
-              labels: const ['Available (1)', 'Used & Expired (2)'],
-              selected: used ? 1 : 0,
-              onSelected: (index) => ref
-                  .read(activityViewModelProvider.notifier)
-                  .selectLockerTab(index == 1),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            if (used) ...[
-              for (final archived in ActivityMockData.archivedRewards)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: EviaCard(
-                    child: Row(
-                      children: [
-                        const ActivityIcon('2083:3267', 'imgContainer1'),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(child: Text(archived.title)),
-                        EventBadge(
-                          archived.status,
-                          color: AppColors.surfaceMuted,
-                          foreground: AppColors.textSecondary,
-                        ),
-                      ],
-                    ),
+    final state = ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
+    void backToRewards() => context.go('/rewards/catalog');
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) backToRewards();
+      },
+      child: EviaPage(
+        header: ActivityHeader(
+          'My Rewards',
+          onBack: backToRewards,
+          screen: '2083:3267',
+          backAsset: 'imgContainer5',
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text('Your Rewards', style: EviaTheme.heading),
+              const SizedBox(height: AppSpacing.xs),
+              const Text(
+                "All the rewards you've redeemed",
+                style: EviaTheme.caption,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              ActivityTabs(
+                icons: [
+                  ActivityIcon(
+                    '2083:3267',
+                    'imgContainer',
+                    color: state.usedRewards
+                        ? AppColors.textSecondary
+                        : AppColors.surface,
                   ),
-                ),
-            ] else
-              InkWell(
-                onTap: () => context.push('/rewards/voucher'),
-                child: EviaCard(
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  ActivityIcon(
+                    '2083:3267',
+                    'imgContainer1',
+                    color: state.usedRewards
+                        ? AppColors.surface
+                        : AppColors.textSecondary,
+                  ),
+                ],
+                activeColor: ActivityTheme.action,
+                activeForeground: AppColors.surface,
+                labels: [
+                  'Available (${state.receipts.length})',
+                  'Used & Expired (${ActivityMockData.archivedRewards.length})',
+                ],
+                selected: state.usedRewards ? 1 : 0,
+                onSelected: (index) => vm.selectLockerTab(index == 1),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              if (state.usedRewards)
+                for (final archived in ActivityMockData.archivedRewards)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: EviaCard(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Row(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(
                               AppRadius.medium,
                             ),
                             child: Image.asset(
-                              ActivityAssets.path('2083:3267', 'imgCampusCafe'),
-                              width: EviaTheme.thumbnail - AppSpacing.sm,
-                              height: EviaTheme.thumbnail - AppSpacing.sm,
+                              archived.reward.image,
+                              width: EviaTheme.compactThumbnail,
+                              height: EviaTheme.compactThumbnail,
                               fit: BoxFit.cover,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.lg),
-                          const Expanded(
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                EventBadge(
-                                  '• Ready to use',
-                                  color: AppColors.successSurface,
-                                  foreground: AppColors.success,
-                                ),
-                                SizedBox(height: AppSpacing.sm),
                                 Text(
-                                  'Campus Café \$10 Voucher',
-                                  style: EviaTheme.cardTitle,
+                                  archived.reward.title,
+                                  style: EviaTheme.compactTitle,
                                 ),
-                                SizedBox(height: AppSpacing.xs),
-                                Row(
-                                  children: [
-                                    ActivityIcon('2083:3267', 'imgContainer2'),
-                                    SizedBox(width: AppSpacing.xs),
-                                    Expanded(
-                                      child: Text(
-                                        'Redeemed Oct 28, 2026',
-                                        style: EviaTheme.caption,
-                                      ),
-                                    ),
-                                  ],
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  archived.reward.category,
+                                  style: EviaTheme.caption,
                                 ),
                               ],
                             ),
                           ),
+                          const SizedBox(width: AppSpacing.sm),
+                          EventBadge(
+                            archived.status,
+                            color: archived.status == 'Expired'
+                                ? AppColors.warningSurface
+                                : AppColors.surfaceMuted,
+                            foreground: archived.status == 'Expired'
+                                ? AppColors.warning
+                                : AppColors.textSecondary,
+                          ),
                         ],
                       ),
-                      const Divider(height: AppSpacing.xl),
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        spacing: AppSpacing.sm,
-                        runSpacing: AppSpacing.sm,
-                        children: [
-                          const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ActivityIcon('2083:3267', 'imgContainer3'),
-                              SizedBox(width: AppSpacing.xs),
-                              Flexible(
-                                child: Text(
-                                  'Valid until Nov 27, 2026',
-                                  style: EviaTheme.caption,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Flexible(
-                                child: Text(
-                                  'View Voucher & QR',
-                                  style: TextStyle(color: AppColors.primary),
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.xs),
-                              const ActivityIcon('2083:3267', 'imgContainer4'),
-                            ],
-                          ),
-                        ],
+                    ),
+                  )
+              else if (state.receipts.isEmpty)
+                EviaCard(
+                  child: Column(
+                    children: [
+                      const Text('No rewards yet', style: EviaTheme.cardTitle),
+                      const SizedBox(height: AppSpacing.sm),
+                      const Text(
+                        'Redeem a reward to find it here.',
+                        style: EviaTheme.caption,
+                      ),
+                      TextButton(
+                        onPressed: () => context.go('/rewards/catalog'),
+                        child: const Text('Browse rewards'),
                       ),
                     ],
                   ),
-                ),
+                )
+              else
+                for (final receipt in state.receipts)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: Material(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(AppRadius.large),
+                      child: InkWell(
+                        onTap: () => context.push(
+                          '/rewards/voucher?code=${Uri.encodeQueryComponent(receipt.code)}',
+                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.large),
+                        child: EviaCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadius.medium,
+                                    ),
+                                    child: Image.asset(
+                                      receipt.reward.image,
+                                      width:
+                                          EviaTheme.thumbnail - AppSpacing.sm,
+                                      height:
+                                          EviaTheme.thumbnail - AppSpacing.sm,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const EventBadge(
+                                          'Saved demo reward',
+                                          color: AppColors.successSurface,
+                                          foreground: AppColors.success,
+                                        ),
+                                        const SizedBox(height: AppSpacing.sm),
+                                        Text(
+                                          receipt.reward.title,
+                                          style: EviaTheme.cardTitle,
+                                        ),
+                                        const SizedBox(height: AppSpacing.xs),
+                                        Text(
+                                          'Redeemed ${vm.dateLabel(receipt.redeemedOn)}',
+                                          style: EviaTheme.caption,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Divider(height: AppSpacing.xl),
+                              Text(
+                                vm.expiryLabel(receipt),
+                                style: EviaTheme.caption,
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'View Reward',
+                                      style: EviaTheme.label,
+                                    ),
+                                  ),
+                                  ActivityIcon('2083:3267', 'imgContainer4'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              const SizedBox(height: AppSpacing.lg),
+              const ActivityInfo(
+                'Demo rewards are stored only during this app session.',
+                icon: ActivityIcon('2083:3267', 'imgMargin'),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RewardVoucherScreen extends ConsumerWidget {
+  const RewardVoucherScreen({this.code, super.key});
+  final String? code;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
+    final receipt = vm.voucher(code);
+    if (receipt == null) {
+      return const _MissingReward(title: 'No reward selected');
+    }
+    final reward = receipt.reward;
+    return EviaPage(
+      header: const ActivityHeader(
+        'My Reward',
+        screen: '2083:4059',
+        backAsset: 'imgContainer4',
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             const SizedBox(height: AppSpacing.lg),
+            const Center(
+              child: EventBadge(
+                'Saved demo reward',
+                color: AppColors.successSurface,
+                foreground: AppColors.success,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              reward.title,
+              textAlign: TextAlign.center,
+              style: ActivityTheme.title,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              reward.instructions,
+              textAlign: TextAlign.center,
+              style: EviaTheme.caption,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            EviaCard(
+              child: Column(
+                children: [
+                  if (reward.id == 'cafe') ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
+                      child: ActivityIcon('2083:4059', 'imgSvg'),
+                    ),
+                    const Text(
+                      'Illustrative demo QR. Not valid for payment.',
+                      style: EviaTheme.caption,
+                      textAlign: TextAlign.center,
+                    ),
+                  ] else
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      child: Image.asset(
+                        reward.image,
+                        height: ActivityTheme.detailImageHeight,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  const SizedBox(height: AppSpacing.lg),
+                  EviaCard(
+                    color: AppColors.background,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'DEMO REWARD CODE',
+                                style: EviaTheme.caption,
+                              ),
+                              Text(receipt.code, style: ActivityTheme.code),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                              copyActivityCode(context, receipt.code),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ActivityIcon('2083:4059', 'imgContainer'),
+                              SizedBox(width: AppSpacing.xs),
+                              Text('Copy'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            const Text('Reward Details', style: EviaTheme.cardTitle),
+            const SizedBox(height: AppSpacing.sm),
+            EviaCard(
+              child: Column(
+                children: [
+                  const DetailRow(
+                    'Status',
+                    'Saved in this session',
+                    color: AppColors.success,
+                    icon: ActivityIcon('2083:4059', 'imgContainer1'),
+                  ),
+                  const Divider(),
+                  DetailRow(
+                    'Validity',
+                    vm.expiryLabel(receipt),
+                    icon: const ActivityIcon('2083:4059', 'imgContainer2'),
+                  ),
+                  const Divider(),
+                  DetailRow(
+                    'Where to use',
+                    reward.location,
+                    icon: const ActivityIcon('2083:4059', 'imgContainer3'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
             const ActivityInfo(
-              'Open a reward to view its code, usage instructions, and redemption details.',
-              icon: ActivityIcon('2083:3267', 'imgMargin'),
+              'Demo preview. Real reward verification is not connected.',
+              icon: ActivityIcon('2083:4059', 'imgIcon'),
             ),
           ],
         ),
@@ -173,117 +372,29 @@ class RewardsLockerScreen extends ConsumerWidget {
   }
 }
 
-class RewardVoucherScreen extends StatelessWidget {
-  const RewardVoucherScreen({super.key});
+class _MissingReward extends StatelessWidget {
+  const _MissingReward({required this.title});
+  final String title;
   @override
   Widget build(BuildContext context) => EviaPage(
-    header: const ActivityHeader(
-      'My Voucher',
-      screen: '2083:4059',
-      backAsset: 'imgContainer4',
+    header: ActivityHeader(
+      'My Rewards',
+      onBack: () => context.go('/rewards/catalog'),
     ),
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: AppSpacing.lg),
-          const Center(
-            child: EventBadge(
-              '• Ready to use',
-              color: AppColors.successSurface,
-              foreground: AppColors.success,
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title, style: EviaTheme.section, textAlign: TextAlign.center),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
+              label: 'Browse rewards',
+              onPressed: () => context.go('/rewards/catalog'),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          const Text(
-            'Campus Café \$10 Voucher',
-            textAlign: TextAlign.center,
-            style: ActivityTheme.title,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          const Text(
-            'Show this QR code at the cashier.',
-            textAlign: TextAlign.center,
-            style: EviaTheme.caption,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          EviaCard(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
-                  child: ActivityIcon('2083:4059', 'imgSvg'),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                EviaCard(
-                  color: AppColors.background,
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('VOUCHER CODE', style: EviaTheme.caption),
-                            Text(
-                              ActivityMockData.voucherCode,
-                              style: ActivityTheme.code,
-                            ),
-                          ],
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => copyActivityCode(
-                          context,
-                          ActivityMockData.voucherCode,
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ActivityIcon('2083:4059', 'imgContainer'),
-                            Text('Copy'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          const Text('Voucher Details', style: EviaTheme.cardTitle),
-          const SizedBox(height: AppSpacing.sm),
-          const EviaCard(
-            child: Column(
-              children: [
-                DetailRow(
-                  'Status',
-                  'Unused',
-                  color: AppColors.success,
-                  icon: ActivityIcon('2083:4059', 'imgContainer1'),
-                ),
-                Divider(),
-                DetailRow(
-                  'Valid until',
-                  ActivityMockData.validUntil,
-                  icon: ActivityIcon('2083:4059', 'imgContainer2'),
-                ),
-                Divider(),
-                DetailRow(
-                  'Where to use',
-                  'Participating campus cafés',
-                  icon: ActivityIcon('2083:4059', 'imgContainer3'),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          const ActivityInfo(
-            'This voucher can be used once. Its status updates after successful verification.',
-            icon: ActivityIcon('2083:4059', 'imgIcon'),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -293,9 +404,11 @@ class RedemptionSuccessScreen extends ConsumerWidget {
   const RedemptionSuccessScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final receipt =
-        ref.watch(activityViewModelProvider).receipt ??
-        ActivityMockData.referenceReceipt;
+    final receipt = ref.watch(activityViewModelProvider).receipt;
+    final vm = ref.read(activityViewModelProvider.notifier);
+    if (receipt == null) {
+      return const _MissingReward(title: 'No redemption to display');
+    }
     return EviaPage(
       footer: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -343,7 +456,7 @@ class RedemptionSuccessScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             const Text(
-              'Your reward is ready and saved in My Rewards.',
+              'Preview result only. The coin API is not connected.',
               textAlign: TextAlign.center,
               style: EviaTheme.caption,
             ),
@@ -386,16 +499,16 @@ class RedemptionSuccessScreen extends ConsumerWidget {
                     'Cost Deducted',
                     '-${receipt.cost} coins',
                     color: AppColors.error,
-                    icon: const ActivityIcon('2083:3788', 'imgContainer1'),
+                    icon: const CoinIcon(color: AppColors.error),
                   ),
                   DetailRow(
                     'New Available Balance',
                     '${receipt.balance} Available Coins',
                     icon: const ActivityIcon('2083:3788', 'imgContainer2'),
                   ),
-                  const DetailRow(
-                    'Expiration Date',
-                    'Valid until Nov 27, 2026',
+                  DetailRow(
+                    'Validity',
+                    vm.expiryLabel(receipt),
                     icon: ActivityIcon('2083:3788', 'imgContainer3'),
                   ),
                 ],

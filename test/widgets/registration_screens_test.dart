@@ -1,3 +1,5 @@
+import '../helpers/startup_test_auth.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -81,7 +83,10 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             key: ValueKey(viewport),
-            overrides: [initialLocationProvider.overrideWithValue(route)],
+            overrides: [
+              signedInTestSession,
+              initialLocationProvider.overrideWithValue(route),
+            ],
             child: const LabApp(),
           ),
         );
@@ -90,42 +95,39 @@ void main() {
       }
     });
   }
-  testWidgets('event registration shows loading then creates a usable ticket', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(390, 884);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [initialLocationProvider.overrideWithValue('/event/about')],
-        child: const LabApp(),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Register Now'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Confirm Registration'));
-    await tester.pump();
-    final container = ProviderScope.containerOf(
-      tester.element(find.byType(LabApp)),
-    );
-    expect(
-      container.read(registrationViewModelProvider).status.name,
-      'loading',
-    );
-    expect(find.text('Confirming your\nregistration...'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 800));
-    await tester.pumpAndSettle();
-    expect(find.text('Registration Successful!'), findsOneWidget);
-    expect(container.read(activityViewModelProvider).available, 320);
-    await tester.ensureVisible(find.text('View My Digital Ticket'));
-    await tester.tap(find.text('View My Digital Ticket'));
-    await tester.pumpAndSettle();
-    expect(find.text('My Ticket'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'registration does not hold preview coins while API is unavailable',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 884);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            signedInTestSession,
+            initialLocationProvider.overrideWithValue('/registration'),
+          ],
+          child: const LabApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirm Registration'));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LabApp)),
+      );
+      expect(
+        container.read(registrationViewModelProvider).status.name,
+        'failed',
+      );
+      expect(container.read(activityViewModelProvider).available, 420);
+      expect(container.read(activityViewModelProvider).deposits, 100);
+      expect(container.read(activityViewModelProvider).registrations, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('saving a form correction removes its validation error', (
     tester,
   ) async {
@@ -136,6 +138,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          signedInTestSession,
           initialLocationProvider.overrideWithValue('/registration/error'),
         ],
         child: const LabApp(),
@@ -160,6 +163,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            signedInTestSession,
             initialLocationProvider.overrideWithValue('/profile/notifications'),
           ],
           child: const LabApp(),
@@ -191,7 +195,10 @@ void main() {
           RepaintBoundary(
             key: boundaryKey,
             child: ProviderScope(
-              overrides: [initialLocationProvider.overrideWithValue(entry.key)],
+              overrides: [
+                signedInTestSession,
+                initialLocationProvider.overrideWithValue(entry.key),
+              ],
               child: const LabApp(),
             ),
           ),

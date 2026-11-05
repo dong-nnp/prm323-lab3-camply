@@ -8,6 +8,11 @@ final authenticationViewModelProvider =
       AuthenticationViewModel.new,
     );
 
+final hasAuthenticatedSessionProvider = Provider<bool>((ref) {
+  final auth = ref.watch(authenticationViewModelProvider);
+  return !auth.isLoading && auth.asData?.value.status == AuthStatus.signedIn;
+});
+
 /// Session observation only. Sign-in/out actions belong here once in scope.
 class AuthenticationViewModel extends StreamNotifier<AuthSession> {
   @override

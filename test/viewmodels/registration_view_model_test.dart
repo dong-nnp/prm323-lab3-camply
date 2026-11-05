@@ -1,3 +1,4 @@
+import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/models/registration_models.dart';
@@ -10,7 +11,10 @@ void main() {
   late ProviderContainer container;
   setUp(() {
     container = ProviderContainer(
-      overrides: [registrationDelayProvider.overrideWithValue(Duration.zero)],
+      overrides: [
+        hasAuthenticatedSessionProvider.overrideWithValue(true),
+        registrationDelayProvider.overrideWithValue(Duration.zero),
+      ],
     );
   });
   tearDown(() => container.dispose());
@@ -36,25 +40,17 @@ void main() {
       );
     },
   );
-  test(
-    'successful registration holds deposit once and is visible to tickets',
-    () async {
-      final vm = container.read(registrationViewModelProvider.notifier);
-      expect(await vm.submit(), RegistrationStatus.success);
-      expect(container.read(activityViewModelProvider).available, 320);
-      expect(container.read(activityViewModelProvider).deposits, 200);
-      expect(
-        container
-            .read(activityViewModelProvider.notifier)
-            .event('music-live')
-            .title,
-        'Campus Music Night',
-      );
-      expect(await vm.submit(), RegistrationStatus.success);
-      expect(container.read(activityViewModelProvider).registrations.length, 1);
-      expect(container.read(activityViewModelProvider).available, 320);
-    },
-  );
+  test('registration requiring a coin deposit waits for API without changing preview wallet', () async {
+    final vm = container.read(registrationViewModelProvider.notifier);
+    expect(await vm.submit(), RegistrationStatus.failed);
+    expect(container.read(activityViewModelProvider).available, 420);
+    expect(container.read(activityViewModelProvider).deposits, 100);
+    expect(container.read(activityViewModelProvider).registrations, isEmpty);
+    expect(
+      container.read(registrationViewModelProvider).message,
+      contains('not connected'),
+    );
+  });
   test('duplicate submission is blocked while loading', () async {
     final vm = container.read(registrationViewModelProvider.notifier);
     final first = vm.submit();
@@ -64,7 +60,7 @@ void main() {
     );
     expect(await vm.submit(), RegistrationStatus.loading);
     await first;
-    expect(container.read(activityViewModelProvider).registrations.length, 1);
+    expect(container.read(activityViewModelProvider).registrations, isEmpty);
   });
   test(
     'failed and full outcomes preserve form, wallet and registrations',
