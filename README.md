@@ -1,5 +1,9 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Push Android — 06/11/2026:** dùng FCM và kênh HIGH `evia_events_v1`; app đang
+> mở hiển thị notification hệ thống bằng native service bridge, app nền do FCM
+> SDK hiển thị. Giữ layout cũ, không thêm dependency. [Cách chạy/giới hạn](docs/PUSH_NOTIFICATIONS.md).
+
 > **Flow 3 — 06/11/2026:** nối ví/history, Daily, nhận thành tựu, catalog/đổi quà,
 > My Rewards và QR voucher vào các màn gốc. API `getAccount.daily` đã deploy;
 > 213/213 Flutter và 62/62 backend tests đạt. Chỉ sửa co giãn chữ theo owner

@@ -1,5 +1,11 @@
 # Kiến trúc source base
 
+> **Push Android — 06/11/2026:** FirebaseMessagingService tạo kênh HIGH và hiển
+> thị foreground FCM qua MethodChannel → Android NotificationManager. MainActivity
+> chỉ host native bridge; payload/tap tiếp tục qua FlutterFire và ViewModel/router
+> hiện có. Backend deliverPush giữ cleanup/retry và thêm log kết quả FCM theo ID.
+> [Contract](PUSH_NOTIFICATIONS.md).
+
 > **Flow 3 — 06/11/2026:** màn Rewards gốc → ActivityViewModel/Flow3ViewModel →
 > Flow1Repository → BackendService/FirebaseBackendService. Flow3Snapshot giữ
 > Daily, ví, catalog, ledger, milestones và receipts của account hiện tại.

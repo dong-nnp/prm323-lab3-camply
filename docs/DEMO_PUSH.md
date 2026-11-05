@@ -1,5 +1,9 @@
 # Gửi push demo bằng một lệnh
 
+> Bản Android mới hỗ trợ notification khi app đang mở và app nền qua kênh HIGH.
+> [Cấu hình, kiểm tra và giới hạn](PUSH_NOTIFICATIONS.md). Nội dung bản tin demo
+> không còn ghi sẵn “đã gửi push”; log server mới cho biết FCM có chấp nhận không.
+
 Chạy trong thư mục repository, bằng Node.js và tài khoản Firebase CLI có quyền
 ghi Firestore của `prm393-31822` trên Windows. Dùng login hiện có; không đưa
 credentials vào app hay dòng lệnh.

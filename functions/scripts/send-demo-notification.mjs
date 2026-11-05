@@ -49,7 +49,7 @@ try {
       update: { name: `${base}/notifications/${notificationId}`, fields: {
         uid: { stringValue: uid }, type: { stringValue: 'demo_fcm_smoke' },
         title: { stringValue: '[DEMO] Thông báo từ Firebase' },
-        body: { stringValue: 'Evia đã gửi push notification. Nhấn để xem sự kiện.' },
+        body: { stringValue: 'Thông báo thử từ Firebase. Nhấn để xem sự kiện.' },
         entityType: { stringValue: 'event' }, entityId: { stringValue: eventId },
         readAt: { nullValue: null }, isDemo: { booleanValue: true },
       } },

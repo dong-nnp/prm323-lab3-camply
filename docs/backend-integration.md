@@ -1,5 +1,9 @@
 # Backend Evia — hướng dẫn tích hợp
 
+> **Push Android — 06/11/2026:** `deliverNotification` đã deploy sender dùng
+> HIGH priority/channel `evia_events_v1`; log kết quả FCM theo notification ID,
+> giữ cleanup token/retry. Contract inbox/callable giữ nguyên. [Hướng dẫn](PUSH_NOTIFICATIONS.md).
+
 > **Flow 3 — 06/11/2026:** các màn Rewards đã nối API thật.
 > `getAccount` bổ sung `daily: {dayKey,streakDay,coins,alreadyClaimed,serverTime,
 > timezone}`; không đổi contract profile/wallet cũ. Server quyết định ngày Việt

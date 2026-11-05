@@ -1,5 +1,10 @@
 # Design traceability — Evia
 
+> **Push Android — 06/11/2026:** dùng notification hệ thống Android cho FCM;
+> không đổi Widget/layout, màu, assets hoặc thứ tự thành phần trong app.
+> Thêm icon notification native và kênh HIGH để hiển thị banner ngoài màn app.
+> [Ảnh thật và giới hạn](../evidence/push-notifications/).
+
 > **Flow 3 — 06/11/2026:** nối dữ liệu/actions thật vào Rewards, milestones,
 > details/confirm/success, locker/voucher và history gốc. Giữ tokens, ảnh minh
 > họa fallback và thứ tự thành phần. Owner cho phép Flexible/xuống dòng ở các

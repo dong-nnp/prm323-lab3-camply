@@ -1,5 +1,10 @@
 # Test plan — template
 
+> **Push Android — 06/11/2026:** 216/216 Flutter tests, 64/64 backend Emulator
+> tests, analyze sạch, APK debug build/cài đạt. Banner FCM thật đã thấy khi app
+> đang mở và tiến trình đóng; app nền nhận notification hệ thống. Tap foreground
+> mở Career, tap cold-start mở Workshop đúng payload. [Evidence/giới hạn](../evidence/push-notifications/).
+
 > **Flow 3 — 06/11/2026:** 213/213 Flutter tests, 62/62 backend Emulator tests,
 > analyze sạch, APK debug Firebase thật build đạt. Tests bao phủ Daily chờ server,
 > manual milestone claim/reload, đổi quà/khôi phục receipt, giá đổi/refresh lỗi,
