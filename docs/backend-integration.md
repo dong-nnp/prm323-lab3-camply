@@ -10,8 +10,9 @@
 > Nam và số xu. Chỉ Function này được deploy lại trong task; các mutation/owner
 > query có sẵn được dùng lại. [Contract/call chain](FLOW3_INTEGRATION.md) ·
 > [Evidence](../evidence/flow3-api-only/).
-> **Admin web.** Xem [phạm vi dùng API hiện có](ADMIN_WEB_PLAN.md) và
-> [hướng dẫn chạy](../admin/README.md). Mobile Flow 1/2 đã nối catalog, đăng ký và FCM
+> **Admin Flutter Web — 06/11/2026.** Một admin làm hết, không phân công staff.
+> Xem [phạm vi/API mới](ADMIN_WEB_PLAN.md) và
+> [hướng dẫn chạy](../admin_flutter/README.md). Mobile Flow 1/2 đã nối catalog, đăng ký và FCM
 > trong chế độ live. Các ghi chú chưa nối mobile phía dưới mô tả mốc cũ.
 
 > **Flow 2 — 05/11/2026:** `verifyWalkInQr`/`verifyWalkInCode` bổ sung
@@ -173,7 +174,8 @@ Hủy mới: registration lưu `cancellationRefundCoins`, `cancellationForfeited
 Giao dịch/receipt đã settle trước release giữ nguyên, không hoàn bù.
 
 QR là token opaque ngẫu nhiên, hash nằm private; không parse token để cấp xu
-ở app. Staff phải có custom claim `staff:true` **và** active document
+ở app. Admin có claim `admin:true` và profile active được xác nhận vé/phát QR trực
+tiếp, không cần staff assignment. Legacy staff vẫn phải có claim `staff:true` và active document
 `staff_assignments/{SHA256(JSON.stringify([staffUid,eventId]))}` với
 `{staffUid,eventId,active:true,permissions:[...]}` do Admin SDK/operator tin cậy
 cấp. Permissions là `verify_ticket`, `issue_walk_in`. Role/assignment không do
@@ -212,7 +214,7 @@ implementation tính duration N×24 giờ từ lúc redeem, bỏ trống = khôn
 Không tự lấy ví dụ 30 ngày làm chính sách. Chủ dự án phải duyệt expiry của record
 trước import; nếu muốn cutoff theo ngày lịch cần sửa contract trước phát hành.
 Code ổn định được lưu **private server-only**, không nằm trong owner-readable
-voucher/receipt/log; gọi lại được sau restart. Admin xác nhận voucher tại nhà tài trợ qua `verifyVoucher`; phải có claim `admin:true` và server-only `voucher_admins/{uid}.active=true`, tài khoản đã init/onboard. Không tự cấp quyền từ app; rotation mã vẫn chưa triển khai. Request chỉ gửi code 43 ký tự, không gửi nguyên QR; backend tra hash private. Quyền được kiểm lại cả khi retry receipt, operationKind `verify-voucher`. Dùng lần thứ hai trả `USED`, hết hạn trả `EXPIRED`; không trừ thêm xu.
+voucher/receipt/log; gọi lại được sau restart. Admin xác nhận voucher tại nhà tài trợ qua `verifyVoucher`; cần claim `admin:true`, profile active đã init/onboard. Từ 06/11 không cần `voucher_admins` allowlist. Không tự cấp quyền từ app; rotation mã vẫn chưa triển khai. Request chỉ gửi code 43 ký tự, không gửi nguyên QR; backend tra hash private. Quyền được kiểm lại cả khi retry receipt, operationKind `verify-voucher`. Dùng lần thứ hai trả `USED`, hết hạn trả `EXPIRED`; không trừ thêm xu. Quà vật lý dùng `confirmPhysicalReward` trong admin web.
 
 Inbox tạo khi đăng ký hoặc redeem thành công; payload chỉ chứa generic text và
 allowlisted entity reference. `mark all` tối đa 100 bản ghi/lần, giữ cutoff `before`

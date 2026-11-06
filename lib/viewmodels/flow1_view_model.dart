@@ -19,15 +19,58 @@ final flow1ViewModelProvider =
 class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
   bool _busy = false;
   int _generation = 0;
+  String? _attendanceUid;
+  Set<String>? _attendance;
+
+  void _observeAttendance(Flow1Snapshot data) {
+    if (_attendanceUid != _uid) {
+      _attendanceUid = _uid;
+      _attendance = null;
+    }
+    final attended = data.myEvents.where((row) => row['attendance'] != null);
+    final ids = attended
+        .map((row) => jsonMap(row['event'])['id'] as String)
+        .toSet();
+    if (_uid != null && _attendance != null) {
+      for (final row in attended) {
+        final event = Flow1Event(jsonMap(row['event']));
+        if (!_attendance!.contains(event.id)) {
+          unawaited(
+            ref
+                .read(analyticsRepositoryProvider)
+                .track(
+                  'check_in_event',
+                  once: event.id,
+                  parameters: {
+                    'event_id': event.id,
+                    'mode': event.walkIn ? 'walk_in' : 'registered',
+                  },
+                ),
+          );
+        }
+      }
+    }
+    _attendance = ids;
+  }
+
   String? get _uid =>
       ref.read(authenticationViewModelProvider).asData?.value.userId;
   @override
   Future<Flow1Snapshot> build() async {
     _generation++;
     final session = ref.watch(authenticationViewModelProvider).asData?.value;
-    return ref
+    final uid = _uid, generation = _generation;
+    if (_attendanceUid != uid) {
+      _attendanceUid = uid;
+      _attendance = null;
+    }
+    final data = await ref
         .watch(flow1RepositoryProvider)
         .load(session?.status == AuthStatus.signedIn);
+    if (ref.mounted && uid == _uid && generation == _generation) {
+      _observeAttendance(data);
+    }
+    return data;
   }
 
   Future<void> refresh() async {
@@ -36,6 +79,7 @@ class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
     try {
       final data = await ref.read(flow1RepositoryProvider).load(uid != null);
       if (ref.mounted && generation == _generation && uid == _uid) {
+        _observeAttendance(data);
         state = AsyncData(data);
       }
     } catch (e, s) {
@@ -105,6 +149,32 @@ final flow1EventProvider = FutureProvider.autoDispose
     .family<Flow1Event, String>(
       (ref, id) => ref.watch(flow1RepositoryProvider).event(id),
     );
+
+final eventDetailViewModelProvider = Provider.autoDispose.family<void, String>((
+  ref,
+  id,
+) {
+  var recorded = false;
+  final analytics = ref.read(analyticsRepositoryProvider);
+  ref.listen(flow1EventProvider(id), (_, next) {
+    final event = next.asData?.value;
+    if (event != null && !recorded) {
+      recorded = true;
+      unawaited(
+        analytics.track(
+          'view_event',
+          parameters: {
+            'event_id': event.id,
+            'participation_mode': event.walkIn ? 'walk_in' : 'registration',
+          },
+        ),
+      );
+    } else if (next.hasError && !next.isLoading) {
+      unawaited(analytics.error('view_event', next.error!));
+    }
+  }, fireImmediately: true);
+});
+
 typedef Flow1Search = ({String query, String category, EventFilters filters});
 final flow1SearchProvider = FutureProvider.autoDispose
     .family<List<Flow1Event>, Flow1Search>(
@@ -267,6 +337,18 @@ class Flow1RegistrationViewModel extends Notifier<Flow1RegistrationState> {
         return false;
       }
       state = Flow1RegistrationState(success: true, result: receipt);
+      unawaited(
+        ref
+            .read(analyticsRepositoryProvider)
+            .track(
+              'register_event',
+              once: _request!['requestId'] as String,
+              parameters: {
+                'event_id': event.id,
+                'deposit_coins': _request!['expectedDepositCoins'] as int,
+              },
+            ),
+      );
       unawaited(ref.read(flow1ViewModelProvider.notifier).refresh());
       return true;
     } catch (error) {
@@ -276,6 +358,9 @@ class Flow1RegistrationViewModel extends Notifier<Flow1RegistrationState> {
         return false;
       }
       final e = ExceptionMapper.map(error);
+      unawaited(
+        ref.read(analyticsRepositoryProvider).error('register_event', error),
+      );
       final uncertain = [
         'deadline-exceeded',
         'unavailable',

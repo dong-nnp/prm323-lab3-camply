@@ -473,8 +473,6 @@ test('only authorized admins consume a sponsor voucher once without another debi
   const admin = { uid: operator.uid, token: { admin: true, email: 'staff@yahoo.com' } };
   const input = { code: secret.code, requestId: 'use-voucher-1' };
   await rejects(call('verifyVoucher', alice, input), 'FORBIDDEN_ADMIN');
-  await rejects(call('verifyVoucher', admin, input), 'FORBIDDEN_ADMIN');
-  await db.doc(`voucher_admins/${admin.uid}`).set({ active: true });
   const results = await Promise.allSettled([
     call('verifyVoucher', admin, input),
     call('verifyVoucher', admin, { ...input, requestId: 'use-voucher-2' }),
@@ -487,9 +485,9 @@ test('only authorized admins consume a sponsor voucher once without another debi
   const voucher = (await db.doc(`vouchers/${issued.voucherId}`).get()).data();
   assert.equal(voucher.usedBy, admin.uid); assert.ok(voucher.usedAt);
   assert.equal((await db.doc(`redemptions/${issued.redemptionId}`).get()).get('status'), 'used');
-  await db.doc(`voucher_admins/${admin.uid}`).update({ active: false });
-  await rejects(call('verifyVoucher', admin, { ...input, requestId: winnerId }), 'FORBIDDEN_ADMIN');
-  await rejects(call('getOperationStatus', admin, { operationKind: 'verify-voucher', operationId: winnerId }), 'FORBIDDEN_ADMIN');
+  await db.doc(`users/${admin.uid}`).update({ accountStatus: 'disabled' });
+  await rejects(call('verifyVoucher', admin, { ...input, requestId: winnerId }), 'ACCOUNT_DISABLED');
+  await rejects(call('getOperationStatus', admin, { operationKind: 'verify-voucher', operationId: winnerId }), 'ACCOUNT_DISABLED');
 });
 
 test('voucher verification rejects expired codes and forged admin permissions', async () => {

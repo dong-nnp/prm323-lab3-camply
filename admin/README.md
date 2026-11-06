@@ -2,6 +2,8 @@
 
 > **Form sự kiện — 06/11/2026:** không nhập ID, nguồn, điều khoản/version hay JSON; dropdown lấy catalog thật. Ảnh JPG/PNG/WebP ≤5 MB tải lên Firebase Storage, cần `VITE_FIREBASE_STORAGE_BUCKET` trong `.env.local`. [Luồng tạo, Rules và validation](../docs/ADMIN_EVENT_EDITOR.md).
 
+> **Analytics Android/Web — 06/11/2026:** bộ chọn nguồn mới cần deploy riêng `getAdminAnalyticsReport`. Android/Web đọc toàn bộ stream của platform tương ứng; nguồn theo cấu hình giữ stream cũ. Tracking sinh viên được bật trong build Flutter bằng `ANALYTICS_ENABLED=true`. [Hướng dẫn](../docs/ANALYTICS_INTEGRATION.md).
+
 Admin web vận hành sự kiện, voucher và các dịch vụ Firebase trong cùng một
 giao diện. Xem [phạm vi và API quản trị](../docs/ADMIN_WEB_PLAN.md).
 

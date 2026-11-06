@@ -139,7 +139,7 @@ export function adminCatalog(db: Firestore, clock: () => Date) {
     createReward: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
       const { reward: { id: rewardId, ...reward } } = createReward.parse(raw);
-      if (reward.fulfillmentType !== 'voucher' || reward.status !== 'inactive') fail('REWARD_MUST_START_INACTIVE', 'invalid-argument');
+      if (reward.status !== 'inactive') fail('REWARD_MUST_START_INACTIVE', 'invalid-argument');
       const ref = db.doc('rewards/' + rewardId);
       await db.runTransaction(async tx => {
         if ((await tx.get(ref)).exists) fail('REWARD_ALREADY_EXISTS', 'already-exists');
@@ -155,7 +155,7 @@ export function adminCatalog(db: Firestore, clock: () => Date) {
       await db.runTransaction(async tx => {
         const doc = await tx.get(ref);
         const old = required(doc.data(), 'REWARD_NOT_FOUND');
-        if (old.fulfillmentType !== 'voucher' || reward.fulfillmentType !== 'voucher') fail('REWARD_NOT_FOUND', 'not-found');
+        if (old.fulfillmentType !== reward.fulfillmentType) fail('REWARD_TYPE_LOCKED');
         checkRevision(doc, expected);
         if (old.termsText !== reward.termsText && old.termsVersion === reward.termsVersion) fail('TERMS_VERSION_REQUIRED');
         tx.update(ref, { ...updateFields(rewardFields, reward), updatedAt: Timestamp.fromDate(clock()) });

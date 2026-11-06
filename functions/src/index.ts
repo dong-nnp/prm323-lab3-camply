@@ -74,6 +74,13 @@ export const getAdminRemoteConfig = callable('getAdminRemoteConfig');
 export const publishAdminRemoteConfig = callable('publishAdminRemoteConfig');
 export const getAdminAnalyticsReport = callable('getAdminAnalyticsReport');
 export const getAdminCrashlyticsReport = callable('getAdminCrashlyticsReport');
+export const getOperatorContext = callable('getOperatorContext');
+export const listAdminRecords = callable('listAdminRecords');
+export const getAdminUser = callable('getAdminUser');
+export const upsertOrganizer = callable('upsertOrganizer');
+export const listOperatorEvents = callable('listOperatorEvents');
+export const sendAdminDemoNotification = callable('sendAdminDemoNotification');
+export const confirmPhysicalReward = callable('confirmPhysicalReward');
 
 const maintenance = createMaintenance(db);
 const eventNotices = createEventNotifications(db);
@@ -96,6 +103,7 @@ export const deliverNotification = onDocumentCreated({ document: 'notifications/
   const notification = event.data?.data();
   if (!notification || process.env.FUNCTIONS_EMULATOR === 'true') return;
   const result = await deliverPush(db, getMessaging(), event.params.notificationId, notification);
+  await event.data!.ref.update({ pushDispatch: { ...result, completedAt: new Date(), status: result.successCount ? 'accepted_by_fcm' : 'no_delivery' } });
   // FCM acceptance is not a device display receipt.
   console.info('FCM dispatch finished', { notificationId: event.params.notificationId, ...result });
 });

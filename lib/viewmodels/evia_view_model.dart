@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/mock/evia_mock_data.dart';
@@ -398,8 +400,14 @@ class EviaViewModel extends Notifier<EviaState> {
       await ref
           .read(authenticationRepositoryProvider)
           .signInWithEmailPassword(email, password);
+      if (ref.mounted) {
+        ref
+            .read(authenticationViewModelProvider.notifier)
+            .recordLogin('password');
+      }
     } catch (error) {
       if (ref.mounted) {
+        unawaited(ref.read(analyticsRepositoryProvider).error('login', error));
         state = state.copyWith(message: ExceptionMapper.map(error).message);
       }
     } finally {
@@ -414,8 +422,14 @@ class EviaViewModel extends Notifier<EviaState> {
     state = state.copyWith(isLoggingIn: true);
     try {
       await ref.read(authenticationRepositoryProvider).signInWithGoogle();
+      if (ref.mounted) {
+        ref
+            .read(authenticationViewModelProvider.notifier)
+            .recordLogin('google');
+      }
     } catch (error) {
       if (ref.mounted) {
+        unawaited(ref.read(analyticsRepositoryProvider).error('login', error));
         state = state.copyWith(
           message: ExceptionMapper.map(error).message,
           isLoggingIn: true,

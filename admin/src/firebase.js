@@ -91,7 +91,7 @@ export function createFirebase(env) {
     publishEvent: (id, revision) => call('publishEvent', { id, revision }),
     getRemoteConfig: () => call('getAdminRemoteConfig', {}),
     publishRemoteConfig: (config) => call('publishAdminRemoteConfig', config),
-    report: (kind, days) => call(kind === 'analytics' ? 'getAdminAnalyticsReport' : 'getAdminCrashlyticsReport', { days }),
+    report: (kind, days, source) => call(kind === 'analytics' ? 'getAdminAnalyticsReport' : 'getAdminCrashlyticsReport', { days, ...(kind === 'analytics' && source && { source }) }),
     async track(name) {
       if (!this.analyticsEnabled || !auth.currentUser) return;
       try {

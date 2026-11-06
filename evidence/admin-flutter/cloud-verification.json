@@ -1,0 +1,131 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T22:41:02.778Z",
+  "singleAdmin": true,
+  "staffPortalRejected": true,
+  "reads": {
+    "listAdminEvents": 14,
+    "listAdminRewards": 5,
+    "listOperatorEvents": 14,
+    "organizers": 6,
+    "milestones": 5,
+    "users": 4,
+    "redemptions": 2,
+    "notifications": 20,
+    "participants": 0,
+    "attendance": 0,
+    "ledger": 1,
+    "userWallet": true
+  },
+  "reports": {
+    "getAdminRemoteConfig": {
+      "available": true,
+      "version": "5"
+    },
+    "getAdminAnalyticsReport": {
+      "available": true,
+      "count": 0
+    },
+    "getAdminCrashlyticsReport": {
+      "error": "CRASHLYTICS_NOT_CONFIGURED"
+    }
+  },
+  "functions": [
+    {
+      "name": "getOperatorContext",
+      "state": "ACTIVE",
+      "revision": "getoperatorcontext-00001-sib",
+      "updateTime": "2026-11-05T22:19:46.349995690Z"
+    },
+    {
+      "name": "listAdminRecords",
+      "state": "ACTIVE",
+      "revision": "listadminrecords-00001-tul",
+      "updateTime": "2026-11-05T22:19:45.590356066Z"
+    },
+    {
+      "name": "getAdminUser",
+      "state": "ACTIVE",
+      "revision": "getadminuser-00001-hey",
+      "updateTime": "2026-11-05T22:19:45.894399151Z"
+    },
+    {
+      "name": "upsertOrganizer",
+      "state": "ACTIVE",
+      "revision": "upsertorganizer-00002-nat",
+      "updateTime": "2026-11-05T22:40:04.965762543Z"
+    },
+    {
+      "name": "listOperatorEvents",
+      "state": "ACTIVE",
+      "revision": "listoperatorevents-00001-juv",
+      "updateTime": "2026-11-05T22:21:41.642385532Z"
+    },
+    {
+      "name": "sendAdminDemoNotification",
+      "state": "ACTIVE",
+      "revision": "sendadmindemonotification-00001-vec",
+      "updateTime": "2026-11-05T22:21:41.621806617Z"
+    },
+    {
+      "name": "confirmPhysicalReward",
+      "state": "ACTIVE",
+      "revision": "confirmphysicalreward-00001-vey",
+      "updateTime": "2026-11-05T22:21:34.015315567Z"
+    },
+    {
+      "name": "createReward",
+      "state": "ACTIVE",
+      "revision": "createreward-00002-wav",
+      "updateTime": "2026-11-05T22:21:44.246397891Z"
+    },
+    {
+      "name": "updateReward",
+      "state": "ACTIVE",
+      "revision": "updatereward-00002-yem",
+      "updateTime": "2026-11-05T22:23:27.487076719Z"
+    },
+    {
+      "name": "verifyRegisteredTicket",
+      "state": "ACTIVE",
+      "revision": "verifyregisteredticket-00005-ley",
+      "updateTime": "2026-11-05T22:23:30.942833733Z"
+    },
+    {
+      "name": "verifyRegisteredCode",
+      "state": "ACTIVE",
+      "revision": "verifyregisteredcode-00003-ped",
+      "updateTime": "2026-11-05T22:23:28.066659869Z"
+    },
+    {
+      "name": "issueWalkInQr",
+      "state": "ACTIVE",
+      "revision": "issuewalkinqr-00005-duf",
+      "updateTime": "2026-11-05T22:23:27.462716481Z"
+    },
+    {
+      "name": "verifyVoucher",
+      "state": "ACTIVE",
+      "revision": "verifyvoucher-00005-jur",
+      "updateTime": "2026-11-05T22:24:57.149250225Z"
+    },
+    {
+      "name": "getOperationStatus",
+      "state": "ACTIVE",
+      "revision": "getoperationstatus-00006-tip",
+      "updateTime": "2026-11-05T22:24:56.046330029Z"
+    },
+    {
+      "name": "upsertEventMilestone",
+      "state": "ACTIVE",
+      "revision": "upserteventmilestone-00004-bob",
+      "updateTime": "2026-11-05T22:24:55.900721032Z"
+    },
+    {
+      "name": "deliverNotification",
+      "state": "ACTIVE",
+      "revision": "delivernotification-00005-qik",
+      "updateTime": "2026-11-05T22:24:54.824121843Z"
+    }
+  ]
+}

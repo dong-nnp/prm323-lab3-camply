@@ -1,4 +1,5 @@
 import { milestoneDefaults } from './firebase.js';
+import { analyticsEventLabel, analyticsScopeLabel } from './analytics-labels.js';
 
 const $ = id => document.getElementById(id);
 
@@ -103,13 +104,13 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     target.replaceChildren();
     if (!items.length) return;
     const analytics = kind === 'analytics';
-    const columns = analytics ? ['Sự kiện', 'Lượt ghi nhận', 'Người dùng'] : ['Mã lỗi', 'Loại', 'Số lần', 'Lần gần nhất', 'Phiên bản app'];
+    const columns = analytics ? ['Hành vi', 'Lượt ghi nhận', 'Người dùng'] : ['Mã lỗi', 'Loại', 'Số lần', 'Lần gần nhất', 'Phiên bản app'];
     const table = document.createElement('table');
     table.createTHead().insertRow().append(...columns.map(value => text('th', value)));
     const body = table.createTBody();
     for (const item of items) {
       const row = body.insertRow();
-      const values = analytics ? [item.name, item.count, item.users] : [item.issueId, item.type, item.count, formatDate(item.lastSeen), item.version];
+      const values = analytics ? [analyticsEventLabel(item.name), item.count, item.users] : [item.issueId, item.type, item.count, formatDate(item.lastSeen), item.version];
       row.append(...values.map(value => text('td', value)));
     }
     target.append(table);
@@ -123,19 +124,27 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     requestedReports.add(kind);
     const days = Number(reportForm.elements.days.value);
     button.disabled = reportForm.elements.days.disabled = true;
+    if (reportForm.elements.source) reportForm.elements.source.disabled = true;
     renderReport(kind, []);
     status(kind + '-report-status', 'Đang tải báo cáo…');
     try {
-      const report = await firebase.report(kind, days);
+      const report = await firebase.report(kind, days, reportForm.elements.source?.value);
       if (session() !== current) return;
       renderReport(kind, report.items);
-      status(kind + '-report-status', report.items.length
+      status(kind + '-report-status', (report.items.length
         ? 'Đã tải ' + report.items.length + ' mục' + (report.scope === 'property' ? ' · Toàn bộ GA4 property.' : '.')
-        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.');
+        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') +
+        (kind === 'analytics' ? ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.' : ''));
     } catch (error) {
-      if (session() === current) status(kind + '-report-status', adminErrorMessage(error), true);
+      if (session() === current) status(kind + '-report-status',
+        kind === 'analytics' && error.code === 'functions/invalid-argument'
+          ? 'Backend chưa hỗ trợ bộ lọc nguồn. Cập nhật getAdminAnalyticsReport hoặc chọn Theo cấu hình backend.'
+          : adminErrorMessage(error), true);
     } finally {
-      if (session() === current) button.disabled = reportForm.elements.days.disabled = false;
+      if (session() === current) {
+        button.disabled = reportForm.elements.days.disabled = false;
+        if (reportForm.elements.source) reportForm.elements.source.disabled = false;
+      }
     }
   }
 
@@ -166,6 +175,7 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
       for (const kind of ['analytics', 'crashlytics']) {
         const reportForm = $(kind + '-report-form');
         reportForm.querySelector('button').disabled = reportForm.elements.days.disabled = false;
+        if (reportForm.elements.source) reportForm.elements.source.disabled = false;
         renderReport(kind, []);
         status(kind + '-report-status', '');
       }

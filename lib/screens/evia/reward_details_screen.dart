@@ -8,6 +8,7 @@ import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
+import '../../viewmodels/flow3_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
@@ -25,6 +26,9 @@ class RewardDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
+    if (vm.rewardsLive && !confirm) {
+      ref.watch(rewardDetailViewModelProvider(rewardId));
+    }
     if (vm.rewardsLive &&
         !vm.rewardsData!.rewards.any((r) => r.id == rewardId)) {
       return const EviaPage(

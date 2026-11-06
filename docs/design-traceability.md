@@ -2,6 +2,15 @@
 
 > **Form sự kiện Vite — 06/11/2026:** owner yêu cầu bớt thao tác và thay URL ảnh bằng upload. Đã bỏ technical inputs, dùng danh mục/CLB theo tên, preview ảnh và nhóm Tùy chọn thêm; giữ styles/form components hiện có. Không sửa giao diện sinh viên/Figma. [Evidence](../evidence/event-editor/README.md).
 
+> **Analytics — 06/11/2026:** giữ layout các luồng hiện có; thêm nút xuất CSV và thông báo kết quả trong Coin History theo phạm vi Analytics/Lab 3 được owner cho phép. Dùng AppButton/tokens, không claim nút mới có nguồn Figma. Admin Vite thêm nguồn dữ liệu, nhãn hành vi và link DebugView. [Chi tiết](ANALYTICS_INTEGRATION.md).
+
+> **Admin web — 06/11/2026:** Flutter Web mới ở `admin_flutter/`, dùng theme Evia
+> xanh/ink/lime, sidebar desktop và drawer hẹp. Không lấy đây làm thay đổi thiết kế
+> các màn sinh viên; toàn bộ `lib/`, assets và Android host giữ nguyên trong task.
+> Admin có form, loading/error/empty/retry, xác nhận trước publish/giao quà,
+> không có phân công staff. Đây là giao diện mới theo scope admin, không có claim
+> đã đối chiếu pixel với Figma. [Phạm vi](ADMIN_WEB_PLAN.md).
+
 > **Push Android — 06/11/2026:** dùng notification hệ thống Android cho FCM;
 > không đổi Widget/layout, màu, assets hoặc thứ tự thành phần trong app.
 > Thêm icon notification native và kênh HIGH để hiển thị banner ngoài màn app.

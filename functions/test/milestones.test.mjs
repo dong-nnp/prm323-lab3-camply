@@ -30,7 +30,6 @@ beforeEach(async () => {
     await call('initializeUser', actor);
     await call('saveInterests', actor, { interests: ['a', 'b', 'c'] });
   }
-  await db.doc(`milestone_admins/${admin.uid}`).set({ active: true });
   for (const milestone of policy) await db.doc(`milestones/${milestone.id}`).set({ ...milestone, version: 1 });
 });
 after(() => deleteApp(app));
@@ -112,8 +111,8 @@ test('admin adds/edits goals with version guards; claimed history never pays a s
   await rejects(call('claimEventMilestone', bob, { milestoneId: milestone.id, expectedVersion: 1 }), 'MILESTONE_CHANGED');
   assert.equal((await call('claimEventMilestone', bob, { milestoneId: milestone.id, expectedVersion: 2 })).coinsGranted, 1000);
   assert.equal((await db.collection('milestone_audit').get()).size, 2);
-  await db.doc(`milestone_admins/${admin.uid}`).update({ active: false });
-  await rejects(call('upsertEventMilestone', admin, { milestone, expectedVersion: 2 }), 'FORBIDDEN_ADMIN');
+  await db.doc(`users/${admin.uid}`).update({ accountStatus: 'disabled' });
+  await rejects(call('upsertEventMilestone', admin, { milestone, expectedVersion: 2 }), 'ACCOUNT_DISABLED');
 });
 
 test('disabled and malformed server policies cannot award coins', async () => {

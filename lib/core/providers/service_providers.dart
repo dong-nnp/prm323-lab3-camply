@@ -5,6 +5,8 @@ import '../../services/demo_authentication_service.dart';
 
 import '../../firebase/firebase_configuration.dart';
 import '../../services/analytics_service.dart';
+import '../../services/report_export_service.dart';
+import '../../services/firebase_analytics_service.dart';
 import '../../services/authentication_service.dart';
 import '../../services/crash_reporting_service.dart';
 import '../../services/firebase_initialization_service.dart';
@@ -79,7 +81,17 @@ final messagingServiceProvider = Provider<MessagingService>(
       : ref.watch(_pendingServicesProvider),
 );
 final analyticsServiceProvider = Provider<AnalyticsService>(
-  (ref) => ref.watch(_pendingServicesProvider),
+  (ref) => ref.watch(analyticsEnabledProvider)
+      ? FirebaseAnalyticsService(ref.watch(_firebaseReadyProvider))
+      : ref.watch(_pendingServicesProvider),
+);
+final analyticsEnabledProvider = Provider<bool>(
+  (ref) =>
+      ref.watch(realBackendEnabledProvider) &&
+      const bool.fromEnvironment('ANALYTICS_ENABLED'),
+);
+final reportExportServiceProvider = Provider<ReportExportService>(
+  (ref) => AndroidReportExportService(),
 );
 final crashReportingServiceProvider = Provider<CrashReportingService>(
   (ref) => ref.watch(_pendingServicesProvider),

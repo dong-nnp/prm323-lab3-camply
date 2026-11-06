@@ -1,6 +1,8 @@
 # Analytics plan — Evia
 
-Ngày 04/11/2026. **Đã có kế hoạch; chưa triển khai tracking, chưa có DebugView evidence.** Không sửa UI, không bật collection trong lượt chuẩn bị backend này.
+Cập nhật 06/11/2026: đã triển khai 11 events Android sau trong bảng: AN-01/02/03/05/08/09/11/12/13/15/17. AN-02 chỉ xác định email/password signup; Google chỉ log login vì contract chưa trả isNewUser. AN-04/06/07/10/14/16 vẫn pending; bảng 17 dòng là kế hoạch tổng, không phải toàn bộ đã tích hợp. Chưa có ảnh DebugView cho revision này. [Chạy và giới hạn](ANALYTICS_INTEGRATION.md).
+
+AN-15 xuất CSV các giao dịch đang hiển thị trong Coin History, không tạo PDF hoặc upload Storage. `report_type=coin_history_csv`, `file_size_kb:int` làm tròn lên sau native save thành công; hủy không log success.
 
 ## Mục tiêu và quy tắc chung
 
@@ -49,14 +51,13 @@ Admin web dùng Firebase Analytics Web SDK để ghi `admin_event_saved`,
 `admin_event_published`, `admin_voucher_saved` và `admin_remote_config_published`
 sau phản hồi thành công của backend. Web ghi `admin_qa_crash_requested` khi
 gửi lệnh tới thiết bị QA. Trang Analytics gọi backend để đọc báo cáo GA4
-theo sự kiện trong 7 hoặc 30 ngày. Khi có numeric Stream ID, báo cáo chỉ
-đọc stream đó. [Kế hoạch admin web](ADMIN_WEB_PLAN.md).
+theo sự kiện trong 7 hoặc 30 ngày. Vite admin chọn Android/Web trên toàn GA4 property; chỉ nguồn Theo cấu hình backend mới áp dụng numeric Stream ID. Admin Flutter vẫn gửi contract cũ, dùng stream cấu hình nếu có. [Kế hoạch admin web](ADMIN_WEB_PLAN.md).
 
-## Verification — chưa thực hiện
+## Verification — cập nhật 06/11/2026
 
-- [ ] Unit tests adapter kiểm allowlist/types và loại dữ liệu nhạy cảm.
-- [ ] Fake AnalyticsService kiểm trigger success/error, không phát lặp khi retry cùng action.
-- [ ] Login set UID, logout clear UID, lỗi analytics không phá action nghiệp vụ.
+- [x] Unit tests schema/repository kiểm allowlist/types, loại tham số nhạy cảm và lỗi SDK không phá action.
+- [x] Fake AnalyticsService kiểm trigger success/error, không phát lặp khi retry cùng action/receipt.
+- [x] Tests session/UID/logout và SDK failure; kiểm chứng SDK/UID trong DebugView vẫn chưa thực hiện.
 - [ ] DebugView dev build xác nhận từng AN-ID/parameters và error-path, lưu evidence theo build/thiết bị.
 - [ ] Ít nhất một ARTEMIS test sau này kiểm event trong Logcat/DebugView.
 

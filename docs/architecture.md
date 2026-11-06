@@ -2,6 +2,14 @@
 
 > **Admin event editor — 06/11/2026:** `editor.js` dựng form/ràng buộc trạng thái; `catalogEntry` bổ sung technical defaults, giữ hidden fields khi sửa; Firebase adapter quản lý Storage upload/progress/URL. Cloud Rules giới hạn active admin và prefix event-images, đọc profile qua service agent. Mobile Storage adapter vẫn pending; không coi upload admin là tích hợp export/upload report trong app. [Chi tiết](ADMIN_EVENT_EDITOR.md).
 
+> **Analytics — 06/11/2026:** View → ViewModel → AnalyticsRepository → AnalyticsService/FirebaseAnalyticsService; queue identity/events, schema allowlist và dedupe RAM. Xuất CSV: CoinHistoryScreen → ReportExportViewModel → ReportExportRepository → AndroidReportExportService → native document picker. [Contract và giới hạn](ANALYTICS_INTEGRATION.md).
+
+> **Admin Flutter Web — 06/11/2026:** package độc lập `admin_flutter/` giữ
+> View → Riverpod ViewModel → Repository → AdminService → SDK adapter.
+> SDK bootstrap trong service, models thuần Dart, fakes chỉ trong tests.
+> Một admin làm hết, không phân công staff. Server quyết định quyền, giờ check-in,
+> capacity, stock, ví và receipt. [Hướng dẫn](../admin_flutter/README.md), [API](ADMIN_WEB_PLAN.md).
+
 > **Push Android — 06/11/2026:** FirebaseMessagingService tạo kênh HIGH và hiển
 > thị foreground FCM qua MethodChannel → Android NotificationManager. MainActivity
 > chỉ host native bridge; payload/tap tiếp tục qua FlutterFire và ViewModel/router
@@ -164,7 +172,7 @@ test/
 ├── services/
 ├── viewmodels/
 └── widgets/
-e2e_test/                          # Chỉ README chuẩn bị ARTEMIS
+e2e_test/                          # Runner ARTEMIS/DeepSeek ngoài app; chưa nghiệm thu E2E
 firebase/
 ├── storage.rules                  # Own create-only PDF reports; local only
 └── remote-config-defaults.json     # {} chờ xác định keys; chưa tải vào SDK

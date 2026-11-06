@@ -1,0 +1,13 @@
+Test only Evia, Android package com.example.prm393_lab03.
+Launch the installed app. Do not install or clear app data.
+If already signed in, report BLOCKED: signed-in session; do not log out.
+Wait for the splash screen to finish. Navigate from Welcome to Login.
+Submit the login form with both fields empty. Verify visible validation feedback
+and that the app does not navigate to protected content.
+Enter invalid-email in the email field, leave the password empty and submit.
+Verify visible validation feedback and that the app stays on the login screen.
+Do not enter real credentials, sign up, request password reset, sign in with
+Google, grant permissions, register for events, claim coins or redeem rewards.
+Stop if any step requires these actions. Do not use other apps or notifications.
+Report PASS/FAIL/BLOCKED separately for each check, describe the actual visible
+evidence and take a final screenshot. Never infer a pass from missing evidence.
