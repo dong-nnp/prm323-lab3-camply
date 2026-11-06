@@ -1,8 +1,20 @@
 # PRM393 Lab 3 — Flutter source base
 
-> **Evia Admin web.** Chạy từ thư mục gốc với `npm --prefix admin ci` và
-> `npm --prefix admin run dev`. Xem [hướng dẫn cấu hình và chạy](admin/README.md)
-> và [phạm vi MVP](docs/ADMIN_WEB_PLAN.md).
+> **Thông báo từ admin:** form gửi nội dung tùy ý tới một tài khoản, dùng FCM và inbox hiện có, không cần sự kiện. [Hướng dẫn demo và triển khai](docs/ADMIN_NOTIFICATIONS.md).
+
+> **Form sự kiện — 06/11/2026:** Vite admin tự sinh mã/nguồn/điều khoản, chọn danh mục và ban tổ chức bằng tên, bỏ lịch JSON khỏi form. Chọn ảnh có preview, tải trực tiếp Firebase Storage khi lưu. Rules đã deploy, upload/download thật đã kiểm và dọn ảnh QA. [Hướng dẫn và giới hạn](docs/ADMIN_EVENT_EDITOR.md).
+
+> **Analytics — 06/11/2026:** đã nối 11 events Android qua service/repository, thêm xuất CSV ở Coin History và bộ lọc Android/Web cho báo cáo Vite admin. Bật riêng `ANALYTICS_ENABLED=true` cùng `FIREBASE_ENABLED=true`; mặc định tắt, không tracking mock. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).
+
+> **Admin Flutter Web — 06/11/2026:** [Portal quản trị độc lập](admin_flutter/README.md).
+> Một admin quản lý CLB/sự kiện/check-in/quà/thành tựu/thông báo và tra cứu ví,
+> không phân công staff, không sửa UI sinh viên. [Phạm vi/API](docs/ADMIN_WEB_PLAN.md),
+> [validation thực tế](evidence/admin-flutter/).
+
+> **Push Android — 06/11/2026:** dùng FCM và kênh HIGH `evia_events_v1`; app đang
+> mở hiển thị notification hệ thống bằng native service bridge, app nền do FCM
+> SDK hiển thị. Giữ layout cũ, không thêm dependency. [Cách chạy/giới hạn](docs/PUSH_NOTIFICATIONS.md).
+
 > **Flow 3 — 06/11/2026:** nối ví/history, Daily, nhận thành tựu, catalog/đổi quà,
 > My Rewards và QR voucher vào các màn gốc. API `getAccount.daily` đã deploy;
 > 213/213 Flutter và 62/62 backend tests đạt. Chỉ sửa co giãn chữ theo owner
@@ -12,6 +24,9 @@
 > **Push demo một lệnh:** dùng `functions/scripts/send-demo-notification.mjs`
 > để tạo thông báo riêng cho UID demo và gửi qua FCM đang triển khai.
 > [Cách chạy](docs/DEMO_PUSH.md); không cần nhập từng field trong Console.
+> **Evia Admin web.** Chạy từ thư mục gốc với `npm --prefix admin ci` và
+> `npm --prefix admin run dev`. Xem [hướng dẫn cấu hình và chạy](admin/README.md)
+> và [phạm vi MVP](docs/ADMIN_WEB_PLAN.md).
 
 > **Flow 2 — 05/11/2026:** nối My Events/lịch/hủy, check-in walk-in và inbox +
 > Firebase Cloud Messaging vào màn hiện có. Owner cho phép nút demo nhỏ trên vé
@@ -258,14 +273,15 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | google_sign_in | 7.2.0 | Chuẩn bị Google Sign-In |
 | firebase_storage | 14.0.1 | Chuẩn bị Cloud Storage |
 | firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
-| firebase_analytics | 13.0.1 | Chuẩn bị Analytics, chưa tracking |
+| firebase_analytics | 13.0.1 | 11 events; bật qua ANALYTICS_ENABLED |
 | firebase_crashlytics | 6.0.1 | Ghi lỗi Flutter toàn cục và lỗi tải catalog trên Android khi bật collection |
 | firebase_remote_config | 7.0.1 | Remote Config cho Event Milestones |
 | flutter_test | Flutter SDK | Unit/widget tests |
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |
 
 Flow 1 dùng callable thay vì Firestore SDK/HTTP client trực tiếp. Chưa thêm
-ARTEMIS dependency hay automation. Remote Config đã nối hai tham số Event
+ARTEMIS vào app runtime; bộ chạy ngoài app tại [e2e_test](e2e_test/README.md)
+hỗ trợ smoke test Android với DeepSeek, chưa nghiệm thu E2E. Remote Config đã nối hai tham số Event
 Milestones cho chế độ Firebase live.
 Xem [hướng dẫn Crashlytics](docs/EVIA_Crashlytics_Implementation.md) để kiểm thử
 lỗi trên Web Admin và Android debug QA.
@@ -290,7 +306,7 @@ lib/
 ├── screens/
 └── widgets/
 test/                    # Unit/widget tests + test-only fakes
-e2e_test/                # Chuẩn bị Google ARTEMIS, chưa có E2E
+e2e_test/                # ARTEMIS + DeepSeek runner/scenario, chưa nghiệm thu E2E
 firebase/                # Deny-all storage.rules + Remote Config defaults {}
 docs/                    # Kiến trúc và templates
 android/                 # Android host

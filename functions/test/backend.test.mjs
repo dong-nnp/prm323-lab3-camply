@@ -5,6 +5,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { createBackend } from '../lib/backend.js';
 import { key } from '../lib/shared.js';
+import { deliverPush } from '../lib/push_notifications.js';
 
 const projectId = 'demo-evia-backend';
 assert.match(process.env.FIRESTORE_EMULATOR_HOST ?? '', /^(127\.0\.0\.1|localhost):/);
@@ -46,6 +47,35 @@ beforeEach(async () => {
   await event();
 });
 after(async () => { await deleteApp(app); });
+
+test('push delivery uses the Evia high priority channel and skips users without devices', async () => {
+  let message;
+  const messaging = { sendEachForMulticast: async value => {
+    message = value;
+    return { successCount: 1, failureCount: 0, responses: [{ success: true, messageId: 'test-message' }] };
+  } };
+  const notice = { uid: alice.uid, title: 'New event', body: 'Your club published an event', entityType: 'event', entityId: 'registered' };
+  assert.deepEqual(await deliverPush(db, messaging, 'test-notice', notice), { successCount: 0, failureCount: 0 });
+  assert.equal(message, undefined);
+  await call('registerDevice', alice, { installationId: 'test-installation', token: 'test-only-fcm-device-token', platform: 'android' });
+  assert.deepEqual(await deliverPush(db, messaging, 'test-notice', notice), { successCount: 1, failureCount: 0 });
+  assert.equal(message.android.priority, 'high');
+  assert.equal(message.android.notification.channelId, 'evia_events_v1');
+  assert.equal(message.android.notification.tag, 'test-notice');
+  assert.deepEqual(message.data, { notificationId: 'test-notice', entityType: 'event', entityId: 'registered' });
+});
+
+test('push delivery removes an expired token and retries transient failures', async () => {
+  const token = 'test-only-fcm-device-token';
+  await call('registerDevice', alice, { installationId: 'test-installation', token, platform: 'android' });
+  const notice = { uid: alice.uid, title: 'New event', body: 'A new event' };
+  const result = code => ({ sendEachForMulticast: async () => ({ successCount: 0, failureCount: 1, responses: [{ success: false, error: { code } }] }) });
+  await assert.rejects(deliverPush(db, result('messaging/internal-error'), 'test-notice', notice), /FCM_TRANSIENT_DELIVERY_FAILURE/);
+  assert.equal((await db.doc(`users/${alice.uid}/devices/test-installation`).get()).exists, true);
+  await deliverPush(db, result('messaging/registration-token-not-registered'), 'test-notice', notice);
+  assert.equal((await db.doc(`users/${alice.uid}/devices/test-installation`).get()).exists, false);
+  assert.equal((await db.doc(`device_bindings/${key(token)}`).get()).exists, false);
+});
 
 test('account exposes Daily using server Vietnam day, preserving claims and resetting missed days', async () => {
   now = new Date('2026-11-05T17:01:00Z');
@@ -458,8 +488,6 @@ test('only authorized admins consume a sponsor voucher once without another debi
   const admin = { uid: operator.uid, token: { admin: true, email: 'staff@yahoo.com' } };
   const input = { code: secret.code, requestId: 'use-voucher-1' };
   await rejects(call('verifyVoucher', alice, input), 'FORBIDDEN_ADMIN');
-  await rejects(call('verifyVoucher', admin, input), 'FORBIDDEN_ADMIN');
-  await db.doc(`voucher_admins/${admin.uid}`).set({ active: true });
   const results = await Promise.allSettled([
     call('verifyVoucher', admin, input),
     call('verifyVoucher', admin, { ...input, requestId: 'use-voucher-2' }),
@@ -472,9 +500,9 @@ test('only authorized admins consume a sponsor voucher once without another debi
   const voucher = (await db.doc(`vouchers/${issued.voucherId}`).get()).data();
   assert.equal(voucher.usedBy, admin.uid); assert.ok(voucher.usedAt);
   assert.equal((await db.doc(`redemptions/${issued.redemptionId}`).get()).get('status'), 'used');
-  await db.doc(`voucher_admins/${admin.uid}`).update({ active: false });
-  await rejects(call('verifyVoucher', admin, { ...input, requestId: winnerId }), 'FORBIDDEN_ADMIN');
-  await rejects(call('getOperationStatus', admin, { operationKind: 'verify-voucher', operationId: winnerId }), 'FORBIDDEN_ADMIN');
+  await db.doc(`users/${admin.uid}`).update({ accountStatus: 'disabled' });
+  await rejects(call('verifyVoucher', admin, { ...input, requestId: winnerId }), 'ACCOUNT_DISABLED');
+  await rejects(call('getOperationStatus', admin, { operationKind: 'verify-voucher', operationId: winnerId }), 'ACCOUNT_DISABLED');
 });
 
 test('voucher verification rejects expired codes and forged admin permissions', async () => {

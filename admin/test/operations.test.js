@@ -8,14 +8,21 @@ let eventImport;
 let voucherImport;
 let catalogEntry;
 let editorValues;
+let adminErrorMessage;
 
 before(async () => {
   const root = fileURLToPath(new URL('../', import.meta.url));
   server = await createServer({ root, server: { middlewareMode: true }, appType: 'custom' });
   ({ eventImport, voucherImport, catalogEntry, editorValues } = await server.ssrLoadModule('/src/catalog.js'));
+  ({ adminErrorMessage } = await server.ssrLoadModule('/src/service-panels.js'));
 });
 
 after(async () => server?.close());
+
+test('Storage errors are actionable and never display raw SDK diagnostics', () => {
+  assert.match(adminErrorMessage({ code: 'storage/unauthorized' }), /quyền tải ảnh/);
+  assert.doesNotMatch(adminErrorMessage({ code: 'storage/unknown', message: 'secret raw diagnostics' }), /secret/);
+});
 
 function form(values) {
   return new Map(Object.entries(values));
@@ -53,6 +60,49 @@ test('registration event rejects missing terms and inverted event times', () => 
   payload.set('registrationTerms', 'Fixture terms');
   payload.set('registrationTermsVersion', 'v1');
   assert.throws(() => eventImport(payload), /startAt must precede endAt/);
+});
+
+test('simple event form supplies technical fields, standard policy and check-in defaults', () => {
+  const event = catalogEntry('events', form({
+    title: 'Fixture event', description: 'Fixture description', category: 'technology',
+    organizerId: 'fixture-organizer', participationMode: 'registration', venue: 'Fixture venue',
+    startAt: '2030-03-01T18:00', endAt: '2030-03-01T19:00',
+    depositCoins: '50', attendanceRewardCoins: '30',
+  }), undefined, { id: 'generated-fixture', projectId: 'demo-evia-backend' });
+  assert.equal(event.id, 'generated-fixture');
+  assert.match(event.sourceRef, /^https:\/\/console.firebase.google.com\/project\/demo-evia-backend\//);
+  assert.equal(event.checkInStartAt, event.startAt);
+  assert.equal(event.checkInEndAt, event.endAt);
+  assert.equal(event.registrationTerms.version, 'evia-standard-v1');
+  assert.match(event.registrationTerms.text, /30%/);
+  assert.match(event.registrationTerms.text, /mất toàn bộ/);
+  assert.deepEqual(event.schedule, []);
+  assert.equal(event.status, 'draft');
+});
+
+test('simplified editing preserves hidden terms, provenance, agenda and existing image', () => {
+  const original = {
+    ...base, organizerId: 'fixture-organizer', participationMode: 'registration',
+    status: 'published', visibility: 'public', timezone: 'Asia/Ho_Chi_Minh',
+    startAt: '2030-03-01T11:00:00.000Z', endAt: '2030-03-01T12:00:00.000Z',
+    checkInStartAt: '2030-03-01T10:30:00.000Z', checkInEndAt: '2030-03-01T12:00:00.000Z',
+    venue: { name: 'Fixture venue', checkInInstructions: 'Keep existing instructions' },
+    audience: { scope: 'everyone' }, capacity: 50, depositCoins: 50, attendanceRewardCoins: 30,
+    tags: [], registrationTerms: { version: 'custom-v3', text: 'Existing approved terms' },
+    schedule: [{ id: 'opening', title: 'Opening', startAt: '2030-03-01T11:00:00.000Z' }],
+    imageUrl: 'https://example.com/previous.png', revision: '1:500', registeredCount: 4,
+  };
+  const values = editorValues(original);
+  for (const key of ['id', 'sourceRef', 'registrationTerms', 'registrationTermsVersion', 'schedule', 'imageUrl']) delete values[key];
+  const updated = catalogEntry('events', form(values), original);
+  assert.deepEqual(updated.registrationTerms, original.registrationTerms);
+  assert.deepEqual(updated.schedule, original.schedule);
+  assert.equal(updated.sourceRef, original.sourceRef);
+  assert.equal(updated.imageUrl, original.imageUrl);
+  assert.equal(updated.checkInStartAt, original.checkInStartAt);
+  assert.equal(updated.venue.checkInInstructions, original.venue.checkInInstructions);
+  const replaced = catalogEntry('events', form(values), original, { imageUrl: 'https://example.com/new.png' });
+  assert.equal(replaced.imageUrl, 'https://example.com/new.png');
 });
 
 test('voucher export is inactive and uses the existing reward contract', () => {

@@ -5,6 +5,8 @@ import '../../models/activity_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
+import '../../viewmodels/report_export_view_model.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/rewards_wallet.dart';
@@ -16,6 +18,7 @@ class CoinHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
+    final export = ref.watch(reportExportViewModelProvider);
     return EviaPage(
       header: const ActivityHeader(
         'Coin History',
@@ -29,6 +32,20 @@ class CoinHistoryScreen extends ConsumerWidget {
           children: [
             const RewardsWallet(screen: '2083:4356'),
             const SizedBox(height: AppSpacing.lg),
+            if (vm.rewardsLive) ...[
+              AppButton(
+                label: 'Xuất CSV các giao dịch đang hiển thị',
+                isLoading: export.busy,
+                onPressed: vm.rewardsData == null || vm.rewardsBusy
+                    ? null
+                    : () => ref
+                          .read(reportExportViewModelProvider.notifier)
+                          .exportHistory(),
+              ),
+              if (export.message != null)
+                Semantics(liveRegion: true, child: Text(export.message!)),
+              const SizedBox(height: AppSpacing.lg),
+            ],
             const Row(
               children: [
                 Expanded(child: Text('Transactions', style: EviaTheme.section)),

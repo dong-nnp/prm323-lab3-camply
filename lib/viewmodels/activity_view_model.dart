@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -501,6 +503,17 @@ class ActivityViewModel extends Notifier<ActivityState> {
       }
       if (!ref.mounted || _uid != uid) return false;
       _cancelRequests.remove(id);
+      if (!item.walkIn) {
+        unawaited(
+          ref
+              .read(analyticsRepositoryProvider)
+              .track(
+                'cancel_registration',
+                once: requestId,
+                parameters: {'event_id': id},
+              ),
+        );
+      }
       state = state.copy(
         cancelled: {...state.cancelled, id},
         available: result?['wallet'] == null
@@ -525,6 +538,11 @@ class ActivityViewModel extends Notifier<ActivityState> {
         state = state.copy(
           clearCancellation: true,
           message: ExceptionMapper.map(error).message,
+        );
+        unawaited(
+          ref
+              .read(analyticsRepositoryProvider)
+              .error('cancel_registration', error),
         );
       }
       return false;
@@ -642,6 +660,22 @@ class ActivityViewModel extends Notifier<ActivityState> {
       if (result['eventId'] != id) {
         throw StateError('Unexpected attendance event');
       }
+      unawaited(
+        ref
+            .read(analyticsRepositoryProvider)
+            .track(
+              'check_in_event',
+              once: id,
+              parameters: {
+                'event_id': id,
+                'mode':
+                    allEvents.where((e) => e.id == id).firstOrNull?.walkIn ==
+                        false
+                    ? 'registered'
+                    : 'walk_in',
+              },
+            ),
+      );
       state = state.copy(
         verified: {...state.verified, id},
         clearCheckIn: true,
@@ -659,6 +693,9 @@ class ActivityViewModel extends Notifier<ActivityState> {
         state = state.copy(
           clearCheckIn: true,
           message: ExceptionMapper.map(error).message,
+        );
+        unawaited(
+          ref.read(analyticsRepositoryProvider).error('check_in_event', error),
         );
       }
       return false;

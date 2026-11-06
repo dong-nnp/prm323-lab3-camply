@@ -7,6 +7,24 @@ import { Actor, coins, empty, fail } from './shared.js';
 import { dailyRewardPolicy, dailyRewardsSchema, defaultDailyRewards } from './policy.js';
 
 const daysInput = z.object({ days: z.union([z.literal(7), z.literal(30)]) }).strict();
+const analyticsInput = daysInput.extend({
+  source: z.enum(['configured', 'android', 'web']).default('configured'),
+});
+
+export function analyticsReportQuery(raw: unknown, stream?: string) {
+  const { days, source } = analyticsInput.parse(raw);
+  const dimensionFilter = source === 'configured'
+    ? (stream ? { filter: { fieldName: 'streamId', stringFilter: { matchType: 'EXACT', value: stream } } } : undefined)
+    : { filter: { fieldName: 'platform', stringFilter: { matchType: 'EXACT', value: source === 'android' ? 'Android' : 'web', caseSensitive: false } } };
+  return {
+    dateRanges: [{ startDate: String(days - 1) + 'daysAgo', endDate: 'today' }],
+    dimensions: [{ name: 'eventName' }],
+    metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
+    orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
+    limit: '25',
+    ...(dimensionFilter && { dimensionFilter }),
+  };
+}
 const configInput = z.object({
   etag: z.string().min(1).max(500),
   day: z.number().int().min(1).max(7),
@@ -122,7 +140,7 @@ export function adminIntegrations(db: Firestore) {
     },
     getAdminAnalyticsReport: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
-      const { days } = daysInput.parse(raw);
+      const { days, source } = analyticsInput.parse(raw);
       cloudOnly();
       const property = process.env.ADMIN_GA4_PROPERTY_ID;
       const stream = process.env.ADMIN_GA4_STREAM_ID;
@@ -132,16 +150,9 @@ export function adminIntegrations(db: Firestore) {
           url: 'https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':runReport',
           method: 'POST',
           timeout: 12000,
-          data: {
-            dateRanges: [{ startDate: String(days - 1) + 'daysAgo', endDate: 'today' }],
-            dimensions: [{ name: 'eventName' }],
-            metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
-            orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
-            limit: '25',
-            ...(stream && { dimensionFilter: { filter: { fieldName: 'streamId', stringFilter: { matchType: 'EXACT', value: stream } } } }),
-          },
+          data: analyticsReportQuery(raw, stream),
         });
-        return { days, scope: stream ? 'stream' : 'property', items: (data.rows ?? []).map(row => ({
+        return { days, scope: source === 'configured' ? (stream ? 'stream' : 'property') : source, items: (data.rows ?? []).map(row => ({
           name: row.dimensionValues[0].value, count: row.metricValues[0].value, users: row.metricValues[1].value,
         })) };
       } catch (error) {

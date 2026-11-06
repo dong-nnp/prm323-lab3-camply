@@ -36,6 +36,7 @@ class EventDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(eviaViewModelProvider);
     final vm = ref.read(eviaViewModelProvider.notifier);
+    if (vm.live) ref.watch(eventDetailViewModelProvider(eventId));
     final remote = vm.live ? ref.watch(flow1EventProvider(eventId)) : null;
     if (remote != null && !remote.hasValue) {
       return EviaPage(

@@ -1,0 +1,14 @@
+{
+  "project": "prm393-31822",
+  "name": "projects/prm393-31822/locations/asia-southeast1/functions/deliverNotification",
+  "state": "ACTIVE",
+  "updateTime": "2026-11-05T21:19:53.875132684Z",
+  "revision": "delivernotification-00004-yev",
+  "service": "projects/prm393-31822/locations/asia-southeast1/services/delivernotification",
+  "runtime": "nodejs22",
+  "sourceHash": "5b87177bb6c467e31c7d87d414f4bacfe0f6cfb0",
+  "uri": "https://delivernotification-mohnhzr27a-as.a.run.app",
+  "latestReadyRevision": "projects/prm393-31822/locations/asia-southeast1/services/delivernotification/revisions/delivernotification-00004-yev",
+  "latestCreatedRevision": "projects/prm393-31822/locations/asia-southeast1/services/delivernotification/revisions/delivernotification-00004-yev",
+  "ready": true
+}

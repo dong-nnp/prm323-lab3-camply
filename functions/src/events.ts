@@ -21,6 +21,7 @@ function createCode(tx: Transaction, db: Firestore, tokenId: string, mode: strin
 }
 export async function staff(tx: Transaction, db: Firestore, actor: Actor | null, eventId: string, permission: string) {
   const uid = authenticated(actor);
+  if (actor?.token.admin === true) { await activeUser(tx, db, uid); return uid; }
   if (actor?.token.staff !== true) fail('FORBIDDEN_STAFF', 'permission-denied');
   const assignment = (await tx.get(db.doc(`staff_assignments/${key(uid, eventId)}`))).data();
   if (!assignment?.active || assignment.staffUid !== uid || assignment.eventId !== eventId || !Array.isArray(assignment.permissions) || !assignment.permissions.includes(permission)) fail('FORBIDDEN_STAFF', 'permission-denied');
@@ -158,7 +159,7 @@ export function events(db: Firestore, clock: () => Date) {
     const kind = registered ? 'verify-ticket' : 'verify-walkin';
     let tokenId: string, secret = '';
     if ('code' in input) {
-      if (registered && actor?.token.staff !== true) fail('FORBIDDEN_STAFF', 'permission-denied');
+      if (registered && actor?.token.staff !== true && actor?.token.admin !== true) fail('FORBIDDEN_STAFF', 'permission-denied');
       const receipt = (await db.doc(`operation_receipts/${key(scannerUid, kind, input.requestId)}`).get()).data();
       if (receipt) {
         if (registered) await db.runTransaction(tx => staff(tx, db, actor, receipt.result.eventId, 'verify_ticket'));

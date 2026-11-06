@@ -73,11 +73,11 @@ Các quyết định trong chat hiện tại thay thế những mục Monthly Gi
 ## Voucher ở nhà tài trợ, admin xác nhận sử dụng
 
 - Chủ dự án chốt: sử dụng voucher tại nhà tài trợ của sự kiện; **admin xác nhận đã dùng**. Không yêu cầu tài khoản thu ngân riêng từng quán.
-- Admin cần Firebase custom claim `admin:true` **và** server-only document `voucher_admins/{uid}` có `{active:true}`. Backend không tự cấp quyền; mobile/Firestore clients không ghi được các quyền này.
-- Admin phải là tài khoản app đã initialize/onboard theo operation contract hiện có. Chưa có admin UI hoặc công cụ tự cấp role.
+- Từ 06/11/2026: Admin cần custom claim `admin:true`, profile active đã initialize/onboard; không cần `voucher_admins` allowlist. Backend không tự cấp quyền; mobile/Firestore clients không ghi được role.
+- Đã có [Flutter admin web](ADMIN_WEB_PLAN.md) xác nhận voucher và bàn giao quà vật lý; không có công cụ tự cấp role hoặc sửa ví tùy ý.
 - QR owner: `evia:voucher:<voucherId>:<code>`. Verifier tách code, gọi `verifyVoucher({code,requestId})`; backend tìm secret qua hash, kiểm unused và expiry, rồi atomically cập nhật voucher + redemption + receipt.
 - Thành công trả `{voucherId,redemptionId,status:'used',usedAt}`; lưu `usedBy` server-side. Không trả PII chủ voucher, không trừ xu thêm.
-- Cùng requestId retry trả receipt; request mới dùng lại code trả `USED`. Admin bị revoke trong document không được gọi lại hoặc đọc receipt verifier qua getOperationStatus.
+- Cùng requestId retry trả receipt; request mới dùng lại code trả `USED`. Admin có profile bị disable không được gọi lại hoặc đọc receipt verifier qua getOperationStatus; bỏ claim cần refresh token/thu hồi phiên để quyền trong ID token được cập nhật.
 - Stock/price/terms/expiry/địa điểm sử dụng phải lấy từ catalog thật đã duyệt; không seed nhà tài trợ minh họa. Chưa có rotation mã, hoàn đổi thưởng hoặc xử lý tranh chấp.
 
 ## Ranh giới triển khai và validation

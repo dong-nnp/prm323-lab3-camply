@@ -361,8 +361,10 @@ class _DailyCheckInState extends ConsumerState<_DailyCheckIn> {
     final streakDay = server?.day ?? demo.day;
     final coins = server?.coins ?? demo.coins;
     final checkedIn = server?.checkedInToday ?? state.dailyClaimed;
-    final saving = server?.saving ?? demo.saving;
-    final error = account?.asData?.value.actionError;
+    final saving = live
+        ? vm.dailySaving || (server?.saving ?? false)
+        : demo.saving;
+    final error = vm.rewardsData?.error ?? account?.asData?.value.actionError;
     return EviaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -485,10 +487,11 @@ class _DailyCheckInState extends ConsumerState<_DailyCheckIn> {
                 : checkedIn
                 ? 'Checked In Today · +$coins coins'
                 : 'Check In · +$coins coins',
-            onPressed: checkedIn || saving
+            isLoading: saving,
+            onPressed: checkedIn || saving || (live && vm.rewardsBusy)
                 ? null
                 : live
-                ? liveVm?.claimDaily
+                ? vm.claimDailyRemote
                 : vm.demoAvailable
                 ? vm.claimDaily
                 : null,

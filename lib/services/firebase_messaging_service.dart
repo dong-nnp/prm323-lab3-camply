@@ -1,13 +1,16 @@
 // shortcut: keep token APIs compatible with the deployed token sender; migrate both to FIDs before removal.
 // ignore_for_file: deprecated_member_use
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 
 import 'messaging_service.dart';
 import '../core/errors/app_exception.dart';
 
 class FirebaseMessagingService implements MessagingService {
-  FirebaseMessagingService(this.ready);
+  FirebaseMessagingService(this.ready, {this.messages});
   final Future<void> Function() ready;
+  final Stream<RemoteMessage>? messages;
+  static const _notifications = MethodChannel('evia/notifications');
   Future<T> _run<T>(Future<T> Function() work) async {
     try {
       await ready();
@@ -32,6 +35,7 @@ class FirebaseMessagingService implements MessagingService {
 
   @override
   Future<String?> getToken() => _run(() async {
+    await _notifications.invokeMethod<void>('ensureChannel');
     final status = (await FirebaseMessaging.instance.getNotificationSettings())
         .authorizationStatus;
     if (status != AuthorizationStatus.authorized &&
@@ -48,7 +52,19 @@ class FirebaseMessagingService implements MessagingService {
   Stream<String> get tokenChanges => FirebaseMessaging.instance.onTokenRefresh;
   @override
   Stream<Map<String, String>> get foregroundMessages =>
-      FirebaseMessaging.onMessage.map(_data);
+      (messages ?? FirebaseMessaging.onMessage).asyncMap((message) async {
+        if (message.notification != null) {
+          await _run(
+            () => _notifications.invokeMethod<void>('showNotification', {
+              'title': message.notification!.title ?? 'Evia',
+              'body': message.notification!.body ?? '',
+              'messageId': message.messageId,
+              'tag': message.data['notificationId'] ?? message.messageId,
+            }),
+          );
+        }
+        return _data(message);
+      });
   @override
   Stream<Map<String, String>> get openedMessages =>
       FirebaseMessaging.onMessageOpenedApp.map(_data);

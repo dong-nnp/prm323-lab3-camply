@@ -1,11 +1,12 @@
 import { randomBytes } from 'node:crypto';
 import { Firestore, Timestamp, Transaction } from 'firebase-admin/firestore';
 import { z } from 'zod';
-import { Actor, authenticated, changeWallet, coins, fail, id, key, ledger, notification, operation, requestId, required, walletData } from './shared.js';
+import { Actor, activeUser, authenticated, changeWallet, coins, fail, id, key, ledger, notification, operation, requestId, required, walletData } from './shared.js';
 
 export async function voucherAdmin(tx: Transaction, db: Firestore, actor: Actor | null) {
   const uid = authenticated(actor);
-  if (actor?.token.admin !== true || (await tx.get(db.doc(`voucher_admins/${uid}`))).get('active') !== true) fail('FORBIDDEN_ADMIN', 'permission-denied');
+  if (actor?.token.admin !== true) fail('FORBIDDEN_ADMIN', 'permission-denied');
+  await activeUser(tx, db, uid);
   return uid;
 }
 

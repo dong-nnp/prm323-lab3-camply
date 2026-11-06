@@ -1,3 +1,5 @@
+import { analyticsEventLabel, analyticsScopeLabel } from './analytics-labels.js';
+
 const $ = id => document.getElementById(id);
 
 export function adminErrorMessage(error) {
@@ -12,14 +14,31 @@ export function adminErrorMessage(error) {
     PUBLISHED_EVENT_FIELDS_LOCKED: 'Ban tổ chức, phạm vi và hình thức tham dự đã được khóa khi xuất bản.',
     EVENT_CAPACITY_BELOW_REGISTRATIONS: 'Sức chứa thấp hơn số người đã đăng ký.',
     TERMS_VERSION_REQUIRED: 'Hãy tăng phiên bản điều khoản khi sửa nội dung điều khoản.',
+    REMOTE_CONFIG_REWARD_INVALID: 'Lịch xu đã xuất bản không hợp lệ. Kiểm tra daily_checkin_rewards trong Firebase.',
     REMOTE_CONFIG_CHANGED: 'Cấu hình đã thay đổi. Tải lại trước khi xuất bản.',
     REMOTE_CONFIG_ACCESS_DENIED: 'Backend chưa có quyền quản lý Firebase Remote Config.',
-    REMOTE_CONFIG_REWARD_INVALID: 'Lịch xu đã xuất bản không hợp lệ. Kiểm tra daily_checkin_rewards trong Firebase.',
     ANALYTICS_NOT_CONFIGURED: 'Backend chưa có GA4 Property ID hợp lệ.',
     ANALYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền xem GA4 property.',
+    CRASHLYTICS_NOT_CONFIGURED: 'Backend chưa có bảng BigQuery xuất từ Crashlytics.',
+    CRASHLYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền truy vấn và đọc bảng Crashlytics.',
+    CRASHLYTICS_QUERY_PENDING: 'BigQuery đang xử lý báo cáo. Hãy thử lại sau.',
     CLOUD_INTEGRATION_UNAVAILABLE_IN_EMULATOR: 'Chức năng này cần kết nối dự án Firebase thật.',
+    NO_REGISTERED_DEVICE: 'Tài khoản này chưa đăng ký thiết bị nhận push. Hãy đăng nhập trên điện thoại, mở Thông báo và cho phép nhận thông báo rồi gửi lại.',
+    ACCOUNT_DISABLED: 'Tài khoản gửi hoặc nhận không còn hoạt động. Hãy tải lại danh sách và kiểm tra tài khoản.',
+    ACCOUNT_NOT_INITIALIZED: 'Không tìm thấy hồ sơ tài khoản. Hãy tải lại danh sách người nhận.',
+    DUPLICATE_CONFLICT: 'Lượt gửi này đã được dùng cho nội dung khác. Hãy tải lại trang trước khi gửi tiếp.',
   };
   const code = error.details?.code;
+  if (error.code?.startsWith('storage/')) {
+    const storageMessages = {
+      'storage/unauthorized': 'Không có quyền tải ảnh. Kiểm tra phiên admin và Storage Rules.',
+      'storage/retry-limit-exceeded': 'Tải ảnh bị gián đoạn. Kiểm tra kết nối và lưu lại để thử tiếp.',
+      'storage/canceled': 'Đã hủy tải ảnh.',
+      'storage/bucket-not-found': 'Không tìm thấy bucket Firebase Storage đã cấu hình.',
+      'storage/quota-exceeded': 'Firebase Storage đã vượt hạn mức hiện tại.',
+    };
+    return storageMessages[error.code] ?? 'Không tải được ảnh lên Firebase Storage. Vui lòng thử lại.';
+  }
   if (messages[code]) return messages[code];
   if (error.code === 'functions/not-found') return 'Không tìm thấy bản ghi hoặc API. Kiểm tra backend đã được cập nhật.';
   if (error.code === 'functions/permission-denied') return 'Tài khoản hiện tại không có quyền thực hiện thao tác này.';
@@ -89,13 +108,13 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     const target = $('analytics-report-table');
     target.replaceChildren();
     if (!items.length) return;
-    const columns = ['Sự kiện', 'Lượt ghi nhận', 'Người dùng'];
+    const columns = ['Hành vi', 'Lượt ghi nhận', 'Người dùng'];
     const table = document.createElement('table');
     table.createTHead().insertRow().append(...columns.map(value => text('th', value)));
     const body = table.createTBody();
     for (const item of items) {
       const row = body.insertRow();
-      const values = [item.name, item.count, item.users];
+      const values = [analyticsEventLabel(item.name), item.count, item.users];
       row.append(...values.map(value => text('td', value)));
     }
     target.append(table);
@@ -107,19 +126,23 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     analyticsRequested = true;
     const days = Number(reportForm.elements.days.value);
     reportButton.disabled = reportForm.elements.days.disabled = true;
+    if (reportForm.elements.source) reportForm.elements.source.disabled = true;
     renderReport([]);
     status('analytics-report-status', 'Đang tải báo cáo…');
     try {
-      const report = await firebase.analyticsReport(days);
+      const report = await firebase.report('analytics', days, reportForm.elements.source?.value);
       if (session() !== current) return;
       renderReport(report.items);
-      status('analytics-report-status', report.items.length
+      status('analytics-report-status', (report.items.length
         ? 'Đã tải ' + report.items.length + ' mục' + (report.scope === 'property' ? ' · Toàn bộ GA4 property.' : '.')
-        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.');
+        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') + ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.');
     } catch (error) {
       if (session() === current) status('analytics-report-status', adminErrorMessage(error), true);
     } finally {
-      if (session() === current) reportButton.disabled = reportForm.elements.days.disabled = false;
+      if (session() === current) {
+        reportButton.disabled = reportForm.elements.days.disabled = false;
+        if (reportForm.elements.source) reportForm.elements.source.disabled = false;
+      }
     }
   }
 
@@ -146,6 +169,7 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
       syncConfigControls();
       status('config-status', '');
       reportButton.disabled = reportForm.elements.days.disabled = false;
+      if (reportForm.elements.source) reportForm.elements.source.disabled = false;
       renderReport([]);
       status('analytics-report-status', '');
     },

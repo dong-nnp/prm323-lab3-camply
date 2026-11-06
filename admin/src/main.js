@@ -3,6 +3,7 @@ import { createFirebase } from './firebase.js';
 import { adminErrorMessage, setupServicePanels } from './service-panels.js';
 import { setupEditor } from './editor.js';
 import { renderIcons } from './icons.js';
+import { setupNotifications } from './notifications.js';
 
 const env = import.meta.env;
 const $ = (id) => document.getElementById(id);
@@ -43,6 +44,9 @@ const editor = setupEditor({
   canOperate, status, errorMessage: adminErrorMessage,
   save: (kind, entry, revision) => firebase.save(kind, entry, revision),
   listOrganizers: () => firebase.organizers(),
+  listCategories: () => firebase.categories(),
+  projectId: firebase?.projectId,
+  uploadEventImage: (file, progress) => firebase.uploadEventImage(file, progress),
   onSaved: async (kind, message) => {
     const current = operator;
     void track(kind === 'events' ? 'admin_event_saved' : 'admin_voucher_saved');
@@ -52,6 +56,7 @@ const editor = setupEditor({
   },
 });
 const services = setupServicePanels({ firebase, session: () => operator, status, text, track });
+const notifications = setupNotifications({ firebase, session: () => operator, status, errorMessage: adminErrorMessage });
 
 function route() {
   if (!canOperate()) return;
@@ -68,6 +73,7 @@ function route() {
     if (!catalogs.has(kind)) void loadCatalog(kind, true);
   }
   services.open(page);
+  if (page === 'notifications') notifications.open();
 }
 
 function text(tag, value, className) {
@@ -206,6 +212,7 @@ function showGate(message, blocked = false, error = false) {
   operator = undefined;
   catalogs = new Map();
   services.reset();
+  notifications.reset();
   editor.invalidate();
   detailVersion++;
   detailEntry = undefined;
