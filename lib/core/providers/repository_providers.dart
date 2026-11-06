@@ -29,5 +29,8 @@ final campusRepositoryProvider = Provider(
   (ref) => CampusRepository(ref.watch(campusServiceProvider)),
 );
 final flow1RepositoryProvider = Provider(
-  (ref) => Flow1Repository(ref.watch(backendServiceProvider)),
+  (ref) => Flow1Repository(
+    ref.watch(backendServiceProvider),
+    crashReporting: ref.watch(crashReportingServiceProvider),
+  ),
 );

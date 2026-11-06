@@ -2,10 +2,11 @@
 
 > **Evia Admin web.** `admin/` là web Vite riêng. Firebase Auth xác minh
 > custom claim admin trước khi hiển thị giao diện và backend kiểm tra lại
-> từng callable. Web gọi API quản trị catalog, Remote Config, GA4 Data API
-> và báo cáo Crashlytics từ BigQuery qua Functions. Mobile đọc nội dung
-> milestone qua ViewModel → repository → RemoteConfigService. Crash test
-> dùng WebUSB tới Android QA đã bật collection. [Phạm vi và vận hành](ADMIN_WEB_PLAN.md).
+> từng callable. Web gọi API quản trị catalog, Remote Config và GA4 Data API
+> qua Functions. Mobile đọc nội dung milestone qua ViewModel → repository →
+> RemoteConfigService. Web Admin QA dùng trình kiểm thử Windows để tạo crash
+> trên máy ảo Android và mở Firebase Console để xem kết quả.
+> [Phạm vi và vận hành](ADMIN_WEB_PLAN.md).
 
 > **Ticket cache fix — 05/11/2026:** ticket provider tạo event presentation từ
 > response `getTicket`; View không dùng My Events cache để kết luận có vé hay
@@ -281,7 +282,7 @@ Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `Bootstrap
 4. Khởi tạo lỗi hoặc quá 15 giây: hiển thị `AppError`, cho phép thử lại.
    Raw SDK error không được hiển thị cho người dùng.
 
-Không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
+Trong cấu hình nền tảng mặc định không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
 background messaging handlers hoặc Remote Config fetch trong foundation.
 Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-init.
 

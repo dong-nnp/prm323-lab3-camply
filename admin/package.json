@@ -8,14 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:android-qa": "node scripts/android-qa.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test"
   },
   "dependencies": {
-    "@yume-chan/adb": "^2.6.4",
-    "@yume-chan/adb-credential-web": "^2.1.0",
-    "@yume-chan/adb-daemon-webusb": "^2.3.2",
     "firebase": "^13.2.0",
     "zod": "^4.6.7"
   },

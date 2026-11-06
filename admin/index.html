@@ -40,7 +40,7 @@
         <a href="#vouchers" data-route="vouchers"><span data-icon="ticket"></span>Voucher</a>
         <p class="nav-label">FIREBASE</p>
         <a href="#analytics" data-route="analytics"><span data-icon="chart"></span>Analytics</a>
-        <a href="#crashlytics" data-route="crashlytics"><span data-icon="activity"></span>Crashlytics QA</a>
+        <a href="#crashlytics" data-route="crashlytics"><span data-icon="activity"></span>Crashlytics</a>
         <a href="#config" data-route="config"><span data-icon="sliders"></span>Remote Config</a>
       </nav>
       <div class="sidebar-footer">
@@ -65,7 +65,7 @@
           <div class="section-heading"><div><p class="eyebrow">CÔNG CỤ FIREBASE</p><h2>Theo dõi và kiểm thử</h2></div></div>
           <div class="tool-list">
             <a href="#analytics"><span class="card-icon blue" data-icon="chart"></span><span><strong>Firebase Analytics</strong><small>Theo dõi thao tác trên admin web</small></span><span data-icon="arrow"></span></a>
-            <a href="#crashlytics"><span class="card-icon lilac" data-icon="activity"></span><span><strong>Firebase Crashlytics</strong><small>Kiểm thử và đối chiếu crash Android QA</small></span><span data-icon="arrow"></span></a>
+            <a href="#crashlytics"><span class="card-icon lilac" data-icon="activity"></span><span><strong>Firebase Crashlytics</strong><small>Kiểm thử crash Android QA</small></span><span data-icon="arrow"></span></a>
             <a href="#config"><span class="card-icon" data-icon="sliders"></span><span><strong>Firebase Remote Config</strong><small>Chỉnh xu thưởng Daily Check-in</small></span><span data-icon="arrow"></span></a>
           </div>
         </section>
@@ -96,9 +96,16 @@
         </section>
 
         <section id="crashlytics" aria-labelledby="crash-title" hidden>
-          <div class="page-heading"><div><p class="eyebrow">FIREBASE · ANDROID QA</p><h1 id="crash-title">Crashlytics QA</h1><p>Gây crash thật trên thiết bị Android QA đã được duyệt.</p></div></div>
-          <article class="panel instructions"><span class="card-icon lilac" data-icon="activity"></span><h2>Kiểm thử crash</h2><p>Kết nối USB và cấp quyền ADB trước. Mở bản debug Evia trên điện thoại. Khi kết nối sẵn sàng, một lần nhấn nút sẽ gửi lệnh crash đến app QA.</p><p id="qa-status" class="status" role="status"></p><div class="button-row"><button id="qa-connect" class="button secondary"><span data-icon="usb"></span>Kết nối Android QA</button><button id="qa-disconnect" class="button secondary" hidden>Ngắt kết nối</button><button id="qa-crash" class="button danger" disabled><span data-icon="activity"></span>Crash app</button></div></article>
-          <article class="panel instructions follow-panel"><h2>Báo cáo lỗi Android</h2><p>Mở lại app QA để gửi báo cáo sau khi crash. Báo cáo xuất hiện sau khi dữ liệu Crashlytics được đồng bộ sang BigQuery.</p><form class="button-row" id="crashlytics-report-form"><label>Khoảng thời gian <select name="days"><option value="7">7 ngày</option><option value="30">30 ngày</option></select></label><button class="button secondary" type="submit">Tải báo cáo</button></form><p id="crashlytics-report-status" class="status" role="status"></p><div id="crashlytics-report-table" class="table-wrap"></div></article>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE · DIAGNOSTICS</p><h1 id="crash-title">Crashlytics</h1><p>Kiểm thử crash trên máy ảo Android QA và xem kết quả trong Firebase Console.</p></div></div>
+          <article class="panel instructions">
+            <h2>Developer Tools</h2>
+            <p id="android-qa-hint">Mở Web Admin ở chế độ Android QA cục bộ để chạy kiểm thử.</p>
+            <div class="button-row">
+              <button id="android-qa-crash" class="button danger" type="button" hidden>Crash Android QA</button>
+              <a id="crashlytics-dashboard" class="button secondary" target="_blank" rel="noopener noreferrer" hidden>Open Firebase Crashlytics</a>
+            </div>
+            <p id="android-qa-status" class="status" role="status"></p>
+          </article>
         </section>
 
         <section id="config" aria-labelledby="config-title" hidden>

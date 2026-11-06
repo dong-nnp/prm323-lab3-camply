@@ -10,7 +10,7 @@ Admin web dùng Firebase Authentication. Các callable quản trị kiểm tra c
 | Thông báo | Xuất bản sự kiện công khai hoặc cập nhật lịch | `eventNotifications` tạo inbox và `deliverNotification` gửi FCM theo điều kiện hiện có |
 | Remote Config | Chỉnh xu thưởng từng ngày trong chuỗi Daily Check-in | `getAdminRemoteConfig`, `publishAdminRemoteConfig` |
 | Analytics | Xem 25 sự kiện có lượt ghi nhận cao nhất trong 7 hoặc 30 ngày | `getAdminAnalyticsReport` đọc GA4 Data API |
-| Crashlytics | Kiểm thử crash trên Android QA và xem 25 mục lỗi gần nhất trong 7 hoặc 30 ngày | `getAdminCrashlyticsReport` truy vấn BigQuery Crashlytics export |
+| Crashlytics | Thử crash Android QA cục bộ trên Windows và mở Firebase Console | Trình kiểm thử Windows gọi ADB cục bộ |
 
 Sự kiện cần ban tổ chức tồn tại. Khi xuất bản công khai, ban tổ chức phải
 được công khai và sự kiện chưa bắt đầu. Hình thức tham dự, phạm vi hiển thị
@@ -29,11 +29,10 @@ lịch đã xuất bản vào Firestore để mobile đọc qua `getAccount` và
 lỗi, tải lại và bấm xuất bản với cùng giá trị để đồng bộ.
 [Kế hoạch Remote Config](REMOTE_CONFIG_PLAN.md)
 
-Crash QA dùng WebUSB và ADB trên Android debug có serial đã cấu hình.
-Web xác minh tiến trình dừng và log fatal đúng package/PID. Báo cáo xuất hiện
-sau khi app gửi lỗi và dữ liệu được đồng bộ vào bảng BigQuery đã chọn.
-[Hướng dẫn Crashlytics export](https://firebase.google.com/docs/crashlytics/bigquery-export)
+Nút Crash Android QA chỉ hiện cho admin trong phiên Vite cục bộ dành cho QA.
+Sau khi app gửi lỗi, mở Firebase Console để đối chiếu báo cáo Android.
+[Hướng dẫn kiểm thử](EVIA_Crashlytics_Implementation.md)
 
 Nghiệm thu trên Emulator cho đăng nhập, quyền API, catalog, xuất bản và
 inbox. Nghiệm thu trên dự án thật cho FCM, phiên bản Remote Config, GA4 Data
-API và Crashlytics BigQuery sau khi cấu hình quyền chạy Functions.
+API và Crashlytics trên Firebase Console.

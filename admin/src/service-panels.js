@@ -17,9 +17,6 @@ export function adminErrorMessage(error) {
     REMOTE_CONFIG_REWARD_INVALID: 'Lịch xu đã xuất bản không hợp lệ. Kiểm tra daily_checkin_rewards trong Firebase.',
     ANALYTICS_NOT_CONFIGURED: 'Backend chưa có GA4 Property ID hợp lệ.',
     ANALYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền xem GA4 property.',
-    CRASHLYTICS_NOT_CONFIGURED: 'Backend chưa có bảng BigQuery xuất từ Crashlytics.',
-    CRASHLYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền truy vấn và đọc bảng Crashlytics.',
-    CRASHLYTICS_QUERY_PENDING: 'BigQuery đang xử lý báo cáo. Hãy thử lại sau.',
     CLOUD_INTEGRATION_UNAVAILABLE_IN_EMULATOR: 'Chức năng này cần kết nối dự án Firebase thật.',
   };
   const code = error.details?.code;
@@ -29,7 +26,7 @@ export function adminErrorMessage(error) {
   return error.code?.startsWith('functions/') ? 'Không thể hoàn tất thao tác. Hãy thử lại.' : (error.message || 'Không thể hoàn tất thao tác.');
 }
 
-export function setupServicePanels({ firebase, session, status, text, formatDate, track }) {
+export function setupServicePanels({ firebase, session, status, text, track }) {
   const form = $('config-form');
   const day = form.elements.rewardDay;
   const coins = form.elements.rewardCoins;
@@ -38,7 +35,9 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
   let config;
   let configRequested = false;
   let configBusy = false;
-  const requestedReports = new Set();
+  const reportForm = $('analytics-report-form');
+  const reportButton = reportForm.querySelector('button');
+  let analyticsRequested = false;
 
   function showSelectedReward() {
     coins.value = config?.rewards[Number(day.value) - 1] ?? '';
@@ -86,44 +85,41 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     }
   }
 
-  function renderReport(kind, items) {
-    const target = $(kind + '-report-table');
+  function renderReport(items) {
+    const target = $('analytics-report-table');
     target.replaceChildren();
     if (!items.length) return;
-    const analytics = kind === 'analytics';
-    const columns = analytics ? ['Sự kiện', 'Lượt ghi nhận', 'Người dùng'] : ['Mã lỗi', 'Loại', 'Số lần', 'Lần gần nhất', 'Phiên bản app'];
+    const columns = ['Sự kiện', 'Lượt ghi nhận', 'Người dùng'];
     const table = document.createElement('table');
     table.createTHead().insertRow().append(...columns.map(value => text('th', value)));
     const body = table.createTBody();
     for (const item of items) {
       const row = body.insertRow();
-      const values = analytics ? [item.name, item.count, item.users] : [item.issueId, item.type, item.count, formatDate(item.lastSeen), item.version];
+      const values = [item.name, item.count, item.users];
       row.append(...values.map(value => text('td', value)));
     }
     target.append(table);
   }
 
-  async function loadReport(kind) {
+  async function loadReport() {
     const current = session();
-    const reportForm = $(kind + '-report-form');
-    const button = reportForm.querySelector('button');
-    if (!current || button.disabled) return;
-    requestedReports.add(kind);
+    if (!current || reportButton.disabled) return;
+    analyticsRequested = true;
     const days = Number(reportForm.elements.days.value);
-    button.disabled = reportForm.elements.days.disabled = true;
-    renderReport(kind, []);
-    status(kind + '-report-status', 'Đang tải báo cáo…');
+    reportButton.disabled = reportForm.elements.days.disabled = true;
+    renderReport([]);
+    status('analytics-report-status', 'Đang tải báo cáo…');
     try {
-      const report = await firebase.report(kind, days);
+      const report = await firebase.analyticsReport(days);
       if (session() !== current) return;
-      renderReport(kind, report.items);
-      status(kind + '-report-status', report.items.length
+      renderReport(report.items);
+      status('analytics-report-status', report.items.length
         ? 'Đã tải ' + report.items.length + ' mục' + (report.scope === 'property' ? ' · Toàn bộ GA4 property.' : '.')
         : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.');
     } catch (error) {
-      if (session() === current) status(kind + '-report-status', adminErrorMessage(error), true);
+      if (session() === current) status('analytics-report-status', adminErrorMessage(error), true);
     } finally {
-      if (session() === current) button.disabled = reportForm.elements.days.disabled = false;
+      if (session() === current) reportButton.disabled = reportForm.elements.days.disabled = false;
     }
   }
 
@@ -133,30 +129,25 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     if (config && window.confirm('Xuất bản và áp dụng mức thưởng cho ngày đã chọn?')) void runConfig(true);
   });
   reload.addEventListener('click', () => void runConfig(false));
-  for (const kind of ['analytics', 'crashlytics']) {
-    $(kind + '-report-form').addEventListener('submit', event => {
-      event.preventDefault();
-      void loadReport(kind);
-    });
-  }
+  reportForm.addEventListener('submit', event => {
+    event.preventDefault();
+    void loadReport();
+  });
 
   return {
     open(page) {
       if (page === 'config' && !configRequested) void runConfig(false);
-      if ((page === 'analytics' || page === 'crashlytics') && !requestedReports.has(page)) void loadReport(page);
+      if (page === 'analytics' && !analyticsRequested) void loadReport();
     },
     reset() {
       configBusy = configRequested = false;
-      requestedReports.clear();
+      analyticsRequested = false;
       setConfig(undefined);
       syncConfigControls();
       status('config-status', '');
-      for (const kind of ['analytics', 'crashlytics']) {
-        const reportForm = $(kind + '-report-form');
-        reportForm.querySelector('button').disabled = reportForm.elements.days.disabled = false;
-        renderReport(kind, []);
-        status(kind + '-report-status', '');
-      }
+      reportButton.disabled = reportForm.elements.days.disabled = false;
+      renderReport([]);
+      status('analytics-report-status', '');
     },
   };
 }

@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
-import { crashDebugProcess } from '../src/qa-crash.js';
 
 let server;
 let eventImport;
@@ -95,44 +94,4 @@ test('editing a published event keeps server data outside the form and restores 
   assert.deepEqual(saved.benefits, entry.benefits);
   assert.equal('registeredCount' in saved, false);
   assert.equal('revision' in saved, false);
-});
-
-function fakeShell(responses) {
-  const calls = [];
-  return {
-    calls,
-    run: async (command) => {
-      calls.push(command);
-      return { exitCode: 0, stdout: '', stderr: '', ...responses.shift() };
-    },
-  };
-}
-const noWait = async () => {};
-
-test('one crash request targets Evia debug and requires a matching fatal Android log', async () => {
-  const shell = fakeShell([
-    {}, { stdout: '3456' }, {}, { stdout: '3456' }, { exitCode: 1 },
-    { stdout: 'FATAL EXCEPTION: main\nProcess: com.example.prm393_lab03, PID: 3456' },
-  ]);
-  let requests = 0;
-  await crashDebugProcess(shell.run, () => { requests++; }, noWait);
-  assert.equal(requests, 1);
-  assert.deepEqual(shell.calls.filter(([command]) => command === 'am'), [
-    ['am', 'crash', '--user', 'current', 'com.example.prm393_lab03'],
-  ]);
-  assert.deepEqual(shell.calls[0], ['run-as', 'com.example.prm393_lab03', 'id']);
-});
-
-test('a release build or missing process never receives a crash command', async () => {
-  const release = fakeShell([{ exitCode: 1 }]);
-  const notRunning = fakeShell([{}, { exitCode: 1 }]);
-  for (const shell of [release, notRunning]) {
-    await assert.rejects(crashDebugProcess(shell.run, () => assert.fail('Unexpected crash'), noWait));
-    assert.equal(shell.calls.some(([command]) => command === 'am'), false);
-  }
-});
-
-test('a sent command alone does not count as a verified crash', async () => {
-  const shell = fakeShell([{}, { stdout: '3456' }, {}]);
-  await assert.rejects(crashDebugProcess(shell.run, () => {}, noWait), /chưa xác minh được/);
 });

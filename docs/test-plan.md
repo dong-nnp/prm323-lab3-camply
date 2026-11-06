@@ -330,7 +330,8 @@ backend integration.
 
 TODO: native Google Sign-In cancel/failure, Storage Rules deny/allow theo quyền,
 FCM permission/token/background delivery, Remote Config fetch/cache, Analytics
-DebugView và Crashlytics test crash chỉ sau tích hợp thật. Xác nhận công cụ
+DebugView. Xem [ca kiểm thử Crashlytics](EVIA_Crashlytics_Implementation.md)
+để nghiệm thu Web Admin và Android QA trên Firebase. Xác nhận công cụ
 Google ARTEMIS trước khi thêm E2E vào `e2e_test/`.
 
 ## Đợt 3 — Registration / Profile
