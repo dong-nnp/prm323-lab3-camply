@@ -99,7 +99,6 @@ class Flow1Repository {
       backend.call('updateProfile', profile);
   Future<void> going(String eventId) =>
       backend.call('setWalkInGoing', {'eventId': eventId, 'going': true});
-  Future<void> claimDaily() => backend.call('claimDailyCheckin');
   Future<Flow1Event> event(String id) async =>
       Flow1Event(await backend.call('getEvent', {'eventId': id}));
   Future<Map<String, dynamic>> register(Map<String, dynamic> input) =>
