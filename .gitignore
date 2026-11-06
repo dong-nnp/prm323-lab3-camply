@@ -75,3 +75,22 @@ app.*.map.json
 !/evidence/flow2-api-only/*.log
 !/evidence/ticket-cache-fix/*.log
 /.local/
+
+# Added by taw-commit: local secrets and tool state
+.env
+.env.local
+.env*.local
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+.claude/
+.claudebk/
+.taw/
+.expo/
+.expo-shared/
+.eas/
+Thumbs.db
+*.tsbuildinfo

@@ -47,6 +47,22 @@ beforeEach(async () => {
 });
 after(async () => { await deleteApp(app); });
 
+test('account exposes Daily using server Vietnam day, preserving claims and resetting missed days', async () => {
+  now = new Date('2026-11-05T17:01:00Z');
+  let account = await call('getAccount');
+  assert.equal(account.daily.dayKey, '2026-11-06');
+  assert.equal(account.daily.streakDay, 1);
+  assert.equal(account.daily.coins, 5);
+  assert.equal(account.daily.alreadyClaimed, false);
+  await call('claimDailyCheckin');
+  account = await call('getAccount');
+  assert.equal(account.daily.alreadyClaimed, true);
+  now = new Date('2026-11-06T17:01:00Z');
+  assert.equal((await call('getAccount')).daily.coins, 10);
+  now = new Date('2026-11-08T17:01:00Z');
+  assert.equal((await call('getAccount')).daily.coins, 5);
+});
+
 test('demo attendance requires server flags, settles once, and cannot bypass real staff APIs', async () => {
   const input = { eventId: 'registered', requestId: 'demo-attend-0001' };
   await rejects(call('demoConfirmAttendance', alice, input), 'DEMO_NOT_ALLOWED');

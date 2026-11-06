@@ -6,6 +6,12 @@
 > nhập trên trình duyệt và tạo, kích hoạt mẫu voucher từ web. Cần nghiệm
 > thu FCM, Remote Config, GA4 và Crashlytics BigQuery trên dự án thật.
 > [Các bước chạy và nghiệm thu](../admin/README.md).
+> **Flow 3 — 06/11/2026:** 213/213 Flutter tests, 62/62 backend Emulator tests,
+> analyze sạch, APK debug Firebase thật build đạt. Tests bao phủ Daily chờ server,
+> manual milestone claim/reload, đổi quà/khôi phục receipt, giá đổi/refresh lỗi,
+> ví mới nhất, locker/QR, voucher used và network retry. Widget test dùng viewport
+> thật 360/412dp, chữ 2×, bấm nút xác nhận thật trong test. Giao dịch live dùng
+> seeded operator; native và giới hạn tách riêng tại [evidence](../evidence/flow3-api-only/).
 
 > **Ticket cache fix — 05/11/2026:** 195/195 Flutter tests đạt; tái hiện vé tồn
 > tại nhưng My Events cache rỗng, refresh error có previous data, vé revoked,
@@ -536,3 +542,14 @@ Các ca đăng nhập dùng phiên kiểm thử, không xác nhận tích hợp 
 - `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=DEMO_AUTH=false --target-platform android-arm64 --no-pub`: đạt.
 - Chưa cài/chạy lại bản merge trên điện thoại và chưa kiểm tra Firebase trực tiếp
   trong lượt này. Không thay đổi hay deploy Functions/Rules.
+
+### Nút demo cố định trên vé — 05/11/2026
+
+- Test hồi quy kiểm nút bấm được ngay, nằm ngoài vùng cuộn, khóa khi đang chờ
+  server và đổi QR sang confirmed sau thành công; tài khoản chưa bật demo không
+  thấy nút. `flutter test`: **200/200 đạt**; format/analyze sạch.
+- APK debug bật Firebase thật, tắt local demo auth: build/cài thành công trên
+  SM-G996N. Đã mở đúng vé owner gửi và thấy nút ở footer; không bấm xác nhận
+  trên vé này để owner tự demo. Không ghi attendance hoặc sửa ví trong lượt này.
+- Bật thêm quyền demo server cho đúng chủ vé, kiểm tra các field hồ sơ khác giữ
+  nguyên. Không thay đổi Functions/Rules hoặc quyền staff/admin.

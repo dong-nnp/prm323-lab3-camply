@@ -35,6 +35,7 @@ import '../viewmodels/authentication_view_model.dart';
 import '../viewmodels/evia_view_model.dart';
 import '../models/auth_session.dart';
 import '../widgets/responsive_body.dart';
+import '../widgets/rewards_backend_gate.dart';
 import '../widgets/status_widgets.dart';
 import '../widgets/evia_widgets.dart';
 import '../core/utils/exception_mapper.dart';
@@ -274,44 +275,56 @@ final routerProvider = Provider<GoRouter>((ref) {
           EventCheckInScreen(eventId: state.uri.queryParameters['event'] ?? ''),
         ),
       ),
-      GoRoute(path: '/rewards', builder: (_, _) => const RewardsScreen()),
+      GoRoute(
+        path: '/rewards',
+        builder: (_, _) => const RewardsBackendGate(child: RewardsScreen()),
+      ),
       GoRoute(
         path: '/rewards/catalog',
-        builder: (_, _) => const RewardsScreen(catalog: true),
+        builder: (_, _) =>
+            const RewardsBackendGate(child: RewardsScreen(catalog: true)),
       ),
       GoRoute(
         path: '/rewards/locker',
-        builder: (_, _) => const RewardsLockerScreen(),
+        builder: (_, _) =>
+            const RewardsBackendGate(child: RewardsLockerScreen()),
       ),
       GoRoute(
         path: '/rewards/detail',
-        builder: (_, state) => RewardDetailsScreen(
-          rewardId: state.uri.queryParameters['id'] ?? 'cafe',
+        builder: (_, state) => RewardsBackendGate(
+          child: RewardDetailsScreen(
+            rewardId: state.uri.queryParameters['id'] ?? 'cafe',
+          ),
         ),
       ),
       GoRoute(
         path: '/rewards/confirm',
-        builder: (_, state) => RewardDetailsScreen(
-          confirm: true,
-          rewardId: state.uri.queryParameters['id'] ?? 'cafe',
+        builder: (_, state) => RewardsBackendGate(
+          child: RewardDetailsScreen(
+            confirm: true,
+            rewardId: state.uri.queryParameters['id'] ?? 'cafe',
+          ),
         ),
       ),
       GoRoute(
         path: '/rewards/success',
-        builder: (_, _) => const RedemptionSuccessScreen(),
+        builder: (_, _) =>
+            const RewardsBackendGate(child: RedemptionSuccessScreen()),
       ),
       GoRoute(
         path: '/rewards/voucher',
-        builder: (_, state) =>
-            RewardVoucherScreen(code: state.uri.queryParameters['code']),
+        builder: (_, state) => RewardsBackendGate(
+          child: RewardVoucherScreen(code: state.uri.queryParameters['code']),
+        ),
       ),
       GoRoute(
         path: '/rewards/milestones',
-        builder: (_, _) => const EventMilestonesScreen(),
+        builder: (_, _) =>
+            const RewardsBackendGate(child: EventMilestonesScreen()),
       ),
       GoRoute(
         path: '/rewards/history',
-        builder: (_, _) => const CoinHistoryScreen(),
+        builder: (_, _) => const RewardsBackendGate(child: CoinHistoryScreen()),
       ),
       GoRoute(
         path: AppRoutes.home,

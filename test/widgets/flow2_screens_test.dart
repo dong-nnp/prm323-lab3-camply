@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/widgets/status_widgets.dart';
@@ -29,6 +31,7 @@ void main() {
       );
       try {
         expect(find.text('EVIA-SERVER-17'), findsOneWidget);
+        expect(find.text('Demo: xác nhận đã quét'), findsNothing);
         missing = true;
         c.invalidate(flow1TicketProvider('server-event-17'));
         await tester.pumpAndSettle();
@@ -198,9 +201,11 @@ void main() {
     'ticket demo button waits for server and replaces QR with confirmed state',
     (tester) async {
       var attended = false;
+      final confirmation = Completer<void>();
       final backend = Flow1TestBackend()..registered = true;
       backend.handle = (name, input) async {
         if (name == 'demoConfirmAttendance') {
+          await confirmation.future;
           attended = true;
           return {
             'eventId': 'server-event-17',
@@ -237,12 +242,17 @@ void main() {
         backend,
         '/my-events/ticket?event=server-event-17',
       );
-      await tester.scrollUntilVisible(
-        find.text('Demo: xác nhận đã quét'),
-        250,
-        scrollable: find.byType(Scrollable).first,
+      final button = find.widgetWithText(TextButton, 'Demo: xác nhận đã quét');
+      expect(button.hitTestable(), findsOneWidget);
+      expect(
+        find.ancestor(of: button, matching: find.byType(Scrollable)),
+        findsNothing,
       );
-      await tester.tap(find.text('Demo: xác nhận đã quét'));
+      await tester.tap(button);
+      await tester.pump();
+      expect(tester.widget<TextButton>(button).onPressed, isNull);
+      expect(find.text('Attendance confirmed'), findsNothing);
+      confirmation.complete();
       await tester.pumpAndSettle();
       expect(find.text('Attendance confirmed'), findsWidgets);
       expect(find.text('Demo: xác nhận đã quét'), findsNothing);

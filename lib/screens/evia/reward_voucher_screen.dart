@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../viewmodels/flow3_view_model.dart';
+import '../../widgets/status_widgets.dart';
+import '../../core/utils/exception_mapper.dart';
 
 import '../../core/constants/activity_assets.dart';
 import '../../data/mock/activity_mock_data.dart';
@@ -64,15 +69,15 @@ class RewardsLockerScreen extends ConsumerWidget {
                 activeColor: ActivityTheme.action,
                 activeForeground: AppColors.surface,
                 labels: [
-                  'Available (${state.receipts.length})',
-                  'Used & Expired (${ActivityMockData.archivedRewards.length})',
+                  'Available (${vm.availableReceipts.length})',
+                  'Used & Expired (${vm.archivedReceipts.length})',
                 ],
                 selected: state.usedRewards ? 1 : 0,
                 onSelected: (index) => vm.selectLockerTab(index == 1),
               ),
               const SizedBox(height: AppSpacing.lg),
               if (state.usedRewards)
-                for (final archived in ActivityMockData.archivedRewards)
+                for (final archived in vm.archivedReceipts)
                   Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: EviaCard(
@@ -83,8 +88,9 @@ class RewardsLockerScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(
                               AppRadius.medium,
                             ),
-                            child: Image.asset(
+                            child: catalogImage(
                               archived.reward.image,
+                              ActivityMockData.rewards.first.image,
                               width: EviaTheme.compactThumbnail,
                               height: EviaTheme.compactThumbnail,
                               fit: BoxFit.cover,
@@ -121,7 +127,7 @@ class RewardsLockerScreen extends ConsumerWidget {
                       ),
                     ),
                   )
-              else if (state.receipts.isEmpty)
+              else if (vm.availableReceipts.isEmpty)
                 EviaCard(
                   child: Column(
                     children: [
@@ -139,7 +145,7 @@ class RewardsLockerScreen extends ConsumerWidget {
                   ),
                 )
               else
-                for (final receipt in state.receipts)
+                for (final receipt in vm.availableReceipts)
                   Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: Material(
@@ -161,8 +167,9 @@ class RewardsLockerScreen extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(
                                       AppRadius.medium,
                                     ),
-                                    child: Image.asset(
+                                    child: catalogImage(
                                       receipt.reward.image,
+                                      ActivityMockData.rewards.first.image,
                                       width:
                                           EviaTheme.thumbnail - AppSpacing.sm,
                                       height:
@@ -176,8 +183,10 @@ class RewardsLockerScreen extends ConsumerWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const EventBadge(
-                                          'Saved demo reward',
+                                        EventBadge(
+                                          vm.rewardsLive
+                                              ? vm.receiptStatus(receipt)
+                                              : 'Saved demo reward',
                                           color: AppColors.successSurface,
                                           foreground: AppColors.success,
                                         ),
@@ -220,8 +229,10 @@ class RewardsLockerScreen extends ConsumerWidget {
                     ),
                   ),
               const SizedBox(height: AppSpacing.lg),
-              const ActivityInfo(
-                'Demo rewards are stored only during this app session.',
+              ActivityInfo(
+                vm.rewardsLive
+                    ? 'Your redeemed rewards are saved to your account.'
+                    : 'Demo rewards are stored only during this app session.',
                 icon: ActivityIcon('2083:3267', 'imgMargin'),
               ),
             ],
@@ -244,6 +255,30 @@ class RewardVoucherScreen extends ConsumerWidget {
       return const _MissingReward(title: 'No reward selected');
     }
     final reward = receipt.reward;
+    final usable = receipt.available(DateTime.now().toUtc());
+    final remote = vm.rewardsLive && receipt.voucherId != null && usable
+        ? ref.watch(voucherCodeProvider(receipt.voucherId!))
+        : null;
+    if (remote != null &&
+        (remote.isLoading || remote.hasError || !remote.hasValue)) {
+      return EviaPage(
+        header: const ActivityHeader('My Reward'),
+        child: Center(
+          child: remote.hasError
+              ? AppErrorWidget(
+                  message: ExceptionMapper.map(remote.error!).message,
+                  onRetry: () {
+                    ref.invalidate(voucherCodeProvider(receipt.voucherId!));
+                    ref.read(flow3ViewModelProvider.notifier).refresh();
+                  },
+                )
+              : const AppLoadingWidget(),
+        ),
+      );
+    }
+    final displayCode =
+        remote?.asData?.value['code'] as String? ?? receipt.code;
+    final payload = remote?.asData?.value['qrPayload'] as String?;
     return EviaPage(
       header: const ActivityHeader(
         'My Reward',
@@ -256,9 +291,11 @@ class RewardVoucherScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: AppSpacing.lg),
-            const Center(
+            Center(
               child: EventBadge(
-                'Saved demo reward',
+                vm.rewardsLive
+                    ? vm.receiptStatus(receipt)
+                    : 'Saved demo reward',
                 color: AppColors.successSurface,
                 foreground: AppColors.success,
               ),
@@ -279,7 +316,9 @@ class RewardVoucherScreen extends ConsumerWidget {
             EviaCard(
               child: Column(
                 children: [
-                  if (reward.id == 'cafe') ...[
+                  if (vm.rewardsLive && payload != null)
+                    QrImageView(data: payload, size: 208)
+                  else if (!vm.rewardsLive && reward.id == 'cafe') ...[
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
                       child: ActivityIcon('2083:4059', 'imgSvg'),
@@ -292,8 +331,9 @@ class RewardVoucherScreen extends ConsumerWidget {
                   ] else
                     ClipRRect(
                       borderRadius: BorderRadius.circular(AppRadius.medium),
-                      child: Image.asset(
+                      child: catalogImage(
                         reward.image,
+                        ActivityMockData.rewards.first.image,
                         height: ActivityTheme.detailImageHeight,
                         fit: BoxFit.contain,
                       ),
@@ -307,17 +347,22 @@ class RewardVoucherScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'DEMO REWARD CODE',
+                              Text(
+                                vm.rewardsLive
+                                    ? receipt.voucherId == null
+                                          ? 'REDEMPTION ID'
+                                          : 'VOUCHER CODE'
+                                    : 'DEMO REWARD CODE',
                                 style: EviaTheme.caption,
                               ),
-                              Text(receipt.code, style: ActivityTheme.code),
+                              Text(displayCode, style: ActivityTheme.code),
                             ],
                           ),
                         ),
                         TextButton(
-                          onPressed: () =>
-                              copyActivityCode(context, receipt.code),
+                          onPressed: vm.rewardsLive && !usable
+                              ? null
+                              : () => copyActivityCode(context, displayCode),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -339,9 +384,11 @@ class RewardVoucherScreen extends ConsumerWidget {
             EviaCard(
               child: Column(
                 children: [
-                  const DetailRow(
+                  DetailRow(
                     'Status',
-                    'Saved in this session',
+                    vm.rewardsLive
+                        ? vm.receiptStatus(receipt)
+                        : 'Saved in this session',
                     color: AppColors.success,
                     icon: ActivityIcon('2083:4059', 'imgContainer1'),
                   ),
@@ -361,8 +408,12 @@ class RewardVoucherScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            const ActivityInfo(
-              'Demo preview. Real reward verification is not connected.',
+            ActivityInfo(
+              vm.rewardsLive
+                  ? reward.fulfillmentType == 'physical'
+                        ? reward.instructions
+                        : 'Present the voucher for admin verification. Each voucher can be used once.'
+                  : 'Demo preview. Real reward verification is not connected.',
               icon: ActivityIcon('2083:4059', 'imgIcon'),
             ),
           ],
@@ -404,7 +455,8 @@ class RedemptionSuccessScreen extends ConsumerWidget {
   const RedemptionSuccessScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final receipt = ref.watch(activityViewModelProvider).receipt;
+    ref.watch(activityViewModelProvider);
+    final receipt = ref.read(activityViewModelProvider.notifier).lastReceipt;
     final vm = ref.read(activityViewModelProvider.notifier);
     if (receipt == null) {
       return const _MissingReward(title: 'No redemption to display');
@@ -456,7 +508,9 @@ class RedemptionSuccessScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              ref.read(activityViewModelProvider.notifier).demoAvailable
+              vm.rewardsLive
+                  ? 'Your reward has been saved to My Rewards.'
+                  : ref.read(activityViewModelProvider.notifier).demoAvailable
                   ? 'Demo redemption complete. No real reward was issued.'
                   : 'Preview result only. The coin API is not connected.',
               textAlign: TextAlign.center,

@@ -7,6 +7,12 @@
 > RemoteConfigService. Web Admin QA dùng trình kiểm thử Windows để tạo crash
 > trên máy ảo Android và mở Firebase Console để xem kết quả.
 > [Phạm vi và vận hành](ADMIN_WEB_PLAN.md).
+> **Flow 3 — 06/11/2026:** màn Rewards gốc → ActivityViewModel/Flow3ViewModel →
+> Flow1Repository → BackendService/FirebaseBackendService. Flow3Snapshot giữ
+> Daily, ví, catalog, ledger, milestones và receipts của account hiện tại.
+> SDK vẫn chỉ ở service; loading/error/retry dùng widget hiện có. Auth/lifecycle,
+> duplicate actions và khôi phục receipt nằm ở ViewModel. Các mô tả pending/
+> preview của Rewards dưới đây là lịch sử. [Contract](FLOW3_INTEGRATION.md).
 
 > **Ticket cache fix — 05/11/2026:** ticket provider tạo event presentation từ
 > response `getTicket`; View không dùng My Events cache để kết luận có vé hay

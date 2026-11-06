@@ -43,6 +43,16 @@ bật. Trước phát hành thật, admin bỏ `demoAttendanceEnabled` hoặc đ
 Đây là attendance demo có ghi Firebase/xu thật trong dataset demo, không phải
 bằng chứng staff đã quét QR hoặc dữ liệu attendance thực tế.
 
+Cập nhật theo yêu cầu owner ngày 05/11/2026: bật thêm `isDemo` và
+`demoAttendanceEnabled` cho đúng tài khoản sở hữu vé được owner gửi trên chat,
+thuộc sự kiện `demo-mobile-workshop`; các field hồ sơ khác giữ nguyên. Backup
+và kiểm tra nằm trong `.local/` được ignore vì có dữ liệu tài khoản. Không bấm
+xác nhận thay owner hoặc ghi attendance trong bước bật quyền. Nút chuyển vào
+footer cố định; vẫn chỉ có trong debug và cần sự kiện demo/vé active.
+Đã build/cài APK mới trên SM-G996N và mở đúng vé này: nút hiển thị ở footer
+ngay khi mở vé. Full Flutter suite 200/200 và analyze đạt. Không bấm nút trên
+vé của owner; hành vi chờ server/khóa nút/confirmed được kiểm bằng widget test.
+
 ## Kiểm tra
 
 - [Backend Emulator](emulator-tests.log): 59/59 PASS, có flags/Rules/receipt/

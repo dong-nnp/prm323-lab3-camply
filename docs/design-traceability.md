@@ -1,11 +1,22 @@
 # Design traceability — Evia
 
+> **Flow 3 — 06/11/2026:** nối dữ liệu/actions thật vào Rewards, milestones,
+> details/confirm/success, locker/voucher và history gốc. Giữ tokens, ảnh minh
+> họa fallback và thứ tự thành phần. Owner cho phép Flexible/xuống dòng ở các
+> hàng tràn khi chữ 2×; đã kiểm 360/412dp. Không cần sửa khung dialog: nguyên
+> nhân vùng chạm trong test là MediaQuery thiếu kích thước, đã sửa test helper.
+> QR thật dùng đúng ô hiện có; không thêm màn admin. [Evidence](../evidence/flow3-api-only/).
+
 > **Flow 2 — 05/11/2026:** nối dữ liệu/actions vào My Events, lịch, dialog hủy,
 > vé, check-in và Notifications cũ. Camera thật thay ảnh preview trong đúng khung
 > cũ khi live; theme/tokens/assets giữ nguyên. Text trạng thái/giờ/xu lấy từ server.
 > Owner cho phép riêng nút nhỏ “Demo: xác nhận đã quét” trên vé và hộp thoại quyền
 > Android khi mở Notifications. Không thêm màn staff hoặc ô mã trên vé.
 > [Evidence và giới hạn](../evidence/flow2-api-only/).
+
+> **Nút demo trên vé — 05/11/2026:** theo yêu cầu owner, đưa nút nhỏ hiện có
+> vào footer cố định để bấm được mà không cuộn xuống dưới QR. Giữ nguyên phần
+> nội dung vé, gọi cùng API demo có kiểm quyền trên server và khóa nút khi xử lý.
 
 > **Email mở mọi domain 05/11/2026:** chỉ đổi text label University Email → Email
 > và nội dung lỗi để phản ánh policy mới; không đổi bố cục/style/assets hoặc thêm

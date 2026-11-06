@@ -248,7 +248,11 @@ class _RewardCard extends ConsumerWidget {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.asset(reward.image, fit: BoxFit.cover),
+                    child: catalogImage(
+                      reward.image,
+                      ActivityMockData.rewards.first.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Positioned(
                     left: AppSpacing.sm,
@@ -499,9 +503,8 @@ class _DailyCheckInState extends ConsumerState<_DailyCheckIn> {
 class _MilestoneSummary extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(
-      activityViewModelProvider.select((s) => s.verified.length),
-    );
+    ref.watch(activityViewModelProvider);
+    final count = ref.read(activityViewModelProvider.notifier).verifiedCount;
     final vm = ref.read(activityViewModelProvider.notifier);
     final next = vm.nextMilestone;
     return EviaCard(
@@ -527,9 +530,11 @@ class _MilestoneSummary extends ConsumerWidget {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: () => context.push('/rewards/milestones'),
-                child: const Text('View all'),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => context.push('/rewards/milestones'),
+                  child: const Text('View all'),
+                ),
               ),
             ],
           ),
@@ -575,7 +580,8 @@ class _MilestoneSummary extends ConsumerWidget {
                     ],
                   ),
                 ),
-                if (next != null) EventBadge('+${next.milestone.coins} COINS'),
+                if (next != null)
+                  Flexible(child: EventBadge('+${next.milestone.coins} COINS')),
               ],
             ),
           ),

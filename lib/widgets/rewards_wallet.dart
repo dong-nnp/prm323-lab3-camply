@@ -15,7 +15,8 @@ class RewardsWallet extends ConsumerWidget {
   final String screen;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(activityViewModelProvider);
+    ref.watch(activityViewModelProvider);
+    final vm = ref.read(activityViewModelProvider.notifier);
     final earn = screen == '2083:3522';
     final history = screen == '2083:4356';
     final bg = history
@@ -77,7 +78,7 @@ class RewardsWallet extends ConsumerWidget {
                               const SizedBox(width: AppSpacing.xs),
                               Flexible(
                                 child: Text(
-                                  '${state.available}',
+                                  '${vm.rewardAvailable}',
                                   style: ActivityTheme.balance,
                                 ),
                               ),
@@ -174,7 +175,7 @@ class RewardsWallet extends ConsumerWidget {
                           Flexible(
                             fit: FlexFit.tight,
                             child: Text(
-                              '${state.deposits} coins',
+                              '${vm.rewardHeld} coins',
                               textAlign: TextAlign.right,
                               style: EviaTheme.label,
                             ),

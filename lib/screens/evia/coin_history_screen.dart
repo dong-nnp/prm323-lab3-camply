@@ -123,9 +123,10 @@ class _CoinEntryRow extends StatelessWidget {
         Expanded(
           flex: 2,
           child: Text(
-            deposit
-                ? '${entry.amount} held'
-                : '${earned ? '+' : ''}${entry.amount} coins',
+            entry.amountLabel ??
+                (deposit
+                    ? '${entry.amount} held'
+                    : '${earned ? '+' : ''}${entry.amount} coins'),
             textAlign: TextAlign.right,
             style: EviaTheme.label.copyWith(
               color: deposit

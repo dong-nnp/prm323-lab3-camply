@@ -80,7 +80,10 @@ Future<ProviderContainer> open(
     UncontrolledProviderScope(
       container: c,
       child: MediaQuery(
-        data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+        data: MediaQueryData(
+          size: Size(width, 884),
+          textScaler: TextScaler.linear(textScale),
+        ),
         child: const LabApp(),
       ),
     ),
