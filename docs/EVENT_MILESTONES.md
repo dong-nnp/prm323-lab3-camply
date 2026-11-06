@@ -43,12 +43,11 @@ signup và Monthly Gift. Giao diện Flutter chưa được nối trong task Fir
 - Claim + ví + ledger + receipt commit cùng transaction. OperationKind
   `milestone`, operationId = milestone ID, không dùng requestId mới mỗi lần bấm.
   Retry/kết nối lại/thiết bị khác trả receipt cũ; không cộng thêm xu.
-- `milestone_admins/{uid}` = `{active:true}` và Firebase Auth custom claim
-  `admin:true` cùng bắt buộc để quản lý. Không tự nâng quyền hoặc gán role cho
+- Từ 06/11/2026: custom claim `admin:true` và profile active cho phép quản lý
+  qua Flutter Web; không cần `milestone_admins` allowlist. Không tự nâng quyền hoặc gán role cho
   tài khoản chưa được chủ dự án chỉ định. Firebase IAM owner vẫn có thể quản lý
   catalog trong Console, nhưng thay đổi phải tăng version và giữ nguyên IDs/
-  snapshots; nên dùng API để có audit và optimistic locking. App admin sau này
-  gọi API được bảo vệ. Chưa gán milestone-admin role cho tài khoản thật nào.
+  snapshots; dùng API để có audit và optimistic locking. Xem [admin web](ADMIN_WEB_PLAN.md).
 - `milestone_audit/{id}` lưu người sửa, before/after, action và thời gian,
   server-only. Không để actor UID/audit trong public milestone documents.
 - Firestore Rules chỉ public-read definitions active; owner-read claim của mình;

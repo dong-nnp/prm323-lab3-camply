@@ -1,0 +1,31 @@
+{
+  "project": "prm393-31822",
+  "checkedAt": "2026-11-05T21:27:02.803Z",
+  "accepted": [
+    {
+      "mode": "foreground",
+      "id": "demo-push-8c46357f-b83b-4f03-9880-49bde6375760",
+      "timestamp": "2026-11-05T21:20:34.777287Z",
+      "revision": "delivernotification-00004-yev",
+      "successCount": 1,
+      "failureCount": 0
+    },
+    {
+      "mode": "background",
+      "id": "demo-push-bf3b9821-4448-4f89-916b-59a5e9902111",
+      "timestamp": "2026-11-05T21:21:31.839305Z",
+      "revision": "delivernotification-00004-yev",
+      "successCount": 1,
+      "failureCount": 0
+    },
+    {
+      "mode": "terminated",
+      "id": "demo-push-fb4689d6-c6bf-4dc9-ae08-5ddd3e19a8f9",
+      "timestamp": "2026-11-05T21:25:13.293747Z",
+      "revision": "delivernotification-00004-yev",
+      "successCount": 1,
+      "failureCount": 0
+    }
+  ],
+  "meaning": "FCM acceptance only; device/banner proof is recorded separately."
+}

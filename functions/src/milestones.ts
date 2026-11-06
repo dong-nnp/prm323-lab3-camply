@@ -59,7 +59,7 @@ export function milestones(db: Firestore, clock: () => Date) {
       const ref = db.doc(`milestones/${milestone.id}`), auditRef = db.collection('milestone_audit').doc();
       return db.runTransaction(async tx => {
         await activeUser(tx, db, uid);
-        if (actor?.token.admin !== true || (await tx.get(db.doc(`milestone_admins/${uid}`))).get('active') !== true) fail('FORBIDDEN_ADMIN', 'permission-denied');
+        if (actor?.token.admin !== true) fail('FORBIDDEN_ADMIN', 'permission-denied');
         const priorDoc = await tx.get(ref), prior = priorDoc.exists ? definition(priorDoc) : null;
         if ((prior?.version ?? 0) !== expectedVersion) fail('VERSION_CONFLICT', 'aborted');
         // Definition changes affect unclaimed users; immutable claim snapshots preserve earned awards.

@@ -1,0 +1,224 @@
+{
+  "project": "prm393-31822",
+  "function": "getAdminAnalyticsReport",
+  "checkedAt": "2026-11-06T02:52:39.799Z",
+  "reports": [
+    {
+      "source": "android",
+      "days": 7,
+      "scope": "android",
+      "rows": 4,
+      "items": [
+        {
+          "name": "first_open",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "logout",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "session_start",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "user_engagement",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    },
+    {
+      "source": "android",
+      "days": 30,
+      "scope": "android",
+      "rows": 4,
+      "items": [
+        {
+          "name": "first_open",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "logout",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "session_start",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "user_engagement",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    },
+    {
+      "source": "web",
+      "days": 7,
+      "scope": "web",
+      "rows": 5,
+      "items": [
+        {
+          "name": "admin_remote_config_published",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "page_view",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "session_start",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "user_engagement",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "first_visit",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    },
+    {
+      "source": "web",
+      "days": 30,
+      "scope": "web",
+      "rows": 5,
+      "items": [
+        {
+          "name": "admin_remote_config_published",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "page_view",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "session_start",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "user_engagement",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "first_visit",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    },
+    {
+      "source": "configured",
+      "days": 7,
+      "scope": "property",
+      "rows": 7,
+      "items": [
+        {
+          "name": "session_start",
+          "count": "3",
+          "users": "2"
+        },
+        {
+          "name": "user_engagement",
+          "count": "3",
+          "users": "2"
+        },
+        {
+          "name": "admin_remote_config_published",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "page_view",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "first_open",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "first_visit",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "logout",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    },
+    {
+      "source": "configured",
+      "days": 30,
+      "scope": "property",
+      "rows": 7,
+      "items": [
+        {
+          "name": "session_start",
+          "count": "3",
+          "users": "2"
+        },
+        {
+          "name": "user_engagement",
+          "count": "3",
+          "users": "2"
+        },
+        {
+          "name": "admin_remote_config_published",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "page_view",
+          "count": "2",
+          "users": "1"
+        },
+        {
+          "name": "first_open",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "first_visit",
+          "count": "1",
+          "users": "1"
+        },
+        {
+          "name": "logout",
+          "count": "1",
+          "users": "1"
+        }
+      ]
+    }
+  ],
+  "legacyCaller": {
+    "status": 200,
+    "scope": "property"
+  },
+  "guards": {
+    "anonymous": "UNAUTHENTICATED",
+    "staff": "PERMISSION_DENIED",
+    "invalidSource": "INVALID_ARGUMENT"
+  }
+}

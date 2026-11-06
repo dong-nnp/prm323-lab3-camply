@@ -1,5 +1,14 @@
 # Test plan — template
 
+> **Resolve merge — 06/11/2026:** giữ badge streak căn phải và dùng `streakDay`
+> từ lịch API mới; gộp tài liệu pytest/Gemini với DeepSeek. `flutter pub get`
+> đạt, format 2 file Dart không đổi, `flutter analyze --no-pub` sạch.
+> Chạy `flow3_view_model_test.dart` + `flow3_screens_test.dart`: **16 đạt, 1 fail**.
+> Test `network error offers retry and never falls back to mock rewards` chưa thấy
+> `Rewards offline`: provider giữ `AsyncLoading(error: ..., retrying)` do automatic
+> retry. Chạy riêng test này cũng fail; chưa đổi retry policy trong task resolve
+> conflict. Chưa build APK/chạy emulator hoặc xác nhận toàn suite đạt.
+
 > **ARTEMIS implementation — 06/11/2026:** suite đã định nghĩa 21 ca/biến thể,
 > collect đủ 63 lượt (3/ca); đợt `20261106T023224Z-3cfd8a66` đạt TC04 3/3 và
 > TC05 3/3 (6/6 trong 519 giây). Chưa đạt đủ các ca và coverage của đề.
@@ -26,6 +35,18 @@
 > Có kiểm tra admin đổi lịch/ngày 8, giữ số xu receipt đã claim và từ chối lịch
 > thiếu/âm/sai độ dài. Analyzer 6 file liên quan sạch, `git diff --check` đạt.
 > Không chạy lại full suite hoặc native smoke trong lượt nối lịch thưởng này.
+> **Merge admin — 06/11/2026:** giữ Analytics theo nguồn, event upload và thông báo trực tiếp cùng Daily Check-in/Crash QA từ nhánh admin. Đã gỡ hàm `claimDaily` trùng, cập nhật fixture lịch thưởng và giữ action/loading/ví qua Flow3. Validation sau sửa: admin 14/14 + build, backend Emulator 85/85 + TypeScript build, Flutter 234/234, `flutter analyze --no-pub lib test` sạch, APK debug build đạt. Chưa chạy APK trên thiết bị, chưa deploy. Logs trong `.local/merge-*.log` (Git ignored).
+
+> **Gửi thông báo trực tiếp — 06/11/2026:** admin 15/15 + build; backend 84/84 Emulator tests + TypeScript build đạt. Browser form/danh sách thật và responsive 360/412px đã kiểm. Callable mới đã deploy; live guards anonymous/staff/invalid payload đạt, chưa gửi push thật trong lượt này. [Evidence](../evidence/admin-notifications/README.md).
+
+> **Form sự kiện/Storage — 06/11/2026:** admin 12/12 + build, đầy đủ 81/81 backend Emulator tests + TypeScript build đạt. Browser form/preview và 360/412px đã kiểm; Storage Rules đã deploy, upload/download hash thật và cleanup QA đạt. Không tạo event cloud, không đổi Dart/native nên không chạy lại Flutter. [Evidence và giới hạn](../evidence/event-editor/README.md).
+
+> **Analytics — 06/11/2026:** validation mới: Flutter 234/234, analyze sạch, admin 8/8 + build, backend query 2/2 + TypeScript build. APK bật Analytics và mặc định đều build/cold-start trên Android thật. Đã deploy riêng callable Analytics, kiểm API thật và bảng Chrome Android; chưa nghiệm thu parameters của toàn bộ events trong DebugView. [Evidence báo cáo live](../evidence/analytics-report-live/README.md). Tests mới kiểm schema/PII, thứ tự UID/logout, retry receipt không lặp, lỗi SDK không phá business action, baseline attendance, CSV success/cancel/error/đổi account và native channel contract. Node tests kiểm GA4 query/filter và nhãn nguồn; không coi fakes là DebugView/cloud evidence. [Cách nghiệm thu thật](ANALYTICS_INTEGRATION.md).
+
+> **Push Android — 06/11/2026:** 216/216 Flutter tests, 64/64 backend Emulator
+> tests, analyze sạch, APK debug build/cài đạt. Banner FCM thật đã thấy khi app
+> đang mở và tiến trình đóng; app nền nhận notification hệ thống. Tap foreground
+> mở Career, tap cold-start mở Workshop đúng payload. [Evidence/giới hạn](../evidence/push-notifications/).
 
 > **Flow 3 — 06/11/2026:** 213/213 Flutter tests, 62/62 backend Emulator tests,
 > analyze sạch, APK debug Firebase thật build đạt. Tests bao phủ Daily chờ server,
@@ -33,6 +54,12 @@
 > ví mới nhất, locker/QR, voucher used và network retry. Widget test dùng viewport
 > thật 360/412dp, chữ 2×, bấm nút xác nhận thật trong test. Giao dịch live dùng
 > seeded operator; native và giới hạn tách riêng tại [evidence](../evidence/flow3-api-only/).
+> **Evia Admin web.** Kiểm tra tạo, sửa, xuất bản sự kiện và mẫu voucher
+> bằng Firestore Emulator. Bộ test bao gồm từ chối user thiếu claim, xung
+> đột khi tồn kho thay đổi và giữ các điều kiện của Remote Config. Đã đăng
+> nhập trên trình duyệt và tạo, kích hoạt mẫu voucher từ web. Cần nghiệm
+> thu FCM, Remote Config, GA4 và Crashlytics BigQuery trên dự án thật.
+> [Các bước chạy và nghiệm thu](../admin/README.md).
 
 > **Ticket cache fix — 05/11/2026:** 195/195 Flutter tests đạt; tái hiện vé tồn
 > tại nhưng My Events cache rỗng, refresh error có previous data, vé revoked,
@@ -253,6 +280,9 @@ lượt sửa này (không thay thế các bằng chứng lịch sử ở mục 
   S00 (đã có test riêng), không bỏ qua hay che assertion.
 
 Trạng thái tại thời điểm mục lịch sử này: có unit/widget tests, chưa có ARTEMIS.
+Các đợt sau đã thêm pytest ARTEMIS và runner DeepSeek với smoke scenario
+Welcome/Login/validation; xem [trạng thái từng bộ chạy](../e2e_test/README.md).
+CLI thành công không tự xác nhận scenario pass; đối chiếu từng check và trace.
 Tài liệu này là kế hoạch, không xác nhận pass/fail cho các bước chưa chạy.
 
 ## Firebase development setup — run 04/11/2026
@@ -357,7 +387,8 @@ backend integration.
 
 TODO: native Google Sign-In cancel/failure, Storage Rules deny/allow theo quyền,
 FCM permission/token/background delivery, Remote Config fetch/cache, Analytics
-DebugView và Crashlytics test crash chỉ sau tích hợp thật. Xác nhận công cụ
+DebugView. Xem [ca kiểm thử Crashlytics](EVIA_Crashlytics_Implementation.md)
+để nghiệm thu Web Admin và Android QA trên Firebase. Xác nhận công cụ
 Google ARTEMIS trước khi thêm E2E vào `e2e_test/`.
 
 ## Đợt 3 — Registration / Profile
@@ -573,3 +604,15 @@ Các ca đăng nhập dùng phiên kiểm thử, không xác nhận tích hợp 
   trên vé này để owner tự demo. Không ghi attendance hoặc sửa ví trong lượt này.
 - Bật thêm quyền demo server cho đúng chủ vé, kiểm tra các field hồ sơ khác giữ
   nguyên. Không thay đổi Functions/Rules hoặc quyền staff/admin.
+
+## Flutter Admin — 06/11/2026
+
+- Web độc lập: format/analyze và 11/11 tests đạt; auth guard signed-out/staff,
+  pending/retry, schema mapping/giờ VN, rendered sections 360/412/1440 với text 2×.
+- Backend full Emulator suite 76/76 đạt; admin không cần staff assignment hoặc
+  allowlist voucher/milestone, giữ security/receipt/stock/counter checks.
+- Mobile regression: analyze, 218/218 tests đạt; không đổi code app sinh viên.
+- Release web build đạt. Đăng nhập/read và tạo CLB chưa công khai đã kiểm trong
+  browser trên Firebase thật. Không claim đã quét camera/push portal end-to-end.
+- Cloud status và giới hạn Analytics/Crashlytics/Hosting ghi tại
+  [evidence/admin-flutter](../evidence/admin-flutter/).

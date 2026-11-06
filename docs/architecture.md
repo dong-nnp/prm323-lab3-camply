@@ -1,11 +1,33 @@
 # Kiến trúc source base
 
+> **Gửi thông báo Vite admin:** `notifications.js` điều phối form/retry/session, `firebase.js` gọi callable `sendAdminNotification`. Backend kiểm quyền/recipient và ghi inbox idempotent; trigger FCM và điều hướng inbox của mobile giữ nguyên. [Contract](ADMIN_NOTIFICATIONS.md).
+
+> **Admin event editor — 06/11/2026:** `editor.js` dựng form/ràng buộc trạng thái; `catalogEntry` bổ sung technical defaults, giữ hidden fields khi sửa; Firebase adapter quản lý Storage upload/progress/URL. Cloud Rules giới hạn active admin và prefix event-images, đọc profile qua service agent. Mobile Storage adapter vẫn pending; không coi upload admin là tích hợp export/upload report trong app. [Chi tiết](ADMIN_EVENT_EDITOR.md).
+
+> **Analytics — 06/11/2026:** View → ViewModel → AnalyticsRepository → AnalyticsService/FirebaseAnalyticsService; queue identity/events, schema allowlist và dedupe RAM. Xuất CSV: CoinHistoryScreen → ReportExportViewModel → ReportExportRepository → AndroidReportExportService → native document picker. [Contract và giới hạn](ANALYTICS_INTEGRATION.md).
+
+> **Admin Flutter Web — 06/11/2026:** package độc lập `admin_flutter/` giữ
+> View → Riverpod ViewModel → Repository → AdminService → SDK adapter.
+> SDK bootstrap trong service, models thuần Dart, fakes chỉ trong tests.
+> Một admin làm hết, không phân công staff. Server quyết định quyền, giờ check-in,
+> capacity, stock, ví và receipt. [Hướng dẫn](../admin_flutter/README.md), [API](ADMIN_WEB_PLAN.md).
+
+> **Push Android — 06/11/2026:** FirebaseMessagingService tạo kênh HIGH và hiển
+> thị foreground FCM qua MethodChannel → Android NotificationManager. MainActivity
+> chỉ host native bridge; payload/tap tiếp tục qua FlutterFire và ViewModel/router
+> hiện có. Backend deliverPush giữ cleanup/retry và thêm log kết quả FCM theo ID.
+> [Contract](PUSH_NOTIFICATIONS.md).
+
 > **Flow 3 — 06/11/2026:** màn Rewards gốc → ActivityViewModel/Flow3ViewModel →
 > Flow1Repository → BackendService/FirebaseBackendService. Flow3Snapshot giữ
 > Daily, ví, catalog, ledger, milestones và receipts của account hiện tại.
 > SDK vẫn chỉ ở service; loading/error/retry dùng widget hiện có. Auth/lifecycle,
 > duplicate actions và khôi phục receipt nằm ở ViewModel. Các mô tả pending/
 > preview của Rewards dưới đây là lịch sử. [Contract](FLOW3_INTEGRATION.md).
+> **Evia Admin web.** Vite dùng Firebase Auth/callable cho catalog, thông báo,
+> Analytics theo nguồn và Daily Check-in rewards. Backend kiểm quyền admin,
+> ETag và đồng bộ policy Firestore. Crash QA dùng trình kiểm thử Windows cục bộ;
+> xem [contract](REMOTE_CONFIG_PLAN.md), [Crash QA](EVIA_Crashlytics_Implementation.md).
 
 > **Ticket cache fix — 05/11/2026:** ticket provider tạo event presentation từ
 > response `getTicket`; View không dùng My Events cache để kết luận có vé hay
@@ -150,7 +172,7 @@ test/
 ├── services/
 ├── viewmodels/
 └── widgets/
-e2e_test/                          # Python ARTEMIS suite; tách khỏi Flutter runtime
+e2e_test/                          # ARTEMIS pytest + DeepSeek smoke; ngoài app runtime
 firebase/
 ├── storage.rules                  # Own create-only PDF reports; local only
 └── remote-config-defaults.json     # {} chờ xác định keys; chưa tải vào SDK
@@ -281,7 +303,7 @@ Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `Bootstrap
 4. Khởi tạo lỗi hoặc quá 15 giây: hiển thị `AppError`, cho phép thử lại.
    Raw SDK error không được hiển thị cho người dùng.
 
-Không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
+Trong cấu hình nền tảng mặc định không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
 background messaging handlers hoặc Remote Config fetch trong foundation.
 Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-init.
 

@@ -1,0 +1,16 @@
+{
+  "default": {
+    "provider": "openai",
+    "model": "deepseek-flash",
+    "fallback": {
+      "provider": "openai",
+      "model": "deepseek-flash"
+    }
+  },
+  "flash": {
+    "max_turns": 20,
+    "step_summarizer": {
+      "enabled": false
+    }
+  }
+}

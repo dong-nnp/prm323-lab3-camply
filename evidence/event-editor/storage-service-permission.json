@@ -1,0 +1,8 @@
+{
+  "project": "prm393-31822",
+  "service": "Firebase Storage service agent",
+  "role": "roles/firebaserules.firestoreServiceAgent",
+  "previouslyGranted": false,
+  "verified": true,
+  "checkedAt": "2026-11-06T03:22:11.062Z"
+}

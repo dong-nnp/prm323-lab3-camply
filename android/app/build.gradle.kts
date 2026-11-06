@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -14,6 +16,12 @@ if (file("google-services.json").exists()) {
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
+val eviaDartDefines = providers.gradleProperty("dart-defines").orNull.orEmpty()
+    .split(',').filter { it.isNotEmpty() }
+    .map { String(Base64.getDecoder().decode(it), Charsets.UTF_8) }.toSet()
+val eviaAnalyticsEnabled = "FIREBASE_ENABLED=true" in eviaDartDefines &&
+    "ANALYTICS_ENABLED=true" in eviaDartDefines && "DEMO_AUTH=true" !in eviaDartDefines
+
 android {
     namespace = "com.example.prm393_lab03"
     compileSdk = flutter.compileSdkVersion
@@ -25,6 +33,7 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders["eviaAnalyticsDeactivated"] = (!eviaAnalyticsEnabled).toString()
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.prm393_lab03"
         // You can update the following values to match your application needs.
@@ -40,6 +49,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            val qaCrashlyticsEnabled = providers.gradleProperty("eviaQaCrashlyticsEnabled").orNull == "true"
+            manifestPlaceholders["eviaQaCrashlyticsEnabled"] = qaCrashlyticsEnabled.toString()
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.

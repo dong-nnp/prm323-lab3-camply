@@ -1,5 +1,11 @@
 # Dữ liệu và tài khoản vận hành demo — 05/11/2026
 
+> Cập nhật 06/11: admin hiện làm toàn bộ trên [Flutter Web](../admin_flutter/README.md),
+> không phân công staff. Claim admin + active profile đủ xác nhận vé/voucher/thành tựu;
+> allowlists/assignments trong bảng seed phía dưới là dữ liệu lịch sử, không bắt buộc cho admin.
+> Đã có API xác nhận giao quà vật lý. Có thêm CLB smoke test chưa công khai
+> `demo-admin-web-smoke`, tạo bằng form thật; không thêm followers/attendance/tiền giả.
+
 Người dùng yêu cầu trực tiếp: tự generate dữ liệu rồi thêm Firebase, sau này sửa;
 tự tạo tài khoản vận hành. Yêu cầu này thay thế giới hạn “chưa seed khi thiếu dữ
 liệu thật” trong các snapshot trước. Nội dung mới **cố ý là demo được cho phép**,

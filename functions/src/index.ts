@@ -8,8 +8,8 @@ import { setGlobalOptions } from 'firebase-functions/v2';
 import { createBackend } from './backend.js';
 import { REGION, PRODUCT_TIMEZONE } from './policy.js';
 import { createMaintenance } from './maintenance.js';
-import { key } from './shared.js';
 import { createEventNotifications } from './event_notifications.js';
+import { deliverPush } from './push_notifications.js';
 
 initializeApp();
 // Lab traffic fits fractional CPU and avoids exhausting the project's regional CPU quota.
@@ -61,6 +61,27 @@ export const getServerInfo = callable('getServerInfo');
 export const getEventMilestones = callable('getEventMilestones');
 export const claimEventMilestone = callable('claimEventMilestone');
 export const upsertEventMilestone = callable('upsertEventMilestone');
+export const listAdminEvents = callable('listAdminEvents');
+export const getAdminEvent = callable('getAdminEvent');
+export const createEvent = callable('createEvent');
+export const updateEvent = callable('updateEvent');
+export const publishEvent = callable('publishEvent');
+export const listAdminRewards = callable('listAdminRewards');
+export const getAdminReward = callable('getAdminReward');
+export const createReward = callable('createReward');
+export const updateReward = callable('updateReward');
+export const getAdminRemoteConfig = callable('getAdminRemoteConfig');
+export const publishAdminRemoteConfig = callable('publishAdminRemoteConfig');
+export const getAdminAnalyticsReport = callable('getAdminAnalyticsReport');
+export const getAdminCrashlyticsReport = callable('getAdminCrashlyticsReport');
+export const getOperatorContext = callable('getOperatorContext');
+export const listAdminRecords = callable('listAdminRecords');
+export const getAdminUser = callable('getAdminUser');
+export const upsertOrganizer = callable('upsertOrganizer');
+export const listOperatorEvents = callable('listOperatorEvents');
+export const sendAdminDemoNotification = callable('sendAdminDemoNotification');
+export const sendAdminNotification = callable('sendAdminNotification');
+export const confirmPhysicalReward = callable('confirmPhysicalReward');
 
 const maintenance = createMaintenance(db);
 const eventNotices = createEventNotifications(db);
@@ -82,19 +103,8 @@ export const noShowSchedule = onSchedule({ schedule: 'every 60 minutes', timeZon
 export const deliverNotification = onDocumentCreated({ document: 'notifications/{notificationId}', retry: true }, async event => {
   const notification = event.data?.data();
   if (!notification || process.env.FUNCTIONS_EMULATOR === 'true') return;
-  const devices = await db.collection(`users/${notification.uid}/devices`).limit(10).get();
-  if (devices.empty) return;
-  const response = await getMessaging().sendEachForMulticast({ tokens: devices.docs.map(d => d.get('token')), notification: { title: notification.title, body: notification.body }, android: { notification: { tag: event.params.notificationId } }, data: { notificationId: event.params.notificationId, entityType: notification.entityType ?? '', entityId: notification.entityId ?? '' } });
-  await Promise.all(response.responses.map(async (r, i) => {
-    if (!['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(r.error?.code ?? '')) return;
-    const sent = devices.docs[i];
-    await db.runTransaction(async tx => {
-      const current = await tx.get(sent.ref);
-      if (current.get('token') === sent.get('token')) {
-        tx.delete(sent.ref);
-        tx.delete(db.doc(`device_bindings/${key(sent.get('token'))}`));
-      }
-    });
-  }));
-  if (response.responses.some(r => r.error && !['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(r.error.code))) throw new Error('FCM_TRANSIENT_DELIVERY_FAILURE');
+  const result = await deliverPush(db, getMessaging(), event.params.notificationId, notification);
+  await event.data!.ref.update({ pushDispatch: { ...result, completedAt: new Date(), status: result.successCount ? 'accepted_by_fcm' : 'no_delivery' } });
+  // FCM acceptance is not a device display receipt.
+  console.info('FCM dispatch finished', { notificationId: event.params.notificationId, ...result });
 });

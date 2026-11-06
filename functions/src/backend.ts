@@ -7,9 +7,12 @@ import { rewards } from './rewards.js';
 import { queries } from './queries.js';
 import { milestones } from './milestones.js';
 import { demoAttendance } from './demo_attendance.js';
+import { adminCatalog } from './admin_catalog.js';
+import { adminIntegrations } from './admin_integrations.js';
+import { adminOperations } from './admin_operations.js';
 
 export function createBackend(db: Firestore, clock = () => new Date()) {
-  const handlers: Record<string, (actor: Actor | null, input: unknown) => Promise<Result>> = { ...accounts(db, clock), ...events(db, clock), ...rewards(db, clock), ...queries(db, clock), ...milestones(db, clock), ...demoAttendance(db, clock) };
+  const handlers: Record<string, (actor: Actor | null, input: unknown) => Promise<Result>> = { ...accounts(db, clock), ...events(db, clock), ...rewards(db, clock), ...queries(db, clock), ...milestones(db, clock), ...demoAttendance(db, clock), ...adminCatalog(db, clock), ...adminIntegrations(db), ...adminOperations(db, clock) };
   return {
     async invoke(name: string, actor: Actor | null, input: unknown = {}) {
       if (!handlers[name]) fail('UNKNOWN_OPERATION', 'not-found');

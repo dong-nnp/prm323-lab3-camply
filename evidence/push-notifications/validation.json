@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-11-05T21:28:04.1330298Z",
+  "flutterTests": 216,
+  "backendTests": 64,
+  "analyze": "No issues found",
+  "apkSha256": "3A363293B9AB8F87EF54F4A27A8D693F1DAAF4915B477C33865128319BCDE43E",
+  "device": "SM-G996N",
+  "androidChannel": "evia_events_v1",
+  "importance": 4,
+  "nativeProof": [
+    "foreground banner and tap",
+    "background system notification",
+    "terminated process banner and cold-start tap"
+  ],
+  "liveNotificationsCreated": 3,
+  "nativeLockedScreenChecked": false,
+  "newLiveEventFanoutTested": false,
+  "nativeScreensLayoutChanged": false
+}

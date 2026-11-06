@@ -83,6 +83,9 @@ final class PendingFirebaseServices
   Future<void> disable() async => throw _pending;
 
   @override
+  Future<void> setUserId(String? userId) async => throw _pending;
+
+  @override
   Future<void> logEvent(String name, {Map<String, Object>? parameters}) async =>
       throw _pending;
 

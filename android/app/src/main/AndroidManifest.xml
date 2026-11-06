@@ -9,9 +9,12 @@
         android:icon="@mipmap/ic_launcher">
         <!-- Telemetry stays off. FCM registration is enabled explicitly by the signed-in adapter. -->
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="${eviaAnalyticsDeactivated}" />
         <meta-data android:name="google_analytics_automatic_screen_reporting_enabled" android:value="false" />
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
         <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="evia_events_v1" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

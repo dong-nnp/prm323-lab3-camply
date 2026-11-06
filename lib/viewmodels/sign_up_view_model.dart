@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers/repository_providers.dart';
@@ -5,6 +7,7 @@ import '../core/utils/exception_mapper.dart';
 import '../models/account_creation_result.dart';
 import '../models/sign_up_state.dart';
 import '../core/utils/fpt_identity.dart';
+import 'authentication_view_model.dart';
 
 final signUpViewModelProvider =
     NotifierProvider.autoDispose<SignUpViewModel, SignUpState>(
@@ -69,6 +72,8 @@ class SignUpViewModel extends Notifier<SignUpState> {
     state = state.copy(errors: errors, verificationRequired: false);
     if (errors.isNotEmpty) return;
     state = state.copy(submission: SignUpSubmission.account);
+    final authentication = ref.read(authenticationViewModelProvider.notifier);
+    final analytics = ref.read(analyticsRepositoryProvider);
     try {
       final result = await ref
           .read(authenticationRepositoryProvider)
@@ -78,6 +83,13 @@ class SignUpViewModel extends Notifier<SignUpState> {
             password: password,
             acceptedTerms: state.acceptedTerms,
           );
+      if (result == AccountCreationResult.signedIn) {
+        authentication.recordSignUp();
+      } else {
+        unawaited(
+          analytics.track('sign_up', parameters: {'method': 'password'}),
+        );
+      }
       if (!ref.mounted) return;
       state = state.copy(
         submission: result == AccountCreationResult.signedIn
@@ -108,8 +120,10 @@ class SignUpViewModel extends Notifier<SignUpState> {
       errors: {},
       verificationRequired: false,
     );
+    final authentication = ref.read(authenticationViewModelProvider.notifier);
     try {
       await ref.read(authenticationRepositoryProvider).signInWithGoogle();
+      authentication.recordLogin('google');
       if (!ref.mounted) return;
       state = state.copy(
         submission: SignUpSubmission.waitingForSession,
@@ -121,6 +135,11 @@ class SignUpViewModel extends Notifier<SignUpState> {
   }
 
   void _showError(Object error, {required bool google}) {
+    unawaited(
+      ref
+          .read(analyticsRepositoryProvider)
+          .error(google ? 'login' : 'sign_up', error),
+    );
     final failure = ExceptionMapper.map(error);
     final errors = <String, String>{};
     String? message;

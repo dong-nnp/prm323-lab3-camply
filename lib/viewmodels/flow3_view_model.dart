@@ -190,6 +190,20 @@ class Flow3ViewModel extends AsyncNotifier<Flow3Snapshot> {
       await ref.read(flow1ViewModelProvider.notifier).refresh();
       return current();
     } catch (error) {
+      if (current()) {
+        unawaited(
+          ref
+              .read(analyticsRepositoryProvider)
+              .error(
+                name.startsWith('redeem:')
+                    ? 'redeem_reward'
+                    : name == 'daily'
+                    ? 'claim_daily'
+                    : 'claim_milestone',
+                error,
+              ),
+        );
+      }
       if (current() &&
           error is AppException &&
           [
@@ -276,10 +290,59 @@ class Flow3ViewModel extends AsyncNotifier<Flow3Snapshot> {
       }
       if (!ref.mounted || uid != _uid) return;
       _lastRedemptionId = result['redemptionId'] as String;
+      unawaited(
+        ref
+            .read(analyticsRepositoryProvider)
+            .track(
+              'redeem_reward',
+              once: input['requestId'] as String,
+              parameters: {
+                'reward_id': reward.id,
+                'cost_coins': input['expectedPriceCoins'] as int,
+                'fulfillment_type': reward.fulfillmentType,
+              },
+            ),
+      );
       // Retain receipt key until a fresh load succeeds, so a failed refresh cannot debit twice.
     },
   );
 }
+
+final rewardDetailViewModelProvider = FutureProvider.autoDispose
+    .family<void, String>((ref, id) async {
+      final uid = ref
+          .read(authenticationViewModelProvider)
+          .asData
+          ?.value
+          .userId;
+      final analytics = ref.read(analyticsRepositoryProvider);
+      try {
+        final data = await ref.read(flow3ViewModelProvider.future);
+        if (!ref.mounted ||
+            uid !=
+                ref
+                    .read(authenticationViewModelProvider)
+                    .asData
+                    ?.value
+                    .userId) {
+          return;
+        }
+        final reward = data.rewards.where((r) => r.id == id).firstOrNull;
+        if (reward != null) {
+          unawaited(
+            analytics.track(
+              'view_reward',
+              parameters: {
+                'reward_id': reward.id,
+                'price_coins': reward.redeemCost,
+              },
+            ),
+          );
+        }
+      } catch (error) {
+        if (ref.mounted) unawaited(analytics.error('view_reward', error));
+      }
+    });
 
 final voucherCodeProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, String>((ref, id) async {

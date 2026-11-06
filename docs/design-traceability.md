@@ -72,6 +72,23 @@
 > chi tiết và Rewards khi tải dữ liệu lần đầu. Giữ nội dung đã tải khi refresh,
 > Discover dùng pull-to-refresh. Các thao tác submit tiếp tục báo loading tại nút.
 > Không thêm dependency hoặc dùng dữ liệu giả để mô phỏng skeleton.
+> **Form gửi thông báo:** owner yêu cầu ô nhập và nút gửi để demo FCM không cần tạo sự kiện. Thêm chọn người nhận theo tên/email, textarea và trạng thái trong trang Thông báo Vite; tái sử dụng styles hiện có, kiểm 360/412px, không sửa Figma/mobile. [Chi tiết](ADMIN_NOTIFICATIONS.md).
+
+> **Form sự kiện Vite — 06/11/2026:** owner yêu cầu bớt thao tác và thay URL ảnh bằng upload. Đã bỏ technical inputs, dùng danh mục/CLB theo tên, preview ảnh và nhóm Tùy chọn thêm; giữ styles/form components hiện có. Không sửa giao diện sinh viên/Figma. [Evidence](../evidence/event-editor/README.md).
+
+> **Analytics — 06/11/2026:** giữ layout các luồng hiện có; thêm nút xuất CSV và thông báo kết quả trong Coin History theo phạm vi Analytics/Lab 3 được owner cho phép. Dùng AppButton/tokens, không claim nút mới có nguồn Figma. Admin Vite thêm nguồn dữ liệu, nhãn hành vi và link DebugView. [Chi tiết](ANALYTICS_INTEGRATION.md).
+
+> **Admin web — 06/11/2026:** Flutter Web mới ở `admin_flutter/`, dùng theme Evia
+> xanh/ink/lime, sidebar desktop và drawer hẹp. Không lấy đây làm thay đổi thiết kế
+> các màn sinh viên; toàn bộ `lib/`, assets và Android host giữ nguyên trong task.
+> Admin có form, loading/error/empty/retry, xác nhận trước publish/giao quà,
+> không có phân công staff. Đây là giao diện mới theo scope admin, không có claim
+> đã đối chiếu pixel với Figma. [Phạm vi](ADMIN_WEB_PLAN.md).
+
+> **Push Android — 06/11/2026:** dùng notification hệ thống Android cho FCM;
+> không đổi Widget/layout, màu, assets hoặc thứ tự thành phần trong app.
+> Thêm icon notification native và kênh HIGH để hiển thị banner ngoài màn app.
+> [Ảnh thật và giới hạn](../evidence/push-notifications/).
 
 > **Flow 3 — 06/11/2026:** nối dữ liệu/actions thật vào Rewards, milestones,
 > details/confirm/success, locker/voucher và history gốc. Giữ tokens, ảnh minh

@@ -21,6 +21,7 @@ import 'package:prm393_lab03/core/providers/service_providers.dart';
 import 'package:prm393_lab03/models/auth_session.dart';
 import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:prm393_lab03/models/flow1_models.dart';
+import 'package:prm393_lab03/services/crash_reporting_service.dart';
 import 'package:prm393_lab03/widgets/event_flow_widgets.dart';
 import 'package:prm393_lab03/widgets/evia_skeleton.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -28,6 +29,16 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../helpers/flow1_backend.dart';
 import '../helpers/startup_test_auth.dart';
 import '../helpers/sign_up_test_service.dart';
+
+class FailingCrashReporter implements CrashReportingService {
+  final errors = <Object>[];
+
+  @override
+  Future<void> recordError(Object error, StackTrace stackTrace) async {
+    errors.add(error);
+    throw StateError('Crash reporting unavailable');
+  }
+}
 
 Future<ProviderContainer> open(
   WidgetTester tester,
@@ -37,6 +48,7 @@ Future<ProviderContainer> open(
   double width = 390,
   double textScale = 1,
   Stream<AuthSession>? sessions,
+  CrashReportingService? crashReporting,
 }) async {
   tester.view.physicalSize = Size(width, 884);
   tester.view.devicePixelRatio = 1;
@@ -46,6 +58,8 @@ Future<ProviderContainer> open(
     overrides: [
       realBackendEnabledProvider.overrideWithValue(true),
       backendServiceProvider.overrideWithValue(backend),
+      if (crashReporting != null)
+        crashReportingServiceProvider.overrideWithValue(crashReporting),
       authenticationViewModelProvider.overrideWith(
         () => StartupTestAuth(
           sessions ??
@@ -357,8 +371,20 @@ void main() {
         code: 'unavailable',
         message: 'Network unavailable',
       );
-    await open(tester, backend, '/discover');
+    final crashReporting = FailingCrashReporter();
+    await open(tester, backend, '/discover', crashReporting: crashReporting);
     expect(find.text('Network unavailable'), findsOneWidget);
+    expect(crashReporting.errors, isNotEmpty);
+    expect(
+      crashReporting.errors,
+      everyElement(
+        isA<StateError>().having(
+          (error) => error.message,
+          'message',
+          'EVIA_DISCOVER_CATALOG_LOAD_FAILED',
+        ),
+      ),
+    );
     backend.handle = null;
     await tester.tap(find.text('Thử lại'));
     await tester.pumpAndSettle();
