@@ -1,0 +1,9 @@
+{
+  "instruction": "Test EVIA Android app com.example.prm393_lab03. On an account whose balance is below the fixture reward price, attempt redemption. Read visible error/disabled action, unchanged wallet and absence of a new receipt.\nTest setup (private test data): {\"login\": {\"method\": \"email_password\", \"email\": \"[REDACTED_TEST_SECRET]\", \"password\": \"[REDACTED_TEST_SECRET]\"}, \"instruction\": \"Start from Welcome, choose Log In and use the supplied dedicated test credentials. Do not use Google. Profile should show EVIA E2E.\", \"entities\": {\"reward_title\": \"[DEMO] Vé xem phim campus\"}, \"navigation\": \"Read your available balance in Rewards. Open the named reward detail and inspect the insufficient-coins message or disabled redemption button. Never earn more coins, claim daily, or redeem another reward. Return available_before/available_after as JSON integers read from the UI. Open My Rewards to check no new receipt appeared.\"}\nDo not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {\"observed\": {...}} with these fields: insufficient_funds_visible, available_before, available_after, receipt_created. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.\nFLASH OUTPUT CONTRACT: put the exact JSON {\"observed\": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.",
+  "expected": {
+    "insufficient_funds_visible": true,
+    "receipt_created": false,
+    "available_before": 200,
+    "available_after": 200
+  }
+}

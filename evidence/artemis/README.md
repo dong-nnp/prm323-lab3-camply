@@ -2,6 +2,18 @@
 
 Ngày cập nhật: 06/11/2026. **Chưa đủ điều kiện ghi hoàn tất ARTEMIS Lab 3.**
 
+## Lượt chạy máy mới sau bàn giao — 06/11/2026
+
+TC03 đã xóa khỏi suite theo yêu cầu chủ dự án; suite hiện có 20 ca/biến thể (60 lượt dự kiến khi chạy 3 lần).
+
+| Run | Kết quả thực tế | Giới hạn |
+|---|---|---|
+| [20261106T041430Z-590cb133](20261106T041430Z-590cb133/report.md) | TC14 0/1, fail | Agent nhập liệu login lỗi, chưa thử đổi quà; cleanup hoàn tất |
+| [20261106T042117Z-f082509b](20261106T042117Z-f082509b/report.md) | TC02 0/1, fail | Observed screen `login` khác exact expected `Login`; AI báo picker/hủy, không nâng thành pass |
+| [20261106T042443Z-e61e39e9](20261106T042443Z-e61e39e9/report.md) | 12 blocked/skipped | TC01, TC08–13, TC15/16, TC17 ba trạng thái thiếu independent fixture/reset; không submit AI |
+
+Build/cài APK Firebase thật và readiness đạt trước live, hash workspace/installed trùng. Không có ca mới đạt 3/3; không chạy lại các ca đã chạy ở lịch sử bên dưới. Ảnh TC02/TC14 chỉ ở raw local, export chỉ gồm text đã che credentials và các đoạn credential bị nhập lỗi. [Handoff mới](../../docs/artemis-handoff.md) ghi môi trường SDK ổ E:, logs và việc cần xử lý. Các mục 21/63 và trạng thái thiếu cấu hình bên dưới là lịch sử.
+
 ## Đã làm và đã xác minh
 
 - Cài Python 3.12.16, ARTEMIS commit `351ca8422f7b5b54e80a9c1ce03a222e02415b6b`,

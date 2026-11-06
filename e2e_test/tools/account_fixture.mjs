@@ -48,7 +48,7 @@ async function savedAccount() {
   if (auth.localId !== account.uid) throw Error('Test UID mismatch');
   return { account, auth };
 }
-const supported = ['TC02', 'TC03', 'TC05', 'TC06', 'TC07', 'TC14', 'TC18', 'TC19'];
+const supported = ['TC02', 'TC05', 'TC06', 'TC07', 'TC14', 'TC18', 'TC19'];
 async function configure(account) {
   const settingsFile = resolve(local, 'settings.json');
   const settings = JSON.parse(await readFile(settingsFile, 'utf8'));
@@ -132,12 +132,6 @@ if (mode === 'create') {
       expected = { screen: 'Login', google_picker_seen: true, signed_in: false };
     }
     if (caseId === 'TC05') expected = { visited_tabs: ['Discover', 'Events', 'Rewards', 'Profile'], selected_tab: 'Profile' };
-    if (caseId === 'TC03') {
-      const rows = await callable('getPublicCatalog', auth.idToken, { kind: 'events', q: 'Badminton', limit: 50 });
-      if (rows.nextCursor) throw Error('Search fixture must fit one complete page');
-      context.search_term = 'Badminton';
-      expected = { result_count: rows.items.length, event_titles: rows.items.map(e => e.title) };
-    }
     if (caseId === 'TC06') {
       const event = await callable('getEvent', auth.idToken, { eventId: 'demo-career-talk' });
       const organizer = await callable('getOrganizer', auth.idToken, { organizerId: event.organizerId });

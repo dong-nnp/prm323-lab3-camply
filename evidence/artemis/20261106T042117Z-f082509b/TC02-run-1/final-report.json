@@ -1,0 +1,4 @@
+{
+  "explanation": "The EVIA app was launched, the 'Continue with Google' button was tapped, and the native Google account picker appeared. The picker was then cancelled by pressing the back button. The app returned to the login screen with the message 'Google sign-in was cancelled.' No authentication occurred, and the user remains signed out. {\"observed\": {\"screen\": \"login\", \"google_picker_seen\": true, \"signed_in\": false}}",
+  "source": "original ARTEMIS DataEngine report_task_status"
+}

@@ -1,0 +1,13 @@
+{
+  "ready": true,
+  "uid": "wRBEKS9iqOgywJEPPsd7M00nmtJ3",
+  "case_id": "TC02",
+  "context": {
+    "instruction": "Stay signed out. Open Log In, tap Continue with Google, then cancel/back out of the native Google flow. Never enter credentials or add an account. Finish on the login screen."
+  },
+  "expected": {
+    "screen": "Login",
+    "google_picker_seen": true,
+    "signed_in": false
+  }
+}

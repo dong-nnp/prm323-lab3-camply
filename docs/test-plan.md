@@ -1,5 +1,11 @@
 # Test plan — template
 
+> **ARTEMIS máy nhận bàn giao — 06/11/2026:** build/cài Firebase APK và readiness đạt. TC14 fail 0/1 vì agent nhập liệu login lỗi; TC02 fail 0/1 vì `login` khác exact expected `Login`. Cleanup cả hai hoàn tất. 12 ca/biến thể khác blocked/skipped do thiếu independent fixture/reset, không submit AI. Không có pass/3-of-3 mới. [Evidence](../evidence/artemis/README.md), [handoff](artemis-handoff.md).
+
+> **Cập nhật suite:** theo yêu cầu chủ dự án, đã xóa TC03 (Search/Analytics),
+> fixture và cấu hình hoãn tương ứng. Suite hiện có 20 ca/biến thể × 3 = 60 lượt
+> dự kiến. Số liệu 21/63 và TC03 bên dưới là lịch sử trước thay đổi này.
+
 > **ARTEMIS implementation — 06/11/2026:** suite đã định nghĩa 21 ca/biến thể,
 > collect đủ 63 lượt (3/ca); đợt `20261106T023224Z-3cfd8a66` đạt TC04 3/3 và
 > TC05 3/3 (6/6 trong 519 giây). Chưa đạt đủ các ca và coverage của đề.

@@ -1,0 +1,26 @@
+{
+  "started_at": "20261106T041430Z-590cb133",
+  "artemis_commit": "351ca8422f7b5b54e80a9c1ce03a222e02415b6b",
+  "profile": "flash",
+  "model": "gemini-3.1-flash-lite",
+  "device": "emulator-5556",
+  "runs": 1,
+  "command": [
+    "E:\\Desktop\\FA26\\PRM393_tailieu\\prm323-lab3-camply\\e2e_test\\.venv\\Lib\\site-packages\\pytest\\__main__.py",
+    "e2e_test",
+    "--live",
+    "--case",
+    "TC14",
+    "--runs",
+    "1",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "evidence_contains_private_test_data": true,
+  "host_customization": "UIAutomator backend; real lock-state probe timeout 15s",
+  "app_commit": "f2c2f07f47640bf9e797be21c24d0bff816820c5",
+  "working_tree": " M docs/artemis-handoff.md\n M docs/artemis-plan.md\n M docs/build-performance.md\n M docs/test-plan.md\n M e2e_test/README.md\n M e2e_test/cases.py\n M e2e_test/runner.py\n M e2e_test/settings.example.json\n M e2e_test/tools/account_fixture.mjs\n M e2e_test/tools/self_check.py\n",
+  "artemis_patch_sha256": "45ac26f8b2bca99176a0757369613d32528c5a7e4b7b9bf6b61149a60310a452",
+  "workspace_apk_sha256": "f3d64704612be06ca654d43d63feb84af4bc067c314442afbb968db901b2d095",
+  "apk_identity_note": "Hash of workspace APK; does not prove the same APK is installed"
+}

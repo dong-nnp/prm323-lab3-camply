@@ -1,0 +1,8 @@
+{
+  "instruction": "Test EVIA Android app com.example.prm393_lab03. Start signed out. Open Google login and cancel the native account picker. Verify no authenticated home/profile data is available.\nTest setup (private test data): {\"instruction\": \"Stay signed out. Open Log In, tap Continue with Google, then cancel/back out of the native Google flow. Never enter credentials or add an account. Finish on the login screen.\"}\nDo not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {\"observed\": {...}} with these fields: screen, google_picker_seen, signed_in. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.\nFLASH OUTPUT CONTRACT: put the exact JSON {\"observed\": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.",
+  "expected": {
+    "screen": "Login",
+    "google_picker_seen": true,
+    "signed_in": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "planned_runs": 1,
+  "cases": [
+    {
+      "case_id": "TC14",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 0,
+      "failed": 1,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "0/1",
+      "average_seconds": 371.97,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "ARTEMIS task ended failed"
+    }
+  ]
+}

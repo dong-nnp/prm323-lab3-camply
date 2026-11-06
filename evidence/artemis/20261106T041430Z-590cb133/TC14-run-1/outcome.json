@@ -1,0 +1,9 @@
+{
+  "case_id": "TC14",
+  "repeat": 1,
+  "status": "failed",
+  "available_memory_gb_before": 3.17,
+  "task_id": "9b70e783-adb0-4eda-bf4e-922e763ba688",
+  "reason": "ARTEMIS task ended failed",
+  "seconds": 371.969
+}

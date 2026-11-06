@@ -1,0 +1,338 @@
+ℹ Activated local ADB server endpoint 127.0.0.1:5037
+
+
+
+📱 Device Status
+
+✅ Android device(s) connected:
+
+  - emulator-5556
+
+✓ LLM config initialized
+
+ℹ Retrieved Android screen dimensions: 720x1600
+
+ℹ Host platform: WINDOWS
+
+Mobile platform: android
+
+Device ID: emulator-5556
+
+Device width: 720
+
+Device height: 1600
+
+
+
+ℹ ✅ Artemis agent initialized.
+
+ℹ Profile default:
+
+
+
+📃 Planner: google/gemini-3.1-flash-lite (fallback: google/gemini-3.1-flash-lite)
+
+🧩 Utils:
+
+    🔽 Hopper: google/gemini-3.1-flash-lite (fallback: google/gemini-3.1-flash-lite)
+
+    📝 Outputter: google/gemini-3.1-flash-lite (fallback: google/gemini-3.1-flash-lite)
+
+    🎬 Video Analyzer: google/gemini-3.1-flash-lite (fallback: google/gemini-3.1-flash-lite)
+
+    👁️ Object Detector: google/gemini-robotics-er-2-preview (fallback: google/gemini-robotics-er-2-preview)
+
+
+
+ℹ [web_1793938882_c01431d0] Starting graph with goal: `Test EVIA Android app com.example.prm393_lab03. Start signed out. Open Google login and cancel the native account picker. Verify no authenticated home/profile data is available.
+
+Test setup (private test data): {"instruction": "Stay signed out. Open Log In, tap Continue with Google, then cancel/back out of the native Google flow. Never enter credentials or add an account. Finish on the login screen."}
+
+Do not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {"observed": {...}} with these fields: screen, google_picker_seen, signed_in. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.
+
+FLASH OUTPUT CONTRACT: put the exact JSON {"observed": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.`
+
+ℹ Starting background pre-warming of Gemini API connection pools...
+
+[11/06/26 11:21:35] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+                    WARNING  Direct use of automatic function    models.py:8422
+
+                             calling (AFC) in                                  
+
+                             AsyncModels.generate_content is not               
+
+                             recommended. Instead, we recommend                
+
+                             to use AFC in                                     
+
+                             AsyncChat.send_message. Similarly,                
+
+                             direct use of AFC in                              
+
+                             AsyncModels.generate_content_stream               
+
+                             is not recommended. Instead, we                   
+
+                             recommend to use AFC in                           
+
+                             AsyncChat.send_message_stream.                    
+
+ℹ [web_1793938882_c01431d0] 📂 Traces output path: E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces
+
+ℹ [web_1793938882_c01431d0] 📄📂 Traces temp path: E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces\web_1793938882_c01431d0
+
+ℹ Database initialized at E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces\data_engine.db
+
+ℹ Connected to IPC server on port 58457 with TCP_NODELAY
+
+ℹ Session directory created at E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces\c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ Session started: c01431d0-ebb5-4f29-bdcc-bad2366f165b (current step counter: 0)
+
+⚠ Could not inspect the shared screen-bright wake lock on emulator-5556: Unknown command: set-wakelock
+
+⚠ USB stay-awake is not active on emulator-5556 (setting=2); using a 5-second host heartbeat
+
+ℹ Connecting UIAutomator2 to device: emulator-5556
+
+ℹ UIAutomator2 connected successfully
+
+ℹ UI hierarchy source: UIAutomator2
+
+ℹ Forcing web accessibility is disabled in AgentConfig. Skipping device environment prep...
+
+ℹ [web_1793938882_c01431d0] Starting automated screen recording...
+
+❌ Failed to start scrcpy recording: [WinError 2] The system cannot find the file specified
+
+⚠ [web_1793938882_c01431d0] Failed to start screen recording: Failed to start recording: [WinError 2] The system cannot find the file specified
+
+ℹ [web_1793938882_c01431d0] Invoking FlashRunner reactive loop...
+
+ℹ Starting Artemis Flash reactive loop for goal: Test EVIA Android app com.example.prm393_lab03. Start signed out. Open Google login and cancel the native account picker. Verify no authenticated home/profile data is available.
+
+Test setup (private test data): {"instruction": "Stay signed out. Open Log In, tap Continue with Google, then cancel/back out of the native Google flow. Never enter credentials or add an account. Finish on the login screen."}
+
+Do not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {"observed": {...}} with these fields: screen, google_picker_seen, signed_in. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.
+
+FLASH OUTPUT CONTRACT: put the exact JSON {"observed": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work. (turn limit: unlimited)
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ --- Artemis Flash Turn 1 ---
+
+ℹ Executing Flash tool: click({'target': 2})
+
+ℹ Action server 'artemis_actions' built with 15 device actions and 0 extension tools.
+
+[11/06/26 11:21:47] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ [ADB] input tap 359 824
+
+                    INFO     Processing request of type           server.py:733
+
+                             ListToolsRequest                                  
+
+                    INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 1 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 2 ---
+
+[11/06/26 11:21:50] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ Executing Flash tool: manage_app({'app_name': 'prm393_lab03', 'action': 'launch'})
+
+[11/06/26 11:21:52] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Starting Hopper Agent (use_fallback=False)
+
+[11/06/26 11:21:53] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ Launch attempt 1/3 for app com.example.prm393_lab03
+
+ℹ VisualStepSummarizer: Generated summary for Step 1: In Step 1, I tapped the 'Close app' button on the 'prm393_lab03 isn't responding...
+
+⚠ Could not send the host stay-awake heartbeat on emulator-5556: Command '['E:\\sdk\\platform-tools\\adb.exe', '-H', '127.0.0.1', '-P', '5037', '-s', 'emulator-5556', 'shell', 'input', 'keyevent', 'KEYCODE_UNKNOWN']' timed out after 10 seconds
+
+❌ Timeout waiting for com.example.prm393_lab03 to load after 15s. Current foreground: None; foreground task #13 (base=com.example.prm393_lab03, resumed=com.example.prm393_lab03/.MainActivity)
+
+⚠ Attempt 1 failed: Timeout waiting for com.example.prm393_lab03 to load after 15s. Current foreground: None; foreground task #13 (base=com.example.prm393_lab03, resumed=com.example.prm393_lab03/.MainActivity). Retrying...
+
+ℹ Launch attempt 2/3 for app com.example.prm393_lab03
+
+⚠ Attempt 1 failed. Force stopping 'com.example.prm393_lab03' to clear frozen state before retrying...
+
+⚠ Could not send the host stay-awake heartbeat on emulator-5556: Command '['E:\\sdk\\platform-tools\\adb.exe', '-H', '127.0.0.1', '-P', '5037', '-s', 'emulator-5556', 'shell', 'input', 'keyevent', 'KEYCODE_UNKNOWN']' timed out after 10 seconds
+
+❌ Timeout waiting for com.example.prm393_lab03 to load after 15s. Current foreground: None; foreground task #14 (base=com.example.prm393_lab03, resumed=com.example.prm393_lab03/.MainActivity)
+
+⚠ Attempt 2 failed: Timeout waiting for com.example.prm393_lab03 to load after 15s. Current foreground: None; foreground task #14 (base=com.example.prm393_lab03, resumed=com.example.prm393_lab03/.MainActivity). Retrying...
+
+ℹ Launch attempt 3/3 for app com.example.prm393_lab03
+
+⚠ Attempt 2 failed. Force stopping 'com.example.prm393_lab03' to clear frozen state before retrying...
+
+✓ App com.example.prm393_lab03 is ready (took ~5.0s)
+
+[11/06/26 11:22:57] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 2 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 3 ---
+
+[11/06/26 11:23:00] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ Executing Flash tool: click({'target': 5})
+
+[11/06/26 11:23:04] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ [ADB] input tap 360 1379
+
+                    INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 3 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 4 ---
+
+[11/06/26 11:23:05] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ VisualStepSummarizer: Generated summary for Step 2: In Step 2, I initiated the launch of the 'prm393_lab03' application by selecting...
+
+ℹ Executing Flash tool: click({'target': 12})
+
+[11/06/26 11:23:08] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ [ADB] input tap 360 1424
+
+                    INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 4 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 5 ---
+
+[11/06/26 11:23:12] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ VisualStepSummarizer: Generated summary for Step 4: In Step 4, I tapped the 'Continue with Google' button marked in red on the login...
+
+ℹ Executing Flash tool: click({'target': 13})
+
+[11/06/26 11:23:17] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ [ADB] input tap 360 1424
+
+[11/06/26 11:23:19] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 5 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 6 ---
+
+[11/06/26 11:23:23] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ VisualStepSummarizer: Generated summary for Step 3: In Step 3, I tapped the area at the bottom of the splash screen marked in red; t...
+
+ℹ Executing Flash tool: press_key({'key': 'BACK'})
+
+[11/06/26 11:23:26] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+[11/06/26 11:23:30] INFO     Processing request of type           server.py:733
+
+                             CallToolRequest                                   
+
+ℹ Delaying 0.4s before capturing screen state...
+
+ℹ Recorded step 6 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ --- Artemis Flash Turn 7 ---
+
+[11/06/26 11:23:33] INFO     AFC is enabled with max remote      models.py:8418
+
+                             calls: 10.                                        
+
+ℹ Executing Flash tool: report_task_status({'status': 'completed', 'explanation': 'The EVIA app was launched, the \'Continue with Google\' button was tapped, and the native Google account picker appeared. The picker was then cancelled by pressing the back button. The app returned to the login screen with the message \'Google sign-in was cancelled.\' No authentication occurred, and the user remains signed out. {"observed": {"screen": "login", "google_picker_seen": true, "signed_in": false}}'})
+
+ℹ Recorded step 7 for session c01431d0-ebb5-4f29-bdcc-bad2366f165b
+
+ℹ StepMemoryService: Flushing 2 pending summary tasks...
+
+ℹ VisualStepSummarizer: Generated summary for Step 6: In Step 6, I pressed the 'BACK' key while the 'Choose an account' modal was disp...
+
+ℹ VisualStepSummarizer: Generated summary for Step 5: In Step 5, I tapped the 'Continue with Google' button marked in red on the login...
+
+ℹ ✅ Automation 'web_1793938882_c01431d0' is success ✅
+
+ℹ LLM usage for session c01431d0-ebb5-4f29-bdcc-bad2366f165b: 13 calls, 96207 prompt tokens, 8074 cached (cached_ratio=0.084, cache-hit calls 2); google:gemini-3.1-flash-lite: 7 calls, cached_ratio=0.109; lens:visual_transition:gemini-3.1-flash-lite: 6 calls, cached_ratio=0.000
+
+ℹ Session ended: c01431d0-ebb5-4f29-bdcc-bad2366f165b with status: completed
+
+ℹ Waiting for 1 pending async tasks to complete...
+
+ℹ Waiting for 2 pending threads to complete...
+
+ℹ DataEngine shutdown complete. All data persisted.
+
+ℹ [web_1793938882_c01431d0] Compiling trace FROM FOLDER: E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces\web_1793938882_c01431d0
+
+ℹ Found 0 images to compile
+
+ℹ Found 0 steps to compile
+
+ℹ [web_1793938882_c01431d0] Video created, removing dust...
+
+ℹ [web_1793938882_c01431d0] 📽️ Trace compiled, moving to output path 📽️
+
+ℹ [web_1793938882_c01431d0] 📂✅ Traces located in: E:\Desktop\FA26\PRM393_tailieu\prm323-lab3-camply\.local\artemis-traces\web_1793938882_c01431d0_PASS_2026-11-06T11-21-34
+
+ℹ UIAutomator2 client disconnected
+
+ℹ UIAutomator2 client disconnected
+
+ℹ ✅ Artemis agent stopped.
+

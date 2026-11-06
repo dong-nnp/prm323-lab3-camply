@@ -1,0 +1,13 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC01,1,1,0,0,1,0,not_run,0.3,incomplete_or_unstable,TC01: missing independent fixture/reset prepare_command
+TC08,1,1,0,0,1,0,not_run,0.61,incomplete_or_unstable,TC08: missing independent fixture/reset prepare_command
+TC09,1,1,0,0,1,0,not_run,1.08,incomplete_or_unstable,TC09: missing independent fixture/reset prepare_command
+TC10,1,1,0,0,1,0,not_run,1.14,incomplete_or_unstable,TC10: missing independent fixture/reset prepare_command
+TC11,1,1,0,0,1,0,not_run,1.27,incomplete_or_unstable,TC11: missing independent fixture/reset prepare_command
+TC12,1,1,0,0,1,0,not_run,0.59,incomplete_or_unstable,TC12: missing independent fixture/reset prepare_command
+TC13,1,1,0,0,1,0,not_run,0.78,incomplete_or_unstable,TC13: missing independent fixture/reset prepare_command
+TC15,1,1,0,0,1,0,not_run,1.22,incomplete_or_unstable,TC15: missing independent fixture/reset prepare_command
+TC16,1,1,0,0,1,0,not_run,1.28,incomplete_or_unstable,TC16: missing independent fixture/reset prepare_command
+TC17_background,1,1,0,0,1,0,not_run,1.36,incomplete_or_unstable,TC17_background: missing independent fixture/reset prepare_command
+TC17_foreground,1,1,0,0,1,0,not_run,0.7,incomplete_or_unstable,TC17_foreground: missing independent fixture/reset prepare_command
+TC17_terminated,1,1,0,0,1,0,not_run,0.92,incomplete_or_unstable,TC17_terminated: missing independent fixture/reset prepare_command

@@ -1,0 +1,2 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC02,1,1,0,1,0,1,0/1,151.11,incomplete_or_unstable,"screen: expected 'Login', observed 'login'"

@@ -1,0 +1,22 @@
+{
+  "source_run": "20261106T042117Z-f082509b",
+  "redaction": "Exact Gemini key, test email and password removed from text; only guest TC04 images exported automatically; known password/email-local-part fragments of at least 8 characters and model-key fragments of at least 12 characters also removed before publication",
+  "files_sha256": {
+    "artemis-local.patch": "a49f4ab8d3a0db6629fcaa52225b660c8b0504d0cbaf57b63686d34b832e2cb3",
+    "manifest.json": "2fd7cf283068f7f6bc71cad4ac1115a0e240722c612a62a13a6701f7677d04bb",
+    "report.md": "592839050f70c290e6b1b0354cf6d08c8c85e4635af187c160612fcc44e81170",
+    "results.csv": "8377ec84618079ad3b3b45c63efaf637923e7a1156bf934202290c0c7ff59cec",
+    "summary.json": "21847cd1e153fa34b673973a6bc81774be7075d0be8c753eb8d2aa7b106026f4",
+    "TC02-run-1\\agent-result.json": "2ad6194e6a7905ccdab8c2f3c6e252137abf56fe7f0fde9352e25517aca09356",
+    "TC02-run-1\\cleanup.json": "6c5b250dbe57a637b24c2fb0c2ae28eb4b4c1b50bc4b280dbeeb15da2f7745eb",
+    "TC02-run-1\\final-report.json": "ab318eb6062349fc486080ed54df13e9e301fdc9d9eef16b90aea56aee31e6ab",
+    "TC02-run-1\\fixture-before.json": "1bfc20f64590927b3f6b5f66368910b3f2d475223302c8a5443bb8f9eba19a7c",
+    "TC02-run-1\\instruction.json": "e0eb6822683e09b67da64da76a15a40b6f6be89da4087a6a57052e20e596e4a3",
+    "TC02-run-1\\observed.json": "fad20adc883fb7af776a783036149f3f7b8782664c662ac58dc8010901c918d2",
+    "TC02-run-1\\outcome.json": "5b959293f5f2e6fbf37f400fed91323ea9c5d9076edaccc76e5cb1ee61d41461",
+    "TC02-run-1\\steps.json": "dc82ebc76b1696858d8c15f1ebd476bb5ec60801575490d6adc1b727a6440f64",
+    "TC02-run-1\\task.json": "66e0f4c25266d59f4d286c77cf5c05f014f66a45ccdf8edde1429d12acdcd4de",
+    "TC02-run-1\\ui-trees.json": "66b63eaf0e9ee3406bd9a2535ac6c0e326108950b6faf4fabcd8c8deca682431",
+    "TC02-run-1\\trace\\stdout.log": "76caa1d7d60ba890829014bf59f8be891b6e8fc166e027fd090dddb8710970b2"
+  }
+}

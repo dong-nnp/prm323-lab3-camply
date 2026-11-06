@@ -1,0 +1,2 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC14,1,1,0,1,0,1,0/1,371.97,incomplete_or_unstable,ARTEMIS task ended failed

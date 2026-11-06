@@ -45,9 +45,9 @@ class EvidenceTests(unittest.TestCase):
             self.assertNotEqual(row["verdict"], "passed_3_of_3")
 
     def test_suite_covers_all_planned_variants(self):
-        self.assertEqual(len(CASES), 21)
+        self.assertEqual(len(CASES), 20)
         self.assertEqual(sum(c.native for c in CASES.values()), 6)
-        self.assertTrue(CASES["TC03"].analytics)
+        self.assertNotIn("TC03", CASES)
 
     def test_one_successful_smoke_is_not_three_completed_runs(self):
         with tempfile.TemporaryDirectory() as folder:

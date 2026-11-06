@@ -1,0 +1,8 @@
+{
+  "case_id": "TC10",
+  "repeat": 1,
+  "status": "blocked",
+  "available_memory_gb_before": 3.28,
+  "reason": "TC10: missing independent fixture/reset prepare_command",
+  "seconds": 1.141
+}

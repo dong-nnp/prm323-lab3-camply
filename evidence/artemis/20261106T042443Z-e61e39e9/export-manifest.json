@@ -1,0 +1,23 @@
+{
+  "source_run": "20261106T042443Z-e61e39e9",
+  "redaction": "Exact Gemini key, test email and password removed from text; only guest TC04 images exported automatically; known password/email-local-part fragments of at least 8 characters and model-key fragments of at least 12 characters also removed before publication",
+  "files_sha256": {
+    "artemis-local.patch": "a49f4ab8d3a0db6629fcaa52225b660c8b0504d0cbaf57b63686d34b832e2cb3",
+    "manifest.json": "231ae3d8d599fd37ada05ec0736d3a289c8fc5408d7cd4860126fa68af513d00",
+    "report.md": "e0bca81658f9718f803c04721199e988421d5c5d6f65ae16707daca25f695070",
+    "results.csv": "f2516bceabc432c9345bfe447c29c95fb21bde21c5151737e078e0fd85912366",
+    "summary.json": "c18908270556e2a26644c94f4e6258ea584270df9d274edab38f1f0bf1321902",
+    "TC01-run-1\\outcome.json": "6d3086653d9cb30b094e24f87a4a210520df2ac3f5642ee30e4dee083f67a9a5",
+    "TC08-run-1\\outcome.json": "2515ef8c6c021888e1bae5a409ed00dee2d323c86b8e0e448ac399521cd89b57",
+    "TC09-run-1\\outcome.json": "e56c48e96bad1908c8569f775c4fe0f7c6f820aa9da96ee522e5e171f11ceadb",
+    "TC10-run-1\\outcome.json": "364e88f57dcf3d487a3daca541981c98d55b3543967c44bfdf82a8cf5c7eddc5",
+    "TC11-run-1\\outcome.json": "e2eee9c74777817fe8d275081b8b5e6f9b5af2440ae3a3092e1ad6632bd845a8",
+    "TC12-run-1\\outcome.json": "aa0e2a1c910c8df930d36d6dbed4616468752e9370a51e07d19bd690c7206f00",
+    "TC13-run-1\\outcome.json": "fae34021d55c3b28fa0da948a68f4d11b6ae2dc7767e9a1a079b37a9894487f5",
+    "TC15-run-1\\outcome.json": "35eded7be4089497acc6b41af436fa572941c17e7b0b73851731253011143b74",
+    "TC16-run-1\\outcome.json": "de512a811c6847da06962202888a50a7cc78d1b6d785aa9e468f73494c9b338b",
+    "TC17_background-run-1\\outcome.json": "dd64bfdb59eaf2655813d99d5be9f408016aa77416da66da1446ccf2fe0288d9",
+    "TC17_foreground-run-1\\outcome.json": "3121268f929d23a09ad31d2f6769db98045c5f470221c9c53ac508ccdf199ded",
+    "TC17_terminated-run-1\\outcome.json": "c13209baa2c0ce13c252fd9319a2b9973d0b95b52709755dec265965dbef5023"
+  }
+}

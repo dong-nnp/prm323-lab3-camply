@@ -76,7 +76,7 @@ Ngoài TC04 chỉ đọc, mỗi ca cần UID/email test và hai hook argv trong 
 `context` là thông tin test cần thao tác. `expected` phải có đủ trường trong
 `cases.py`, lấy từ fixture/server và độc lập với câu trả lời AI. Hooks là argv do
 maintainer cấu hình cục bộ, không phải shell do agent tạo. Đã có driver account
-riêng cho TC02/03/05/06/07/14/18/19: reset app chỉ trên AVD test, chuẩn bị kỳ vọng bằng API
+riêng cho TC02/05/06/07/14/18/19: reset app chỉ trên AVD test, chuẩn bị kỳ vọng bằng API
 thật, đối chiếu wallet và hoàn nguyên save/follow hoặc mạng. Chưa có driver reset
 financial fixture cho các giao dịch thành công: các ca cọc/nhận xu/đổi quà thành
 công vẫn blocked, không sửa ví đang dùng. TC14 chỉ chọn quà active còn hàng có
@@ -84,9 +84,9 @@ giá cao hơn số dư thật; đối chiếu ví/version và toàn bộ ID rede
 Không cấp xu, không gọi redeem từ fixture. TC02 giữ signed out và hủy Google flow,
 không cần Google account test; Google login thành công vẫn cần account riêng.
 
-Theo yêu cầu hiện tại, để Analytics lại sau. Chạy các ca đã chuẩn bị mà bỏ TC03:
-`deferred_cases: ["TC03"]` trong settings cục bộ cũng chặn submit ca này khi chạy
-toàn bộ suite. Chỉ bỏ TC03 khỏi danh sách khi đã tích hợp Analytics và muốn kiểm tra.
+Theo yêu cầu chủ dự án, TC03 (Search/Analytics) đã được xóa khỏi suite và cấu hình
+mẫu. Suite hiện có 20 ca/biến thể, tương ứng 60 lượt khi chạy mỗi ca 3 lần.
+Chạy nhóm đã chuẩn bị:
 
 ```powershell
 python e2e_test/manage.py run --case TC02,TC06,TC07,TC14,TC18,TC19 --runs 3
@@ -106,7 +106,6 @@ Raw evidence ở `.local/e2e-evidence/<run-id>/`, bị Git bỏ qua vì có th�
 - `fixture-before.json`, `fixture-after.json`: kết quả driver thật.
 - `outcome.json`: passed/failed/blocked cùng lý do.
 - `after.png`, `trace/`: ảnh và trace khi task đã được tạo.
-- `analytics-logcat.txt`: khi case đã tới bước kiểm chứng Analytics.
 
 Cuối suite tự xuất `manifest.json`, `summary.json`, `results.csv`. Tạo bản dễ đọc:
 

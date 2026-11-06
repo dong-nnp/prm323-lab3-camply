@@ -1,0 +1,8 @@
+{
+  "case_id": "TC17_background",
+  "repeat": 1,
+  "status": "blocked",
+  "available_memory_gb_before": 3.2,
+  "reason": "TC17_background: missing independent fixture/reset prepare_command",
+  "seconds": 1.359
+}

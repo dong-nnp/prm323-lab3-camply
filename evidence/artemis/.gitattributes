@@ -1,0 +1,4 @@
+# Preserve exported artifact bytes so SHA-256 manifests survive checkout.
+20261106T041430Z-590cb133/** -text
+20261106T042117Z-f082509b/** -text
+20261106T042443Z-e61e39e9/** -text

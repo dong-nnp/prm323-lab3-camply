@@ -1,0 +1,9 @@
+{
+  "case_id": "TC02",
+  "repeat": 1,
+  "status": "failed",
+  "available_memory_gb_before": 3.74,
+  "task_id": "c01431d0-ebb5-4f29-bdcc-bad2366f165b",
+  "reason": "screen: expected 'Login', observed 'login'",
+  "seconds": 151.109
+}

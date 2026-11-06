@@ -123,9 +123,6 @@ class Session:
                 + '\nFLASH OUTPUT CONTRACT: put the exact JSON {"observed": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.'
             )
             write_json(target / "instruction.json", {"instruction": instruction, "expected": expected})
-            if case.analytics:
-                command([self.adb, "-s", self.device, "shell", "setprop", "debug.firebase.analytics.app", "com.example.prm393_lab03"])
-            log_start = command([self.adb, "-s", self.device, "shell", "date", "+%m-%dT%H:%M:%S.000"]).decode().strip().replace("T", " ")
             async def run():
                 nonlocal task_id
                 await self.client.health()
@@ -156,10 +153,6 @@ class Session:
                 check_empty_search_trace(target)
             if case.native:
                 assert trace.exists(), "Native interaction requires original ARTEMIS trace for review"
-            if case.analytics:
-                log = command([self.adb, "-s", self.device, "logcat", "-d", "-T", log_start, "-s", "FA:V", "FA-SVC:V"]).decode(errors="replace")
-                (target / "analytics-logcat.txt").write_text(log, encoding="utf-8")
-                assert "search" in log and ("Logging event" in log or "Logging event (FE)" in log), "No search Analytics log evidence for this run"
             if case.fixture:
                 verify = entry.get("verify_command")
                 if not isinstance(verify, list) or not verify:

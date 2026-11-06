@@ -1,5 +1,8 @@
 # Kế hoạch ARTEMIS cho Evia
 
+TC03 (Search/Analytics) đã được xóa khỏi suite theo yêu cầu chủ dự án. Yêu cầu
+Analytics của đề vẫn là khoảng trống nghiệm thu; evidence lịch sử không bị xóa.
+
 Ngày lập: 06/11/2026. Trạng thái mới: **đã triển khai toolkit và có lượt chạy thật,
 chưa hoàn tất nghiệm thu Lab**. Xem [evidence](../evidence/artemis/README.md).
 Các mục chuẩn bị dưới đây mô tả kế hoạch ban đầu, không phải tất cả đã hoàn thành.
@@ -69,7 +72,6 @@ không phải danh sách đã chạy hoặc đã đạt.
 |---|---|---|---|
 | TC01 | Google login | Signed out, Google test account; mở Login, chọn Google và account | Account picker Android xuất hiện; đúng account test; tới Discover; bottom bar hiện |
 | TC02 | Hủy Google login | Signed out; mở Google picker rồi hủy | Không có session; còn Login; không truy cập được dữ liệu cá nhân |
-| TC03 | Search có kết quả | Có event fixture; tìm từ khóa duy nhất | Count hiển thị = số fixture khớp; đúng tên event; đối chiếu event `search` trong Logcat/DebugView |
 | TC04 | Search rỗng | Tìm từ khóa chắc chắn không tồn tại | Empty state đúng; không còn card kết quả cũ; sửa từ khóa tìm lại được |
 | TC05 | Các tab chính | Signed in; lần lượt Discover, Events, Rewards, Profile | Đúng tiêu đề/tab selected; Back không rơi sai luồng; account không đổi |
 | TC06 | Các detail | Mở event, organizer và reward fixture | Đúng ID/tên/giá/ngày giờ theo fixture; Back về đúng màn xuất phát |
@@ -88,12 +90,12 @@ không phải danh sách đã chạy hoặc đã đạt.
 | TC19 | Offline và retry | Signed in; tắt mạng qua Android rồi mở/tải dữ liệu; bật lại và Retry | Lỗi có hướng dẫn, không spinner vô hạn/crash; retry phục hồi dữ liệu |
 
 TC17 có 3 biến thể riêng: foreground, background, terminated. Chạy từng biến thể
-3 lần. Tổng đề xuất: **21 ca/biến thể thực thi × 3 = 63 lượt**, chưa gồm smoke và
+3 lần. Tổng đề xuất: **20 ca/biến thể thực thi × 3 = 60 lượt**, chưa gồm smoke và
 khám phá. Có thể chia thành nhiều buổi; không chạy đồng thời trên cùng emulator.
 
 ### Bước 4 — Chạy và thu bằng chứng
 
-1. Chạy smoke TC03 trước để kiểm tra device, SDK, labels và structured output.
+1. Chạy smoke TC04 trước để kiểm tra device, SDK, labels và structured output.
 2. Chạy từng nhóm Auth/Search, Events, Rewards, Firebase; sửa case/app khi cần.
 3. Chạy mỗi ca/biến thể 3 lần, độc lập và không dựa vào thứ tự. Thay đổi xu/cọc,
    daily và voucher phải reset UID/fixture test trước mỗi lượt.
