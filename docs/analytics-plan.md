@@ -43,6 +43,14 @@ Owner triển khai: đội tích hợp Flutter. Mỗi AN-ID cần screenshot Deb
 
 Registered check-in do staff thực hiện: mobile sinh viên chỉ phát AN-11 khi quan sát chuyển trạng thái attendance lần đầu trong phiên, không mỗi lần mở My Events. Có thể thiếu khi app không mở; không dùng event này làm thống kê attendance chính thức. Không log UID sinh viên từ thiết bị staff/admin.
 
+## Theo dõi admin web
+
+Admin web dùng Firebase Analytics Web SDK để ghi `admin_event_saved`,
+`admin_event_published`, `admin_voucher_saved` và `admin_remote_config_published`
+sau phản hồi thành công của backend. Trang Analytics gọi backend để đọc báo cáo GA4
+theo sự kiện trong 7 hoặc 30 ngày. Khi có numeric Stream ID, báo cáo chỉ
+đọc stream đó. [Kế hoạch admin web](ADMIN_WEB_PLAN.md).
+
 ## Verification — chưa thực hiện
 
 - [ ] Unit tests adapter kiểm allowlist/types và loại dữ liệu nhạy cảm.

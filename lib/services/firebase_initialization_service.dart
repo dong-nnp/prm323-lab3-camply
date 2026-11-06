@@ -5,13 +5,13 @@ import '../core/errors/app_exception.dart';
 import '../models/firebase_status.dart';
 import 'firebase_initializer.dart';
 
-/// The only Firebase SDK access in the foundation.
 /// On Android, FlutterFire's google-services Gradle plugin supplies options
 /// from the real google-services.json. No generated Dart file is required here.
 final class FirebaseInitializationService implements FirebaseInitializer {
-  const FirebaseInitializationService({required this.enabled});
+  const FirebaseInitializationService({required this.enabled, this.onReady});
 
   final bool enabled;
+  final Future<void> Function()? onReady;
 
   @override
   Future<FirebaseStatus> initialize() async {
@@ -21,12 +21,13 @@ final class FirebaseInitializationService implements FirebaseInitializer {
       if (Firebase.apps.isEmpty) {
         await Firebase.initializeApp().timeout(const Duration(seconds: 15));
       }
-      return FirebaseStatus.ready;
     } on Exception {
       throw const AppException(
         code: 'firebase_initialization',
         message: AppStrings.initializationError,
       );
     }
+    await onReady?.call();
+    return FirebaseStatus.ready;
   }
 }

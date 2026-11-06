@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers/service_providers.dart';
 import '../../models/activity_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
+import '../../viewmodels/flow1_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
@@ -310,12 +312,57 @@ class _RewardCard extends ConsumerWidget {
   }
 }
 
-class _DailyCheckIn extends ConsumerWidget {
+class _DailyCheckIn extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(activityViewModelProvider);
+  ConsumerState<_DailyCheckIn> createState() => _DailyCheckInState();
+}
+
+class _DailyCheckInState extends ConsumerState<_DailyCheckIn> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          ref.read(realBackendEnabledProvider) &&
+          ref.read(flow1ViewModelProvider).hasValue) {
+        ref.read(flow1ViewModelProvider.notifier).refresh();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
-    final progress = vm.dailyProgress;
+    final live = ref.watch(realBackendEnabledProvider);
+    final account = live ? ref.watch(flow1ViewModelProvider) : null;
+    final liveVm = live ? ref.read(flow1ViewModelProvider.notifier) : null;
+    final server = liveVm?.dailyProgress;
+    if (live && server == null) {
+      return EviaCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Daily Check-in', style: EviaTheme.cardTitle),
+            const SizedBox(height: AppSpacing.sm),
+            if (account?.isLoading == true)
+              const Text('Loading daily check-in…')
+            else
+              TextButton(
+                onPressed: liveVm?.refresh,
+                child: const Text('Reload daily check-in'),
+              ),
+          ],
+        ),
+      );
+    }
+    final demo = ActivityMockData.dailyCheckInPreview;
+    final days = server?.days ?? demo.days;
+    final streakDay = server?.day ?? demo.day;
+    final coins = server?.coins ?? demo.coins;
+    final checkedIn = server?.checkedInToday ?? state.dailyClaimed;
+    final saving = server?.saving ?? demo.saving;
+    final error = account?.asData?.value.actionError;
     return EviaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -340,7 +387,7 @@ class _DailyCheckIn extends ConsumerWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          '${progress.day}-day streak',
+                          '$streakDay-day streak',
                           style: EviaTheme.caption.copyWith(
                             color: AppColors.warning,
                           ),
@@ -357,7 +404,7 @@ class _DailyCheckIn extends ConsumerWidget {
             builder: (context, constraints) {
               final minimum =
                   MediaQuery.textScalerOf(context).scale(AppSpacing.xxxl) *
-                  progress.days.length;
+                  days.length;
               final width = constraints.maxWidth > minimum
                   ? constraints.maxWidth
                   : minimum;
@@ -368,7 +415,7 @@ class _DailyCheckIn extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (final day in progress.days)
+                      for (final day in days)
                         Expanded(
                           child: Column(
                             children: [
@@ -390,16 +437,13 @@ class _DailyCheckIn extends ConsumerWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color:
-                                      (day.claimed ||
-                                          (day.today && vm.dailyClaimed))
+                                      (day.claimed || (day.today && checkedIn))
                                       ? ActivityTheme.actionDark
                                       : day.today
                                       ? AppColors.warningSurface
                                       : AppColors.primarySoft,
                                 ),
-                                child:
-                                    (day.claimed ||
-                                        (day.today && vm.dailyClaimed))
+                                child: (day.claimed || (day.today && checkedIn))
                                     ? const ActivityIcon(
                                         '2083:3522',
                                         'imgContainer8',
@@ -424,7 +468,7 @@ class _DailyCheckIn extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            progress.message,
+            'Day 7 onward · +${server?.lastDayCoins ?? demo.coins} coins daily',
             textAlign: TextAlign.center,
             style: EviaTheme.label,
           ),
@@ -436,25 +480,20 @@ class _DailyCheckIn extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           AppButton(
-            label: progress.saving
+            label: saving
                 ? 'Saving check-in...'
-                : vm.dailyClaimed
-                ? 'Checked In Today · +${progress.coins} coins'
-                : 'Check In · +${progress.coins} coins',
-            isLoading: vm.dailySaving,
-            onPressed:
-                (vm.rewardsLive || vm.demoAvailable) &&
-                    !vm.dailyClaimed &&
-                    !vm.rewardsBusy
-                ? () async {
-                    if (vm.rewardsLive) {
-                      await vm.claimDailyRemote();
-                    } else {
-                      vm.claimDaily();
-                    }
-                  }
+                : checkedIn
+                ? 'Checked In Today · +$coins coins'
+                : 'Check In · +$coins coins',
+            onPressed: checkedIn || saving
+                ? null
+                : live
+                ? liveVm?.claimDaily
+                : vm.demoAvailable
+                ? vm.claimDaily
                 : null,
           ),
+          if (error != null) Text(error, style: EviaTheme.caption),
         ],
       ),
     );

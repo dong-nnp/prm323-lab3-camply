@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bảng điều hành Evia dành cho quản trị viên.">
+  <title>Evia Admin · Bảng điều hành</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+  <div id="gate" class="gate">
+    <div class="gate-art">
+      <div class="brand"><span class="brand-mark">e</span><span>evia<span class="brand-dot">.</span></span></div>
+      <div><p class="eyebrow">EVIA CONTROL CENTER</p><h1>Vận hành sự kiện, từ một nơi.</h1><p>Quản lý catalog, thông báo và các công cụ Firebase cho Evia.</p></div>
+      <div class="gate-ticket" aria-hidden="true"><span data-icon="ticket"></span></div>
+    </div>
+    <div class="gate-main">
+      <div class="gate-form">
+        <p class="eyebrow">KHÔNG GIAN QUẢN TRỊ</p>
+        <h2>Đăng nhập admin</h2>
+        <p class="muted">Sử dụng tài khoản Firebase đã được cấp quyền admin.</p>
+        <form id="login-form">
+          <label>Email<input type="email" name="email" autocomplete="username" placeholder="admin@example.com" required></label>
+          <label>Mật khẩu<input type="password" name="password" autocomplete="current-password" required></label>
+          <button class="button primary" type="submit" disabled>Đăng nhập <span data-icon="arrow"></span></button>
+        </form>
+        <p id="gate-status" class="status" role="status">Đang kiểm tra cấu hình Firebase…</p>
+        <button id="denied-logout" class="button secondary" hidden>Đăng xuất</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="workspace" class="workspace" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="Evia Admin"><span class="brand-mark">e</span><span>evia<span class="brand-dot">.</span></span><small>ADMIN</small></a>
+      <nav aria-label="Điều hướng quản trị">
+        <p class="nav-label">VẬN HÀNH</p>
+        <a href="#overview" data-route="overview"><span data-icon="grid"></span>Tổng quan</a>
+        <a href="#events" data-route="events"><span data-icon="calendar"></span>Sự kiện</a>
+        <a href="#vouchers" data-route="vouchers"><span data-icon="ticket"></span>Voucher</a>
+        <p class="nav-label">FIREBASE</p>
+        <a href="#analytics" data-route="analytics"><span data-icon="chart"></span>Analytics</a>
+        <a href="#crashlytics" data-route="crashlytics"><span data-icon="activity"></span>Crashlytics</a>
+        <a href="#config" data-route="config"><span data-icon="sliders"></span>Remote Config</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="profile"><span class="profile-icon" data-icon="user"></span><div><strong>Quản trị viên</strong><small id="account-email"></small></div></div>
+        <button id="logout" class="button text" type="button"><span data-icon="logout"></span>Đăng xuất</button>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <header class="topbar"><span class="breadcrumbs">Không gian quản trị <span aria-hidden="true">/</span> <strong id="current-page">Tổng quan</strong></span><span class="environment" id="environment"></span></header>
+      <main id="main" tabindex="-1">
+        <section id="overview" aria-labelledby="overview-title">
+          <div class="hero">
+            <div class="hero-copy"><p class="eyebrow">EVIA CONTROL CENTER</p><h1 id="overview-title">Điều hành Evia.</h1><p>Quản lý sự kiện, voucher và các luồng Firebase từ một không gian làm việc.</p><button type="button" class="button ink" data-create="events"><span data-icon="plus"></span>Tạo sự kiện</button></div>
+            <div class="hero-art" aria-hidden="true"><span class="hero-ring"></span><span class="hero-ring inner"></span><span class="hero-sparkle">✦</span><div class="hero-ticket"><span data-icon="ticket"></span><strong>EVIA<br>ACCESS</strong><i></i></div></div>
+          </div>
+          <div class="section-heading"><div><p class="eyebrow">CATALOG</p><h2>Vận hành nội dung</h2></div></div>
+          <div class="card-grid">
+            <a class="action-card" href="#events"><span class="card-icon" data-icon="calendar"></span><span class="card-arrow" data-icon="arrow"></span><h3>Sự kiện</h3><p>Tạo, sửa và xuất bản sự kiện.</p></a>
+            <a class="action-card" href="#vouchers"><span class="card-icon lilac" data-icon="ticket"></span><span class="card-arrow" data-icon="arrow"></span><h3>Voucher</h3><p>Xem danh sách phần thưởng và quản lý voucher.</p></a>
+          </div>
+          <div class="section-heading"><div><p class="eyebrow">CÔNG CỤ FIREBASE</p><h2>Theo dõi và kiểm thử</h2></div></div>
+          <div class="tool-list">
+            <a href="#analytics"><span class="card-icon blue" data-icon="chart"></span><span><strong>Firebase Analytics</strong><small>Theo dõi thao tác trên admin web</small></span><span data-icon="arrow"></span></a>
+            <a href="#crashlytics"><span class="card-icon lilac" data-icon="activity"></span><span><strong>Firebase Crashlytics</strong><small>Kiểm thử crash Android QA</small></span><span data-icon="arrow"></span></a>
+            <a href="#config"><span class="card-icon" data-icon="sliders"></span><span><strong>Firebase Remote Config</strong><small>Chỉnh xu thưởng Daily Check-in</small></span><span data-icon="arrow"></span></a>
+          </div>
+        </section>
+
+        <section id="events" aria-labelledby="events-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">CATALOG</p><h1 id="events-title">Sự kiện</h1><p>Tạo, chỉnh sửa và xuất bản sự kiện ngay tại đây.</p></div><button class="button primary" data-create="events"><span data-icon="plus"></span>Tạo sự kiện</button></div>
+          <div class="panel">
+            <div class="panel-head"><div><h2>Danh sách sự kiện</h2><p>Bao gồm bản nháp, sự kiện riêng tư và sự kiện đã xuất bản.</p></div><button class="button secondary" data-refresh="events"><span data-icon="refresh"></span>Tải lại</button></div>
+            <p class="status panel-status" id="events-status" role="status"></p>
+            <div class="table-wrap" id="events-table"></div>
+            <div class="panel-actions"><button class="button secondary" data-more="events" hidden>Tải thêm</button></div>
+          </div>
+        </section>
+
+        <section id="vouchers" aria-labelledby="vouchers-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">CATALOG</p><h1 id="vouchers-title">Voucher</h1><p>Xem danh sách phần thưởng và quản lý các phần thưởng dạng voucher.</p></div><button class="button primary" data-create="rewards"><span data-icon="plus"></span>Tạo mẫu voucher</button></div>
+          <div class="panel">
+            <div class="panel-head"><div><h2>Danh sách phần thưởng</h2><p>Bao gồm voucher và quà vật lý, đang bật hoặc đang tắt.</p></div><button class="button secondary" data-refresh="rewards"><span data-icon="refresh"></span>Tải lại</button></div>
+            <p class="status panel-status" id="rewards-status" role="status"></p>
+            <div class="table-wrap" id="rewards-table"></div>
+            <div class="panel-actions"><button class="button secondary" data-more="rewards" hidden>Tải thêm</button></div>
+          </div>
+        </section>
+
+        <section id="analytics" aria-labelledby="analytics-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE</p><h1 id="analytics-title">Analytics</h1><p>Xem báo cáo theo sự kiện từ Google Analytics.</p></div></div>
+          <article class="panel instructions follow-panel"><h2>Báo cáo theo sự kiện</h2><p>Số lượt ghi nhận và số người dùng theo từng sự kiện trong khoảng thời gian đã chọn.</p><form class="button-row" id="analytics-report-form"><label>Khoảng thời gian <select name="days"><option value="7">7 ngày</option><option value="30">30 ngày</option></select></label><button class="button secondary" type="submit">Tải báo cáo</button></form><p id="analytics-report-status" class="status" role="status"></p><div id="analytics-report-table" class="table-wrap"></div></article>
+        </section>
+
+        <section id="crashlytics" aria-labelledby="crash-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE · DIAGNOSTICS</p><h1 id="crash-title">Crashlytics</h1><p>Kiểm thử crash trên máy ảo Android QA và xem kết quả trong Firebase Console.</p></div></div>
+          <article class="panel instructions">
+            <h2>Developer Tools</h2>
+            <p id="android-qa-hint">Mở Web Admin ở chế độ Android QA cục bộ để chạy kiểm thử.</p>
+            <div class="button-row">
+              <button id="android-qa-crash" class="button danger" type="button" hidden>Crash Android QA</button>
+              <a id="crashlytics-dashboard" class="button secondary" target="_blank" rel="noopener noreferrer" hidden>Open Firebase Crashlytics</a>
+            </div>
+            <p id="android-qa-status" class="status" role="status"></p>
+          </article>
+        </section>
+
+        <section id="config" aria-labelledby="config-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE</p><h1 id="config-title">Remote Config</h1><p>Chỉnh số xu thưởng theo ngày trong chuỗi Daily Check-in.</p></div></div>
+          <article class="panel instructions">
+            <div class="panel-head inline"><h2>Xu thưởng Daily Check-in</h2><button id="fetch-config" class="button secondary"><span data-icon="refresh"></span>Tải cấu hình</button></div>
+            <p>Mức thưởng Ngày 7 áp dụng cho tất cả các ngày tiếp theo.</p>
+            <p id="config-status" class="status" role="status"></p>
+            <form id="config-form" class="form-grid">
+              <label>Ngày <select name="rewardDay" disabled><option value="1">Today (Ngày 1)</option><option value="2">Ngày 2</option><option value="3">Ngày 3</option><option value="4">Ngày 4</option><option value="5">Ngày 5</option><option value="6">Ngày 6</option><option value="7">Ngày 7</option></select></label>
+              <label>Số xu thưởng <input type="number" name="rewardCoins" min="0" max="1000000000" step="1" required disabled></label>
+              <div class="wide"><button id="publish-config" class="button primary" type="submit" disabled>Xuất bản và áp dụng</button></div>
+            </form>
+          </article>
+        </section>
+        <p id="workspace-status" class="status" role="status"></p>
+        <footer class="main-footer">EVIA ADMIN <span aria-hidden="true">·</span> Campus event operations</footer>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="editor" aria-labelledby="editor-title">
+    <div class="dialog-head"><div><p class="eyebrow">CHUẨN BỊ CATALOG</p><h2 id="editor-title"></h2></div><button class="icon-button" type="button" data-close="editor" aria-label="Đóng"><span data-icon="close"></span></button></div>
+    <form id="catalog-form">
+      <div class="dialog-body" id="editor-fields"></div>
+      <div class="dialog-footer">
+        <p id="editor-status" class="status" role="status"></p>
+        <div class="button-row"><button class="button secondary" type="button" data-close="editor">Đóng</button><button class="button primary" id="editor-save" type="submit">Lưu</button></div>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="details" aria-labelledby="detail-title">
+    <div class="dialog-head"><div><p class="eyebrow">DỮ LIỆU CATALOG</p><h2 id="detail-title"></h2></div><button class="icon-button" type="button" data-close="details" aria-label="Đóng"><span data-icon="close"></span></button></div>
+    <div class="dialog-body"><p id="detail-status" class="status" role="status"></p><div id="detail-content"></div></div>
+    <div class="dialog-footer"><div class="button-row"><button class="button secondary" type="button" data-close="details">Đóng</button><button class="button secondary" id="detail-edit" type="button" hidden>Sửa</button><button class="button primary" id="detail-publish" type="button" hidden>Xuất bản</button></div></div>
+  </dialog>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

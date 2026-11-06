@@ -8,6 +8,7 @@ import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
+import '../../viewmodels/milestone_presentation_view_model.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
@@ -20,6 +21,7 @@ class EventMilestonesScreen extends ConsumerWidget {
     ref.watch(activityViewModelProvider);
     final count = ref.read(activityViewModelProvider.notifier).verifiedCount;
     final vm = ref.read(activityViewModelProvider.notifier);
+    final intro = ref.watch(milestoneIntroProvider).value;
     return EviaPage(
       header: const ActivityHeader(
         'Event Milestones',
@@ -42,6 +44,10 @@ class EventMilestonesScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (intro != null) ...[
+              EviaCard(child: Text(intro, style: EviaTheme.caption)),
+              const SizedBox(height: AppSpacing.md),
+            ],
             EviaCard(
               color: ActivityTheme.wallet,
               child: Row(

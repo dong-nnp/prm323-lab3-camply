@@ -1,5 +1,12 @@
 # Kiến trúc source base
 
+> **Evia Admin web.** `admin/` là web Vite riêng. Firebase Auth xác minh
+> custom claim admin trước khi hiển thị giao diện và backend kiểm tra lại
+> từng callable. Web gọi API quản trị catalog, Remote Config và GA4 Data API
+> qua Functions. Mobile đọc nội dung milestone qua ViewModel → repository →
+> RemoteConfigService. Web Admin QA dùng trình kiểm thử Windows để tạo crash
+> trên máy ảo Android và mở Firebase Console để xem kết quả.
+> [Phạm vi và vận hành](ADMIN_WEB_PLAN.md).
 > **Flow 3 — 06/11/2026:** màn Rewards gốc → ActivityViewModel/Flow3ViewModel →
 > Flow1Repository → BackendService/FirebaseBackendService. Flow3Snapshot giữ
 > Daily, ví, catalog, ledger, milestones và receipts của account hiện tại.
@@ -281,7 +288,7 @@ Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `Bootstrap
 4. Khởi tạo lỗi hoặc quá 15 giây: hiển thị `AppError`, cho phép thử lại.
    Raw SDK error không được hiển thị cho người dùng.
 
-Không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
+Trong cấu hình nền tảng mặc định không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
 background messaging handlers hoặc Remote Config fetch trong foundation.
 Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-init.
 

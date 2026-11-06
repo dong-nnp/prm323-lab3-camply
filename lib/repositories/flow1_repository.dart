@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import '../models/flow1_models.dart';
 import '../core/errors/app_exception.dart';
 import '../services/backend_service.dart';
+import '../services/crash_reporting_service.dart';
 import '../models/evia_models.dart';
 
 class Flow1Repository {
-  const Flow1Repository(this.backend);
+  const Flow1Repository(this.backend, {this._crashReporting});
   final BackendService backend;
+  final CrashReportingService? _crashReporting;
 
   Future<List<Map<String, dynamic>>> _pages(
     String operation,
@@ -32,13 +36,19 @@ class Flow1Repository {
   }
 
   Future<Flow1Snapshot> load(bool signedIn) async {
-    final rows = await Future.wait(
-      [
-        'events',
-        'organizers',
-        'interests',
-      ].map((kind) => _pages('getPublicCatalog', {'kind': kind})),
-    );
+    final List<List<Map<String, dynamic>>> rows;
+    try {
+      rows = await Future.wait(
+        [
+          'events',
+          'organizers',
+          'interests',
+        ].map((kind) => _pages('getPublicCatalog', {'kind': kind})),
+      );
+    } catch (_, stack) {
+      unawaited(_reportCatalogError(stack));
+      rethrow;
+    }
     Map<String, dynamic>? account;
     List<Map<String, dynamic>> followed = [], saved = [], mine = [];
     if (signedIn) {
@@ -66,6 +76,17 @@ class Flow1Repository {
     );
   }
 
+  Future<void> _reportCatalogError(StackTrace stack) async {
+    try {
+      await _crashReporting?.recordError(
+        StateError('EVIA_DISCOVER_CATALOG_LOAD_FAILED'),
+        stack,
+      );
+    } catch (_) {
+      // The original catalog error still reaches the screen and its retry action.
+    }
+  }
+
   Future<void> follow(String id, bool value) => backend.call(
     value ? 'followOrganizer' : 'unfollowOrganizer',
     {'organizerId': id},
@@ -78,6 +99,7 @@ class Flow1Repository {
       backend.call('updateProfile', profile);
   Future<void> going(String eventId) =>
       backend.call('setWalkInGoing', {'eventId': eventId, 'going': true});
+  Future<void> claimDaily() => backend.call('claimDailyCheckin');
   Future<Flow1Event> event(String id) async =>
       Flow1Event(await backend.call('getEvent', {'eventId': id}));
   Future<Map<String, dynamic>> register(Map<String, dynamic> input) =>

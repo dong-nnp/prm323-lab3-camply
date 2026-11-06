@@ -7,11 +7,13 @@ import '../../firebase/firebase_configuration.dart';
 import '../../services/analytics_service.dart';
 import '../../services/authentication_service.dart';
 import '../../services/crash_reporting_service.dart';
+import '../../services/firebase_crash_reporting_service.dart';
 import '../../services/firebase_initialization_service.dart';
 import '../../services/firebase_initializer.dart';
 import '../../services/messaging_service.dart';
 import '../../services/pending_firebase_services.dart';
 import '../../services/remote_config_service.dart';
+import '../../services/firebase_remote_config_service.dart';
 import '../../services/storage_service.dart';
 import '../../services/campus_service.dart';
 import '../../services/backend_service.dart';
@@ -21,8 +23,9 @@ import '../../services/firebase_messaging_service.dart';
 import '../../services/unavailable_backend_service.dart';
 
 final firebaseInitializerProvider = Provider<FirebaseInitializer>(
-  (ref) => const FirebaseInitializationService(
+  (ref) => FirebaseInitializationService(
     enabled: FirebaseConfiguration.enabled,
+    onReady: ref.watch(_androidCrashReportingProvider)?.start,
   ),
 );
 
@@ -80,11 +83,28 @@ final messagingServiceProvider = Provider<MessagingService>(
 final analyticsServiceProvider = Provider<AnalyticsService>(
   (ref) => ref.watch(_pendingServicesProvider),
 );
+final _androidCrashReportingProvider = Provider<FirebaseCrashReportingService?>(
+  (ref) {
+    if (kIsWeb ||
+        defaultTargetPlatform != TargetPlatform.android ||
+        !ref.watch(realBackendEnabledProvider)) {
+      return null;
+    }
+    final service = FirebaseCrashReportingService();
+    ref.onDispose(service.dispose);
+    return service;
+  },
+);
+
 final crashReportingServiceProvider = Provider<CrashReportingService>(
-  (ref) => ref.watch(_pendingServicesProvider),
+  (ref) =>
+      ref.watch(_androidCrashReportingProvider) ??
+      ref.watch(_pendingServicesProvider),
 );
 final remoteConfigServiceProvider = Provider<RemoteConfigService>(
-  (ref) => ref.watch(_pendingServicesProvider),
+  (ref) => ref.watch(realBackendEnabledProvider)
+      ? FirebaseRemoteConfigService(ref.watch(_firebaseReadyProvider))
+      : ref.watch(_pendingServicesProvider),
 );
 final campusServiceProvider = Provider<CampusService>(
   (ref) => ref.watch(_pendingServicesProvider),

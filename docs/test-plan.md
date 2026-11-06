@@ -1,5 +1,11 @@
 # Test plan — template
 
+> **Evia Admin web.** Kiểm tra tạo, sửa, xuất bản sự kiện và mẫu voucher
+> bằng Firestore Emulator. Bộ test bao gồm từ chối user thiếu claim, xung
+> đột khi tồn kho thay đổi và giữ các điều kiện của Remote Config. Đã đăng
+> nhập trên trình duyệt và tạo, kích hoạt mẫu voucher từ web. Cần nghiệm
+> thu FCM, Remote Config, GA4 và Crashlytics BigQuery trên dự án thật.
+> [Các bước chạy và nghiệm thu](../admin/README.md).
 > **Flow 3 — 06/11/2026:** 213/213 Flutter tests, 62/62 backend Emulator tests,
 > analyze sạch, APK debug Firebase thật build đạt. Tests bao phủ Daily chờ server,
 > manual milestone claim/reload, đổi quà/khôi phục receipt, giá đổi/refresh lỗi,
@@ -330,7 +336,8 @@ backend integration.
 
 TODO: native Google Sign-In cancel/failure, Storage Rules deny/allow theo quyền,
 FCM permission/token/background delivery, Remote Config fetch/cache, Analytics
-DebugView và Crashlytics test crash chỉ sau tích hợp thật. Xác nhận công cụ
+DebugView. Xem [ca kiểm thử Crashlytics](EVIA_Crashlytics_Implementation.md)
+để nghiệm thu Web Admin và Android QA trên Firebase. Xác nhận công cụ
 Google ARTEMIS trước khi thêm E2E vào `e2e_test/`.
 
 ## Đợt 3 — Registration / Profile
