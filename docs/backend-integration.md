@@ -1,5 +1,11 @@
 # Backend Evia — hướng dẫn tích hợp
 
+> **Daily policy admin — 06/11/2026:** backend mới trên nhánh `dongnnp/web/admin`
+> đã deploy: `getAccount.daily.rewards` là mảng 7 số nguyên không âm, lấy từ
+> `server_config/daily_checkin` sau khi admin publish Remote Config. `daily.coins`
+> giữ số thực nhận hôm nay nếu đã claim. Mobile đọc lịch này và không gọi API admin.
+> Không deploy source Functions cũ trên main để tránh ghi đè implementation admin.
+
 > **Flow 3 — 06/11/2026:** các màn Rewards đã nối API thật.
 > `getAccount` bổ sung `daily: {dayKey,streakDay,coins,alreadyClaimed,serverTime,
 > timezone}`; không đổi contract profile/wallet cũ. Server quyết định ngày Việt
@@ -182,7 +188,8 @@ Có manual fallback theo [contract mới](PREINTEGRATION_DECISIONS.md). Event Mi
 [3 API và receipt contract](EVENT_MILESTONES.md). Claim gửi expectedVersion;
 không dùng requestId mới để nhận lại cùng milestone.
 
-Daily theo **Asia/Ho_Chi_Minh**: 5/10/15/30/50/70/100; ngày 8+100; nghỉ một ngày
+Daily theo **Asia/Ho_Chi_Minh**: lịch đang áp dụng do backend trả trong
+`daily.rewards`; ngày 8 trở đi dùng mức ngày 7; nghỉ một ngày
 reset streak; cùng ngày trả receipt cũ. OperationKind: `register`, `cancel`,
 `daily`, `redeem`, `verify-ticket`, `verify-walkin`, `verify-voucher`; operationId = requestId,
 riêng daily = YYYY-MM-DD. Verify-ticket receipt luôn kiểm tra lại phân công staff.

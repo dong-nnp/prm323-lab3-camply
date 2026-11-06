@@ -1,0 +1,3 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC04,3,3,1,2,0,3,1/3,79.93,incomplete_or_unstable,"Final UI does not prove the query was cleared and suggestions restored | empty_message: expected one of ['No events found', 'No events match your search. Try another topic or clear the filters.', 'No events found. No events match your search. Try another topic or clear the filters.'], observed 'No events found\nNo events match your search. Try another topic or clear the filters.'"
+TC05,3,3,0,3,0,3,0/3,200.47,incomplete_or_unstable,Expecting value: line 1 column 1 (char 0)

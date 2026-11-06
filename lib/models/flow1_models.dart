@@ -126,13 +126,17 @@ class Flow1Snapshot {
   final Set<String> selectedInterests;
   final bool busy;
   final String? actionError;
-  Flow1Snapshot withAction({bool busy = false, String? error}) => Flow1Snapshot(
+  Flow1Snapshot withAction({
+    bool busy = false,
+    String? error,
+    Set<String>? saved,
+  }) => Flow1Snapshot(
     events: events,
     organizers: organizers,
     interests: interests,
     account: account,
     followed: followed,
-    saved: saved,
+    saved: saved ?? this.saved,
     myEvents: myEvents,
     selectedInterests: selectedInterests,
     busy: busy,

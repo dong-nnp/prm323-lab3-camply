@@ -1,0 +1,3 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC04,3,3,1,2,0,3,1/3,99.42,incomplete_or_unstable,ARTEMIS task ended failed
+TC05,3,2,1,0,1,1,1/1,59.21,incomplete_or_unstable,Stopped diagnostic run while host had less than 0.5 GB free RAM; waiting for user to free memory

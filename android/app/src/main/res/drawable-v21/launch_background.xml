@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/splash_background" />
-    <item android:width="280dp" android:height="115.615dp" android:gravity="center">
-        <bitmap android:src="@drawable/evia_logo" android:gravity="fill" android:filter="true" />
+    <item android:width="128dp" android:height="106.332dp" android:gravity="center">
+        <bitmap android:src="@drawable/evia_ticket" android:gravity="fill" android:filter="true" />
     </item>
 </layer-list>

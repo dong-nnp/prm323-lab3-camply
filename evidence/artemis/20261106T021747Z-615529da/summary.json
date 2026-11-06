@@ -1,0 +1,31 @@
+{
+  "planned_runs": 3,
+  "cases": [
+    {
+      "case_id": "TC04",
+      "planned_runs": 3,
+      "attempts": 3,
+      "passed": 1,
+      "failed": 2,
+      "blocked": 0,
+      "executed": 3,
+      "pass_rate": "1/3",
+      "average_seconds": 79.93,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "Final UI does not prove the query was cleared and suggestions restored | empty_message: expected one of ['No events found', 'No events match your search. Try another topic or clear the filters.', 'No events found. No events match your search. Try another topic or clear the filters.'], observed 'No events found\\nNo events match your search. Try another topic or clear the filters.'"
+    },
+    {
+      "case_id": "TC05",
+      "planned_runs": 3,
+      "attempts": 3,
+      "passed": 0,
+      "failed": 3,
+      "blocked": 0,
+      "executed": 3,
+      "pass_rate": "0/3",
+      "average_seconds": 200.47,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "Expecting value: line 1 column 1 (char 0)"
+    }
+  ]
+}

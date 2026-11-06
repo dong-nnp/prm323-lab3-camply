@@ -22,6 +22,7 @@ Map<String, dynamic> testReward({
 
 class Flow3TestBackend extends Flow1TestBackend {
   int available = 310, held = 0, dailyDay = 1, dailyCoins = 5, stock = 3;
+  List<int> dailyRewards = [5, 10, 15, 30, 50, 70, 100];
   bool claimedDaily = false, claimedMilestone = false;
   String voucherStatus = 'unused', fulfillment = 'voucher';
   final redemptions = <Map<String, dynamic>>[],
@@ -39,6 +40,7 @@ class Flow3TestBackend extends Flow1TestBackend {
             'serverTime': '2026-11-05T17:00:01Z',
             'streakDay': dailyDay,
             'coins': dailyCoins,
+            'rewards': dailyRewards,
             'alreadyClaimed': claimedDaily,
           },
         };

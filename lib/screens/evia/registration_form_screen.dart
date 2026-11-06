@@ -342,51 +342,7 @@ class _RegistrationFormScreenState
       ],
     );
     return EviaPage(
-      child: loading
-          ? ActivityOverlay(
-              background: page,
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ActivityIcon(
-                    '2083:5987',
-                    'imgSmoothAnimatedSvgCircleSpinner',
-                  ),
-                  SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'Confirming your\nregistration...',
-                    textAlign: TextAlign.center,
-                    style: EviaTheme.section,
-                  ),
-                  SizedBox(height: AppSpacing.sm),
-                  Text('Please wait a moment.', style: EviaTheme.caption),
-                  SizedBox(height: AppSpacing.lg),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.circle,
-                        size: AppSpacing.xs,
-                        color: AppColors.primary,
-                      ),
-                      SizedBox(width: AppSpacing.sm),
-                      Icon(
-                        Icons.circle,
-                        size: AppSpacing.xs,
-                        color: AppColors.accent,
-                      ),
-                      SizedBox(width: AppSpacing.sm),
-                      Icon(
-                        Icons.circle,
-                        size: AppSpacing.xs,
-                        color: AppColors.primary,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          : page,
+      child: loading ? RegistrationLoadingOverlay(background: page) : page,
     );
   }
 }

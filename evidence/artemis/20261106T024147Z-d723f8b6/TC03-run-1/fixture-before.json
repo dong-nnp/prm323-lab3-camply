@@ -1,0 +1,20 @@
+{
+  "ready": true,
+  "uid": "wRBEKS9iqOgywJEPPsd7M00nmtJ3",
+  "case_id": "TC03",
+  "context": {
+    "login": {
+      "method": "email_password",
+      "email": "[REDACTED_TEST_SECRET]",
+      "password": "[REDACTED_TEST_SECRET]"
+    },
+    "instruction": "Start from Welcome, choose Log In and use the supplied dedicated test credentials. Do not use Google. Profile should show EVIA E2E.",
+    "search_term": "Badminton"
+  },
+  "expected": {
+    "result_count": 1,
+    "event_titles": [
+      "[DEMO] Giao lưu Badminton"
+    ]
+  }
+}

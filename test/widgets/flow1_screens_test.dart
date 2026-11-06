@@ -22,6 +22,7 @@ import 'package:prm393_lab03/models/auth_session.dart';
 import 'package:prm393_lab03/viewmodels/authentication_view_model.dart';
 import 'package:prm393_lab03/models/flow1_models.dart';
 import 'package:prm393_lab03/widgets/event_flow_widgets.dart';
+import 'package:prm393_lab03/widgets/evia_skeleton.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../helpers/flow1_backend.dart';
@@ -80,9 +81,9 @@ Future<ProviderContainer> open(
 
 void main() {
   testWidgets(
-    'merged Following uses server registrations and keeps the event ID',
+    'Following shows followed club events without registration and keeps the event ID',
     (tester) async {
-      final backend = Flow1TestBackend()..registered = true;
+      final backend = Flow1TestBackend()..following = true;
       await open(tester, backend, '/following/events');
       expect(find.text('Server event title'), findsOneWidget);
       expect(find.text('Server club'), findsWidgets);
@@ -256,10 +257,12 @@ void main() {
     (tester) async {
       final backend = Flow1TestBackend();
       final gate = Completer<Map<String, dynamic>>();
+      final ticketGate = Completer<void>();
       backend.handle = (name, input) async {
         if (name == 'registerForEvent') {
           await gate.future;
         }
+        if (name == 'getTicket') await ticketGate.future;
         return backend.respond(name, input);
       };
       final c = await open(
@@ -285,7 +288,18 @@ void main() {
         RegistrationStatus.loading,
       );
       expect(find.text('Registration Successful!'), findsNothing);
+      expect(find.byType(RegistrationLoadingOverlay), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
       gate.complete({});
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(find.byType(RegistrationLoadingOverlay), findsOneWidget);
+      expect(find.byType(RegistrationFormScreen), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(EviaSkeleton), findsNothing);
+      expect(find.text('Registration Successful!'), findsNothing);
+      ticketGate.complete();
       await tester.pumpAndSettle();
       expect(find.byType(RegistrationResultScreen), findsOneWidget);
       expect(find.text('50 coins on hold'), findsOneWidget);

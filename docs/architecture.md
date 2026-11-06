@@ -150,7 +150,7 @@ test/
 ├── services/
 ├── viewmodels/
 └── widgets/
-e2e_test/                          # Chỉ README chuẩn bị ARTEMIS
+e2e_test/                          # Python ARTEMIS suite; tách khỏi Flutter runtime
 firebase/
 ├── storage.rules                  # Own create-only PDF reports; local only
 └── remote-config-defaults.json     # {} chờ xác định keys; chưa tải vào SDK

@@ -52,6 +52,7 @@ abstract final class AppSizes {
   static const minimumTouchTarget = 48.0;
   static const contentMaxWidth = 560.0;
   static const progressIndicator = 24.0;
+  static const navigationIcon = 24.0;
   static const statusIcon = 48.0;
   static const borderWidth = 1.0;
 }

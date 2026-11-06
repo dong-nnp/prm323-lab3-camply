@@ -1,0 +1,15 @@
+{
+  "instruction": "Test EVIA Android app com.example.prm393_lab03. Using fixture entities, open event About/Schedule/Location, organizer detail and reward detail. Read names/price/date shown. Use Back after each detail and report destinations.\nTest setup (private test data): {\"login\": {\"method\": \"email_password\", \"email\": \"[REDACTED_TEST_SECRET]\", \"password\": \"[REDACTED_TEST_SECRET]\"}, \"instruction\": \"Start from Welcome, choose Log In and use the supplied dedicated test credentials. Do not use Google. Profile should show EVIA E2E.\", \"entities\": {\"event_title\": \"[DEMO] Định hướng nghề nghiệp lập trình\", \"organizer_name\": \"[DEMO] CLB Công nghệ Evia\", \"reward_title\": \"[DEMO] Voucher Café Evia\"}, \"navigation\": \"Open the event from Discover/Search, check its About/Schedule/Location tabs, then Back to Discover. Reopen event About, open its organizer and Back to Event Details. Open the named reward from Rewards and Back to Rewards. Report back_destinations as canonical names Discover, Event Details, Rewards in this order. Do not register or redeem.\"}\nDo not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {\"observed\": {...}} with these fields: event_title, organizer_name, reward_title, price_coins, event_date, back_destinations. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.\nFLASH OUTPUT CONTRACT: put the exact JSON {\"observed\": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.",
+  "expected": {
+    "event_title": "[DEMO] Định hướng nghề nghiệp lập trình",
+    "organizer_name": "[DEMO] CLB Công nghệ Evia",
+    "reward_title": "[DEMO] Voucher Café Evia",
+    "price_coins": 200,
+    "event_date": "Nov 8, 2026 · 13:10",
+    "back_destinations": [
+      "Discover",
+      "Event Details",
+      "Rewards"
+    ]
+  }
+}

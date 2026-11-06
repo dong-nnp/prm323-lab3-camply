@@ -17,6 +17,7 @@ import '../../viewmodels/flow1_view_model.dart';
 import '../../core/providers/service_providers.dart';
 import '../../core/utils/exception_mapper.dart';
 import '../../widgets/status_widgets.dart';
+import 'registration_form_screen.dart';
 
 class RegistrationResultScreen extends ConsumerWidget {
   const RegistrationResultScreen({required this.view, this.eventId, super.key});
@@ -42,14 +43,20 @@ class RegistrationResultScreen extends ConsumerWidget {
         ? ref.watch(flow1TicketProvider(id))
         : null;
     if (ticket != null && !ticket.hasValue) {
+      if (!ticket.hasError) {
+        return RegistrationLoadingOverlay(
+          background:
+              state.eventId == id && state.status == RegistrationStatus.success
+              ? RegistrationFormScreen(eventId: id, resume: true)
+              : const EviaPage(child: SizedBox.expand()),
+        );
+      }
       return EviaPage(
         child: Center(
-          child: ticket.hasError
-              ? AppErrorWidget(
-                  message: ExceptionMapper.map(ticket.error!).message,
-                  onRetry: () => ref.invalidate(flow1TicketProvider(id)),
-                )
-              : const AppLoadingWidget(),
+          child: AppErrorWidget(
+            message: ExceptionMapper.map(ticket.error!).message,
+            onRetry: () => ref.invalidate(flow1TicketProvider(id)),
+          ),
         ),
       );
     }

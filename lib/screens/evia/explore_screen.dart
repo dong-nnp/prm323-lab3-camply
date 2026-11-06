@@ -11,6 +11,7 @@ import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/status_widgets.dart';
+import '../../widgets/evia_skeleton.dart';
 
 class EviaExploreScreen extends ConsumerStatefulWidget {
   const EviaExploreScreen({
@@ -111,7 +112,7 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
                 decoration: InputDecoration(
                   hintText: 'Search events, organizers...',
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     child: FigmaIcon(
                       screen,
                       results ? 'imgContainer1' : 'imgIcon',
@@ -173,7 +174,7 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: EviaPill(
-                    category,
+                    vm.categoryLabel(category),
                     selected: state.category == category,
                     onTap: () => vm.selectCategory(category),
                     leading: category == 'All' && !results
@@ -215,7 +216,11 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
             children: [
               Expanded(
                 child: Text(
-                  '${events.length} events found',
+                  remote?.isLoading == true && remote?.hasValue != true
+                      ? 'Searching…'
+                      : remote?.hasError == true
+                      ? 'Search results'
+                      : '${events.length} events found',
                   style: EviaTheme.label,
                 ),
               ),
@@ -239,7 +244,8 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
               ),
             ],
           ),
-          if (remote?.isLoading == true) const AppLoadingWidget(),
+          if (remote?.isLoading == true && remote?.hasValue != true)
+            const EviaSkeleton(),
           if (remote?.hasError == true)
             AppErrorWidget(
               message: ExceptionMapper.map(remote!.error!).message,
@@ -264,17 +270,28 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
               const Expanded(
                 child: Text('Recent Searches', style: EviaTheme.section),
               ),
-              TextButton(
-                onPressed: vm.clearHistory,
-                child: const Text('Clear all'),
-              ),
+              if (state.history.isNotEmpty)
+                TextButton(
+                  onPressed: vm.clearHistory,
+                  child: const Text('Clear all'),
+                ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
           if (state.history.isEmpty)
-            const AppEmptyWidget(
-              title: 'No recent searches',
-              message: 'Your recent searches will appear here.',
+            const EviaCard(
+              child: Row(
+                children: [
+                  Icon(Icons.history, color: AppColors.textSecondary),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      'Your recent searches will appear here.',
+                      style: EviaTheme.caption,
+                    ),
+                  ),
+                ],
+              ),
             )
           else
             EviaCard(
@@ -316,6 +333,7 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
     if (widget.onClose != null) return content;
     return EviaPage(
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: content,
       ),

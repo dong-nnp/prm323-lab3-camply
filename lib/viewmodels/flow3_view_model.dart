@@ -36,6 +36,18 @@ class Flow3ViewModel extends AsyncNotifier<Flow3Snapshot> {
     _generation++;
     _requests.clear();
     _lastRedemptionId = null;
+    ref.listen(flow1ViewModelProvider, (previous, next) {
+      final before = previous?.asData?.value;
+      final after = next.asData?.value;
+      // Event registration, cancellation and attendance also change the wallet.
+      if (after?.account != null &&
+          (before?.available != after!.available ||
+              before?.held != after.held) &&
+          state.hasValue &&
+          !_busy) {
+        unawaited(refresh());
+      }
+    });
     ref.onDispose(() => _dayTimer?.cancel());
     if (_uid == null) {
       throw const AppException(
@@ -70,14 +82,20 @@ class Flow3ViewModel extends AsyncNotifier<Flow3Snapshot> {
     final account = jsonMap(raw['account']),
         milestoneData = jsonMap(raw['milestones']);
     final daily = jsonMap(account['daily']);
+    final schedule = daily['rewards'];
     if (daily['dayKey'] is! String ||
         daily['serverTime'] is! String ||
-        daily['streakDay'] is! num ||
-        daily['coins'] is! num ||
+        daily['streakDay'] is! int ||
+        (daily['streakDay'] as int) < 1 ||
+        daily['coins'] is! int ||
+        (daily['coins'] as int) < 0 ||
+        schedule is! List ||
+        schedule.length != 7 ||
+        schedule.any((coins) => coins is! int || coins < 0) ||
         daily['alreadyClaimed'] is! bool) {
       throw const AppException(
         code: 'daily_unavailable',
-        message: 'Daily status is unavailable. Please reload.',
+        message: 'Daily rewards are unavailable. Please reload.',
       );
     }
     final balance = (jsonMap(account['wallet'])['availableCoins'] as num)

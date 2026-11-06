@@ -1,0 +1,9 @@
+{
+  "case_id": "TC05",
+  "repeat": 3,
+  "status": "failed",
+  "available_memory_gb_before": 1.75,
+  "task_id": "7e92e709-873d-488e-a37c-eb1aaefb7bd6",
+  "reason": "Expecting value: line 1 column 1 (char 0)",
+  "seconds": 82.5
+}

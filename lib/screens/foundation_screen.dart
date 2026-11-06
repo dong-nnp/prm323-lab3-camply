@@ -20,7 +20,9 @@ class FoundationScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text(AppStrings.appName)),
       body: ResponsiveBody(
         child: switch (state) {
-          AppLoading() => const AppLoadingWidget(),
+          AppLoading() => const AppLoadingWidget(
+            message: AppStrings.checkingConfiguration,
+          ),
           AppEmpty(:final message) => AppEmptyWidget(
             title: message,
             message: AppStrings.configurationHint,

@@ -1,0 +1,31 @@
+{
+  "ready": true,
+  "uid": "wRBEKS9iqOgywJEPPsd7M00nmtJ3",
+  "case_id": "TC06",
+  "context": {
+    "login": {
+      "method": "email_password",
+      "email": "[REDACTED_TEST_SECRET]",
+      "password": "[REDACTED_TEST_SECRET]"
+    },
+    "instruction": "Start from Welcome, choose Log In and use the supplied dedicated test credentials. Do not use Google. Profile should show EVIA E2E.",
+    "entities": {
+      "event_title": "[DEMO] Định hướng nghề nghiệp lập trình",
+      "organizer_name": "[DEMO] CLB Công nghệ Evia",
+      "reward_title": "[DEMO] Voucher Café Evia"
+    },
+    "navigation": "Open the event from Discover/Search, check its About/Schedule/Location tabs, then Back to Discover. Reopen event About, open its organizer and Back to Event Details. Open the named reward from Rewards and Back to Rewards. Report back_destinations as canonical names Discover, Event Details, Rewards in this order. Do not register or redeem."
+  },
+  "expected": {
+    "event_title": "[DEMO] Định hướng nghề nghiệp lập trình",
+    "organizer_name": "[DEMO] CLB Công nghệ Evia",
+    "reward_title": "[DEMO] Voucher Café Evia",
+    "price_coins": 200,
+    "event_date": "Nov 8, 2026 · 13:10",
+    "back_destinations": [
+      "Discover",
+      "Event Details",
+      "Rewards"
+    ]
+  }
+}

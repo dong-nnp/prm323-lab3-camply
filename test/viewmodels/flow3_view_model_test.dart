@@ -33,6 +33,89 @@ void main() {
   });
   tearDown(() => c.dispose());
   test(
+    'event wallet changes refresh deposits and refunds in Rewards',
+    () async {
+      final activity = c.read(activityViewModelProvider.notifier);
+      expect(activity.rewardHeld, 0);
+      for (final held in [100, 0]) {
+        final updated = Completer<void>();
+        final subscription = c.listen(flow3ViewModelProvider, (_, next) {
+          if (next.asData?.value.heldCoins == held && !updated.isCompleted) {
+            updated.complete();
+          }
+        });
+        backend.held = held;
+        backend.available = held == 100 ? 210 : 310;
+        await c.read(flow1ViewModelProvider.notifier).refresh();
+        await updated.future.timeout(const Duration(seconds: 5));
+        expect(activity.rewardHeld, held);
+        expect(activity.rewardAvailable, backend.available);
+        subscription.close();
+      }
+    },
+  );
+
+  test('daily reads the admin schedule again after refresh', () async {
+    backend.dailyRewards = [5, 12, 15, 30, 50, 70, 150];
+    backend.dailyDay = 2;
+    backend.dailyCoins = 12;
+    await c.read(flow3ViewModelProvider.notifier).refresh();
+    final progress = c
+        .read(flow3ViewModelProvider)
+        .requireValue
+        .dailyPresentation;
+    expect(progress.days.map((day) => day.coins), [5, 12, 15, 30, 50, 70, 150]);
+    expect(progress.coins, 12);
+    expect(progress.message, contains('150 coins'));
+
+    backend.dailyDay = 8;
+    backend.dailyCoins = 150;
+    await c.read(flow3ViewModelProvider.notifier).refresh();
+    final next = c.read(flow3ViewModelProvider).requireValue.dailyPresentation;
+    expect(next.days.last.coins, 150);
+    expect(next.message, 'Max reward unlocked · +150 coins daily');
+  });
+
+  test('a policy change preserves coins already claimed today', () async {
+    backend.dailyRewards = [5, 12, 15, 30, 50, 70, 80];
+    backend.dailyDay = 8;
+    backend.dailyCoins = 100;
+    backend.claimedDaily = true;
+    await c.read(flow3ViewModelProvider.notifier).refresh();
+    final progress = c
+        .read(flow3ViewModelProvider)
+        .requireValue
+        .dailyPresentation;
+    expect(progress.coins, 100);
+    expect(progress.days.last.coins, 100);
+    expect(progress.message, contains('+80 coins daily'));
+    expect(progress.checkedInToday, isTrue);
+  });
+
+  test(
+    'invalid or missing API schedules fail instead of showing made-up amounts',
+    () async {
+      for (final schedule in [
+        null,
+        [5, 12],
+        [5, -1, 15, 30, 50, 70, 100],
+      ]) {
+        backend.handle = (name, input) async {
+          final response = backend.respond(name, input);
+          if (name == 'getAccount') {
+            response['daily'] = {
+              ...response['daily'] as Map<String, dynamic>,
+              'rewards': schedule,
+            };
+          }
+          return response;
+        };
+        await c.read(flow3ViewModelProvider.notifier).refresh();
+        expect(c.read(flow3ViewModelProvider).error, isA<AppException>());
+      }
+    },
+  );
+  test(
     'reward eligibility uses the latest reward wallet after refresh',
     () async {
       c.listen(activityViewModelProvider, (_, _) {});

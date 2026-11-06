@@ -1,0 +1,9 @@
+{
+  "case_id": "TC19",
+  "repeat": 1,
+  "status": "failed",
+  "available_memory_gb_before": 1.84,
+  "task_id": "69afc833-28cb-4dec-8029-458b3806dd15",
+  "reason": "retry_visible: expected True, observed None",
+  "seconds": 245.625
+}

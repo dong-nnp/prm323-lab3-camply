@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-11-06T01:57:39.710540+00:00",
+  "device": "emulator-5556",
+  "checks": {
+    "host_memory_sufficient": false,
+    "gemini_key_configured": true,
+    "device_connected": true,
+    "isolated_avd": true,
+    "test_android_user": true,
+    "host_ready": true,
+    "dedicated_test_account": true
+  },
+  "available_memory_gb": 1.18,
+  "apk": {
+    "workspace_sha256": "8474c782d0956a61d0256279a4a14a5c8afda1c3fcda3536c0f338e0a8262164",
+    "installed_sha256": "8474c782d0956a61d0256279a4a14a5c8afda1c3fcda3536c0f338e0a8262164",
+    "same_apk_installed": true
+  },
+  "host_probes": [
+    {
+      "id": "python_runtime",
+      "status": "pass",
+      "is_blocker": true
+    },
+    {
+      "id": "system_config",
+      "status": "pass",
+      "is_blocker": true
+    },
+    {
+      "id": "toolchain",
+      "status": "fail",
+      "is_blocker": false
+    },
+    {
+      "id": "gemini_api_key",
+      "status": "pass",
+      "is_blocker": true
+    },
+    {
+      "id": "vision_ocr_key",
+      "status": "pass",
+      "is_blocker": false
+    },
+    {
+      "id": "android_adb",
+      "status": "pass",
+      "is_blocker": true
+    }
+  ],
+  "ready_for_readonly_smoke": false
+}

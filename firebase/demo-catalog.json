@@ -128,7 +128,8 @@
       "capacity": 30,
       "depositCoins": 50,
       "attendanceRewardCoins": 100,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-live-registration%2Fcover-37f26dac38511b26.jpg?alt=media&token=1b4666b1-9199-47a2-91ea-5a65ffff695a"
     },
     {
       "id": "demo-live-walkin",
@@ -191,7 +192,8 @@
       "capacity": null,
       "depositCoins": 0,
       "attendanceRewardCoins": 80,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-live-walkin%2Fcover-4479b8303a58fcba.jpg?alt=media&token=13a778f5-8d13-4a55-9c1d-139ea351cc05"
     },
     {
       "id": "demo-mobile-workshop",
@@ -259,7 +261,8 @@
       "capacity": 100,
       "depositCoins": 50,
       "attendanceRewardCoins": 100,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-mobile-workshop%2Fcover-331c0e93167437a5.jpg?alt=media&token=88ed12fd-f464-4b7e-8713-b2028ed3be01"
     },
     {
       "id": "demo-career-talk",
@@ -328,7 +331,8 @@
       "capacity": 80,
       "depositCoins": 0,
       "attendanceRewardCoins": 80,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-career-talk%2Fcover-6a1a66a669430b8c.jpg?alt=media&token=cb70a179-6f96-4750-8ab3-323ed69aefcc"
     },
     {
       "id": "demo-music-night",
@@ -396,7 +400,8 @@
       "capacity": 100,
       "depositCoins": 100,
       "attendanceRewardCoins": 150,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-music-night%2Fcover-3649d25566a38788.jpg?alt=media&token=a59716b0-e1d2-449c-bde4-ff40de54896c"
     },
     {
       "id": "demo-photo-walk",
@@ -460,7 +465,8 @@
       "capacity": null,
       "depositCoins": 0,
       "attendanceRewardCoins": 70,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-photo-walk%2Fcover-db41e4bfbf7228a1.jpg?alt=media&token=d0b7b0d3-85a4-4676-b13c-d643a8c7cf4e"
     },
     {
       "id": "demo-badminton",
@@ -528,7 +534,8 @@
       "capacity": 40,
       "depositCoins": 30,
       "attendanceRewardCoins": 60,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-badminton%2Fcover-809d3e02f98a8037.jpg?alt=media&token=38513788-27e7-4cff-a36e-cd9061d343d1"
     },
     {
       "id": "demo-green-campus",
@@ -592,7 +599,8 @@
       "capacity": null,
       "depositCoins": 0,
       "attendanceRewardCoins": 100,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-green-campus%2Fcover-0ffa12b18074debd.jpg?alt=media&token=e0adbaff-ddd4-4149-a657-47d2a4e3601d"
     },
     {
       "id": "demo-design-thinking",
@@ -660,7 +668,8 @@
       "capacity": 60,
       "depositCoins": 50,
       "attendanceRewardCoins": 100,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-design-thinking%2Fcover-116494b72adf9f8f.jpg?alt=media&token=7ec18f1e-4c74-4603-a0e2-43efccc39537"
     },
     {
       "id": "demo-full-event",
@@ -728,7 +737,8 @@
       "capacity": 0,
       "depositCoins": 0,
       "attendanceRewardCoins": 50,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-full-event%2Fcover-a4779b8f2772dec5.jpg?alt=media&token=860d5d26-e0a6-4502-9944-56e81e611566"
     },
     {
       "id": "demo-last-ticket",
@@ -796,7 +806,8 @@
       "capacity": 1,
       "depositCoins": 0,
       "attendanceRewardCoins": 50,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-last-ticket%2Fcover-c3447e0c64d221c0.jpg?alt=media&token=e30a6572-fece-4d4a-bf84-15437a7077c9"
     },
     {
       "id": "demo-past-event",
@@ -859,7 +870,8 @@
       "capacity": null,
       "depositCoins": 0,
       "attendanceRewardCoins": 80,
-      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md"
+      "sourceRef": "https://github.com/dong-nnp/prm323-lab3-camply/blob/KietDM/feat/backend/docs/DEMO_DATA.md",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/prm393-31822.firebasestorage.app/o/events%2Fdemo-past-event%2Fcover-2392a3e6fd417ecf.jpg?alt=media&token=fb17c044-853a-40cf-b2a5-96759f658702"
     }
   ],
   "rewards": [

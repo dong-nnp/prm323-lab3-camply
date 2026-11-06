@@ -248,6 +248,18 @@ void main() {
         find.ancestor(of: button, matching: find.byType(Scrollable)),
         findsNothing,
       );
+      await tester.pump(const Duration(seconds: 1));
+      expect(attended, isFalse);
+      expect(
+        backend.calls.where((v) => v.name == 'demoConfirmAttendance'),
+        isEmpty,
+      );
+      await c.read(flow1ViewModelProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+      expect(
+        backend.calls.where((v) => v.name == 'demoConfirmAttendance'),
+        isEmpty,
+      );
       await tester.tap(button);
       await tester.pump();
       expect(tester.widget<TextButton>(button).onPressed, isNull);

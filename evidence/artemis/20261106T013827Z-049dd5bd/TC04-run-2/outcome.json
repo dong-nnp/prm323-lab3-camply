@@ -1,0 +1,8 @@
+{
+  "case_id": "TC04",
+  "repeat": 2,
+  "status": "failed",
+  "task_id": "3e49f3ef-432d-41a7-b6cc-39cb493a15dc",
+  "reason": "ARTEMIS task ended failed",
+  "seconds": 87.938
+}

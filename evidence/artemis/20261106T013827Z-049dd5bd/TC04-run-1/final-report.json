@@ -1,0 +1,4 @@
+{
+  "explanation": "The application consistently triggers an \"App not responding\" dialog when attempting to proceed past the welcome screen. I have attempted to bypass this by selecting \"Wait\" multiple times, but the application remains unresponsive and repeatedly displays the same system dialog. As the application is fundamentally unstable and prevents any further interaction, the task cannot be completed.\n\n{\"observed\": {\"result_count\": null, \"empty_state_visible\": null, \"empty_message\": null, \"recovered\": false}}",
+  "source": "original ARTEMIS DataEngine report_task_status"
+}

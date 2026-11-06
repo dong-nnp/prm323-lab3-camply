@@ -1,0 +1,74 @@
+﻿{
+    "projectId":  "prm393-31822",
+    "bucket":  "prm393-31822.firebasestorage.app",
+    "verifiedAt":  "2026-11-05T22:26:37.0806556Z",
+    "imageCount":  12,
+    "checks":  [
+                   "Storage metadata and SHA match",
+                   "Firestore imageUrl read-back",
+                   "Image URL GET succeeds with image/jpeg"
+               ],
+    "storageRulesChanged":  false,
+    "images":  [
+                   {
+                       "id":  "demo-live-registration",
+                       "object":  "events/demo-live-registration/cover-37f26dac38511b26.jpg",
+                       "generation":  "1793917573441529"
+                   },
+                   {
+                       "id":  "demo-live-walkin",
+                       "object":  "events/demo-live-walkin/cover-4479b8303a58fcba.jpg",
+                       "generation":  "1793917447894327"
+                   },
+                   {
+                       "id":  "demo-mobile-workshop",
+                       "object":  "events/demo-mobile-workshop/cover-331c0e93167437a5.jpg",
+                       "generation":  "1793917450093179"
+                   },
+                   {
+                       "id":  "demo-career-talk",
+                       "object":  "events/demo-career-talk/cover-6a1a66a669430b8c.jpg",
+                       "generation":  "1793917451546703"
+                   },
+                   {
+                       "id":  "demo-music-night",
+                       "object":  "events/demo-music-night/cover-3649d25566a38788.jpg",
+                       "generation":  "1793917452797573"
+                   },
+                   {
+                       "id":  "demo-photo-walk",
+                       "object":  "events/demo-photo-walk/cover-db41e4bfbf7228a1.jpg",
+                       "generation":  "1793917454251530"
+                   },
+                   {
+                       "id":  "demo-badminton",
+                       "object":  "events/demo-badminton/cover-809d3e02f98a8037.jpg",
+                       "generation":  "1793917455236504"
+                   },
+                   {
+                       "id":  "demo-green-campus",
+                       "object":  "events/demo-green-campus/cover-0ffa12b18074debd.jpg",
+                       "generation":  "1793917457397032"
+                   },
+                   {
+                       "id":  "demo-design-thinking",
+                       "object":  "events/demo-design-thinking/cover-116494b72adf9f8f.jpg",
+                       "generation":  "1793917458587743"
+                   },
+                   {
+                       "id":  "demo-full-event",
+                       "object":  "events/demo-full-event/cover-a4779b8f2772dec5.jpg",
+                       "generation":  "1793917459745971"
+                   },
+                   {
+                       "id":  "demo-last-ticket",
+                       "object":  "events/demo-last-ticket/cover-c3447e0c64d221c0.jpg",
+                       "generation":  "1793917460914824"
+                   },
+                   {
+                       "id":  "demo-past-event",
+                       "object":  "events/demo-past-event/cover-2392a3e6fd417ecf.jpg",
+                       "generation":  "1793917462286420"
+                   }
+               ]
+}

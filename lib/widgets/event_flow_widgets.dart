@@ -8,6 +8,50 @@ import '../theme/flow_theme.dart';
 import 'activity_widgets.dart';
 import 'evia_widgets.dart';
 
+class RegistrationLoadingOverlay extends StatelessWidget {
+  const RegistrationLoadingOverlay({required this.background, super.key});
+  final Widget background;
+
+  @override
+  Widget build(BuildContext context) => PopScope(
+    canPop: false,
+    child: ActivityOverlay(
+      background: background,
+      child: SizedBox(
+        width: FlowTheme.registrationDialogWidth,
+        child: Semantics(
+          liveRegion: true,
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox.square(
+                dimension: AppSizes.statusIcon,
+                child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                  backgroundColor: AppColors.primarySoft,
+                  semanticsLabel: 'Confirming registration',
+                ),
+              ),
+              SizedBox(height: AppSpacing.xl),
+              Text(
+                'Confirming your\nregistration...',
+                textAlign: TextAlign.center,
+                style: EviaTheme.section,
+              ),
+              SizedBox(height: AppSpacing.sm),
+              Text(
+                'Please wait a moment.',
+                textAlign: TextAlign.center,
+                style: EviaTheme.caption,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 class FlowMeta extends StatelessWidget {
   const FlowMeta(
     this.text, {

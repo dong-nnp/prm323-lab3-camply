@@ -1,0 +1,4 @@
+{
+  "explanation": "The event was successfully saved and the organizer followed, as verified in the 'Saved Events' and 'Following' lists. Subsequently, both actions were undone, and the lists were verified to be empty. {\"observed\": {\"saved_after\": true, \"followed_after\": true, \"saved_after_undo\": false, \"followed_after_undo\": false}}",
+  "source": "original ARTEMIS DataEngine report_task_status"
+}

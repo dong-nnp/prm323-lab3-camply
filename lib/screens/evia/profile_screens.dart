@@ -18,6 +18,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/status_widgets.dart';
+import '../../widgets/evia_skeleton.dart';
 import '../../core/utils/exception_mapper.dart';
 import '../../viewmodels/push_notifications_view_model.dart';
 
@@ -61,7 +62,7 @@ class ProfileScreen extends ConsumerWidget {
           child: Text('Profile', style: EviaTheme.heading),
         ),
       ),
-      footer: const ActivityBottomBar(screen: screen, start: 11, selected: 3),
+      footer: const EviaBottomBar(selected: 3),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -721,7 +722,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   message: ExceptionMapper.map(remote.error!).message,
                   onRetry: () => ref.invalidate(notificationsViewModelProvider),
                 )
-              : const AppLoadingWidget(),
+              : const SingleChildScrollView(child: EviaSkeleton()),
         ),
       );
     }

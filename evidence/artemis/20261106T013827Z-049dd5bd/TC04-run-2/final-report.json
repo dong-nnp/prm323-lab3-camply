@@ -1,0 +1,4 @@
+{
+  "explanation": "{\"observed\": {\"result_count\": null, \"empty_state_visible\": null, \"empty_message\": null, \"recovered\": false}} The application repeatedly crashed with an \"isn't responding\" dialog upon attempting to interact with the search field, preventing the completion of the task.",
+  "source": "original ARTEMIS DataEngine report_task_status"
+}

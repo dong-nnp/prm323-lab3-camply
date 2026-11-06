@@ -7,7 +7,6 @@ import '../../models/evia_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
-import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/status_widgets.dart';
@@ -19,12 +18,11 @@ class EviaFollowingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(eviaViewModelProvider);
     final vm = ref.read(eviaViewModelProvider.notifier);
-    if (!organizers) ref.watch(activityViewModelProvider);
     final events = organizers ? const <CampusEvent>[] : vm.followingEvents;
     return EviaPage(
       header: EviaHeader(
         title: organizers ? 'Followed Organizers' : 'Following',
-        subtitle: 'Your registrations and followed organizers',
+        subtitle: 'Events from the campus clubs you follow',
         backAsset: FigmaIcon(
           organizers ? '2083:1873' : '2083:1582',
           'imgContainer${organizers ? 12 : 13}',
@@ -117,7 +115,7 @@ class EviaFollowingScreen extends ConsumerWidget {
                   children: [
                     for (final name in [
                       'All',
-                      ...vm.registeredEvents
+                      ...vm.followedClubEvents
                           .map((event) => event.organizer)
                           .whereType<String>()
                           .where((name) => name.isNotEmpty)
@@ -143,7 +141,7 @@ class EviaFollowingScreen extends ConsumerWidget {
               Row(
                 children: [
                   const Expanded(
-                    child: Text('Registered Events', style: EviaTheme.section),
+                    child: Text('Their Events', style: EviaTheme.section),
                   ),
                   Flexible(
                     child: TextButton(
@@ -170,8 +168,8 @@ class EviaFollowingScreen extends ConsumerWidget {
               ),
               if (events.isEmpty)
                 const AppEmptyWidget(
-                  title: 'No registered events',
-                  message: 'Your confirmed registrations will appear here.',
+                  title: 'No events from followed clubs',
+                  message: 'Follow clubs to discover their events here.',
                 ),
               for (final event in events)
                 Padding(
@@ -409,101 +407,92 @@ class _OrganizerCard extends ConsumerWidget {
       ),
     );
     return EviaCard(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final stacked =
-              constraints.maxWidth < 300 ||
-              MediaQuery.textScalerOf(context).scale(1) > 1.3;
-          return Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: organizer.icon == 2
-                        ? AppColors.accent
-                        : AppColors.primarySoft,
-                    radius: AppSpacing.xl,
-                    child: FigmaIcon(
-                      recommendation ? '2083:1582' : '2083:1873',
-                      recommendation
-                          ? [
-                              'imgContainer9',
-                              'imgContainer11',
-                              'imgContainer12',
-                            ][organizer.icon]
-                          : organizer.icon == 0
-                          ? 'imgContainer3'
-                          : organizer.icon == 1
-                          ? 'imgContainer7'
-                          : 'imgContainer9',
-                    ),
-                  ),
-                  const Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(
-                      Icons.circle,
-                      size: AppSpacing.md,
-                      color: AppColors.success,
-                    ),
-                  ),
-                ],
+              CircleAvatar(
+                backgroundColor: organizer.icon == 2
+                    ? AppColors.accent
+                    : AppColors.primarySoft,
+                radius: AppSpacing.xl,
+                child: FigmaIcon(
+                  recommendation ? '2083:1582' : '2083:1873',
+                  recommendation
+                      ? [
+                          'imgContainer9',
+                          'imgContainer11',
+                          'imgContainer12',
+                        ][organizer.icon]
+                      : organizer.icon == 0
+                      ? 'imgContainer3'
+                      : organizer.icon == 1
+                      ? 'imgContainer7'
+                      : 'imgContainer9',
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      spacing: AppSpacing.xs,
-                      runSpacing: AppSpacing.xs,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(organizer.name, style: EviaTheme.compactTitle),
-                        if (organizer.badge == 'verified')
-                          const FigmaIcon('2083:1873', 'imgContainer4'),
-                        if (organizer.badge == 'CLUB')
-                          const EventBadge(
-                            'CLUB',
-                            color: AppColors.accent,
-                            foreground: AppColors.textPrimary,
-                            category: true,
-                          ),
-                      ],
+                    Text(
+                      organizer.name,
+                      style: EviaTheme.compactTitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Text(organizer.description, style: EviaTheme.caption),
-                    const SizedBox(height: AppSpacing.xs),
-                    Wrap(
-                      spacing: AppSpacing.sm,
-                      runSpacing: AppSpacing.xs,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (organizer.upcomingCount > 0)
-                          EventBadge(
-                            '${organizer.upcomingCount} upcoming\n${organizer.upcomingCount == 1 ? 'event' : 'events'}',
-                          ),
-                        if (organizer.followers.isNotEmpty)
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const FigmaIcon('2083:1873', 'imgContainer5'),
-                              Text(
-                                organizer.followers,
-                                style: EviaTheme.caption,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                    if (stacked) button(),
+                    if (organizer.badge == 'verified')
+                      const FigmaIcon('2083:1873', 'imgContainer4'),
+                    if (organizer.badge == 'CLUB')
+                      const EventBadge(
+                        'CLUB',
+                        color: AppColors.accent,
+                        foreground: AppColors.textPrimary,
+                        category: true,
+                      ),
                   ],
                 ),
               ),
-              if (!stacked) button(),
             ],
-          );
-        },
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            organizer.description,
+            style: EviaTheme.caption,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (organizer.upcomingCount > 0)
+                EventBadge(
+                  '${organizer.upcomingCount} upcoming ${organizer.upcomingCount == 1 ? 'event' : 'events'}',
+                ),
+              if (organizer.followers.isNotEmpty)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.people_outline,
+                      size: AppSizes.navigationIcon,
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(organizer.followers, style: EviaTheme.caption),
+                  ],
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Align(alignment: Alignment.centerRight, child: button()),
+        ],
       ),
     );
   }

@@ -118,6 +118,54 @@ void main() {
       );
     },
   );
+  test('bookmark responds immediately, blocks duplicate and rolls back failed removal', () async {
+    final gate = Completer<void>();
+    backend.handle = (name, input) async {
+      if (name == 'setBookmark') await gate.future;
+      return backend.respond(name, input);
+    };
+    final vm = c.read(flow1ViewModelProvider.notifier);
+    final reads = backend.calls
+        .where((call) => call.name == 'getPublicCatalog')
+        .length;
+    final pending = vm.bookmark('server-event-17');
+    expect(
+      c.read(flow1ViewModelProvider).requireValue.saved,
+      contains('server-event-17'),
+    );
+    expect(c.read(flow1ViewModelProvider).requireValue.busy, isTrue);
+    expect(await vm.bookmark('server-event-17'), isFalse);
+    expect(
+      backend.calls.where((call) => call.name == 'setBookmark'),
+      hasLength(1),
+    );
+    gate.complete();
+    expect(await pending, isTrue);
+    expect(
+      backend.calls.where((call) => call.name == 'getPublicCatalog'),
+      hasLength(reads),
+    );
+
+    final failed = Completer<void>();
+    backend.handle = (name, input) async {
+      if (name == 'setBookmark') {
+        await failed.future;
+        throw const AppException(code: 'unavailable', message: 'Offline');
+      }
+      return backend.respond(name, input);
+    };
+    final removal = vm.bookmark('server-event-17');
+    expect(c.read(flow1ViewModelProvider).requireValue.saved, isEmpty);
+    failed.complete();
+    expect(await removal, isFalse);
+    expect(
+      c.read(flow1ViewModelProvider).requireValue.saved,
+      contains('server-event-17'),
+    );
+    expect(c.read(flow1ViewModelProvider).requireValue.actionError, 'Offline');
+    expect(c.read(flow1ViewModelProvider).requireValue.busy, isFalse);
+  });
+
   test('failed bookmark keeps prior data and supports a real retry', () async {
     backend.handle = (name, input) async {
       if (name == 'setBookmark') {

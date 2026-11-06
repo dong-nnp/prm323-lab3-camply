@@ -1,0 +1,10 @@
+{
+  "session_id": "33ac02e5-eaae-4f16-9236-8c00ccfa3874",
+  "initial_goal": "Test EVIA Android app com.example.prm393_lab03. Launch EVIA (launcher label prm393_lab03). If Welcome or Login appears, choose Explore as Guest or Skip to enter Discover; never enter account credentials. Open Search & Explore. Focus its input, REPLACE any text with EVIA_NO_MATCH_6f0a9dc2 and VERIFY the exact nonce is visible INSIDE the app search field, not only in a Gboard clipboard suggestion. If it is only a clipboard suggestion, tap that Paste/clipboard item to insert it. Then submit. Wait for the completed results screen and read the actual result count and empty message, not Suggested Events while search is still loading. Then physically clear the input using its clear button or select-all/delete. Wait until suggestions/results return. Report the empty message you saw earlier and whether recovery was actually performed. Do not register, save, follow, check in or spend coins.\nTest setup (private test data): {}\nDo not use personal accounts or debug demo attendance. Stop if a prerequisite is not met. Return ONLY JSON {\"observed\": {...}} with these fields: result_count, empty_state_visible, empty_message, recovered. Report only values you actually read or actions you performed. Use null for unobservable values. Never infer success from the requested goal.\nFLASH OUTPUT CONTRACT: put the exact JSON {\"observed\": {...}} inside the explanation argument of your final report_task_status tool call. Perform every requested step before reporting completion. If a step fails or is not observed, use null/false and report failure; do not say it would likely work.",
+  "start_time": 1793929339.505725,
+  "end_time": 1793929405.5754814,
+  "status": "completed",
+  "device_info": "{\"host_platform\": \"WINDOWS\", \"mobile_platform\": \"android\", \"device_id\": \"emulator-5556\", \"device_width\": 1080, \"device_height\": 2400, \"profile\": \"flash\", \"hierarchy_backend\": \"uiautomator\", \"hierarchy_backend_note\": \"UI hierarchy source: UIAutomator2.\"}",
+  "video_filepath": null,
+  "pid": 19148
+}

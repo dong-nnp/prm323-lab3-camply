@@ -138,6 +138,10 @@ final activityViewModelProvider =
     NotifierProvider<ActivityViewModel, ActivityState>(ActivityViewModel.new);
 
 class ActivityViewModel extends Notifier<ActivityState> {
+  Future<void> refreshRewards() async {
+    if (rewardsLive) await ref.read(flow3ViewModelProvider.notifier).refresh();
+  }
+
   bool get rewardsLive => ref.read(realBackendEnabledProvider);
   Flow3Snapshot? get rewardsData =>
       rewardsLive ? ref.read(flow3ViewModelProvider).asData?.value : null;

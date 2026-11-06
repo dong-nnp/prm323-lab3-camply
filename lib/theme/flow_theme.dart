@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_tokens.dart';
 
 abstract final class FlowTheme {
+  static const registrationDialogWidth = 280.0;
   static const heroHeight = 270.0;
   static const heroOverlap = 32.0;
   static const bannerHeight = 128.0;

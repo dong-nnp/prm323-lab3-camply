@@ -37,6 +37,7 @@ import '../models/auth_session.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/rewards_backend_gate.dart';
 import '../widgets/status_widgets.dart';
+import '../widgets/evia_skeleton.dart';
 import '../widgets/evia_widgets.dart';
 import '../core/utils/exception_mapper.dart';
 import '../viewmodels/flow1_view_model.dart';
@@ -277,12 +278,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/rewards',
-        builder: (_, _) => const RewardsBackendGate(child: RewardsScreen()),
+        builder: (_, _) => const RewardsBackendGate(
+          loadingFooter: EviaBottomBar(selected: 2),
+          child: RewardsScreen(),
+        ),
       ),
       GoRoute(
         path: '/rewards/catalog',
-        builder: (_, _) =>
-            const RewardsBackendGate(child: RewardsScreen(catalog: true)),
+        builder: (_, _) => const RewardsBackendGate(
+          loadingFooter: EviaBottomBar(selected: 2),
+          child: RewardsScreen(catalog: true),
+        ),
       ),
       GoRoute(
         path: '/rewards/locker',
@@ -402,7 +408,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return router;
 });
 
-// Gate API reads with the existing loading/error components; keep each original screen.
+// Gate API reads without replacing already loaded content during refresh.
 Widget _catalogReady(Widget child) => Consumer(
   builder: (context, ref, _) {
     if (!ref.watch(realBackendEnabledProvider)) return child;
@@ -420,10 +426,28 @@ Widget _catalogReady(Widget child) => Consumer(
     return ref
         .watch(flow1ViewModelProvider)
         .when(
-          skipLoadingOnRefresh: false,
+          skipLoadingOnRefresh: true,
           skipLoadingOnReload: false,
-          loading: () =>
-              const EviaPage(child: Center(child: AppLoadingWidget())),
+          loading: () => switch (child) {
+            EviaDiscoverScreen(:final guest) => EviaLoadingPage(
+              title: 'Discover',
+              layout: SkeletonLayout.discover,
+              footer: EviaBottomBar(guest: guest),
+            ),
+            EventDetailsScreen() => const EviaLoadingPage(
+              title: 'Event Details',
+              layout: SkeletonLayout.detail,
+            ),
+            MyEventsScreen() => const EviaLoadingPage(
+              title: 'My Events',
+              footer: EviaBottomBar(selected: 1),
+            ),
+            ProfileScreen() => const EviaLoadingPage(
+              title: 'Profile',
+              footer: EviaBottomBar(selected: 3),
+            ),
+            _ => const EviaLoadingPage(title: 'Loading content…'),
+          },
           error: (error, _) => EviaPage(
             child: Center(
               child: AppErrorWidget(

@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../viewmodels/flow3_view_model.dart';
 import '../../widgets/status_widgets.dart';
+import '../../widgets/evia_skeleton.dart';
 import '../../core/utils/exception_mapper.dart';
 
 import '../../core/constants/activity_assets.dart';
@@ -272,7 +273,7 @@ class RewardVoucherScreen extends ConsumerWidget {
                     ref.read(flow3ViewModelProvider.notifier).refresh();
                   },
                 )
-              : const AppLoadingWidget(),
+              : const SingleChildScrollView(child: EviaSkeleton()),
         ),
       );
     }

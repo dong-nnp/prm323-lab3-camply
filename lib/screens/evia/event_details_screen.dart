@@ -9,6 +9,7 @@ import '../../models/registration_models.dart';
 import '../../models/flow1_models.dart';
 import '../../viewmodels/flow1_view_model.dart';
 import '../../widgets/status_widgets.dart';
+import '../../widgets/evia_skeleton.dart';
 import '../../core/utils/exception_mapper.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
@@ -38,14 +39,18 @@ class EventDetailsScreen extends ConsumerWidget {
     final vm = ref.read(eviaViewModelProvider.notifier);
     final remote = vm.live ? ref.watch(flow1EventProvider(eventId)) : null;
     if (remote != null && !remote.hasValue) {
+      if (!remote.hasError) {
+        return const EviaLoadingPage(
+          title: 'Event Details',
+          layout: SkeletonLayout.detail,
+        );
+      }
       return EviaPage(
         child: Center(
-          child: remote.hasError
-              ? AppErrorWidget(
-                  message: ExceptionMapper.map(remote.error!).message,
-                  onRetry: () => ref.invalidate(flow1EventProvider(eventId)),
-                )
-              : const AppLoadingWidget(),
+          child: AppErrorWidget(
+            message: ExceptionMapper.map(remote.error!).message,
+            onRetry: () => ref.invalidate(flow1EventProvider(eventId)),
+          ),
         ),
       );
     }
@@ -225,23 +230,32 @@ class EventDetailsScreen extends ConsumerWidget {
                                 ? 'Remove from saved events'
                                 : 'Save event',
                             isSelected: saved,
-                            onPressed: () async {
-                              if (!ensureAuthenticated(context, ref)) return;
-                              final success = await ref
-                                  .read(profileViewModelProvider.notifier)
-                                  .toggleSaved(event.id);
-                              if (!context.mounted || !success) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    saved
-                                        ? 'Event removed from saved.'
-                                        : 'Event saved.',
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: ActivityIcon(screen, 'imgContainer1'),
+                            onPressed: vm.live && vm.catalog?.busy == true
+                                ? null
+                                : () async {
+                                    if (!ensureAuthenticated(context, ref)) {
+                                      return;
+                                    }
+                                    final success = await ref
+                                        .read(profileViewModelProvider.notifier)
+                                        .toggleSaved(event.id);
+                                    if (!context.mounted || !success) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          saved
+                                              ? 'Event removed from saved.'
+                                              : 'Event saved.',
+                                        ),
+                                      ),
+                                    );
+                                  },
+                            icon: Icon(
+                              saved ? Icons.bookmark : Icons.bookmark_border,
+                              color: saved
+                                  ? AppColors.primary
+                                  : AppColors.textSecondary,
+                            ),
                           ),
                         ),
                       ],

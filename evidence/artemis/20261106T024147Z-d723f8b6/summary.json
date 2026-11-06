@@ -1,0 +1,70 @@
+{
+  "planned_runs": 1,
+  "cases": [
+    {
+      "case_id": "TC03",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 0,
+      "failed": 1,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "0/1",
+      "average_seconds": 136.41,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "ARTEMIS task ended failed"
+    },
+    {
+      "case_id": "TC06",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 0,
+      "failed": 1,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "0/1",
+      "average_seconds": 182.0,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "price_coins: expected 200, observed '80'"
+    },
+    {
+      "case_id": "TC07",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "1/1",
+      "average_seconds": 328.66,
+      "verdict": "incomplete_or_unstable",
+      "reasons": ""
+    },
+    {
+      "case_id": "TC18",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 0,
+      "failed": 1,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "0/1",
+      "average_seconds": 128.58,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "ARTEMIS task ended failed"
+    },
+    {
+      "case_id": "TC19",
+      "planned_runs": 1,
+      "attempts": 1,
+      "passed": 0,
+      "failed": 1,
+      "blocked": 0,
+      "executed": 1,
+      "pass_rate": "0/1",
+      "average_seconds": 245.62,
+      "verdict": "incomplete_or_unstable",
+      "reasons": "retry_visible: expected True, observed None"
+    }
+  ]
+}

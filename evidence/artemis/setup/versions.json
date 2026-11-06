@@ -1,0 +1,12 @@
+{
+  "artemis_base_commit": "351ca8422f7b5b54e80a9c1ce03a222e02415b6b",
+  "uv": "uv 0.13.7 (316c827e0 2026-11-03 x86_64-pc-windows-msvc)",
+  "host_python": "Python 3.12.16",
+  "test_python": "Python 3.12.16",
+  "pytest": "pytest 9.2.0",
+  "sdk_patch": "e2e_test/patches/native-ascii-input.patch",
+  "sdk_patch_file_sha256": "e8058c2150a2f6b8bdc2bd81f3612094fbf2edd24c7b2369ef96eda19ec853b4",
+  "model_config_default": "gemini-3.1-flash-lite",
+  "adb": "Android Debug Bridge version 1.0.41",
+  "note": "Version and installed-APK checks are setup evidence, not E2E pass results."
+}

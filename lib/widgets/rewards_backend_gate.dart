@@ -9,11 +9,17 @@ import '../viewmodels/flow1_view_model.dart';
 import '../viewmodels/flow3_view_model.dart';
 import 'evia_widgets.dart';
 import 'status_widgets.dart';
+import 'evia_skeleton.dart';
 
 /// Uses the existing loading/error presentation around the original reward screens.
 class RewardsBackendGate extends ConsumerStatefulWidget {
-  const RewardsBackendGate({required this.child, super.key});
+  const RewardsBackendGate({
+    required this.child,
+    this.loadingFooter,
+    super.key,
+  });
   final Widget child;
+  final Widget? loadingFooter;
   @override
   ConsumerState<RewardsBackendGate> createState() => _RewardsBackendGateState();
 }
@@ -67,11 +73,14 @@ class _RewardsBackendGateState extends ConsumerState<RewardsBackendGate>
     return ref
         .watch(flow3ViewModelProvider)
         .when(
-          skipLoadingOnRefresh: false,
+          skipLoadingOnRefresh: true,
           skipLoadingOnReload: false,
           data: (_) => widget.child,
-          loading: () =>
-              const EviaPage(child: Center(child: AppLoadingWidget())),
+          loading: () => EviaLoadingPage(
+            title: 'Rewards',
+            layout: SkeletonLayout.rewards,
+            footer: widget.loadingFooter,
+          ),
           error: (error, _) => EviaPage(
             child: Center(
               child: AppErrorWidget(

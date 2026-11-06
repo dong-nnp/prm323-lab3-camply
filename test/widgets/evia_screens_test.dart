@@ -184,9 +184,7 @@ void main() {
       container.read(registrationViewModelProvider.notifier).markGoing();
       router.go('/following/events');
       await tester.pumpAndSettle();
-      expect(find.text('AI & Future Careers Workshop'), findsOneWidget);
-      expect(find.text('Tech Center'), findsOneWidget);
-      expect(find.text('Registered'), findsOneWidget);
+      expect(find.text('No events from followed clubs'), findsOneWidget);
       expect(find.text('Campus Club Fair'), findsNothing);
       await tester.tap(find.text('Organizers'));
       await tester.pumpAndSettle();
@@ -202,7 +200,7 @@ void main() {
           .cancelRegistration('ai-recommended');
       router.go('/following/events');
       await tester.pumpAndSettle();
-      expect(find.text('No registered events'), findsOneWidget);
+      expect(find.text('Campus Club Fair'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

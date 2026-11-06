@@ -1,0 +1,9 @@
+{
+  "case_id": "TC04",
+  "repeat": 3,
+  "status": "failed",
+  "available_memory_gb_before": 1.63,
+  "task_id": "0d71343f-4f12-4a9a-bea7-db0faba31196",
+  "reason": "empty_message: expected one of ['No events found', 'No events match your search. Try another topic or clear the filters.', 'No events found. No events match your search. Try another topic or clear the filters.'], observed 'No events found\\nNo events match your search. Try another topic or clear the filters.'",
+  "seconds": 54.156
+}

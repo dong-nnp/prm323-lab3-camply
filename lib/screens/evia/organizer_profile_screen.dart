@@ -281,28 +281,55 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                 ),
                               ),
                               IconButton(
-                                tooltip: 'Save ${events[index].title}',
-                                onPressed: () {
-                                  if (!ensureAuthenticated(context, ref)) {
-                                    return;
-                                  }
-                                  vm.toggleSaved(events[index].id);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        ref
-                                                .read(profileViewModelProvider)
-                                                .saved
-                                                .contains(events[index].id)
-                                            ? 'Event saved.'
-                                            : 'Event removed from saved.',
-                                      ),
-                                    ),
-                                  );
-                                },
-                                icon: const ActivityIcon(
-                                  screen,
-                                  'imgContainer5',
+                                tooltip: state.saved.contains(events[index].id)
+                                    ? 'Remove ${events[index].title} from saved'
+                                    : 'Save ${events[index].title}',
+                                isSelected: state.saved.contains(
+                                  events[index].id,
+                                ),
+                                onPressed:
+                                    catalog.live &&
+                                        catalog.catalog?.busy == true
+                                    ? null
+                                    : () async {
+                                        if (!ensureAuthenticated(
+                                          context,
+                                          ref,
+                                        )) {
+                                          return;
+                                        }
+                                        final success = await vm.toggleSaved(
+                                          events[index].id,
+                                        );
+                                        if (!context.mounted || !success) {
+                                          return;
+                                        }
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              ref
+                                                      .read(
+                                                        profileViewModelProvider,
+                                                      )
+                                                      .saved
+                                                      .contains(
+                                                        events[index].id,
+                                                      )
+                                                  ? 'Event saved.'
+                                                  : 'Event removed from saved.',
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                icon: Icon(
+                                  state.saved.contains(events[index].id)
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  color: state.saved.contains(events[index].id)
+                                      ? AppColors.primary
+                                      : AppColors.textSecondary,
                                 ),
                               ),
                             ],

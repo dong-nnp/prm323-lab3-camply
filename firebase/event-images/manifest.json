@@ -1,0 +1,80 @@
+{
+  "projectId": "prm393-31822",
+  "bucket": "prm393-31822.firebasestorage.app",
+  "license": "https://www.pexels.com/license/",
+  "illustrativeOnly": true,
+  "images": [
+    {
+      "eventId": "demo-live-registration",
+      "file": "pexels-18999146.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-sitting-at-the-table-with-laptops-18999146/",
+      "description": "Nhóm người lớn thảo luận và làm việc với laptop; ảnh minh họa workshop."
+    },
+    {
+      "eventId": "demo-live-walkin",
+      "file": "pexels-7683694.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/college-students-in-a-university-campus-7683694/",
+      "description": "Sinh viên giao lưu trong khuôn viên trường."
+    },
+    {
+      "eventId": "demo-mobile-workshop",
+      "file": "pexels-5539293.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/students-working-on-computers-5539293/",
+      "description": "Lớp học thực hành máy tính."
+    },
+    {
+      "eventId": "demo-career-talk",
+      "file": "pexels-19895774.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-with-laptops-at-lecture-in-technical-school-19895774/",
+      "description": "Buổi chia sẻ kỹ năng công nghệ."
+    },
+    {
+      "eventId": "demo-music-night",
+      "file": "pexels-15276294.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/music-band-on-stage-15276294/",
+      "description": "Ban nhạc biểu diễn trên sân khấu."
+    },
+    {
+      "eventId": "demo-photo-walk",
+      "file": "pexels-1296663.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/man-holding-slr-camera-while-walking-1296663/",
+      "description": "Đi bộ chụp ảnh ngoài trời."
+    },
+    {
+      "eventId": "demo-badminton",
+      "file": "pexels-2202685.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-playing-badminton-2202685/",
+      "description": "Giao lưu cầu lông trong nhà."
+    },
+    {
+      "eventId": "demo-green-campus",
+      "file": "pexels-39037908.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/volunteers-cleaning-up-litter-in-a-park-39037908/",
+      "description": "Nhóm tình nguyện dọn rác ngoài trời."
+    },
+    {
+      "eventId": "demo-design-thinking",
+      "file": "pexels-4623365.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-at-a-meeting-at-work-4623365/",
+      "description": "Nhóm thảo luận ý tưởng và ghi chú."
+    },
+    {
+      "eventId": "demo-full-event",
+      "file": "pexels-6913338.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-around-a-table-brainstorming-6913338/",
+      "description": "Workshop làm việc nhóm với laptop."
+    },
+    {
+      "eventId": "demo-last-ticket",
+      "file": "pexels-11831850.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/people-playing-basketball-11831850/",
+      "description": "Trận giao lưu bóng rổ trong nhà."
+    },
+    {
+      "eventId": "demo-past-event",
+      "file": "pexels-7972313.jpg",
+      "sourceUrl": "https://www.pexels.com/photo/a-group-of-students-studying-7972313/",
+      "description": "Hoạt động giao lưu nhóm sinh viên ngoài trời."
+    }
+  ]
+}

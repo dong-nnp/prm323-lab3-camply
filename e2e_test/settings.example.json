@@ -1,0 +1,20 @@
+{
+  "base_url": "http://127.0.0.1:8000",
+  "device": "emulator-5556",
+  "android_user_id": 0,
+  "avd_name": "EVIA_E2E",
+  "model": "gemini-3.1-flash-lite",
+  "minimum_free_memory_gb": 2,
+  "timeout_seconds": 600,
+  "deferred_cases": ["TC03"],
+  "test_account_uid": "",
+  "test_account_email": "",
+  "cases": {
+    "TC03": {
+      "prepare_command": [],
+      "verify_command": [],
+      "context": {"search_term": "replace_with_unique_fixture_term"},
+      "expected": {"result_count": 1, "event_titles": ["replace_with_fixture_title"]}
+    }
+  }
+}

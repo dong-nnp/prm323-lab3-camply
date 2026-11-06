@@ -12,14 +12,12 @@ class EviaLogo extends StatelessWidget {
   final bool large, interests;
   @override
   Widget build(BuildContext context) => Image.asset(
-    FigmaAssets.path(
-      large
-          ? '2083:4509'
-          : interests
-          ? '2088:2'
-          : '2083:456',
-      interests ? 'imgEvia' : 'imgEviaLogo',
-    ),
+    !large && !interests
+        ? 'assets/evia-logo-lime-transparent(4).png'
+        : FigmaAssets.path(
+            large ? '2083:4509' : '2088:2',
+            interests ? 'imgEvia' : 'imgEviaLogo',
+          ),
     width: large ? EviaTheme.loginLogoWidth : EviaTheme.logoWidth,
     height: large ? EviaTheme.loginLogoHeight : null,
     fit: BoxFit.contain,

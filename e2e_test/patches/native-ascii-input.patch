@@ -1,0 +1,12 @@
+diff --git a/artemis/drivers/android/adb_driver.py b/artemis/drivers/android/adb_driver.py
+--- a/artemis/drivers/android/adb_driver.py
++++ b/artemis/drivers/android/adb_driver.py
+@@ -326,7 +326,7 @@
+             norm_text = text.replace(r"\r\n", "\n").replace(r"\n", "\n").replace(r"\r", "\n")
+ 
+             # 1. Tier 1: Try clipboard injection + KEYCODE_PASTE (Zero IME interference, preserves multiline, works for all charsets)
+-            if self._ui_adb_client:
++            if self._ui_adb_client and not norm_text.isascii():
+                 try:
+                     set_clip_ok = False
+                     if hasattr(self._ui_adb_client, "set_clipboard"):

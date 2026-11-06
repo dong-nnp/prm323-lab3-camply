@@ -1,0 +1,31 @@
+{
+  "planned_runs": 3,
+  "cases": [
+    {
+      "case_id": "TC04",
+      "planned_runs": 3,
+      "attempts": 3,
+      "passed": 3,
+      "failed": 0,
+      "blocked": 0,
+      "executed": 3,
+      "pass_rate": "3/3",
+      "average_seconds": 56.38,
+      "verdict": "passed_required_runs",
+      "reasons": ""
+    },
+    {
+      "case_id": "TC05",
+      "planned_runs": 3,
+      "attempts": 3,
+      "passed": 3,
+      "failed": 0,
+      "blocked": 0,
+      "executed": 3,
+      "pass_rate": "3/3",
+      "average_seconds": 116.51,
+      "verdict": "passed_required_runs",
+      "reasons": ""
+    }
+  ]
+}

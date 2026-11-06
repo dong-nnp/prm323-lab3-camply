@@ -84,6 +84,10 @@ final eviaViewModelProvider = NotifierProvider<EviaViewModel, EviaState>(
 );
 
 class EviaViewModel extends Notifier<EviaState> {
+  Future<void> refresh() async {
+    if (live) await ref.read(flow1ViewModelProvider.notifier).refresh();
+  }
+
   bool get live => ref.read(realBackendEnabledProvider);
   Flow1Snapshot? get catalog =>
       live ? ref.read(flow1ViewModelProvider).asData?.value : null;
@@ -323,7 +327,37 @@ class EviaViewModel extends Notifier<EviaState> {
     return state.descending ? events.reversed.toList() : events;
   }
 
-  List<CampusEvent> get followingEvents => registeredEvents
+  List<CampusEvent> get followedClubEvents {
+    if (!ref.read(hasAuthenticatedSessionProvider)) return [];
+    final List<CampusEvent> followedEvents;
+    if (live) {
+      final data = catalog;
+      if (data == null) return [];
+      final rows =
+          data.events
+              .where((event) => state.followed.contains(event.organizerId))
+              .toList()
+            ..sort((a, b) => a.start.compareTo(b.start));
+      followedEvents = rows
+          .map((event) => event.card(data.organizerName(event.organizerId)))
+          .toList();
+    } else {
+      final names = followedOrganizers
+          .map((organizer) => organizer.name)
+          .toSet();
+      followedEvents =
+          EviaMockData.catalog
+              .where((event) => names.contains(event.organizer))
+              .toList()
+            ..sort(
+              (a, b) =>
+                  EviaMockData.startOf(a).compareTo(EviaMockData.startOf(b)),
+            );
+    }
+    return state.descending ? followedEvents.reversed.toList() : followedEvents;
+  }
+
+  List<CampusEvent> get followingEvents => followedClubEvents
       .where(
         (event) =>
             state.organizer == 'All' || event.organizer == state.organizer,
@@ -351,16 +385,15 @@ class EviaViewModel extends Notifier<EviaState> {
                 .toList() ??
             []
       : [EviaMockData.music, ...EviaMockData.upcoming];
-  CampusEvent? get featured => live
+  List<CampusEvent> get featuredEvents => live
       ? catalog?.events
-            .where((e) => e.featured)
-            .firstOrNull
-            ?.card(
-              catalog!.organizerName(
-                catalog!.events.firstWhere((e) => e.featured).organizerId,
-              ),
-            )
-      : EviaMockData.music;
+                .where((e) => e.featured)
+                .take(5)
+                .map((e) => e.card(catalog!.organizerName(e.organizerId)))
+                .toList() ??
+            []
+      : [EviaMockData.music];
+  CampusEvent? get featured => featuredEvents.firstOrNull;
   List<CampusEvent> get recommended => live
       ? catalog?.events
                 .where(
@@ -370,13 +403,29 @@ class EviaViewModel extends Notifier<EviaState> {
                   ].any(catalog!.selectedInterests.contains),
                 )
                 .map((e) => e.card(catalog!.organizerName(e.organizerId)))
-                .take(2)
+                .take(5)
                 .toList() ??
             []
       : [EviaMockData.recommendedAi, EviaMockData.photoWalk];
   List<String> get categories => live
       ? ['All', ...events.map((e) => e.category).toSet()]
       : ['All', 'Technology', 'Music', 'Sports', 'Arts'];
+  String categoryLabel(String id) {
+    if (id == 'All') return id;
+    final labels = catalog?.interests.where((item) => item['id'] == id);
+    if (labels != null && labels.isNotEmpty) {
+      final label = labels.first['label'];
+      if (label is String && label.trim().isNotEmpty) return label;
+    }
+    return id
+        .split(RegExp(r'[_\s-]+'))
+        .map((word) {
+          if (word.isEmpty) return word;
+          return '${word[0].toUpperCase()}${word.substring(1)}';
+        })
+        .join(' ');
+  }
+
   String get discoverName => live
       ? 'Hey ${catalog?.profile['displayName'] ?? ''}! 👋'
       : EviaMockData.discoverName;

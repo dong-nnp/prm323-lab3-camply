@@ -1,0 +1,12 @@
+{
+  "verified": true,
+  "uid": "wRBEKS9iqOgywJEPPsd7M00nmtJ3",
+  "case_id": "TC05",
+  "wallet_unchanged": true,
+  "wallet": {
+    "availableCoins": 200,
+    "heldCoins": 0,
+    "version": 1,
+    "updatedAt": "2026-11-06T01:27:16.177Z"
+  }
+}

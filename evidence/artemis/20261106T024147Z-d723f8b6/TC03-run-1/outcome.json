@@ -1,0 +1,9 @@
+{
+  "case_id": "TC03",
+  "repeat": 1,
+  "status": "failed",
+  "available_memory_gb_before": 1.89,
+  "task_id": "2ddb04c9-3b3a-4b3f-9074-5bb6285e56ba",
+  "reason": "ARTEMIS task ended failed",
+  "seconds": 136.406
+}

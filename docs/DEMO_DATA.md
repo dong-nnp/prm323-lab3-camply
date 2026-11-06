@@ -36,8 +36,11 @@ và thông báo dữ liệu giả lập. `sourceRef` trỏ tới tài liệu pro
 - Quà chỉ phục vụ demo, không mua/nhận dịch vụ hay hàng hóa thực tế. Cafe giá
   200, stock 100, validDays=30; các giá trị này là dữ liệu server có thể sửa sau.
   Ba loại voucher được admin demo xác nhận; hai quà vật lý chưa có API giao nhận.
-- Ảnh/logo URL không được thêm vì chưa có nguồn ảnh; dùng placeholder chuẩn của
-  UI khi nối adapter. Không upload ảnh sang đường Storage bị Rules từ chối.
+- 06/11/2026: 12 sự kiện có ảnh minh họa Pexels được người dùng yêu cầu chọn và
+  tải lên Storage. Nguồn/license theo từng ảnh tại
+  [`firebase/event-images/manifest.json`](../firebase/event-images/manifest.json).
+  Đây là ảnh stock minh họa, không phải ảnh thực tế của các sự kiện demo.
+  Upload bằng quyền quản trị, Rules giữ nguyên; ứng dụng đọc `imageUrl` từ server.
 
 ## Tài khoản đã tạo
 

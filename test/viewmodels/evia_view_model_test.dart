@@ -125,7 +125,15 @@ void main() {
         isTrue,
       );
       expect(accountVm.followedOrganizers.single.id, 'union');
-      expect(accountVm.followingEvents.single.id, 'design');
+      expect(accountVm.registeredEvents.single.id, 'design');
+      expect(
+        accountVm.followingEvents.map((event) => event.id),
+        contains('club'),
+      );
+      expect(
+        accountVm.followingEvents.map((event) => event.id),
+        isNot(contains('design')),
+      );
       sessions.add(const AuthSession.signedIn('second-user'));
       await accountContainer.pump();
       expect(

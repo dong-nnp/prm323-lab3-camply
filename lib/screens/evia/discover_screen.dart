@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import '../../data/mock/evia_mock_data.dart';
 import '../../models/evia_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../theme/app_motion.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../core/providers/service_providers.dart';
@@ -48,19 +51,14 @@ class _EviaDiscoverScreenState extends ConsumerState<EviaDiscoverScreen> {
     final vm = ref.read(eviaViewModelProvider.notifier);
     final live = ref.watch(realBackendEnabledProvider);
     final demo = ref.watch(demoAuthEnabledProvider);
-    final featured = vm.featured;
+    final featured = vm.featuredEvents;
     final recommendations = vm.recommended;
     final balance = ref.watch(
       activityViewModelProvider.select((s) => s.available),
     );
-    final List<CampusEvent> registered;
-    if (guest) {
-      registered = const [];
-    } else {
-      ref.watch(activityViewModelProvider);
-      ref.watch(eviaViewModelProvider.select((s) => s.descending));
-      registered = ref.read(eviaViewModelProvider.notifier).registeredEvents;
-    }
+    final followedEvents = guest
+        ? const <CampusEvent>[]
+        : vm.followedClubEvents;
     final screen = guest ? '2083:1143' : '2083:456';
     return EviaPage(
       header: Container(
@@ -121,121 +119,310 @@ class _EviaDiscoverScreenState extends ConsumerState<EviaDiscoverScreen> {
         ),
       ),
       footer: EviaBottomBar(guest: guest),
-      child: SingleChildScrollView(
-        controller: _scroll,
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_searchExpanded)
-              EviaExploreScreen(
-                onClose: () => setState(() => _searchExpanded = false),
-              )
-            else
-              Semantics(
-                button: true,
-                label: 'Search events, organizers',
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  onTap: _search,
-                  child: EviaCard(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Row(
-                      children: [
-                        FigmaIcon(screen, 'imgContainer'),
-                        const SizedBox(width: AppSpacing.sm),
-                        const Expanded(
-                          child: Text(
-                            'Search events, organizers...',
-                            style: EviaTheme.caption,
+      child: RefreshIndicator(
+        onRefresh: vm.refresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: _scroll,
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_searchExpanded)
+                EviaExploreScreen(
+                  onClose: () => setState(() => _searchExpanded = false),
+                )
+              else
+                Semantics(
+                  button: true,
+                  label: 'Search events, organizers',
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
+                    onTap: _search,
+                    child: EviaCard(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Row(
+                        children: [
+                          FigmaIcon(screen, 'imgContainer'),
+                          const SizedBox(width: AppSpacing.sm),
+                          const Expanded(
+                            child: Text(
+                              'Search events, organizers...',
+                              style: EviaTheme.caption,
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: AppSpacing.lg),
+              if (featured.isNotEmpty)
+                _FeaturedCarousel(
+                  key: ValueKey(featured.map((event) => event.id).join(',')),
+                  events: featured,
+                  guest: guest,
+                ),
+              SectionHeading(
+                guest ? 'Popular Events' : 'Recommended for You',
+                subtitle: guest
+                    ? 'Trending on campus'
+                    : vm.recommendationSubtitle,
+                onSeeAll: _search,
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (var i = 0; i < recommendations.length; i++) ...[
+                          if (i > 0) const SizedBox(width: AppSpacing.md),
+                          SizedBox(
+                            width:
+                                constraints.maxWidth *
+                                EviaTheme.recommendedCardWidthFactor,
+                            child: _RecommendedCard(
+                              event: recommendations[i],
+                              guest: guest,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ),
               ),
-            const SizedBox(height: AppSpacing.lg),
-            if (featured != null) _FeaturedEvent(guest: guest, event: featured),
-            const SizedBox(height: AppSpacing.sm),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _CarouselDot(active: true),
-                _CarouselDot(),
-                _CarouselDot(),
-              ],
-            ),
-            SectionHeading(
-              guest ? 'Popular Events' : 'Recommended for You',
-              subtitle: guest
-                  ? 'Trending on campus'
-                  : vm.recommendationSubtitle,
-              onSeeAll: _search,
-            ),
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: recommendations.isEmpty
-                        ? const SizedBox.shrink()
-                        : _RecommendedCard(
-                            event: recommendations.first,
-                            guest: guest,
-                          ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: recommendations.length < 2
-                        ? const SizedBox.shrink()
-                        : _RecommendedCard(
-                            event: recommendations[1],
-                            guest: guest,
-                          ),
-                  ),
-                ],
-              ),
-            ),
-            if (!guest) ...[
-              SectionHeading(
-                'Your Registered Events',
-                arrow: const FigmaIcon('2083:456', 'imgContainer11'),
-                subtitle: 'Events you have registered for',
-                onSeeAll: () => context.push('/following/events'),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (final event in registered)
-                      Padding(
-                        padding: const EdgeInsets.only(right: AppSpacing.md),
-                        child: SizedBox(
-                          width: EviaTheme.phoneWidth * .72,
-                          child: _FollowingPreview(event: event),
-                        ),
-                      ),
-                  ],
+              if (!guest) ...[
+                SectionHeading(
+                  'From Clubs You Follow',
+                  arrow: const FigmaIcon('2083:456', 'imgContainer11'),
+                  subtitle: 'Discover events from your followed clubs',
+                  onSeeAll: () => context.push('/following/events'),
                 ),
+                if (followedEvents.isEmpty)
+                  EviaCard(
+                    child: Text(
+                      vm.followedOrganizers.isEmpty
+                          ? 'Follow a club to see its events here.'
+                          : 'Your followed clubs have no events to show yet.',
+                      style: EviaTheme.caption,
+                    ),
+                  )
+                else
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final event in followedEvents)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: AppSpacing.md,
+                            ),
+                            child: SizedBox(
+                              width: EviaTheme.phoneWidth * .72,
+                              child: _FollowingPreview(event: event),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+              SectionHeading(
+                'Happening Soon',
+                subtitle: 'Upcoming events on campus',
+                onSeeAll: _search,
               ),
+              for (final event in (live ? vm.events : EviaMockData.upcoming))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: UpcomingEventCard(event: event, guest: guest),
+                ),
+              const SizedBox(height: AppSpacing.lg),
             ],
-            SectionHeading(
-              'Happening Soon',
-              subtitle: 'Upcoming events on campus',
-              onSeeAll: _search,
-            ),
-            for (final event in (live ? vm.events : EviaMockData.upcoming))
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: _UpcomingCard(event: event, guest: guest),
-              ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
+          ),
         ),
       ),
     );
   }
+}
+
+class _FeaturedCarousel extends StatefulWidget {
+  const _FeaturedCarousel({
+    required this.events,
+    required this.guest,
+    super.key,
+  });
+  final List<CampusEvent> events;
+  final bool guest;
+
+  @override
+  State<_FeaturedCarousel> createState() => _FeaturedCarouselState();
+}
+
+class _FeaturedCarouselState extends State<_FeaturedCarousel>
+    with WidgetsBindingObserver {
+  int _active = 0;
+  final _controller = ScrollController(keepScrollOffset: false);
+  Timer? _timer;
+  bool _enabled = false;
+  bool _foreground = true;
+  bool _animating = false;
+  bool _touching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _enabled =
+        !MediaQuery.disableAnimationsOf(context) &&
+        TickerMode.valuesOf(context).enabled;
+    _restartTimer();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    _restartTimer();
+  }
+
+  void _restartTimer() {
+    _timer?.cancel();
+    if (!_enabled || !_foreground || _touching || widget.events.length < 2) {
+      return;
+    }
+    _timer = Timer.periodic(AppMotion.bannerInterval, (_) => _advance());
+  }
+
+  Future<void> _advance() async {
+    if (!mounted ||
+        _animating ||
+        !_controller.hasClients ||
+        !(ModalRoute.of(context)?.isCurrent ?? true)) {
+      return;
+    }
+    final width = _controller.position.viewportDimension;
+    if (width <= 0) return;
+    _animating = true;
+    try {
+      final next = (_controller.offset / width).round() + 1;
+      await _controller.animateTo(
+        next * width,
+        duration: AppMotion.bannerTransition,
+        curve: Curves.easeInOutCubic,
+      );
+      // The extra first slide makes the last-to-first transition slide forward.
+      if (mounted &&
+          _controller.hasClients &&
+          _controller.offset >= width * widget.events.length) {
+        _controller.jumpTo(0);
+      }
+    } finally {
+      _animating = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      LayoutBuilder(
+        builder: (context, constraints) =>
+            NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.depth == 0 &&
+                    notification.metrics.axis == Axis.horizontal) {
+                  if (notification is ScrollStartNotification &&
+                      notification.dragDetails != null) {
+                    _timer?.cancel();
+                  }
+                  final page =
+                      (notification.metrics.pixels / constraints.maxWidth)
+                          .round()
+                          .clamp(0, widget.events.length) %
+                      widget.events.length;
+                  if (page != _active) setState(() => _active = page);
+                  if (notification is ScrollEndNotification) {
+                    if (!_animating &&
+                        _controller.offset >=
+                            constraints.maxWidth * widget.events.length) {
+                      _controller.jumpTo(0);
+                    }
+                    _restartTimer();
+                  }
+                }
+                return false;
+              },
+              child: Listener(
+                onPointerDown: (_) {
+                  _touching = true;
+                  _timer?.cancel();
+                },
+                onPointerUp: (_) {
+                  _touching = false;
+                  _restartTimer();
+                },
+                onPointerCancel: (_) {
+                  _touching = false;
+                  _restartTimer();
+                },
+                child: SingleChildScrollView(
+                  controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  physics: const PageScrollPhysics(),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final event in [
+                          ...widget.events,
+                          if (widget.events.length > 1) widget.events.first,
+                        ])
+                          SizedBox(
+                            width: constraints.maxWidth,
+                            child: _FeaturedEvent(
+                              guest: widget.guest,
+                              event: event,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+      ),
+      if (widget.events.length > 1) ...[
+        const SizedBox(height: AppSpacing.sm),
+        Semantics(
+          label: 'Featured event ${_active + 1} of ${widget.events.length}',
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (var i = 0; i < widget.events.length; i++)
+                  _CarouselDot(active: i == _active),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ],
+  );
 }
 
 class _CarouselDot extends StatelessWidget {
@@ -263,94 +450,139 @@ class _FeaturedEvent extends StatelessWidget {
     return GestureDetector(
       onTap: () => showEvent(context, event),
       child: Container(
-        constraints: const BoxConstraints(minHeight: EviaTheme.heroHeight),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        constraints: const BoxConstraints(
+          minHeight: EviaTheme.featuredBannerMinHeight,
+        ),
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadius.large),
           gradient: EviaTheme.featuredGradient,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Wrap(
-                    spacing: AppSpacing.xs,
-                    runSpacing: AppSpacing.xs,
+            if (event.image != null) ...[
+              Positioned.fill(
+                child: catalogImage(
+                  event.image,
+                  event.image!,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: EviaTheme.featuredImageOverlay,
+                  ),
+                ),
+              ),
+            ],
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      const EventBadge(
-                        'FEATURED',
-                        color: AppColors.textSecondary,
-                        foreground: AppColors.surface,
-                        category: true,
+                      Expanded(
+                        child: Wrap(
+                          spacing: AppSpacing.xs,
+                          runSpacing: AppSpacing.xs,
+                          children: [
+                            const EventBadge(
+                              'FEATURED',
+                              color: AppColors.textSecondary,
+                              foreground: AppColors.surface,
+                              category: true,
+                            ),
+                            EventBadge(
+                              event.category.toUpperCase(),
+                              color: AppColors.accent,
+                              foreground: AppColors.textPrimary,
+                              category: true,
+                            ),
+                          ],
+                        ),
                       ),
-                      EventBadge(
-                        event.category.toUpperCase(),
-                        color: AppColors.accent,
-                        foreground: AppColors.textPrimary,
-                        category: true,
+                      BookmarkButton(
+                        event: event,
+                        overlay: true,
+                        screen: screen,
+                        asset: 'imgContainer1',
                       ),
                     ],
                   ),
-                ),
-                BookmarkButton(
-                  event: event,
-                  overlay: true,
-                  screen: screen,
-                  asset: 'imgContainer1',
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              event.title,
-              style: EviaTheme.section.copyWith(color: AppColors.surface),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.xs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                FigmaIcon(screen, 'imgContainer2'),
-                Text(
-                  event.date,
-                  style: EviaTheme.caption.copyWith(color: AppColors.surface),
-                ),
-                FigmaIcon(screen, 'imgContainer3'),
-                Text(
-                  event.location,
-                  style: EviaTheme.caption.copyWith(color: AppColors.surface),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CoinIcon(),
-                const SizedBox(width: AppSpacing.xs),
-                Flexible(
-                  child: Text(
-                    '+${event.coins} coins',
-                    style: TextStyle(color: AppColors.accent),
+                  const Spacer(),
+                  const SizedBox(height: AppSpacing.lg),
+                  Transform.translate(
+                    offset: const Offset(0, AppSpacing.sm),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          event.title,
+                          style: EviaTheme.section.copyWith(
+                            color: AppColors.surface,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Wrap(
+                          spacing: AppSpacing.sm,
+                          runSpacing: AppSpacing.xs,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            FigmaIcon(screen, 'imgContainer2'),
+                            Text(
+                              event.date,
+                              style: EviaTheme.caption.copyWith(
+                                color: AppColors.surface,
+                              ),
+                            ),
+                            FigmaIcon(screen, 'imgContainer3'),
+                            Text(
+                              event.location,
+                              style: EviaTheme.caption.copyWith(
+                                color: AppColors.surface,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CoinIcon(),
+                            const SizedBox(width: AppSpacing.xs),
+                            Flexible(
+                              child: Text(
+                                '+${event.coins} coins',
+                                style: EviaTheme.caption.copyWith(
+                                  color: AppColors.accent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            TextButton(
-              onPressed: () => showEvent(context, event),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.surface,
-                padding: EdgeInsets.zero,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Flexible(child: Text('View event')),
-                  const SizedBox(width: AppSpacing.xs),
-                  FigmaIcon(screen, 'imgContainer5'),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => showEvent(context, event),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.surface,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Flexible(child: Text('View event')),
+                          const SizedBox(width: AppSpacing.xs),
+                          FigmaIcon(screen, 'imgContainer5'),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -368,6 +600,19 @@ class _RecommendedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screen = guest ? '2083:1143' : '2083:456';
+    final scaler = MediaQuery.textScalerOf(context);
+    Widget twoLines(Widget child, TextStyle style, {double padding = 0}) =>
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight:
+                scaler.scale(style.fontSize!) * style.height! * 2 + padding,
+          ),
+          child: child,
+        );
+    Widget meta(String text, String asset) => Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: EventMeta(text, screen: screen, asset: asset, maxLines: 2),
+    );
     return EviaCard(
       onTap: () => showEvent(context, event),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -375,14 +620,23 @@ class _RecommendedCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 1.5,
+            aspectRatio: EviaTheme.recommendedImageAspectRatio,
             child: Container(
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: AppColors.surfaceMuted,
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
               child: Stack(
                 children: [
+                  if (event.image != null)
+                    Positioned.fill(
+                      child: catalogImage(
+                        event.image,
+                        event.image!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   Positioned(
                     right: 0,
                     top: 0,
@@ -408,32 +662,43 @@ class _RecommendedCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(event.title, style: EviaTheme.compactTitle),
-          const SizedBox(height: AppSpacing.sm),
-          EventMeta(event.date, screen: screen, asset: 'imgContainer7'),
-          EventMeta(event.location, screen: screen, asset: 'imgContainer8'),
-          EventMeta(event.audience, screen: screen, asset: 'imgContainer9'),
-          const Spacer(),
-          const Divider(height: AppSpacing.xl),
-          EventBadge(
-            event.policy,
-            color: event.policy == 'Walk-in allowed'
-                ? AppColors.successSurface
-                : AppColors.primarySoft,
-            foreground: event.policy == 'Walk-in allowed'
-                ? AppColors.success
-                : AppColors.primary,
+          twoLines(
+            Text(
+              event.title,
+              style: EviaTheme.compactTitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            EviaTheme.compactTitle,
           ),
           const SizedBox(height: AppSpacing.sm),
+          meta(event.date, 'imgContainer7'),
+          meta(event.location, 'imgContainer8'),
+          meta(event.audience, 'imgContainer9'),
+          const Spacer(),
+          const Divider(height: AppSpacing.xl),
           Row(
             children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: EventBadge(
+                    event.policy,
+                    color: event.policy == 'Walk-in allowed'
+                        ? AppColors.successSurface
+                        : AppColors.primarySoft,
+                    foreground: event.policy == 'Walk-in allowed'
+                        ? AppColors.success
+                        : AppColors.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
               const CoinIcon(),
               const SizedBox(width: AppSpacing.xs),
-              Flexible(
-                child: Text(
-                  '+${event.coins} coins',
-                  style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
-                ),
+              Text(
+                '+${event.coins} coins',
+                style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
               ),
             ],
           ),
@@ -519,94 +784,4 @@ class _FollowingPreview extends StatelessWidget {
       ],
     ),
   );
-}
-
-class _UpcomingCard extends StatelessWidget {
-  const _UpcomingCard({required this.event, required this.guest});
-  final CampusEvent event;
-  final bool guest;
-  @override
-  Widget build(BuildContext context) {
-    final screen = guest ? '2083:1143' : '2083:456';
-    return EviaCard(
-      onTap: () => showEvent(context, event),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          EventThumbnail(event: event, size: EviaTheme.thumbnail),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(event.title, style: EviaTheme.compactTitle),
-                    ),
-                    BookmarkButton(
-                      event: event,
-                      screen: screen,
-                      asset: guest
-                          ? event.id == 'football'
-                                ? 'imgContainer11'
-                                : 'imgContainer12'
-                          : event.id == 'football'
-                          ? 'imgContainer15'
-                          : 'imgContainer17',
-                    ),
-                  ],
-                ),
-                EventMeta(event.date, screen: screen, asset: 'imgContainer7'),
-                EventMeta(
-                  event.location,
-                  screen: screen,
-                  asset: 'imgContainer8',
-                ),
-                if (guest)
-                  EventMeta(
-                    event.audience,
-                    screen: screen,
-                    asset: 'imgContainer9',
-                  ),
-                const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
-                  children: [
-                    EventBadge(
-                      event.policy,
-                      color: event.policy == 'Walk-in allowed'
-                          ? AppColors.successSurface
-                          : AppColors.primarySoft,
-                      foreground: event.policy == 'Walk-in allowed'
-                          ? AppColors.success
-                          : AppColors.primary,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CoinIcon(),
-                        const SizedBox(width: AppSpacing.xs),
-                        Flexible(
-                          child: Text(
-                            '+${event.coins} coins',
-                            style: EviaTheme.caption.copyWith(
-                              color: EviaTheme.gold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

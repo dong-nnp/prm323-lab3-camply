@@ -1,5 +1,32 @@
 # Test plan — template
 
+> **ARTEMIS implementation — 06/11/2026:** suite đã định nghĩa 21 ca/biến thể,
+> collect đủ 63 lượt (3/ca); đợt `20261106T023224Z-3cfd8a66` đạt TC04 3/3 và
+> TC05 3/3 (6/6 trong 519 giây). Chưa đạt đủ các ca và coverage của đề.
+> Đợt tiếp theo `20261106T024147Z-d723f8b6`: TC07 đạt 1/1; TC03/06/18/19 fail.
+> Analytics được hoãn theo người dùng. Dừng mở thêm ca khi RAM còn 0.66 GB;
+> AVD/host test đã đóng, evidence và dữ liệu test được giữ.
+> Chuẩn bị thêm fixture TC02/14; 2 Node tests đạt, preflight chỉ đọc xác nhận
+> ca thiếu xu có dữ liệu phù hợp. Guard hoãn TC03 cho 1 skipped, không submit AI.
+> Chưa có lượt E2E mới trong đợt chuẩn bị này vì thiếu RAM trước khi mở AVD.
+> [Bảng evidence/trạng thái](../evidence/artemis/README.md) là nguồn kết quả hiện tại.
+> Có 7 self-check của bộ thu evidence đạt; không tính chúng thành ARTEMIS tests.
+> SDK pin kèm bản vá nhập ASCII, account Firebase và AVD EVIA_E2E riêng; logs cũ
+> được giữ, lỗi/quota/ANR và AI trả lời suy đoán không được ghi pass. Các ghi chú
+> “chưa có E2E” bên dưới là lịch sử trước đợt triển khai này.
+
+> **Registration spinner — 06/11/2026:** chạy riêng test
+> `original form loading result and ticket wait for a server receipt`: **1/1 đạt**.
+> Xác nhận có spinner thật, form nằm dưới overlay khi submit/chờ vé, không hiện
+> skeleton hoặc success sớm; sau response mới mở success/vé. Analyzer 5 file sạch.
+> Không chạy full suite hoặc chụp màn hình trong lượt này.
+
+> **Daily schedule API — 06/11/2026:** chạy riêng
+> `flutter test --no-pub test/viewmodels/flow3_view_model_test.dart`: **10/10 đạt**.
+> Có kiểm tra admin đổi lịch/ngày 8, giữ số xu receipt đã claim và từ chối lịch
+> thiếu/âm/sai độ dài. Analyzer 6 file liên quan sạch, `git diff --check` đạt.
+> Không chạy lại full suite hoặc native smoke trong lượt nối lịch thưởng này.
+
 > **Flow 3 — 06/11/2026:** 213/213 Flutter tests, 62/62 backend Emulator tests,
 > analyze sạch, APK debug Firebase thật build đạt. Tests bao phủ Daily chờ server,
 > manual milestone claim/reload, đổi quà/khôi phục receipt, giá đổi/refresh lỗi,
@@ -225,7 +252,7 @@ lượt sửa này (không thay thế các bằng chứng lịch sử ở mục 
   Test flow này được đặt entry Welcome rõ ràng để kiểm tra độc lập với animation
   S00 (đã có test riêng), không bỏ qua hay che assertion.
 
-Trạng thái: có unit/widget tests cho foundation và Evia UI; chưa có E2E ARTEMIS.
+Trạng thái tại thời điểm mục lịch sử này: có unit/widget tests, chưa có ARTEMIS.
 Tài liệu này là kế hoạch, không xác nhận pass/fail cho các bước chưa chạy.
 
 ## Firebase development setup — run 04/11/2026

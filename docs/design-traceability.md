@@ -1,11 +1,89 @@
 # Design traceability — Evia
 
+> **Search event cards — 06/11/2026:** Search results và Suggested Events dùng
+> chung `UpcomingEventCard` với Happening Soon của Discover: thumbnail bên trái,
+> bookmark cạnh tiêu đề, tag chính sách và xu dưới metadata; bỏ footer phân cách
+> và badge số chỗ riêng của card Search cũ.
+
+> **Followed organizer cards — 06/11/2026:** tách tên/avatar, mô tả và metadata
+> thành các hàng rộng; mô tả tối đa 2 dòng, tag upcoming không ngắt dòng cưỡng bức.
+> Following ở góc phải phía dưới, không bó hẹp tên và mô tả; bỏ chấm xanh không có
+> dữ liệu trạng thái online. Metadata tự xuống hàng khi chữ được phóng lớn.
+
+> **Recommended cards — 06/11/2026:** mở rộng card lên 86% vùng nội dung,
+> giữ card kế tiếp ló ra để gợi ý vuốt ngang. Tag chính sách và xu cùng hàng;
+> ảnh tỷ lệ 2:1, metadata không giữ khoảng trống hai dòng khi không cần.
+
+> **Ticket feedback ? 06/11/2026:** thay snackbar ?en s?t ??y b?ng th? n?i,
+> n?n xanh nh?t khi th?nh c?ng/?? nh?t khi l?i, icon v? n?t ??ng; gi? nguy?n
+> logic ?i?m danh v? n?i dung ph?n h?i t? ViewModel.
+
+> **Android ticket splash — 06/11/2026:** dùng đúng `assets/splash/evia-ticket.png`;
+> bản native `evia_ticket_splash.png` thêm vùng trong suốt quanh ảnh gốc để tránh
+> system splash mask cắt mép vé. Flutter animation và ảnh nguồn giữ nguyên.
+
+> **Deposit wallet sync — 06/11/2026:** Rewards tải lại dữ liệu server khi ví
+> trong catalog/account thay đổi sau đăng ký, hủy hoặc điểm danh sự kiện.
+> In Deposits tiếp tục dùng `getAccount.wallet.heldCoins`, không tự cộng xu ở UI.
+> Regression ViewModel Rewards: 11/11 test đạt; chưa kiểm tra trên thiết bị.
+
+> **Saved-event feedback — 06/11/2026:** nút lưu dùng cùng bookmark outline/filled,
+> giữ nền trắng và kích thước trên ảnh thay vì đổi qua icon SVG khác kiểu.
+> State cập nhật ngay lúc bấm, chặn request trùng; lỗi server hoàn tác và báo lỗi.
+> Bookmark thành công không tải lại toàn bộ catalog. Chi tiết/organizer dùng cùng kiểu icon.
+
+> **Registration confirmation loading — 06/11/2026:** theo yêu cầu khớp T03,
+> dùng hộp thoại Confirming your registration trên form mờ, thay spinner SVG
+> tĩnh bằng CircularProgressIndicator thực. Giữ cùng hộp thoại lúc tải vé sau
+> server receipt, thay skeleton danh sách; chỉ hiển thị success khi tải vé xong.
+
+> **Daily Check-in API schedule — 06/11/2026:** giữ bố cục, lấy 7 số xu từ
+> `getAccount.daily.rewards` và suy ra thông điệp thưởng từ cùng lịch; bỏ dãy
+> cố định và chữ 100 trong đường dữ liệu live. Ngày đã claim giữ `daily.coins`
+> từ receipt, không đổi số thực nhận theo policy vừa sửa. Rewards có pull-to-refresh.
+
+> **Event images — 06/11/2026:** theo yêu cầu người dùng, bổ sung ảnh minh họa
+> theo chủ đề cho 12 sự kiện demo trên Firebase Storage và trường `imageUrl`.
+> Banner và Recommended đọc ảnh trong khung hiện có; thẻ sự kiện dùng chung
+> thumbnail ảnh. Giữ bo góc, lớp phủ tối trên banner và placeholder khi tải ảnh lỗi.
+> Nguồn và giấy phép: `firebase/event-images/manifest.json`; ảnh không mô tả sự kiện thật.
+
+> **Followed clubs — 06/11/2026:** theo xác nhận người dùng, mục trên Discover
+> và Following / Their Events lấy sự kiện của organizer đã follow, đối chiếu
+> `organizerId` với danh sách following từ backend. Không yêu cầu đã đăng ký sự kiện.
+> Đổi tiêu đề thành From Clubs You Follow, có empty state; My Events giữ danh sách đăng ký.
+
+> **Banner carousel — 06/11/2026:** tối đa 5 sự kiện featured từ backend,
+> tự chuyển mỗi 5 giây và lặp về đầu; chấm chỉ báo theo số sự kiện thật.
+> Vuốt tay vẫn hoạt động, tương tác đặt lại thời gian chờ; tạm dừng khi app
+> chạy nền, route bị che hoặc người dùng bật giảm chuyển động. Một banner không tự chạy.
+
+> **Search & Explore — 06/11/2026:** thu gọn trạng thái lịch sử trống, ẩn Clear all
+> khi không có lịch sử; nhãn category lấy từ catalog nhưng giữ nguyên ID lọc.
+> Thẻ gợi ý/kết quả dùng cùng bố cục, nút lưu trên ảnh, tiêu đề tối đa hai dòng.
+> Khi đang tìm kiếm không hiển thị nhầm số kết quả bằng 0; vuốt danh sách đóng bàn phím.
+
+> **Bottom navigation — 06/11/2026:** theo yêu cầu đồng nhất giao diện, cả bốn
+> tab dùng `EviaBottomBar`: cùng icon outline, chiều cao, chữ và dấu chọn.
+> Xóa `ActivityBottomBar` và biến thể legacy; dialog hủy ở My Events vẫn chọn
+> Events, không đổi tab thành Explore. Skeleton của các tab cũng dùng thanh này.
+
+> **Loading — 06/11/2026:** thêm skeleton tĩnh theo bố cục Discover, danh sách,
+> chi tiết và Rewards khi tải dữ liệu lần đầu. Giữ nội dung đã tải khi refresh,
+> Discover dùng pull-to-refresh. Các thao tác submit tiếp tục báo loading tại nút.
+> Không thêm dependency hoặc dùng dữ liệu giả để mô phỏng skeleton.
+
 > **Flow 3 — 06/11/2026:** nối dữ liệu/actions thật vào Rewards, milestones,
 > details/confirm/success, locker/voucher và history gốc. Giữ tokens, ảnh minh
 > họa fallback và thứ tự thành phần. Owner cho phép Flexible/xuống dòng ở các
 > hàng tràn khi chữ 2×; đã kiểm 360/412dp. Không cần sửa khung dialog: nguyên
 > nhân vùng chạm trong test là MediaQuery thiếu kích thước, đã sửa test helper.
 > QR thật dùng đúng ô hiện có; không thêm màn admin. [Evidence](../evidence/flow3-api-only/).
+
+> **Native splash — 06/11/2026:** theo yêu cầu người dùng, splash Android dùng
+> riêng ảnh vé xanh có chữ e từ `assets/splash/evia-ticket.png`, hiển thị 128dp
+> trong vùng an toàn Android 12 để tránh cắt wordmark ngang. Android trước 12
+> dùng cùng biểu tượng trên nền trắng. Splash Flutter vẫn ghép logo EVIA đầy đủ.
 
 > **Flow 2 — 05/11/2026:** nối dữ liệu/actions vào My Events, lịch, dialog hủy,
 > vé, check-in và Notifications cũ. Camera thật thay ảnh preview trong đúng khung
@@ -121,7 +199,8 @@ Nền Splash/Welcome trắng #FFFFFF theo tinh chỉnh tiếp theo; Login giữ 
 trang trí gốc. `AppColors.splashBackground` dùng chung màu trắng từ entryBackground.
 Logo tối đa 280dp, giữ tỷ lệ.
 Không caption, nút, spinner hoặc bottom navigation.
-Android static splash dùng cùng PNG/nền cho light/dark và Android 12+.
+Android static splash dùng riêng ảnh vé chữ e trên nền trắng cho light/dark và
+Android 12+; wordmark đầy đủ chỉ xuất hiện trong splash Flutter.
 Không có iOS host để xác minh native. Mapping Figma của các màn cũ bên dưới
 không phải nguồn thiết kế S00 này.
 

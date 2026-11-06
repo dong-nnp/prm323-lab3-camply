@@ -17,11 +17,19 @@ Các ghi chú preview/chưa nối Flow 3 trong tài liệu cũ là lịch sử.
 | Voucher Details | QR/mã thật chỉ được lấy khi có quyền, chưa dùng và chưa hết hạn |
 | Coin History | Ledger thật, dấu tăng/giảm, số xu giữ cọc và bộ lọc cũ |
 
-Daily dùng lịch **5/10/15/30/50/70/100**, ngày 8 trở đi 100; bỏ một ngày thì
-reset theo server. Monthly Gift tự cấp bởi job có sẵn, không thêm nút nhận.
+Daily đọc đủ 7 mức xu từ `getAccount.daily.rewards`, không hard-code lịch hoặc
+mức tối đa trong mobile. Từ ngày 8 dùng mức ngày 7; bỏ một ngày reset theo server.
+Admin publish `daily_checkin_rewards` và áp dụng vào `server_config/daily_checkin`;
+backend dùng policy đó cho cả `getAccount` và `claimDailyCheckin`. Nếu hôm nay
+đã nhận thưởng, `daily.coins` là số thực nhận trong receipt, dù admin vừa đổi lịch.
+Lịch thiếu/không hợp lệ hiện lỗi Retry, không thay bằng số xu tự đoán.
+Kéo xuống ở đầu Rewards để lấy lịch mới; mở lại màn hoặc resume cũng refresh.
+Monthly Gift tự cấp bởi job có sẵn, không thêm nút nhận.
 Thành tựu lấy definition từ Firestore, không hard-code tên/mốc/phần thưởng trong
 đường dữ liệu live. Admin có thể thêm/sửa definition qua cơ chế backend có sẵn;
-Remote Config không có quyền quyết định giao dịch xu.
+Mobile không dùng Remote Config phía client để tự quyết định giao dịch xu.
+Adapter admin/backend mới đã deploy từ nhánh `dongnnp/web/admin`; tích hợp mobile
+này không deploy Functions và không thay cấu hình thưởng của admin.
 
 Quà vật lý giữ thông tin nhận quà và mã redemption, không tạo QR voucher giả.
 Ảnh catalog dùng URL nếu có; thiếu URL giữ ảnh minh họa đã được owner đồng ý.

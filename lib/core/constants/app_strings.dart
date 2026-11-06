@@ -1,6 +1,7 @@
 abstract final class AppStrings {
   static const appName = 'PRM393 Lab 3';
-  static const loading = 'Đang kiểm tra cấu hình…';
+  static const loading = 'Loading…';
+  static const checkingConfiguration = 'Đang kiểm tra cấu hình…';
   static const notConfigured = 'Firebase chưa được cấu hình';
   static const configurationHint =
       'Ứng dụng đang chạy ở chế độ chưa kết nối Firebase. '

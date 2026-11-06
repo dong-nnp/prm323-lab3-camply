@@ -1,5 +1,12 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **ARTEMIS — 06/11/2026:** đã có Python/pytest suite, SDK pin, account/AVD test riêng,
+> thu trace, ảnh, structured observations và bảng kết quả. Chưa nghiệm thu đủ Lab:
+> xem [hướng dẫn chạy](e2e_test/README.md), [kế hoạch](docs/artemis-plan.md) và
+> [bằng chứng hiện có](evidence/artemis/README.md). Không tính collect/self-check
+> hoặc agent SUCCESS đơn thuần là E2E pass.
+> Chuyển người khác tiếp tục test: [tài liệu bàn giao ARTEMIS](docs/artemis-handoff.md).
+
 > **Flow 3 — 06/11/2026:** nối ví/history, Daily, nhận thành tựu, catalog/đổi quà,
 > My Rewards và QR voucher vào các màn gốc. API `getAccount.daily` đã deploy;
 > 213/213 Flutter và 62/62 backend tests đạt. Chỉ sửa co giãn chữ theo owner
@@ -225,7 +232,8 @@ cung cấp từ account profile; không suy ra từ sở thích mẫu. Continue/
 lựa chọn hiện có và đánh dấu theo user trong phiên, không tạo session giả.
 **Giới hạn:** chưa có adapter auth/profile thật; trạng thái này chưa được lưu lên
 backend/qua lần khởi động. Bản mặc định dùng auth unavailable nên đến Welcome.
-Android native splash dùng cùng PNG/nền, tự nhường cho frame Flutter đầu tiên.
+Android native splash dùng riêng ảnh vé xanh chữ e (`evia_ticket.png`) trên nền
+trắng, tự nhường cho frame Flutter đầu tiên; logo EVIA đầy đủ nằm trong animation Flutter.
 S01 render logo gốc và `assets/EVIA_Welcome_Hero.png` thành hai image riêng, cùng
 text/buttons Flutter thật. `assets/EVIA_S01_Welcome_Reference.png` chỉ là tài liệu
 layout, không bundle hay dùng làm background. Bố cục scroll trên màn thấp/chữ lớn.
@@ -262,7 +270,7 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |
 
 Flow 1 dùng callable thay vì Firestore SDK/HTTP client trực tiếp. Chưa thêm
-ARTEMIS dependency hay automation. Storage/Messaging/Analytics/Crashlytics/
+ARTEMIS Flutter dependency; Python automation nằm riêng trong `e2e_test/`. Storage/Messaging/Analytics/Crashlytics/
 Remote Config app-side vẫn dùng pending adapters.
 
 ## Cấu trúc và quy tắc
@@ -285,7 +293,7 @@ lib/
 ├── screens/
 └── widgets/
 test/                    # Unit/widget tests + test-only fakes
-e2e_test/                # Chuẩn bị Google ARTEMIS, chưa có E2E
+e2e_test/                # ARTEMIS pytest suite + fixture/evidence tools (xem trạng thái chạy)
 firebase/                # Deny-all storage.rules + Remote Config defaults {}
 docs/                    # Kiến trúc và templates
 android/                 # Android host

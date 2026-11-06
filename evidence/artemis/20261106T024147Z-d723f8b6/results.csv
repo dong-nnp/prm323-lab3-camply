@@ -1,0 +1,6 @@
+case_id,planned_runs,attempts,passed,failed,blocked,executed,pass_rate,average_seconds,verdict,reasons
+TC03,1,1,0,1,0,1,0/1,136.41,incomplete_or_unstable,ARTEMIS task ended failed
+TC06,1,1,0,1,0,1,0/1,182.0,incomplete_or_unstable,"price_coins: expected 200, observed '80'"
+TC07,1,1,1,0,0,1,1/1,328.66,incomplete_or_unstable,
+TC18,1,1,0,1,0,1,0/1,128.58,incomplete_or_unstable,ARTEMIS task ended failed
+TC19,1,1,0,1,0,1,0/1,245.62,incomplete_or_unstable,"retry_visible: expected True, observed None"

@@ -11,6 +11,7 @@ import '../../models/flow1_models.dart';
 import '../../models/activity_models.dart';
 import '../../viewmodels/flow1_view_model.dart';
 import '../../widgets/status_widgets.dart';
+import '../../widgets/evia_skeleton.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -38,7 +39,7 @@ class TicketScreen extends ConsumerWidget {
                   message: ExceptionMapper.map(remote.error!).message,
                   onRetry: () => ref.invalidate(flow1TicketProvider(eventId)),
                 )
-              : const AppLoadingWidget(),
+              : const SingleChildScrollView(child: EviaSkeleton()),
         ),
       );
     }
@@ -87,14 +88,53 @@ class TicketScreen extends ConsumerWidget {
                     ? null
                     : () async {
                         final vm = ref.read(activityViewModelProvider.notifier);
-                        await vm.demoAttend(eventId);
+                        final success = await vm.demoAttend(eventId);
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          final color = success
+                              ? AppColors.success
+                              : AppColors.error;
+                          final messenger = ScaffoldMessenger.of(context);
+                          messenger.hideCurrentSnackBar();
+                          messenger.showSnackBar(
                             SnackBar(
-                              content: Text(
-                                ref.read(activityViewModelProvider).message ??
-                                    'Please retry.',
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: success
+                                  ? AppColors.successSurface
+                                  : AppColors.errorSurface,
+                              elevation: AppElevation.none,
+                              margin: const EdgeInsets.all(AppSpacing.lg),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.medium,
+                                ),
+                                side: BorderSide(
+                                  color: color.withValues(alpha: .25),
+                                ),
                               ),
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    success
+                                        ? Icons.check_circle_outline
+                                        : Icons.error_outline,
+                                    color: color,
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Text(
+                                      ref
+                                              .read(activityViewModelProvider)
+                                              .message ??
+                                          'Please retry.',
+                                      style: EviaTheme.caption.copyWith(
+                                        color: color,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              showCloseIcon: true,
+                              closeIconColor: color,
                             ),
                           );
                         }

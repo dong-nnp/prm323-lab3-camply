@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Full original wordmark fits within the Android 12 splash safe circle. -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:width="288dp" android:height="288dp">
-        <shape><solid android:color="@android:color/transparent" /></shape>
-    </item>
-    <item android:width="176dp" android:height="72.672dp" android:gravity="center">
-        <bitmap android:src="@drawable/evia_logo" android:gravity="fill" android:filter="true" />
-    </item>
-</layer-list>
+<!-- Original assets/splash/evia-ticket.png, padded inside the system icon mask. -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/evia_ticket_splash"
+    android:gravity="fill"
+    android:filter="true" />

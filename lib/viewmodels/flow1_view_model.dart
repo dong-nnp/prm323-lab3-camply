@@ -54,18 +54,26 @@ class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
     state = AsyncData(data.withInterests(selected));
   }
 
-  Future<bool> _action(Future<void> Function() work) async {
+  Future<bool> _action(
+    Future<void> Function() work, {
+    Set<String>? optimisticSaved,
+    bool reload = true,
+  }) async {
     if (_busy || _uid == null || !state.hasValue) return false;
     _busy = true;
     final uid = _uid, generation = _generation;
     final data = state.requireValue;
-    state = AsyncData(data.withAction(busy: true));
+    state = AsyncData(data.withAction(busy: true, saved: optimisticSaved));
     try {
       await work();
       if (!ref.mounted || uid != _uid || generation != _generation) {
         return false;
       }
-      await refresh();
+      if (reload) {
+        await refresh();
+      } else {
+        state = AsyncData(state.requireValue.withAction());
+      }
       return state.hasValue;
     } catch (e) {
       if (ref.mounted && uid == _uid && generation == _generation) {
@@ -93,8 +101,14 @@ class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
   }
 
   Future<bool> bookmark(String id) {
-    final next = !(state.asData?.value.saved.contains(id) ?? false);
-    return _action(() => ref.read(flow1RepositoryProvider).bookmark(id, next));
+    final saved = {...?state.asData?.value.saved};
+    final next = saved.add(id);
+    if (!next) saved.remove(id);
+    return _action(
+      () => ref.read(flow1RepositoryProvider).bookmark(id, next),
+      optimisticSaved: Set.unmodifiable(saved),
+      reload: false,
+    );
   }
 
   Future<bool> going(String id) =>

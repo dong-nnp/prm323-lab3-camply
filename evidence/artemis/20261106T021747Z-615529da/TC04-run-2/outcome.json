@@ -1,0 +1,9 @@
+{
+  "case_id": "TC04",
+  "repeat": 2,
+  "status": "failed",
+  "available_memory_gb_before": 1.36,
+  "task_id": "a1602ebd-c513-4aba-accc-82ad8a6270ae",
+  "reason": "Final UI does not prove the query was cleared and suggestions restored",
+  "seconds": 48.969
+}

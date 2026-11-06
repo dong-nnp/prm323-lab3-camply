@@ -1,0 +1,9 @@
+{
+  "case_id": "TC06",
+  "repeat": 1,
+  "status": "failed",
+  "available_memory_gb_before": 2.09,
+  "task_id": "9c5771df-3760-4799-81a8-029f8b380eeb",
+  "reason": "price_coins: expected 200, observed '80'",
+  "seconds": 182.0
+}

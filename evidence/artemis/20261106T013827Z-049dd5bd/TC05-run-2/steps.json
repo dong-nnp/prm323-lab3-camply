@@ -1,0 +1,464 @@
+[
+  {
+    "step_number": 1,
+    "timestamp": 1793929559.4088736,
+    "action_taken": {
+      "action": "click",
+      "coordinates": [
+        500,
+        862
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 11
+      },
+      "normalized_coordinates": [
+        500,
+        862
+      ],
+      "target_text": "Log In",
+      "target_bounds": [
+        58,
+        834,
+        942,
+        891
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.Button"
+    },
+    "summary": "In Step 1, I tapped the 'Log In' button marked in red on the 'Welcome to Evia!' screen, which also featured a 'Get Started' button and an 'Explore as Guest' link. Following this interaction, the screen remained entirely unchanged, showing the same layout, branding, and text as before the tap. No new dialogs, menus, or navigation transitions occurred, and the 'Log In' button remained visible in its original position at the center of the lower portion of the screen.",
+    "pre_image_name": "80f55f0c09194c11492c8e2c8eaab322799fa8bf1fe86ab516f8397c191e5a38",
+    "post_image_name": null,
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Tapped at [500, 862] (normalized).\"}"
+  },
+  {
+    "step_number": 2,
+    "timestamp": 1793929570.9220428,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        577
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 11,
+        "text": "[REDACTED_TEST_SECRET]"
+      },
+      "normalized_coordinates": [
+        500,
+        577
+      ],
+      "target_text": "Email address",
+      "target_bounds": [
+        88,
+        546,
+        912,
+        608
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 2, I tapped the 'Email address' field and entered '[REDACTED_TEST_SECRET]'; the screen transitioned to a 'Welcome back!' login form where the email field now displays the provided address. The password field remains empty, and the on-screen keyboard is visible at the bottom of the display. Additional elements present on the screen include a 'Forgot password?' link, a 'Log in' button, a 'Continue with Google' option, and a 'Sign up' link for users without an account.",
+    "pre_image_name": "80f55f0c09194c11492c8e2c8eaab322799fa8bf1fe86ab516f8397c191e5a38",
+    "post_image_name": "4f3d474dcd30018eebd2d22420381c0ec5252997df70420f2234032dfd205b9b",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 577] (normalized).\"}"
+  },
+  {
+    "step_number": 3,
+    "timestamp": 1793929585.6195624,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        651
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "text": "[REDACTED_TEST_SECRET]",
+        "target": 12
+      },
+      "normalized_coordinates": [
+        500,
+        651
+      ],
+      "target_text": "Password",
+      "target_bounds": [
+        88,
+        620,
+        912,
+        682
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 3, I attempted to input the password '[REDACTED_TEST_SECRET]' into the 'Password' field, but the text was instead entered into the email address field, which now displays 'E2HMXT0NLKAdNlz0QZvq6g1!aA9'. The 'Password' field remains empty, and the keyboard area has transitioned to display the 'Clipboard' interface with a 'Turn on Clipboard' button and a recent items list, while the 'Welcome back!' login screen remains visible above.",
+    "pre_image_name": "4f3d474dcd30018eebd2d22420381c0ec5252997df70420f2234032dfd205b9b",
+    "post_image_name": "65c7903b62f9d396fd7de967cc22608fef10d97bcb7f3843d57629466238127b",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 651] (normalized).\"}"
+  },
+  {
+    "step_number": 4,
+    "timestamp": 1793929589.6476586,
+    "action_taken": {
+      "action": "click",
+      "coordinates": [
+        500,
+        760
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 15
+      },
+      "normalized_coordinates": [
+        500,
+        760
+      ],
+      "target_text": "Log in",
+      "target_bounds": [
+        88,
+        734,
+        912,
+        787
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.ImageView"
+    },
+    "summary": "In Step 4, I tapped the 'Log in' button marked in red on the 'Welcome back!' screen, which contained a partially filled email field and an empty password field. Following the tap, the screen remained unchanged, with the login form, the 'Continue with Google' button, and the Gboard clipboard interface still visible at the bottom. No navigation occurred, and the password field remained empty, showing only the placeholder text 'Password' with the visibility toggle icon to its right.",
+    "pre_image_name": "65c7903b62f9d396fd7de967cc22608fef10d97bcb7f3843d57629466238127b",
+    "post_image_name": null,
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Tapped at [500, 760] (normalized).\"}"
+  },
+  {
+    "step_number": 5,
+    "timestamp": 1793929597.8824406,
+    "action_taken": {
+      "action": "press_key",
+      "coordinates": null,
+      "coordinate_space": "normalized",
+      "args": {
+        "key": "BACK"
+      }
+    },
+    "summary": "In Step 5, I pressed the 'BACK' button while the Gboard clipboard overlay was active on the screen. The clipboard interface disappeared, returning the view to the primary EVIA \"Welcome back!\" login page. The screen now displays the full login form, including the email field containing \"E2HMXT0NLKAdNlz0QZvq6g1!aA9\", the empty password field, the \"Log in\" button, the \"Continue with Google\" option, and the \"Sign up\" link. The top of the screen shows the EVIA logo and the text \"Find Events. Make Memories.\" along with a \"Skip\" button in the top right corner.",
+    "pre_image_name": "65c7903b62f9d396fd7de967cc22608fef10d97bcb7f3843d57629466238127b",
+    "post_image_name": "2593a497a56d2669022ecc206b2ab06649a044977f39d84bb7c3f752e428c261",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Pressed key 'BACK'.\"}"
+  },
+  {
+    "step_number": 6,
+    "timestamp": 1793929615.5438702,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        577
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 11,
+        "text": "[REDACTED_TEST_SECRET]",
+        "clear_exist": true
+      },
+      "normalized_coordinates": [
+        500,
+        577
+      ],
+      "target_text": "evia.e2e.c4a30e8[REDACTED_TEST_SECRET]",
+      "target_bounds": [
+        88,
+        546,
+        912,
+        608
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 6, I tapped the email input field, which previously contained the incorrect string 'E2HMXT0NLKAdNlz0QZvq6g1!aA9', and cleared it to input '[REDACTED_TEST_SECRET]'. Following this action, the email field now displays 'c4a30e8aa799a8a1@example.com', and the on-screen keyboard has appeared at the bottom of the display. The 'Password' field remains empty, and the 'Log in' button, 'Forgot password?' link, and 'Continue with Google' button are still visible on the screen.",
+    "pre_image_name": "2593a497a56d2669022ecc206b2ab06649a044977f39d84bb7c3f752e428c261",
+    "post_image_name": "f40491eb9bd71f483d7e160aa8e76d16dd01afc1aca98208f70942f93ed245af",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 577] (normalized).\"}"
+  },
+  {
+    "step_number": 7,
+    "timestamp": 1793929625.5694737,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        651
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 12,
+        "text": "[REDACTED_TEST_SECRET]",
+        "clear_exist": true
+      },
+      "normalized_coordinates": [
+        500,
+        651
+      ],
+      "target_text": "Password",
+      "target_bounds": [
+        88,
+        620,
+        912,
+        682
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 7, I attempted to input the password '[REDACTED_TEST_SECRET]' into the 'Password' field; however, the text appeared in the email address field instead, replacing the previous email address. The 'Password' field remains empty, and the screen now displays the Gboard clipboard interface at the bottom, showing a recent clip of the password text. The 'Welcome back!' header, 'Log in' button, and 'Continue with Google' options remain visible on the screen, while the email field now contains the partial password string.",
+    "pre_image_name": "f40491eb9bd71f483d7e160aa8e76d16dd01afc1aca98208f70942f93ed245af",
+    "post_image_name": "0893b249ba2d1bbe4816dad1bdf2c15a6872246739f8937771b0bcffddca1b8f",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 651] (normalized).\"}"
+  },
+  {
+    "step_number": 8,
+    "timestamp": 1793929627.3986683,
+    "action_taken": {
+      "action": "click",
+      "coordinates": [
+        500,
+        760
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 15
+      },
+      "normalized_coordinates": [
+        500,
+        760
+      ],
+      "target_text": "Log in",
+      "target_bounds": [
+        88,
+        734,
+        912,
+        787
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.ImageView"
+    },
+    "summary": "In Step 8, I tapped the 'Log in' button marked in red on the 'Welcome back!' screen; however, the screen remained unchanged, with the email field still displaying 'E2HMXT0NLKAdNlz0QZvq6g1!aA9' and the password field remaining empty with the placeholder text 'Password' visible. The Gboard clipboard interface, including the 'Turn on Clipboard' button and the recent clipboard entry, also remained visible at the bottom of the display, indicating that no navigation or state change occurred following the interaction.",
+    "pre_image_name": "0893b249ba2d1bbe4816dad1bdf2c15a6872246739f8937771b0bcffddca1b8f",
+    "post_image_name": null,
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Tapped at [500, 760] (normalized).\"}"
+  },
+  {
+    "step_number": 9,
+    "timestamp": 1793929633.1695585,
+    "action_taken": {
+      "action": "press_key",
+      "coordinates": null,
+      "coordinate_space": "normalized",
+      "args": {
+        "key": "BACK"
+      }
+    },
+    "summary": "In Step 9, I pressed the 'BACK' key on the device, which caused the Gboard clipboard overlay to disappear from the bottom of the screen. The interface returned to the primary 'Welcome back!' login view, where the email input field remains populated with the text 'E2HMXT0NLKAdNlz0QZvq6g1!aA9'. The 'Password' field is currently empty, and the 'Log in' button, 'Forgot password?' link, 'Continue with Google' button, and 'Sign up' link are all clearly visible on the screen.",
+    "pre_image_name": "0893b249ba2d1bbe4816dad1bdf2c15a6872246739f8937771b0bcffddca1b8f",
+    "post_image_name": "406463997f9d938571053580e4d466cb141f2c955900e1a5714b771f2d4c45ac",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Pressed key 'BACK'.\"}"
+  },
+  {
+    "step_number": 10,
+    "timestamp": 1793929648.5872536,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        577
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "clear_exist": true,
+        "target": 11,
+        "text": "[REDACTED_TEST_SECRET]"
+      },
+      "normalized_coordinates": [
+        500,
+        577
+      ],
+      "target_text": "evia.e2e.c4a30e8CoIFPxiwjE2HMXTevia.e2e.c4a30e8[REDACTED_TEST_SECRET]",
+      "target_bounds": [
+        88,
+        546,
+        912,
+        608
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 10, I tapped the email input field, which previously contained the text 'E2HMXT0NLKAdNlz0QZvq6g1!aA9', and entered '[REDACTED_TEST_SECRET]'. Following this action, the email field updated to display the new address, and the on-screen keyboard appeared at the bottom of the screen. The 'Password' field remains empty, and the 'Log in' button, 'Forgot password?' link, and 'Continue with Google' button are still visible on the 'Welcome back!' screen.",
+    "pre_image_name": "406463997f9d938571053580e4d466cb141f2c955900e1a5714b771f2d4c45ac",
+    "post_image_name": "1517940e4eb31b76aaa860006413a5d32875644c90b312e0b0c13ec688e85ff3",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 577] (normalized).\"}"
+  },
+  {
+    "step_number": 11,
+    "timestamp": 1793929657.8225737,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        651
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "clear_exist": true,
+        "target": 12,
+        "text": "[REDACTED_TEST_SECRET]"
+      },
+      "normalized_coordinates": [
+        500,
+        651
+      ],
+      "target_text": "Password",
+      "target_bounds": [
+        88,
+        620,
+        912,
+        682
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 11, I attempted to input the password '[REDACTED_TEST_SECRET]' into the 'Password' field; however, the text 'E2HMXT0NLKAdNlz0QZvq6g1!aA9' appeared in the email field instead, replacing the previous email address 'c4a30e8aa799a8a1@example.com'. The 'Password' field remains empty, and the keyboard view transitioned to the 'Clipboard' interface, which displays a recent snippet containing 'CoIFPxiwjE2HMXTO' and 'NLKAdNlz0QZvq6g1!'.",
+    "pre_image_name": "1517940e4eb31b76aaa860006413a5d32875644c90b312e0b0c13ec688e85ff3",
+    "post_image_name": "114bd26d692a80b2b5c5d675df644ae0454c77c58f73ace51b64f4bd9be071a3",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 651] (normalized).\"}"
+  },
+  {
+    "step_number": 12,
+    "timestamp": 1793929659.6993713,
+    "action_taken": {
+      "action": "click",
+      "coordinates": [
+        500,
+        760
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 15
+      },
+      "normalized_coordinates": [
+        500,
+        760
+      ],
+      "target_text": "Log in",
+      "target_bounds": [
+        88,
+        734,
+        912,
+        787
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.ImageView"
+    },
+    "summary": "In Step 12, I tapped the 'Log in' button marked in red on the 'Welcome back!' screen. Despite this action, the screen remained unchanged, with the email field still containing the text 'E2HMXT0NLKAdNlz0QZvq6g1!aA9' and the password field displaying the placeholder 'Password'. The Gboard clipboard interface remained visible at the bottom of the screen, and no navigation or authentication transition occurred following the tap.",
+    "pre_image_name": "114bd26d692a80b2b5c5d675df644ae0454c77c58f73ace51b64f4bd9be071a3",
+    "post_image_name": "5e98a5e85bf90524ed33d20e0a92ad7b3f1904183f0baf6cde71a5758285c282",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Tapped at [500, 760] (normalized).\"}"
+  },
+  {
+    "step_number": 13,
+    "timestamp": 1793929666.184873,
+    "action_taken": {
+      "action": "click",
+      "coordinates": [
+        104,
+        974
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 16
+      },
+      "normalized_coordinates": [
+        104,
+        974
+      ],
+      "target_text": "Back",
+      "target_bounds": [
+        19,
+        948,
+        189,
+        1000
+      ],
+      "target_resource_id": "android:id/input_method_nav_back",
+      "target_class": "android.widget.ImageView"
+    },
+    "summary": "In Step 13, I tapped the 'Back' button located at the bottom left of the screen; the Gboard 'Clipboard' overlay disappeared, returning the view to the full 'Welcome back!' login screen. The screen now displays the 'evia' logo, the header 'Find Events. Make Memories.', and the login form containing the email 'E2HMXT0NLKAdNlz0QZvq6g1!aA9', a 'Password' field, 'Forgot password?' link, the 'Log in' button, a 'Continue with Google' option, and a 'Sign up' link at the bottom.",
+    "pre_image_name": "5e98a5e85bf90524ed33d20e0a92ad7b3f1904183f0baf6cde71a5758285c282",
+    "post_image_name": "c3fb50834d1d3fcdb26178979d898e101881f19f8a3d20c4a0f63fdccef3850e",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Tapped at [104, 974] (normalized).\"}"
+  },
+  {
+    "step_number": 14,
+    "timestamp": 1793929683.8039796,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        577
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "target": 11,
+        "text": "[REDACTED_TEST_SECRET]",
+        "clear_exist": true
+      },
+      "normalized_coordinates": [
+        500,
+        577
+      ],
+      "target_text": "evia.e2e.c4a30e8CoIFPxiwjE2HMXTevia.e2e.c4a30e8CoIFPxiwjE2HMXTevia.e2e.c4a30e8[REDACTED_TEST_SECRET]",
+      "target_bounds": [
+        88,
+        546,
+        912,
+        608
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": "In Step 14, I tapped the email input field on the 'Welcome back!' login screen, which previously contained a long concatenated string, and typed '[REDACTED_TEST_SECRET]'. The field now displays the email address 'c4a30e8aa799a8a1@example.com', and the on-screen keyboard has appeared at the bottom of the display. The 'Password' field remains empty, and the 'Log in' button, 'Forgot password?' link, and 'Continue with Google' button are still visible on the screen.",
+    "pre_image_name": "c3fb50834d1d3fcdb26178979d898e101881f19f8a3d20c4a0f63fdccef3850e",
+    "post_image_name": "469e5688d287e029afd5acbe8b802cfd8bb52ca9b82106049d27c71e24ed93b4",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 577] (normalized).\"}"
+  },
+  {
+    "step_number": 15,
+    "timestamp": 1793929691.3556185,
+    "action_taken": {
+      "action": "input_text",
+      "coordinates": [
+        500,
+        651
+      ],
+      "coordinate_space": "normalized",
+      "args": {
+        "clear_exist": true,
+        "target": 12,
+        "text": "[REDACTED_TEST_SECRET]"
+      },
+      "normalized_coordinates": [
+        500,
+        651
+      ],
+      "target_text": "Password",
+      "target_bounds": [
+        88,
+        620,
+        912,
+        682
+      ],
+      "target_resource_id": "",
+      "target_class": "android.widget.EditText"
+    },
+    "summary": null,
+    "pre_image_name": "469e5688d287e029afd5acbe8b802cfd8bb52ca9b82106049d27c71e24ed93b4",
+    "post_image_name": "b94a5c581ce2a41e5d4d216b2181773e18146224c326230e073961d30ccdd1e0",
+    "last_execution_result": "{\"status\": \"dispatched\", \"result\": \"Typed '[REDACTED_TEST_SECRET]' at [500, 651] (normalized).\"}"
+  }
+]

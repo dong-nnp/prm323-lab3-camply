@@ -4,6 +4,11 @@ import 'app_tokens.dart';
 
 /// Additional measurements/colors from the nine Evia Figma frames.
 abstract final class EviaTheme {
+  static const featuredImageOverlay = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0x66000000), Color(0xCC000000)],
+  );
   static const featuredGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -69,6 +74,7 @@ abstract final class EviaTheme {
   static const coinIconSize = 12.5;
   static const compactThumbnail = 64.0;
   static const heroHeight = 200.0;
+  static const featuredBannerMinHeight = 280.0;
   static const logoWidth = 72.0;
   static const loginLogoWidth = 180.0;
   static const loginLogoHeight = 74.17;
@@ -78,4 +84,6 @@ abstract final class EviaTheme {
   static const signUpCollageHeight = 120.0;
   static const cardRadius = 28.0;
   static const cardGap = AppSpacing.md;
+  static const recommendedCardWidthFactor = 0.86;
+  static const recommendedImageAspectRatio = 2.0;
 }

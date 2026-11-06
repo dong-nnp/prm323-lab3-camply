@@ -43,181 +43,187 @@ class RewardsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      footer: ActivityBottomBar(screen: '2083:3522', start: 12, selected: 2),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const RewardsWallet(screen: '2083:3522'),
-            const SizedBox(height: AppSpacing.lg),
-            ActivityTabs(
-              activeColor: AppColors.surface,
-              activeForeground: AppColors.primary,
-              labels: const ['Earn Coins', 'Redeem Rewards'],
-              selected: catalog ? 1 : 0,
-              onSelected: (index) =>
-                  context.go(index == 0 ? '/rewards' : '/rewards/catalog'),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            if (catalog) ...[
-              InkWell(
-                onTap: () => context.push('/rewards/locker'),
-                child: const EviaCard(
-                  child: Row(
-                    children: [
-                      ActivityIcon('2083:3327', 'imgContainer5'),
-                      SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('My Rewards', style: EviaTheme.cardTitle),
-                            Text(
-                              'View your redeemed vouchers',
-                              style: EviaTheme.caption,
-                            ),
-                          ],
-                        ),
-                      ),
-                      ActivityIcon('2083:3327', 'imgContainer6'),
-                    ],
-                  ),
-                ),
+      footer: const EviaBottomBar(selected: 2),
+      child: RefreshIndicator(
+        onRefresh: vm.refreshRewards,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const RewardsWallet(screen: '2083:3522'),
+              const SizedBox(height: AppSpacing.lg),
+              ActivityTabs(
+                activeColor: AppColors.surface,
+                activeForeground: AppColors.primary,
+                labels: const ['Earn Coins', 'Redeem Rewards'],
+                selected: catalog ? 1 : 0,
+                onSelected: (index) =>
+                    context.go(index == 0 ? '/rewards' : '/rewards/catalog'),
               ),
               const SizedBox(height: AppSpacing.lg),
-              TextFormField(
-                initialValue: state.rewardQuery,
-                onChanged: vm.searchRewards,
-                decoration: const InputDecoration(
-                  hintText: 'Search rewards...',
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.all(AppSpacing.lg),
-                    child: Center(
-                      widthFactor: 1,
-                      heightFactor: 1,
-                      child: ActivityIcon('2083:3327', 'imgContainer7'),
+              if (catalog) ...[
+                InkWell(
+                  onTap: () => context.push('/rewards/locker'),
+                  child: const EviaCard(
+                    child: Row(
+                      children: [
+                        ActivityIcon('2083:3327', 'imgContainer5'),
+                        SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('My Rewards', style: EviaTheme.cardTitle),
+                              Text(
+                                'View your redeemed vouchers',
+                                style: EviaTheme.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                        ActivityIcon('2083:3327', 'imgContainer6'),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (var i = 0; i < 4; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(right: AppSpacing.sm),
-                        child: EviaPill(
-                          [
-                            'All',
-                            'Food & Drinks',
-                            'Merchandise',
-                            'Experiences',
-                          ][i],
-                          selected:
-                              state.rewardCategory ==
-                              [
-                                'All',
-                                'Food & Drinks',
-                                'Merchandise',
-                                'Experiences',
-                              ][i],
-                          leading: ActivityIcon(
-                            '2083:3327',
-                            'imgContainer${8 + i}',
-                          ),
-                          onTap: () => vm.selectRewardCategory(
+                const SizedBox(height: AppSpacing.lg),
+                TextFormField(
+                  initialValue: state.rewardQuery,
+                  onChanged: vm.searchRewards,
+                  decoration: const InputDecoration(
+                    hintText: 'Search rewards...',
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(AppSpacing.lg),
+                      child: Center(
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: ActivityIcon('2083:3327', 'imgContainer7'),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < 4; i++)
+                        Padding(
+                          padding: const EdgeInsets.only(right: AppSpacing.sm),
+                          child: EviaPill(
                             [
                               'All',
                               'Food & Drinks',
                               'Merchandise',
                               'Experiences',
                             ][i],
+                            selected:
+                                state.rewardCategory ==
+                                [
+                                  'All',
+                                  'Food & Drinks',
+                                  'Merchandise',
+                                  'Experiences',
+                                ][i],
+                            leading: ActivityIcon(
+                              '2083:3327',
+                              'imgContainer${8 + i}',
+                            ),
+                            onTap: () => vm.selectRewardCategory(
+                              [
+                                'All',
+                                'Food & Drinks',
+                                'Merchandise',
+                                'Experiences',
+                              ][i],
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              if (vm.visibleRewards.isEmpty)
-                const EviaCard(child: Text('No rewards match your search.')),
-              for (var i = 0; i < vm.visibleRewards.length; i += 2)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: _RewardCard(reward: vm.visibleRewards[i]),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: i + 1 < vm.visibleRewards.length
-                              ? _RewardCard(reward: vm.visibleRewards[i + 1])
-                              : const SizedBox(),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-            ] else ...[
-              _DailyCheckIn(),
-              const SizedBox(height: AppSpacing.lg),
-              _MilestoneSummary(),
-              const SizedBox(height: AppSpacing.md),
-              const Text('More Ways to Earn', style: EviaTheme.section),
-              const SizedBox(height: AppSpacing.sm),
-              for (var i = 0; i < 2; i++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: InkWell(
-                    onTap: () => context.push(
-                      i == 0 ? '/my-events' : '/rewards/milestones',
-                    ),
-                    child: EviaCard(
-                      padding: const EdgeInsets.all(AppSpacing.md),
+                const SizedBox(height: AppSpacing.lg),
+                if (vm.visibleRewards.isEmpty)
+                  const EviaCard(child: Text('No rewards match your search.')),
+                for (var i = 0; i < vm.visibleRewards.length; i += 2)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: IntrinsicHeight(
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          CircleAvatar(
-                            backgroundColor: i == 0
-                                ? AppColors.accent
-                                : AppColors.primarySoft,
-                            child: ActivityIcon(
-                              '2083:3522',
-                              i == 0 ? 'imgContainer3' : 'imgContainer4',
-                            ),
+                          Expanded(
+                            child: _RewardCard(reward: vm.visibleRewards[i]),
                           ),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  i == 0 ? 'Attend Events' : 'Event Milestones',
-                                  style: EviaTheme.label,
-                                ),
-                                Text(
-                                  i == 0
-                                      ? 'View your events and check-in options'
-                                      : 'Track your event attendance milestones',
-                                  style: EviaTheme.caption,
-                                ),
-                              ],
-                            ),
+                            child: i + 1 < vm.visibleRewards.length
+                                ? _RewardCard(reward: vm.visibleRewards[i + 1])
+                                : const SizedBox(),
                           ),
-                          const Text('›'),
                         ],
                       ),
                     ),
                   ),
-                ),
+              ] else ...[
+                _DailyCheckIn(),
+                const SizedBox(height: AppSpacing.lg),
+                _MilestoneSummary(),
+                const SizedBox(height: AppSpacing.md),
+                const Text('More Ways to Earn', style: EviaTheme.section),
+                const SizedBox(height: AppSpacing.sm),
+                for (var i = 0; i < 2; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: InkWell(
+                      onTap: () => context.push(
+                        i == 0 ? '/my-events' : '/rewards/milestones',
+                      ),
+                      child: EviaCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: i == 0
+                                  ? AppColors.accent
+                                  : AppColors.primarySoft,
+                              child: ActivityIcon(
+                                '2083:3522',
+                                i == 0 ? 'imgContainer3' : 'imgContainer4',
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    i == 0
+                                        ? 'Attend Events'
+                                        : 'Event Milestones',
+                                    style: EviaTheme.label,
+                                  ),
+                                  Text(
+                                    i == 0
+                                        ? 'View your events and check-in options'
+                                        : 'Track your event attendance milestones',
+                                    style: EviaTheme.caption,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Text('›'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+              const SizedBox(height: AppSpacing.lg),
             ],
-            const SizedBox(height: AppSpacing.lg),
-          ],
+          ),
         ),
       ),
     );
@@ -327,26 +333,29 @@ class _DailyCheckIn extends ConsumerWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Flexible(
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: AppColors.warningSurface,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const ActivityIcon('2083:3522', 'imgContainer7'),
-                      const SizedBox(width: AppSpacing.xs),
-                      Flexible(
-                        child: Text(
-                          '${progress.day}-day streak',
-                          style: EviaTheme.caption.copyWith(
-                            color: AppColors.warning,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: AppColors.warningSurface,
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const ActivityIcon('2083:3522', 'imgContainer7'),
+                        const SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            '${progress.day}-day streak',
+                            style: EviaTheme.caption.copyWith(
+                              color: AppColors.warning,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -492,9 +501,12 @@ class _MilestoneSummary extends ConsumerWidget {
                 ),
               ),
               Flexible(
-                child: TextButton(
-                  onPressed: () => context.push('/rewards/milestones'),
-                  child: const Text('View all'),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => context.push('/rewards/milestones'),
+                    child: const Text('View all'),
+                  ),
                 ),
               ),
             ],
@@ -542,7 +554,12 @@ class _MilestoneSummary extends ConsumerWidget {
                   ),
                 ),
                 if (next != null)
-                  Flexible(child: EventBadge('+${next.milestone.coins} COINS')),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: EventBadge('+${next.milestone.coins} COINS'),
+                    ),
+                  ),
               ],
             ),
           ),

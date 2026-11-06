@@ -1,0 +1,4 @@
+{
+  "explanation": "{\"observed\": {\"signed_in\": null, \"old_account_data_visible\": null, \"guard_blocks\": null}} - The application consistently triggers an 'App Not Responding' dialog upon attempting to access the login screen, preventing any further progress.",
+  "source": "original ARTEMIS DataEngine report_task_status"
+}

@@ -53,20 +53,26 @@ class Flow3Snapshot {
     final day = (daily['streakDay'] as num).toInt();
     final claimed = daily['alreadyClaimed'] == true;
     final first = day > 7 ? day - 6 : 1;
-    const amounts = [5, 10, 15, 30, 50, 70, 100];
+    final amounts = (daily['rewards'] as List).cast<int>();
+    final todayCoins = (daily['coins'] as num).toInt();
+    final maximum = amounts.reduce((a, b) => a > b ? a : b);
     return (
       day: day,
-      coins: (daily['coins'] as num).toInt(),
+      coins: todayCoins,
       checkedInToday: claimed,
       saving: busy == 'daily',
-      message: day >= 7
-          ? 'Max reward unlocked · +100 coins daily'
-          : 'Keep your streak to earn up to 100 coins daily',
+      message: day >= amounts.length
+          ? amounts.last == maximum
+                ? 'Max reward unlocked · +${amounts.last} coins daily'
+                : 'Keep your streak · +${amounts.last} coins daily'
+          : 'Keep your streak to earn up to $maximum coins daily',
       days: [
         for (var i = first; i < first + 7; i++)
           (
             day: i,
-            coins: amounts[(i - 1).clamp(0, 6)],
+            coins: i == day && claimed
+                ? todayCoins
+                : amounts[(i - 1).clamp(0, amounts.length - 1)],
             today: i == day,
             claimed: i < day || i == day && claimed,
           ),
@@ -146,6 +152,7 @@ CoinEntry serverLedger(Map<String, dynamic> row) {
     'daily_checkin' => 'Daily Check-in',
     'monthly_gift' => 'Monthly Gift',
     'event_reward' => 'Event attendance',
+    'event_reward_reversal' => 'Attendance reward reversed',
     'milestone_reward' => 'Event milestone',
     'deposit_hold' => 'Event deposit',
     'deposit_refund' => 'Deposit returned',

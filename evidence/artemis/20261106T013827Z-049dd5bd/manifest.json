@@ -1,0 +1,24 @@
+{
+  "started_at": "20261106T013827Z-049dd5bd",
+  "artemis_commit": "351ca8422f7b5b54e80a9c1ce03a222e02415b6b",
+  "profile": "flash",
+  "model": "gemini-3.1-flash-lite",
+  "device": "emulator-5556",
+  "runs": 3,
+  "command": [
+    "D:\\EVIA\\prm323-lab3-camply\\e2e_test\\.venv\\Lib\\site-packages\\pytest\\__main__.py",
+    "e2e_test",
+    "--live",
+    "--case",
+    "TC04,TC05",
+    "--runs",
+    "3"
+  ],
+  "evidence_contains_private_test_data": true,
+  "host_customization": "UIAutomator backend; real lock-state probe timeout 15s",
+  "app_commit": "8409974d8d66d0b6100be314628e3a2e9c086a6a",
+  "working_tree": " M .gitignore\nM  README.md\nA  android/app/src/main/res/drawable-nodpi/evia_ticket.png\nM  android/app/src/main/res/drawable-v21/launch_background.xml\nM  android/app/src/main/res/drawable/launch_background.xml\nMM android/app/src/main/res/drawable/splash_icon.xml\n M docs/DEMO_DATA.md\n M docs/FLOW3_INTEGRATION.md\n M docs/backend-integration.md\nMM docs/design-traceability.md\n M docs/test-plan.md\n M e2e_test/README.md\n M firebase/demo-catalog.json\n M lib/app/router.dart\n M lib/core/constants/app_strings.dart\n M lib/models/flow1_models.dart\n M lib/models/flow3_models.dart\n M lib/screens/evia/discover_screen.dart\n M lib/screens/evia/event_details_screen.dart\n M lib/screens/evia/explore_screen.dart\n M lib/screens/evia/following_screen.dart\n M lib/screens/evia/my_events_screen.dart\n M lib/screens/evia/organizer_profile_screen.dart\n M lib/screens/evia/profile_screens.dart\n M lib/screens/evia/registration_form_screen.dart\n M lib/screens/evia/registration_result_screen.dart\n M lib/screens/evia/reward_voucher_screen.dart\n M lib/screens/evia/rewards_screen.dart\n M lib/screens/evia/ticket_screen.dart\n M lib/screens/foundation_screen.dart\n M lib/theme/app_motion.dart\n M lib/theme/app_tokens.dart\n M lib/theme/evia_theme.dart\n M lib/theme/flow_theme.dart\n M lib/viewmodels/activity_view_model.dart\n M lib/viewmodels/evia_view_model.dart\n M lib/viewmodels/flow1_view_model.dart\n M lib/viewmodels/flow3_view_model.dart\n M lib/widgets/activity_widgets.dart\n M lib/widgets/event_flow_widgets.dart\n M lib/widgets/evia_brand.dart\n M lib/widgets/evia_widgets.dart\n M lib/widgets/rewards_backend_gate.dart\n M test/helpers/flow3_backend.dart\n M test/viewmodels/evia_view_model_test.dart\n M test/viewmodels/flow1_view_model_test.dart\n M test/viewmodels/flow3_view_model_test.dart\n M test/widgets/evia_screens_test.dart\n M test/widgets/flow1_screens_test.dart\n M test/widgets/flow2_screens_test.dart\n?? android/app/src/main/res/drawable-nodpi/evia_ticket_splash.png\n?? docs/artemis-plan.md\n?? e2e_test/cases.py\n?? e2e_test/conftest.py\n?? e2e_test/evidence.py\n?? e2e_test/manage.py\n?? e2e_test/patches/\n?? e2e_test/pyproject.toml\n?? e2e_test/runner.py\n?? e2e_test/settings.example.json\n?? e2e_test/test_flows.py\n?? e2e_test/tools/\n?? e2e_test/uv.lock\n?? evidence/event-images/\n?? firebase/event-images/\n?? functions/scripts/upload-event-images.mjs\n?? lib/widgets/evia_skeleton.dart\n",
+  "artemis_patch_sha256": "45ac26f8b2bca99176a0757369613d32528c5a7e4b7b9bf6b61149a60310a452",
+  "workspace_apk_sha256": "8474c782d0956a61d0256279a4a14a5c8afda1c3fcda3536c0f338e0a8262164",
+  "apk_identity_note": "Hash of workspace APK; does not prove the same APK is installed"
+}

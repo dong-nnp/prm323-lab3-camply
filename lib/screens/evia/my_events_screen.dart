@@ -68,13 +68,6 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen>
     final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
     final screen = screenFor(state);
-    final start = switch (screen) {
-      '2083:2170' => 11,
-      '2083:2931' => 13,
-      '2083:273' => 9,
-      '2083:2481' => 12,
-      _ => 8,
-    };
     final calendar = switch (screen) {
       '2083:2012' => 7,
       '2083:2170' => 10,
@@ -289,12 +282,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen>
       ],
     );
     return EviaPage(
-      footer: ActivityBottomBar(
-        screen: widget.view == 'cancel' ? '2083:2795' : screen,
-        start: widget.view == 'cancel' ? 9 : start,
-        selected: widget.view == 'cancel' ? 2 : 1,
-        legacy: widget.view == 'cancel',
-      ),
+      footer: const EviaBottomBar(selected: 1),
       child: widget.view == 'calendar'
           ? ActivityOverlay(
               background: content,
