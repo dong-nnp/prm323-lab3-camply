@@ -308,6 +308,21 @@ test('walk-in Going is only an intent and QR verification is unique/window-bound
   now = new Date(now.getTime() + 61_000);
   await rejects(call('verifyWalkInQr', bob, { ...input, requestId: 'walkin-expire' }), 'QR_INVALID');
 });
+test('configured daily reward continues after day 7 and cannot change a prior claim', async () => {
+  const policy = db.doc('server_config/daily_checkin');
+  await policy.set({ rewards: [1, 2, 3, 4, 5, 6, 77], version: 1 });
+  await db.doc(`users/${alice.uid}/reward_state/daily`).set({ lastLocalDate: '2026-11-03', streakDay: 6 });
+  assert.equal((await call('claimDailyCheckin')).coinsGranted, 77);
+  now = new Date('2026-11-04T17:00:00Z');
+  const next = await call('getAccount');
+  assert.equal(next.daily.streakDay, 8);
+  assert.equal(next.daily.coins, 77);
+  assert.equal((await call('claimDailyCheckin')).coinsGranted, 77);
+  await policy.set({ rewards: [1, 2, 3, 4, 5, 6, 99], version: 2 });
+  assert.equal((await call('claimDailyCheckin')).coinsGranted, 77);
+  assert.equal((await call('getAccount')).daily.coins, 77);
+});
+
 test('daily race grants once; Vietnam midnight advances; gap resets streak', async () => {
   const results = await Promise.all(Array.from({ length: 4 }, () => call('claimDailyCheckin')));
   assert.ok(results.every(r => r.coinsGranted === 5));

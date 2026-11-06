@@ -1,8 +1,10 @@
 import { getRemoteConfig, RemoteConfigTemplate } from 'firebase-admin/remote-config';
+import { Firestore } from 'firebase-admin/firestore';
 import { GoogleAuth } from 'google-auth-library';
 import { z } from 'zod';
 import { requireAdmin } from './admin_catalog.js';
-import { Actor, empty, fail } from './shared.js';
+import { Actor, coins, empty, fail } from './shared.js';
+import { dailyRewardPolicy, dailyRewardsSchema, defaultDailyRewards } from './policy.js';
 
 const daysInput = z.object({ days: z.union([z.literal(7), z.literal(30)]) }).strict();
 const analyticsInput = daysInput.extend({
@@ -25,35 +27,45 @@ export function analyticsReportQuery(raw: unknown, stream?: string) {
 }
 const configInput = z.object({
   etag: z.string().min(1).max(500),
-  enabled: z.boolean(),
-  intro: z.string().trim().min(1).max(500),
+  day: z.number().int().min(1).max(7),
+  coins,
 }).strict();
-const enabledKey = 'event_milestones_enabled';
-const introKey = 'event_milestones_intro';
+const rewardKey = 'daily_checkin_rewards';
 
-function remoteConfigView(template: RemoteConfigTemplate) {
-  const parameters = { ...Object.assign({}, ...Object.values(template.parameterGroups ?? {}).map(group => group.parameters)), ...template.parameters };
-  const enabled = parameters[enabledKey];
-  const intro = parameters[introKey];
+function rewardParameters(template: RemoteConfigTemplate) {
+  const group = Object.values(template.parameterGroups ?? {}).find(item => rewardKey in item.parameters);
+  return group?.parameters ?? template.parameters;
+}
+
+function publishedRewards(template: RemoteConfigTemplate): readonly number[] {
+  const value = rewardParameters(template)[rewardKey]?.defaultValue;
+  if (!value || !('value' in value)) return defaultDailyRewards;
+  try {
+    return dailyRewardsSchema.parse(JSON.parse(value.value));
+  } catch {
+    fail('REMOTE_CONFIG_REWARD_INVALID');
+  }
+}
+
+function remoteConfigView(template: RemoteConfigTemplate, appliedRewards: readonly number[]) {
   return {
     etag: template.etag,
     version: template.version?.versionNumber ?? null,
-    enabled: enabled?.defaultValue && 'value' in enabled.defaultValue ? enabled.defaultValue.value : null,
-    intro: intro?.defaultValue && 'value' in intro.defaultValue ? intro.defaultValue.value : null,
-    hasConditions: [enabled, intro].some(parameter => Object.keys(parameter?.conditionalValues ?? {}).length > 0),
+    rewards: publishedRewards(template),
+    appliedRewards,
   };
 }
 
-function setDefault(template: RemoteConfigTemplate, key: string, value: string, valueType: 'BOOLEAN' | 'STRING') {
-  const group = Object.values(template.parameterGroups ?? {}).find(item => key in item.parameters);
-  const parameters = group?.parameters ?? template.parameters;
-  parameters[key] = { ...parameters[key], defaultValue: { value }, valueType };
-}
-
-export function updateMilestoneDefaults(template: RemoteConfigTemplate, input: z.infer<typeof configInput>) {
+export function updateDailyReward(template: RemoteConfigTemplate, input: z.infer<typeof configInput>) {
   if (template.etag !== input.etag) fail('REMOTE_CONFIG_CHANGED', 'aborted');
-  setDefault(template, enabledKey, String(input.enabled), 'BOOLEAN');
-  setDefault(template, introKey, input.intro, 'STRING');
+  const rewards = [...publishedRewards(template)];
+  rewards[input.day - 1] = input.coins;
+  const parameters = rewardParameters(template);
+  parameters[rewardKey] = {
+    ...parameters[rewardKey],
+    defaultValue: { value: JSON.stringify(rewards) },
+    valueType: 'JSON',
+  };
   return template;
 }
 
@@ -82,31 +94,49 @@ type BigQueryResult = {
   rows?: { f: { v: string | null }[] }[];
 };
 
-export function adminIntegrations() {
+export function adminIntegrations(db: Firestore) {
+  const policy = dailyRewardPolicy(db);
   return {
     getAdminRemoteConfig: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
       empty.parse(raw);
       cloudOnly();
-      try {
-        return remoteConfigView(await getRemoteConfig().getTemplate());
-      } catch (error) {
-        upstream(error, 'REMOTE_CONFIG');
-      }
+      const [template, applied] = await Promise.all([
+        getRemoteConfig().getTemplate().catch(error => upstream(error, 'REMOTE_CONFIG')),
+        policy.get(),
+      ]);
+      return remoteConfigView(template, applied.get('rewards') ?? defaultDailyRewards);
     },
     publishAdminRemoteConfig: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
       const input = configInput.parse(raw);
       cloudOnly();
       const service = getRemoteConfig();
-      const current = await service.getTemplate().catch(error => upstream(error, 'REMOTE_CONFIG'));
-      const updated = updateMilestoneDefaults(current, input);
-      try {
-        const validated = await service.validateTemplate(updated);
-        return remoteConfigView(await service.publishTemplate(validated));
-      } catch (error) {
-        upstream(error, 'REMOTE_CONFIG');
+      let template = await service.getTemplate().catch(error => upstream(error, 'REMOTE_CONFIG'));
+      if (template.etag !== input.etag) fail('REMOTE_CONFIG_CHANGED', 'aborted');
+      if (publishedRewards(template)[input.day - 1] !== input.coins) {
+        const updated = updateDailyReward(template, input);
+        try {
+          const validated = await service.validateTemplate(updated);
+          template = await service.publishTemplate(validated);
+        } catch (error) {
+          upstream(error, 'REMOTE_CONFIG');
+        }
       }
+      // Daily check-in reads this policy in the same transaction as the wallet.
+      // Reapplying a published value repairs a failed write without publishing again.
+      const version = Number(template.version?.versionNumber);
+      const rewards = publishedRewards(template);
+      await db.runTransaction(async tx => {
+        const current = await tx.get(policy);
+        if (!Number.isSafeInteger(version) || version < 1) {
+          if (!current.exists && rewards === defaultDailyRewards) return;
+          fail('REMOTE_CONFIG_UNAVAILABLE', 'unavailable');
+        }
+        if ((current.get('version') ?? 0) > version) fail('REMOTE_CONFIG_CHANGED', 'aborted');
+        if (current.get('version') !== version) tx.set(policy, { rewards, version });
+      });
+      return remoteConfigView(template, rewards);
     },
     getAdminAnalyticsReport: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);

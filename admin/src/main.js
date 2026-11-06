@@ -3,7 +3,6 @@ import { createFirebase } from './firebase.js';
 import { adminErrorMessage, setupServicePanels } from './service-panels.js';
 import { setupEditor } from './editor.js';
 import { renderIcons } from './icons.js';
-import { createQaDevice } from './qa-crash.js';
 import { setupNotifications } from './notifications.js';
 
 const env = import.meta.env;
@@ -19,9 +18,11 @@ try {
 const routes = new Map(all('[data-route]').map(link => [link.dataset.route, link]));
 const gateForm = $('login-form');
 const gateButton = gateForm.querySelector('button');
-const qaConnect = $('qa-connect');
-const qaDisconnect = $('qa-disconnect');
-const qaCrash = $('qa-crash');
+const androidQaButton = $('android-qa-crash');
+const diagnosticsEnabled = import.meta.env.DEV && env.VITE_ENABLE_DIAGNOSTICS === 'true';
+const androidQaEnabled = diagnosticsEnabled && location.hostname === '127.0.0.1' &&
+  /^[a-f0-9]{48}$/.test(env.VITE_QA_ANDROID_TOKEN ?? '') &&
+  /^emulator-[1-9]\d{3,4}$/.test(env.VITE_QA_ANDROID_DEVICE ?? '');
 const detailEdit = $('detail-edit');
 const detailPublish = $('detail-publish');
 let detailEntry;
@@ -29,7 +30,6 @@ let publishing = false;
 let operator;
 let authVersion = 0;
 let detailVersion = 0;
-let qaBusy = false;
 let catalogs = new Map();
 
 function status(id, message, error = false) {
@@ -55,12 +55,8 @@ const editor = setupEditor({
     if (operator === current) status('workspace-status', message);
   },
 });
-const services = setupServicePanels({ firebase, session: () => operator, status, text, formatDate, track });
+const services = setupServicePanels({ firebase, session: () => operator, status, text, track });
 const notifications = setupNotifications({ firebase, session: () => operator, status, errorMessage: adminErrorMessage });
-const qa = createQaDevice(env.VITE_QA_ANDROID_SERIAL?.trim(), () => {
-  updateQaControls();
-  status('qa-status', 'Đã mất kết nối Android QA.');
-});
 
 function route() {
   if (!canOperate()) return;
@@ -212,31 +208,6 @@ async function showDetails(kind, id) {
   }
 }
 
-function updateQaControls() {
-  qaConnect.disabled = !qa.available || qaBusy;
-  qaConnect.hidden = qa.connected;
-  qaDisconnect.hidden = !qa.connected;
-  qaDisconnect.disabled = qaBusy;
-  qaCrash.disabled = !canOperate() || qaBusy || !qa.connected;
-}
-
-async function qaAction(message, action) {
-  if (!canOperate() || qaBusy) return;
-  const session = operator;
-  qaBusy = true;
-  updateQaControls();
-  status('qa-status', message);
-  try {
-    const result = await action();
-    if (operator === session) status('qa-status', result);
-  } catch (error) {
-    if (operator === session) status('qa-status', error.message || 'Không thể thao tác với thiết bị QA.', true);
-  } finally {
-    qaBusy = false;
-    updateQaControls();
-  }
-}
-
 function showGate(message, blocked = false, error = false) {
   operator = undefined;
   catalogs = new Map();
@@ -255,8 +226,8 @@ function showGate(message, blocked = false, error = false) {
   $('denied-logout').hidden = !blocked;
   gateButton.disabled = blocked || !firebase;
   status('gate-status', message, error);
-  void qa.disconnect().catch(() => {});
-  updateQaControls();
+  androidQaButton.hidden = true;
+  status('android-qa-status', '');
 }
 
 async function updateAuth(user) {
@@ -277,13 +248,17 @@ async function updateAuth(user) {
     operator = user;
     $('account-email').textContent = user.email ?? '';
     $('environment').textContent = firebase.emulator ? 'Emulator' : firebase.projectId;
-    status('qa-status', qa.available
-      ? 'Sẵn sàng kết nối thiết bị đã được duyệt.'
-      : 'Cần trình duyệt hỗ trợ WebUSB và serial thiết bị Android QA trong cấu hình.');
     status('workspace-status', '');
     $('gate').hidden = true;
     $('workspace').hidden = false;
-    updateQaControls();
+    androidQaButton.hidden = !androidQaEnabled || firebase.emulator;
+    $('android-qa-hint').hidden = !androidQaButton.hidden;
+    const dashboard = $('crashlytics-dashboard');
+    dashboard.hidden = firebase.emulator;
+    if (!firebase.emulator) {
+      dashboard.href = 'https://console.firebase.google.com/project/' +
+        encodeURIComponent(firebase.projectId) + '/crashlytics';
+    }
     route();
   } catch {
     if (version === authVersion) showGate('Không xác minh được quyền. Hãy đăng xuất và thử lại.', true, true);
@@ -332,16 +307,15 @@ detailPublish.addEventListener('click', async () => {
     for (const button of buttons) button.disabled = false;
   }
 });
-qaConnect.addEventListener('click', () => void qaAction('Đang kết nối. Cấp quyền USB debugging trên Android nếu được hỏi.', async () =>
-  await qa.connect() ? 'Đã kết nối. Mở app Evia QA rồi nhấn Crash app.' : 'Chưa chọn thiết bị Android QA.'));
-qaDisconnect.addEventListener('click', () => void qaAction('Đang ngắt kết nối…', async () => {
-  await qa.disconnect();
-  return 'Đã ngắt kết nối Android QA.';
-}));
-qaCrash.addEventListener('click', () => void qaAction('Đang chạy và kiểm tra log crash Android…', async () => {
-  await qa.crash(() => { void track('admin_qa_crash_requested'); });
-  return 'Đã xác minh crash trong log Android. Mở lại app rồi tải lại báo cáo trên trang này.';
-}));
+androidQaButton.addEventListener('click', (event) => {
+  if (!operator || !androidQaEnabled || firebase.emulator) return;
+  if (!window.confirm('Gây crash app Evia QA đang mở trên ' + env.VITE_QA_ANDROID_DEVICE + '?')) return;
+  const button = event.currentTarget;
+  button.disabled = true;
+  status('android-qa-status', 'Đã yêu cầu Windows mở trình kiểm thử. Sau khi app đóng, mở lại để gửi báo cáo.');
+  window.location.href = 'evia-android-qa://crash/' + env.VITE_QA_ANDROID_TOKEN;
+  window.setTimeout(() => { button.disabled = false; }, 3000);
+});
 
 gateForm.addEventListener('submit', async (event) => {
   event.preventDefault();

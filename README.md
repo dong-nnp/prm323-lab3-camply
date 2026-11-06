@@ -274,7 +274,7 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | firebase_storage | 14.0.1 | Chuẩn bị Cloud Storage |
 | firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
 | firebase_analytics | 13.0.1 | 11 events; bật qua ANALYTICS_ENABLED |
-| firebase_crashlytics | 6.0.1 | Chuẩn bị Crashlytics, chưa handlers |
+| firebase_crashlytics | 6.0.1 | Ghi lỗi Flutter toàn cục và lỗi tải catalog trên Android khi bật collection |
 | firebase_remote_config | 7.0.1 | Remote Config cho Event Milestones |
 | flutter_test | Flutter SDK | Unit/widget tests |
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |
@@ -283,7 +283,8 @@ Flow 1 dùng callable thay vì Firestore SDK/HTTP client trực tiếp. Chưa th
 ARTEMIS vào app runtime; bộ chạy ngoài app tại [e2e_test](e2e_test/README.md)
 hỗ trợ smoke test Android với DeepSeek, chưa nghiệm thu E2E. Remote Config đã nối hai tham số Event
 Milestones cho chế độ Firebase live.
-Xem [hướng dẫn admin](admin/README.md) để bật thu thập crash trên Android debug QA.
+Xem [hướng dẫn Crashlytics](docs/EVIA_Crashlytics_Implementation.md) để kiểm thử
+lỗi trên Web Admin và Android debug QA.
 
 ## Cấu trúc và quy tắc
 
@@ -315,8 +316,8 @@ View → ViewModel → Repository → service interface → SDK adapter. SDK ch�
 gọi trong `lib/services/`; domain models không chứa SDK types. Providers tạo và
 inject dependencies, dễ override để test. Auth/Backend chọn real adapter trong
 live mode; cấu hình tắt dùng pending/unavailable, demo auth chỉ bật riêng ở debug.
-Các service còn lại dùng `PendingFirebaseServices`, ném lỗi rõ. Khởi tạo Firebase
-Core thành công không có nghĩa Flow 2/3 hoặc các service này đã tích hợp.
+Các service chưa tích hợp dùng `PendingFirebaseServices` và báo lỗi rõ ràng.
+Crashlytics chọn adapter Android khi bật Firebase live và chỉ ghi lỗi khi đã bật collection.
 
 Welcome, Login, Sign Up, nội dung sự kiện công khai và `/foundation`
 không yêu cầu đăng nhập. Các route cá nhân/đăng ký/voucher áp dụng auth guard S01.
@@ -464,9 +465,10 @@ hiện các bước sau bằng tài khoản và project thật được cấp qu
      mở truy cập; không thay bằng public allow-all để demo.
    - **Messaging:** triển khai token, permission và message handlers trong service
      sau khi xác định flow; không đăng ký token/yêu cầu quyền ở foundation.
-   - **Analytics/Crashlytics:** viết adapter, kế hoạch tracking/handlers và test
-     ở môi trường dev. Android manifest hiện tắt auto collection và automatic
-     screen reporting; chưa có Analytics observers hay Crashlytics error hooks.
+   - **Analytics:** Android manifest mặc định tắt auto collection và automatic
+     screen reporting.
+   - **Crashlytics:** xem quy trình bật collection và kiểm thử Android debug QA
+     trong [hướng dẫn Crashlytics](docs/EVIA_Crashlytics_Implementation.md).
    - **Remote Config:** `firebase/remote-config-defaults.json` hiện là `{}` vì
      chưa xác định keys. Bổ sung defaults thật và nối `setDefaults`/fetch ở service;
      file này chưa được tải tự động vào app hoặc publish lên Console.

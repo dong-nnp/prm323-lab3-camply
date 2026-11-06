@@ -99,7 +99,7 @@ main:focus { outline: none; }
 .hero-ticket i { height: 100%; border-left: 1px dashed #6e8c3d; margin-left: auto; }
 .section-heading { margin: 28px 0 12px; }
 .section-heading h2 { margin-top: 4px; }
-.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .action-card { position: relative; display: block; background: var(--paper); border: 1px solid var(--border); border-radius: 13px; padding: 16px; }
 a.action-card:hover, .tool-list a:hover { border-color: #a4bc72; }
 .card-icon { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 9px; color: #496527; background: var(--lime-soft); }
@@ -134,15 +134,12 @@ td small { display: block; color: var(--muted); overflow-wrap: anywhere; margin-
 .instructions > p, .instructions li { color: var(--muted); }
 .instructions > p.error { color: var(--danger); }
 .instructions ol { padding-left: 21px; line-height: 1.6; }
-.notification-cards, .follow-panel { margin-bottom: 15px; }
-.follow-panel { margin-top: 15px; }
+.follow-panel { margin-block: 15px; }
 .definition-list { margin: 14px 0; }
 .definition-list div { display: grid; grid-template-columns: minmax(150px, 1fr) 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border); }
 .definition-list dt { font-weight: 690; }
 .definition-list dd { margin: 0; overflow-wrap: anywhere; color: var(--muted); }
 .panel-head.inline { padding: 0; }
-.config-preview { display: flex; align-items: flex-start; gap: 12px; background: var(--canvas); border-radius: 9px; padding: 14px; }
-.config-preview p { color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 label { display: grid; gap: 6px; font-size: .89rem; font-weight: 700; }
 input, textarea, select { width: 100%; color: var(--ink); min-height: 41px; background: var(--paper); padding: 9px 10px; border: 1px solid #bfcabc; border-radius: 8px; }
 textarea { resize: vertical; }

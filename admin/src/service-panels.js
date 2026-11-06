@@ -1,4 +1,3 @@
-import { milestoneDefaults } from './firebase.js';
 import { analyticsEventLabel, analyticsScopeLabel } from './analytics-labels.js';
 
 const $ = id => document.getElementById(id);
@@ -15,6 +14,7 @@ export function adminErrorMessage(error) {
     PUBLISHED_EVENT_FIELDS_LOCKED: 'Ban tổ chức, phạm vi và hình thức tham dự đã được khóa khi xuất bản.',
     EVENT_CAPACITY_BELOW_REGISTRATIONS: 'Sức chứa thấp hơn số người đã đăng ký.',
     TERMS_VERSION_REQUIRED: 'Hãy tăng phiên bản điều khoản khi sửa nội dung điều khoản.',
+    REMOTE_CONFIG_REWARD_INVALID: 'Lịch xu đã xuất bản không hợp lệ. Kiểm tra daily_checkin_rewards trong Firebase.',
     REMOTE_CONFIG_CHANGED: 'Cấu hình đã thay đổi. Tải lại trước khi xuất bản.',
     REMOTE_CONFIG_ACCESS_DENIED: 'Backend chưa có quyền quản lý Firebase Remote Config.',
     ANALYTICS_NOT_CONFIGURED: 'Backend chưa có GA4 Property ID hợp lệ.',
@@ -45,55 +45,56 @@ export function adminErrorMessage(error) {
   return error.code?.startsWith('functions/') ? 'Không thể hoàn tất thao tác. Hãy thử lại.' : (error.message || 'Không thể hoàn tất thao tác.');
 }
 
-export function setupServicePanels({ firebase, session, status, text, formatDate, track }) {
+export function setupServicePanels({ firebase, session, status, text, track }) {
   const form = $('config-form');
-  const enabled = form.elements.enabled;
-  const intro = form.elements.intro;
+  const day = form.elements.rewardDay;
+  const coins = form.elements.rewardCoins;
   const reload = $('fetch-config');
   const publish = $('publish-config');
   let config;
   let configRequested = false;
   let configBusy = false;
-  const requestedReports = new Set();
+  const reportForm = $('analytics-report-form');
+  const reportButton = reportForm.querySelector('button');
+  let analyticsRequested = false;
 
-  function preview() {
-    const visible = enabled.value === 'true';
-    $('config-preview').hidden = !visible;
-    $('config-preview-intro').textContent = intro.value;
-    $('config-hidden').hidden = visible;
+  function showSelectedReward() {
+    coins.value = config?.rewards[Number(day.value) - 1] ?? '';
   }
 
   function setConfig(value) {
     config = value;
-    enabled.value = value?.enabled === 'true' || (value?.enabled == null && milestoneDefaults.enabled) ? 'true' : 'false';
-    intro.value = value?.intro ?? milestoneDefaults.intro;
-    preview();
+    showSelectedReward();
   }
 
   function syncConfigControls() {
     reload.disabled = configBusy;
-    publish.disabled = enabled.disabled = intro.disabled = configBusy || !config;
+    publish.disabled = day.disabled = coins.disabled = configBusy || !config;
   }
 
   async function runConfig(saving) {
     const current = session();
     if (!current || configBusy || (saving && !config)) return;
     configRequested = true;
-    const input = saving ? { etag: config.etag, enabled: enabled.value === 'true', intro: intro.value } : null;
+    const input = saving ? { etag: config.etag, day: Number(day.value), coins: coins.valueAsNumber } : null;
     configBusy = true;
     syncConfigControls();
     status('config-status', saving ? 'Đang xuất bản…' : 'Đang tải cấu hình…');
     try {
       const value = await (saving ? firebase.publishRemoteConfig(input) : firebase.getRemoteConfig());
       if (session() !== current) return;
+      if (!Array.isArray(value.rewards) || !Array.isArray(value.appliedRewards)) {
+        throw new Error('Backend chưa hỗ trợ lịch Daily Check-in. Cập nhật Cloud Functions rồi tải lại.');
+      }
       setConfig(value);
       if (saving) void track('admin_remote_config_published');
-      const message = saving ? 'Đã xuất bản' : 'Đã tải giá trị mặc định';
-      status('config-status', message + (value.version ? ' · Phiên bản ' + value.version : '') +
-        (value.hasConditions ? ' · Các giá trị theo điều kiện vẫn được áp dụng.' : ''));
+      const message = saving ? 'Đã áp dụng mức thưởng Daily Check-in.' : 'Đã tải cấu hình.';
+      const pending = value.rewards.some((coins, index) => coins !== value.appliedRewards[index])
+        ? ' Lịch đã xuất bản chưa đồng bộ. Bấm Xuất bản và áp dụng để đồng bộ.' : '';
+      status('config-status', message + pending);
     } catch (error) {
       if (session() !== current) return;
-      if (!saving || error.details?.code === 'REMOTE_CONFIG_CHANGED') config = undefined;
+      setConfig(undefined);
       status('config-status', adminErrorMessage(error), true);
     } finally {
       if (session() === current) {
@@ -103,86 +104,74 @@ export function setupServicePanels({ firebase, session, status, text, formatDate
     }
   }
 
-  function renderReport(kind, items) {
-    const target = $(kind + '-report-table');
+  function renderReport(items) {
+    const target = $('analytics-report-table');
     target.replaceChildren();
     if (!items.length) return;
-    const analytics = kind === 'analytics';
-    const columns = analytics ? ['Hành vi', 'Lượt ghi nhận', 'Người dùng'] : ['Mã lỗi', 'Loại', 'Số lần', 'Lần gần nhất', 'Phiên bản app'];
+    const columns = ['Hành vi', 'Lượt ghi nhận', 'Người dùng'];
     const table = document.createElement('table');
     table.createTHead().insertRow().append(...columns.map(value => text('th', value)));
     const body = table.createTBody();
     for (const item of items) {
       const row = body.insertRow();
-      const values = analytics ? [analyticsEventLabel(item.name), item.count, item.users] : [item.issueId, item.type, item.count, formatDate(item.lastSeen), item.version];
+      const values = [analyticsEventLabel(item.name), item.count, item.users];
       row.append(...values.map(value => text('td', value)));
     }
     target.append(table);
   }
 
-  async function loadReport(kind) {
+  async function loadReport() {
     const current = session();
-    const reportForm = $(kind + '-report-form');
-    const button = reportForm.querySelector('button');
-    if (!current || button.disabled) return;
-    requestedReports.add(kind);
+    if (!current || reportButton.disabled) return;
+    analyticsRequested = true;
     const days = Number(reportForm.elements.days.value);
-    button.disabled = reportForm.elements.days.disabled = true;
+    reportButton.disabled = reportForm.elements.days.disabled = true;
     if (reportForm.elements.source) reportForm.elements.source.disabled = true;
-    renderReport(kind, []);
-    status(kind + '-report-status', 'Đang tải báo cáo…');
+    renderReport([]);
+    status('analytics-report-status', 'Đang tải báo cáo…');
     try {
-      const report = await firebase.report(kind, days, reportForm.elements.source?.value);
+      const report = await firebase.report('analytics', days, reportForm.elements.source?.value);
       if (session() !== current) return;
-      renderReport(kind, report.items);
-      status(kind + '-report-status', (report.items.length
+      renderReport(report.items);
+      status('analytics-report-status', (report.items.length
         ? 'Đã tải ' + report.items.length + ' mục' + (report.scope === 'property' ? ' · Toàn bộ GA4 property.' : '.')
-        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') +
-        (kind === 'analytics' ? ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.' : ''));
+        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') + ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.');
     } catch (error) {
-      if (session() === current) status(kind + '-report-status',
-        kind === 'analytics' && error.code === 'functions/invalid-argument'
-          ? 'Backend chưa hỗ trợ bộ lọc nguồn. Cập nhật getAdminAnalyticsReport hoặc chọn Theo cấu hình backend.'
-          : adminErrorMessage(error), true);
+      if (session() === current) status('analytics-report-status', adminErrorMessage(error), true);
     } finally {
       if (session() === current) {
-        button.disabled = reportForm.elements.days.disabled = false;
+        reportButton.disabled = reportForm.elements.days.disabled = false;
         if (reportForm.elements.source) reportForm.elements.source.disabled = false;
       }
     }
   }
 
-  form.addEventListener('input', preview);
+  day.addEventListener('change', showSelectedReward);
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (config && window.confirm('Xuất bản giá trị mặc định mới cho Event Milestones?')) void runConfig(true);
+    if (config && window.confirm('Xuất bản và áp dụng mức thưởng cho ngày đã chọn?')) void runConfig(true);
   });
   reload.addEventListener('click', () => void runConfig(false));
-  for (const kind of ['analytics', 'crashlytics']) {
-    $(kind + '-report-form').addEventListener('submit', event => {
-      event.preventDefault();
-      void loadReport(kind);
-    });
-  }
+  reportForm.addEventListener('submit', event => {
+    event.preventDefault();
+    void loadReport();
+  });
 
   return {
     open(page) {
       if (page === 'config' && !configRequested) void runConfig(false);
-      if ((page === 'analytics' || page === 'crashlytics') && !requestedReports.has(page)) void loadReport(page);
+      if (page === 'analytics' && !analyticsRequested) void loadReport();
     },
     reset() {
       configBusy = configRequested = false;
-      requestedReports.clear();
+      analyticsRequested = false;
       setConfig(undefined);
       syncConfigControls();
       status('config-status', '');
-      for (const kind of ['analytics', 'crashlytics']) {
-        const reportForm = $(kind + '-report-form');
-        reportForm.querySelector('button').disabled = reportForm.elements.days.disabled = false;
-        if (reportForm.elements.source) reportForm.elements.source.disabled = false;
-        renderReport(kind, []);
-        status(kind + '-report-status', '');
-      }
+      reportButton.disabled = reportForm.elements.days.disabled = false;
+      if (reportForm.elements.source) reportForm.elements.source.disabled = false;
+      renderReport([]);
+      status('analytics-report-status', '');
     },
   };
 }

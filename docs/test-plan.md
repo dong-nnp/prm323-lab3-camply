@@ -1,5 +1,7 @@
 # Test plan — template
 
+> **Merge admin — 06/11/2026:** giữ Analytics theo nguồn, event upload và thông báo trực tiếp cùng Daily Check-in/Crash QA từ nhánh admin. Đã gỡ hàm `claimDaily` trùng, cập nhật fixture lịch thưởng và giữ action/loading/ví qua Flow3. Validation sau sửa: admin 14/14 + build, backend Emulator 85/85 + TypeScript build, Flutter 234/234, `flutter analyze --no-pub lib test` sạch, APK debug build đạt. Chưa chạy APK trên thiết bị, chưa deploy. Logs trong `.local/merge-*.log` (Git ignored).
+
 > **Gửi thông báo trực tiếp — 06/11/2026:** admin 15/15 + build; backend 84/84 Emulator tests + TypeScript build đạt. Browser form/danh sách thật và responsive 360/412px đã kiểm. Callable mới đã deploy; live guards anonymous/staff/invalid payload đạt, chưa gửi push thật trong lượt này. [Evidence](../evidence/admin-notifications/README.md).
 
 > **Form sự kiện/Storage — 06/11/2026:** admin 12/12 + build, đầy đủ 81/81 backend Emulator tests + TypeScript build đạt. Browser form/preview và 360/412px đã kiểm; Storage Rules đã deploy, upload/download hash thật và cleanup QA đạt. Không tạo event cloud, không đổi Dart/native nên không chạy lại Flutter. [Evidence và giới hạn](../evidence/event-editor/README.md).
@@ -350,7 +352,8 @@ backend integration.
 
 TODO: native Google Sign-In cancel/failure, Storage Rules deny/allow theo quyền,
 FCM permission/token/background delivery, Remote Config fetch/cache, Analytics
-DebugView và Crashlytics test crash chỉ sau tích hợp thật. Xác nhận công cụ
+DebugView. Xem [ca kiểm thử Crashlytics](EVIA_Crashlytics_Implementation.md)
+để nghiệm thu Web Admin và Android QA trên Firebase. Xác nhận công cụ
 Google ARTEMIS trước khi thêm E2E vào `e2e_test/`.
 
 ## Đợt 3 — Registration / Profile

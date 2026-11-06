@@ -5,14 +5,6 @@ import {
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
 import { connectStorageEmulator, getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { validateEventImage } from './event-image.js';
-import defaults from '../../firebase/remote-config-defaults.json';
-
-export const milestoneDefaults = {
-  enabled: defaults.event_milestones_enabled,
-  intro: defaults.event_milestones_intro,
-  source: 'Mặc định',
-};
-
 export function createFirebase(env) {
   const emulator = env.VITE_FIREBASE_EMULATORS === 'true';
   const options = emulator

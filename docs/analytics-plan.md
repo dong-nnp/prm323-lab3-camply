@@ -49,8 +49,7 @@ Registered check-in do staff thực hiện: mobile sinh viên chỉ phát AN-11 
 
 Admin web dùng Firebase Analytics Web SDK để ghi `admin_event_saved`,
 `admin_event_published`, `admin_voucher_saved` và `admin_remote_config_published`
-sau phản hồi thành công của backend. Web ghi `admin_qa_crash_requested` khi
-gửi lệnh tới thiết bị QA. Trang Analytics gọi backend để đọc báo cáo GA4
+sau phản hồi thành công của backend. Crash QA cục bộ không tự ghi Analytics. Trang Analytics gọi backend để đọc báo cáo GA4
 theo sự kiện trong 7 hoặc 30 ngày. Vite admin chọn Android/Web trên toàn GA4 property; chỉ nguồn Theo cấu hình backend mới áp dụng numeric Stream ID. Admin Flutter vẫn gửi contract cũ, dùng stream cấu hình nếu có. [Kế hoạch admin web](ADMIN_WEB_PLAN.md).
 
 ## Verification — cập nhật 06/11/2026

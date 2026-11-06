@@ -1,10 +1,11 @@
 # Phạm vi cấu hình từ xa — Evia
 
 Cập nhật: **05/11/2026**. Hai key Event Milestones đã publish lên Firebase;
-Web admin và Flutter live đã nối runtime cho hai key Event Milestones.
+Flutter live đọc hai key Event Milestones để hiển thị lời giới thiệu.
 Các key Discover/banner bên dưới vẫn là đề xuất, chưa publish.
 
-Mục tiêu: khoanh vùng biến để Flutter hỗ trợ trước; sau này web admin có thể thay giá trị mà không build lại app. Hai key milestone dùng `RemoteConfigService` trong Flutter live.
+Web admin dùng Remote Config để điều chỉnh xu thưởng Daily Check-in. Hai key
+milestone dùng `RemoteConfigService` trong Flutter live.
 `firebase/remote-config-defaults.json` có đúng hai key đã chốt:
 `event_milestones_enabled=true` và `event_milestones_intro` (nội dung giới thiệu).
 [Hợp đồng thành tựu](EVENT_MILESTONES.md) ghi rõ quyền admin và giới hạn.
@@ -55,12 +56,13 @@ Remote Config phía client không chứa secrets, credentials, role/staff permis
 
 ## 4. Web admin
 
-Web gọi backend để đọc, xem trước và xuất bản hai giá trị mặc định
-`event_milestones_enabled` và `event_milestones_intro`. Backend xác minh
-claim admin và dùng quyền IAM của service account để cập nhật template.
-Backend validate template với ETag từ lần đọc, yêu cầu tải lại khi có xung
-đột và giữ các điều kiện cùng tham số khác. Web hiển thị phiên bản sau
-khi xuất bản. Mobile tải lại khi mở Event Milestones.
+Web gọi backend để đọc, xuất bản và áp dụng giá trị mặc định
+`daily_checkin_rewards`. Backend xác minh claim admin, kiểm tra ETag
+và lưu lịch áp dụng vào `server_config/daily_checkin` với số phiên bản.
+Giao dịch Daily Check-in đọc lịch này từ Firestore. Ngày 7 áp dụng cho
+các ngày sau đó và bản ghi đã nhận lưu số xu thực nhận.
+Thay đổi trực tiếp trên Firebase Console chỉ thay
+giá trị đã xuất bản. Để áp dụng vào giao dịch, tải lại và xác nhận trên web.
 [Cấu hình và nghiệm thu](../admin/README.md)
 
 ## 5. Checklist triển khai và nghiệm thu
@@ -71,7 +73,7 @@ khi xuất bản. Mobile tải lại khi mở Event Milestones.
 - [ ] Publish hai keys trên Firebase Console, đổi giá trị, lưu ảnh/video trước–sau trên cùng APK không build lại.
 - [ ] Nghiệm thu đổi page size không mất/nhân đôi dữ liệu và tắt featured không chặn truy cập sự kiện.
 - [ ] Nếu triển khai banner: kiểm tra text dài/text scale, config cặp invalid và không nhầm banner với FCM.
-- [ ] Nghiệm thu trên dự án thật khi đọc, xem trước, xuất bản từ web và nhận cấu hình trên mobile.
+- [ ] Nghiệm thu trên dự án thật khi xuất bản từ web, mở lại Daily Check-in và đối chiếu xu sau điểm danh.
 - [ ] Xác minh xung đột ETag khi hai quản trị viên cùng sửa template trên dự án thử nghiệm.
 
 ## Tài liệu liên quan

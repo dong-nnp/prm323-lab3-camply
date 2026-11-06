@@ -39,6 +39,7 @@ class Flow3TestBackend extends Flow1TestBackend {
             'serverTime': '2026-11-05T17:00:01Z',
             'streakDay': dailyDay,
             'coins': dailyCoins,
+            'rewards': [5, 10, 15, 30, 50, 70, 100],
             'alreadyClaimed': claimedDaily,
           },
         };

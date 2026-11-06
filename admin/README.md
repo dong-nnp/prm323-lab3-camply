@@ -22,7 +22,7 @@ Nếu chưa có `admin/.env.local`, sao chép `admin/.env.example` rồi điền
 Firebase **Web app** của dự án có Functions Evia tại `asia-southeast1`. Bật
 Email/Password và dùng tài khoản có custom claim `admin: true`. Để thu thập
 Analytics từ web, điền Measurement ID và bật
-`VITE_FIREBASE_ANALYTICS_ENABLED=true`. Hosting WebUSB cần HTTPS.
+`VITE_FIREBASE_ANALYTICS_ENABLED=true`.
 
 ## Cấu hình backend live một lần
 
@@ -35,13 +35,6 @@ Analytics từ web, điền Measurement ID và bật
    `ADMIN_GA4_STREAM_ID` nếu chỉ muốn báo cáo stream admin. Báo cáo dùng
    toàn property khi bỏ trống Stream ID.
    [GA4 Data API](https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart)
-3. Liên kết Crashlytics với BigQuery. Điền ID đầy đủ của một bảng export
-   Android dạng `project.dataset.table` vào `ADMIN_CRASHLYTICS_TABLE`.
-   Service account chạy Functions cần `roles/bigquery.jobUser` trên dự án
-   chạy truy vấn và `roles/bigquery.dataViewer` trên dataset hoặc bảng.
-   Báo cáo truy vấn tối đa 1 GiB mỗi yêu cầu và chọn một bảng batch hoặc
-   realtime theo cấu hình.
-   [Crashlytics BigQuery export](https://firebase.google.com/docs/crashlytics/bigquery-export)
 
 Đặt các biến backend theo [file mẫu](../functions/.env.example) trong
 `functions/.env.<project-id>` trước khi deploy. Functions dùng thông tin
@@ -55,7 +48,7 @@ $adminFunctions = @(
     'listAdminEvents', 'getAdminEvent', 'createEvent', 'updateEvent',
     'publishEvent', 'listAdminRewards', 'getAdminReward', 'createReward',
     'updateReward', 'getAdminRemoteConfig', 'publishAdminRemoteConfig',
-    'getAdminAnalyticsReport', 'getAdminCrashlyticsReport'
+    'getAdminAnalyticsReport'
 )
 for ($i = 0; $i -lt $adminFunctions.Count; $i += 4) {
     $end = [Math]::Min($i + 3, $adminFunctions.Count - 1)
@@ -92,22 +85,13 @@ và Crashlytics báo cần dự án Firebase thật khi web nối Emulator.
 - **Voucher.** Tạo mẫu mới, mở **Chi tiết → Sửa** để cập nhật và bật/tắt mẫu.
   Nếu bản ghi thay đổi trong lúc chỉnh sửa, tải lại chi tiết để lấy tồn kho
   hiện tại trước khi lưu.
-- **Remote Config.** Sửa và xuất bản trong trang Remote Config. Kiểm tra
-  phiên bản hiển thị trên web, rồi mở lại Event Milestones trên cùng bản
-  APK live để kiểm tra thay đổi sau khi client tải cấu hình.
+- **Remote Config.** Chọn một ngày từ **Today (Ngày 1)** đến **Ngày 7**, nhập
+  số xu và bấm **Xuất bản và áp dụng**. Mở lại **Rewards → Daily Check-in**
+  trên mobile và kiểm tra lịch mới cùng số xu cộng vào ví khi điểm danh.
+  Từ ngày 8 trở đi, mức thưởng bằng Ngày 7.
 - **Analytics.** Thực hiện thao tác trên admin web, chọn khoảng ngày và
   tải báo cáo khi GA4 đã xử lý dữ liệu. Báo cáo xếp theo lượt ghi nhận.
-- **Crashlytics.** Đặt `VITE_QA_ANDROID_SERIAL`, cài bản debug Firebase QA,
-  mở app, kết nối thiết bị qua USB trong Chrome và bấm **Crash app** một
-  lần. Sau khi web xác nhận log fatal, mở lại app để gửi báo cáo. Tải lại
-  báo cáo trên web sau khi BigQuery nhận dữ liệu. Kết nối WebUSB phụ thuộc
-  driver và việc giao diện ADB có đang bị công cụ khác giữ hay không.
-
-```powershell
-$env:ORG_GRADLE_PROJECT_eviaQaCrashlyticsEnabled = 'true'
-try {
-    flutter build apk --debug --dart-define=FIREBASE_ENABLED=true
-} finally {
-    Remove-Item Env:ORG_GRADLE_PROJECT_eviaQaCrashlyticsEnabled
-}
-```
+- **Crashlytics.** Dùng `npm --prefix admin run dev:android-qa -- emulator-5554`
+  trên Windows để bật nút **Crash Android QA** trên Web Admin cục bộ. Dùng
+  **Open Firebase Crashlytics** để xem lỗi Android trong Console. Xem
+  [hướng dẫn kiểm thử Crashlytics](../docs/EVIA_Crashlytics_Implementation.md).

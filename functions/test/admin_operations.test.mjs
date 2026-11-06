@@ -4,7 +4,7 @@ import test, { after } from 'node:test';
 import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createBackend } from '../lib/backend.js';
-import { updateMilestoneDefaults } from '../lib/admin_integrations.js';
+import { updateDailyReward } from '../lib/admin_integrations.js';
 
 const projectId = 'demo-evia-backend';
 assert.equal(process.env.GCLOUD_PROJECT, projectId);
@@ -93,7 +93,7 @@ test('admin can page through physical rewards and vouchers and read physical rew
   assert.equal((await call('getAdminReward', { id: physical.id })).fulfillmentType, 'physical');
 });
 
-test('Remote Config edits only the two defaults and refuses a stale template revision', () => {
+test('Remote Config edits only the selected daily reward and refuses a stale template revision', () => {
   const conditions = [{ name: 'QA', expression: "app.id == 'example'" }];
   const unrelated = { defaultValue: { value: 'keep me' } };
   const conditionalValues = { QA: { value: 'false' } };
@@ -103,12 +103,13 @@ test('Remote Config edits only the two defaults and refuses a stale template rev
       event_milestones_enabled: { defaultValue: { value: 'false' }, conditionalValues },
     } } },
   };
-  assert.throws(() => updateMilestoneDefaults(template, { etag: 'older', enabled: true, intro: 'New intro' }), appError('REMOTE_CONFIG_CHANGED'));
-  updateMilestoneDefaults(template, { etag: 'version-one', enabled: true, intro: 'New intro' });
+  assert.throws(() => updateDailyReward(template, { etag: 'older', day: 7, coins: 0 }), appError('REMOTE_CONFIG_CHANGED'));
+  updateDailyReward(template, { etag: 'version-one', day: 7, coins: 80 });
   assert.deepEqual(template.conditions, conditions);
   assert.deepEqual(template.parameters.another_flag, unrelated);
   assert.deepEqual(template.parameterGroups.Features.parameters.event_milestones_enabled, {
-    defaultValue: { value: 'true' }, conditionalValues, valueType: 'BOOLEAN',
+    defaultValue: { value: 'false' }, conditionalValues,
   });
-  assert.equal(template.parameters.event_milestones_intro.defaultValue.value, 'New intro');
+  updateDailyReward(template, { etag: 'version-one', day: 1, coins: 0 });
+  assert.deepEqual(JSON.parse(template.parameters.daily_checkin_rewards.defaultValue.value), [0, 10, 15, 30, 50, 70, 80]);
 });

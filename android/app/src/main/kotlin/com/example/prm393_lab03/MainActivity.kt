@@ -1,5 +1,10 @@
 package com.example.prm393_lab03
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.os.Process
+import java.io.File
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,6 +16,17 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if ((applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) == 0) return
+
+        val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
+        val marker = File(filesDir, "evia-qa-crash-pid")
+        if (metadata?.getBoolean("firebase_crashlytics_collection_enabled") == true) {
+            runCatching { marker.writeText(Process.myPid().toString()) }
+        }
+    }
+
     private val channelId = "evia_events_v1"
     private val saveReportRequest = 49303
     private var reportResult: MethodChannel.Result? = null

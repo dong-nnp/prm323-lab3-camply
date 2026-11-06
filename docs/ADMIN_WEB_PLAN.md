@@ -24,9 +24,9 @@ Chủ dự án chốt **một admin làm hết, không phân công staff**.
 | Thành tựu | Tạo/sửa, bật/tắt có version | `listAdminRecords`, `upsertEventMilestone` |
 | Thông báo | Inbox, kết quả FCM, gửi thử một UID demo | `listAdminRecords`, `sendAdminDemoNotification` |
 | Người dùng/ví | Hồ sơ, số dư, ledger chỉ đọc | `listAdminRecords`, `getAdminUser` |
-| Remote Config | Đọc/xem trước/xuất bản hai defaults milestones | `getAdminRemoteConfig`, `publishAdminRemoteConfig` |
+| Remote Config | Chỉnh xu thưởng Daily Check-in | `getAdminRemoteConfig`, `publishAdminRemoteConfig` |
 | Analytics | Top 25 events 7/30 ngày | `getAdminAnalyticsReport` |
-| Crashlytics | BigQuery report 7/30 ngày khi có cấu hình | `getAdminCrashlyticsReport` |
+| Crashlytics | Vite: Crash QA cục bộ và mở Firebase Console | Trình kiểm thử Windows gọi ADB |
 
 ## Contract mới
 
@@ -61,8 +61,11 @@ Thông báo mới/đổi lịch/nhắc trước ba ngày dùng backend hiện c�
 `pushDispatch` có successCount/failureCount/completedAt/status (`accepted_by_fcm`
 hoặc `no_delivery`). Đây là kết quả FCM, không phải biên nhận hiển thị Android.
 
-Remote Config chỉ sửa `event_milestones_enabled` và `event_milestones_intro`, có
-ETag, giữ conditional values/nhóm. Tiền/quyền vẫn do backend quyết định.
+Vite chỉnh `daily_checkin_rewards` theo ngày với ETag; backend áp dụng vào
+Firestore để `getAccount` và `claimDailyCheckin` dùng cùng mức thưởng. Nếu áp dụng
+lỗi, tải lại và xuất bản cùng giá trị để đồng bộ. [Contract](REMOTE_CONFIG_PLAN.md).
+Crash QA Vite dùng công cụ Windows cục bộ; [cách chạy](EVIA_Crashlytics_Implementation.md).
+Báo cáo BigQuery backend vẫn giữ, nhưng Vite dùng Firebase Console để đối chiếu.
 Snapshot admin Flutter trước cập nhật Analytics live: Remote Config đọc được; Analytics trả 0 dòng; Crashlytics trả
 `CRASHLYTICS_NOT_CONFIGURED` vì chưa có bảng export, không hiển thị dữ liệu giả.
 
