@@ -43,6 +43,9 @@ const editor = setupEditor({
   canOperate, status, errorMessage: adminErrorMessage,
   save: (kind, entry, revision) => firebase.save(kind, entry, revision),
   listOrganizers: () => firebase.organizers(),
+  listCategories: () => firebase.categories(),
+  projectId: firebase?.projectId,
+  uploadEventImage: (file, progress) => firebase.uploadEventImage(file, progress),
   onSaved: async (kind, message) => {
     const current = operator;
     void track(kind === 'events' ? 'admin_event_saved' : 'admin_voucher_saved');

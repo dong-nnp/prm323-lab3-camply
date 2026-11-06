@@ -1,5 +1,7 @@
 # Test plan — template
 
+> **Form sự kiện/Storage — 06/11/2026:** admin 12/12 + build, đầy đủ 81/81 backend Emulator tests + TypeScript build đạt. Browser form/preview và 360/412px đã kiểm; Storage Rules đã deploy, upload/download hash thật và cleanup QA đạt. Không tạo event cloud, không đổi Dart/native nên không chạy lại Flutter. [Evidence và giới hạn](../evidence/event-editor/README.md).
+
 > **Push Android — 06/11/2026:** 216/216 Flutter tests, 64/64 backend Emulator
 > tests, analyze sạch, APK debug build/cài đạt. Banner FCM thật đã thấy khi app
 > đang mở và tiến trình đóng; app nền nhận notification hệ thống. Tap foreground

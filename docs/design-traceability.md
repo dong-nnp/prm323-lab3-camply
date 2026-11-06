@@ -1,5 +1,7 @@
 # Design traceability — Evia
 
+> **Form sự kiện Vite — 06/11/2026:** owner yêu cầu bớt thao tác và thay URL ảnh bằng upload. Đã bỏ technical inputs, dùng danh mục/CLB theo tên, preview ảnh và nhóm Tùy chọn thêm; giữ styles/form components hiện có. Không sửa giao diện sinh viên/Figma. [Evidence](../evidence/event-editor/README.md).
+
 > **Push Android — 06/11/2026:** dùng notification hệ thống Android cho FCM;
 > không đổi Widget/layout, màu, assets hoặc thứ tự thành phần trong app.
 > Thêm icon notification native và kênh HIGH để hiển thị banner ngoài màn app.

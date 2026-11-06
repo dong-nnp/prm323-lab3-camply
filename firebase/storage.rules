@@ -1,6 +1,20 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    function activeAdmin() {
+      return request.auth != null && request.auth.token.admin == true
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.accountStatus == 'active';
+    }
+    match /event-images/{uid}/{fileName} {
+      allow get: if activeAdmin() && request.auth.uid == uid;
+      allow delete: if activeAdmin() && request.auth.uid == uid;
+      allow create: if resource == null && activeAdmin() && request.auth.uid == uid
+        && request.resource.size > 0 && request.resource.size <= 5 * 1024 * 1024
+        && ((request.resource.contentType == 'image/jpeg' && fileName.matches('[A-Za-z0-9_-]+[.]jpg'))
+          || (request.resource.contentType == 'image/png' && fileName.matches('[A-Za-z0-9_-]+[.]png'))
+          || (request.resource.contentType == 'image/webp' && fileName.matches('[A-Za-z0-9_-]+[.]webp')));
+    }
     match /reports/{uid}/{fileName} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow create: if resource == null && request.auth != null && request.auth.uid == uid

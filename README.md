@@ -1,5 +1,7 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Form sự kiện — 06/11/2026:** Vite admin tự sinh mã/nguồn/điều khoản, chọn danh mục và ban tổ chức bằng tên, bỏ lịch JSON khỏi form. Chọn ảnh có preview, tải trực tiếp Firebase Storage khi lưu. Rules đã deploy, upload/download thật đã kiểm và dọn ảnh QA. [Hướng dẫn và giới hạn](docs/ADMIN_EVENT_EDITOR.md).
+
 > **Push Android — 06/11/2026:** dùng FCM và kênh HIGH `evia_events_v1`; app đang
 > mở hiển thị notification hệ thống bằng native service bridge, app nền do FCM
 > SDK hiển thị. Giữ layout cũ, không thêm dependency. [Cách chạy/giới hạn](docs/PUSH_NOTIFICATIONS.md).

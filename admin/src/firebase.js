@@ -3,6 +3,8 @@ import {
   browserSessionPersistence, connectAuthEmulator, initializeAuth, onIdTokenChanged, signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
+import { connectStorageEmulator, getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { validateEventImage } from './event-image.js';
 import defaults from '../../firebase/remote-config-defaults.json';
 
 export const milestoneDefaults = {
@@ -14,7 +16,7 @@ export const milestoneDefaults = {
 export function createFirebase(env) {
   const emulator = env.VITE_FIREBASE_EMULATORS === 'true';
   const options = emulator
-    ? { projectId: 'demo-evia-backend', apiKey: 'demo-evia-backend' }
+    ? { projectId: 'demo-evia-backend', apiKey: 'demo-evia-backend', storageBucket: 'demo-evia-backend.appspot.com' }
     : {
         apiKey: env.VITE_FIREBASE_API_KEY,
         authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -22,6 +24,7 @@ export function createFirebase(env) {
         appId: env.VITE_FIREBASE_APP_ID,
         messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
         measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
+        storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
       };
   if (!options.apiKey || !options.projectId || (!emulator && !options.appId)) return null;
 
@@ -35,6 +38,20 @@ export function createFirebase(env) {
 
   const call = async (name, data) => (await httpsCallable(functions, name)(data)).data;
   let analytics;
+  let storage;
+  async function catalog(kind) {
+    const items = [];
+    const cursors = new Set();
+    let cursor;
+    do {
+      const page = await call('getPublicCatalog', { kind, limit: 50, ...(cursor && { cursor }) });
+      items.push(...page.items);
+      if (page.nextCursor && cursors.has(page.nextCursor)) throw new Error('Không tải được danh sách. Vui lòng thử lại.');
+      cursor = page.nextCursor;
+      if (cursor) cursors.add(cursor);
+    } while (cursor);
+    return { items };
+  }
   return {
     emulator,
     projectId: options.projectId,
@@ -45,7 +62,26 @@ export function createFirebase(env) {
     login: (email, password) => signInWithEmailAndPassword(auth, email, password),
     logout: () => signOut(auth),
     list: (kind, cursor) => call(kind === 'events' ? 'listAdminEvents' : 'listAdminRewards', { limit: 20, ...(cursor && { cursor }) }),
-    organizers: () => call('getPublicCatalog', { kind: 'organizers', limit: 50 }),
+    organizers: () => catalog('organizers'),
+    categories: () => catalog('interests'),
+    async uploadEventImage(file, onProgress) {
+      const extension = validateEventImage(file);
+      const user = auth.currentUser;
+      if (!user) throw new Error('Vui lòng đăng nhập lại trước khi tải ảnh.');
+      if (!options.storageBucket) throw new Error('Chưa cấu hình Firebase Storage bucket.');
+      if (!storage) {
+        storage = getStorage(app);
+        if (emulator) connectStorageEmulator(storage, '127.0.0.1', 9199);
+      }
+      // shortcut: retain replaced/orphan uploads; add reference-aware cleanup if unused images accumulate.
+      const target = ref(storage, `event-images/${user.uid}/${crypto.randomUUID()}.${extension}`);
+      const task = uploadBytesResumable(target, file, { contentType: file.type, cacheControl: 'public,max-age=31536000,immutable' });
+      await new Promise((resolve, reject) => {
+        task.on('state_changed', snapshot => onProgress?.(Math.round(snapshot.bytesTransferred * 100 / snapshot.totalBytes)), reject, resolve);
+      });
+      if (auth.currentUser !== user) throw new Error('Phiên đăng nhập đã thay đổi. Vui lòng mở lại biểu mẫu.');
+      return getDownloadURL(task.snapshot.ref);
+    },
     entry: (kind, id) => call(kind === 'events' ? 'getAdminEvent' : 'getAdminReward', { id }),
     save: (kind, entry, revision) => {
       const event = kind === 'events';

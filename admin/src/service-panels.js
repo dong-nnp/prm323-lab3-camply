@@ -24,6 +24,16 @@ export function adminErrorMessage(error) {
     CLOUD_INTEGRATION_UNAVAILABLE_IN_EMULATOR: 'Chức năng này cần kết nối dự án Firebase thật.',
   };
   const code = error.details?.code;
+  if (error.code?.startsWith('storage/')) {
+    const storageMessages = {
+      'storage/unauthorized': 'Không có quyền tải ảnh. Kiểm tra phiên admin và Storage Rules.',
+      'storage/retry-limit-exceeded': 'Tải ảnh bị gián đoạn. Kiểm tra kết nối và lưu lại để thử tiếp.',
+      'storage/canceled': 'Đã hủy tải ảnh.',
+      'storage/bucket-not-found': 'Không tìm thấy bucket Firebase Storage đã cấu hình.',
+      'storage/quota-exceeded': 'Firebase Storage đã vượt hạn mức hiện tại.',
+    };
+    return storageMessages[error.code] ?? 'Không tải được ảnh lên Firebase Storage. Vui lòng thử lại.';
+  }
   if (messages[code]) return messages[code];
   if (error.code === 'functions/not-found') return 'Không tìm thấy bản ghi hoặc API. Kiểm tra backend đã được cập nhật.';
   if (error.code === 'functions/permission-denied') return 'Tài khoản hiện tại không có quyền thực hiện thao tác này.';

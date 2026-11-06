@@ -1,5 +1,7 @@
 # Kiến trúc source base
 
+> **Admin event editor — 06/11/2026:** `editor.js` dựng form/ràng buộc trạng thái; `catalogEntry` bổ sung technical defaults, giữ hidden fields khi sửa; Firebase adapter quản lý Storage upload/progress/URL. Cloud Rules giới hạn active admin và prefix event-images, đọc profile qua service agent. Mobile Storage adapter vẫn pending; không coi upload admin là tích hợp export/upload report trong app. [Chi tiết](ADMIN_EVENT_EDITOR.md).
+
 > **Push Android — 06/11/2026:** FirebaseMessagingService tạo kênh HIGH và hiển
 > thị foreground FCM qua MethodChannel → Android NotificationManager. MainActivity
 > chỉ host native bridge; payload/tap tiếp tục qua FlutterFire và ViewModel/router

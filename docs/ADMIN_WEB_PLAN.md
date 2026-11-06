@@ -1,5 +1,7 @@
 # Phạm vi admin web Evia
 
+> **Tạo sự kiện gọn/ảnh Storage — 06/11/2026:** Vite `admin/` bỏ các ô kỹ thuật owner nêu, tự điền policy và giữ dữ liệu cũ khi edit. Ảnh tải trực tiếp lên prefix Storage riêng cho active admin; Rules và quyền cross-service đã triển khai. Không đổi contract create/update event hoặc portal Flutter. [Phạm vi/evidence](ADMIN_EVENT_EDITOR.md).
+
 Admin web dùng Firebase Authentication. Các callable quản trị kiểm tra claim
 `admin: true` ở backend. Xem [hướng dẫn chạy và cấu hình](../admin/README.md).
 
