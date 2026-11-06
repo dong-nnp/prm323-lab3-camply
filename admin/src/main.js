@@ -4,6 +4,7 @@ import { adminErrorMessage, setupServicePanels } from './service-panels.js';
 import { setupEditor } from './editor.js';
 import { renderIcons } from './icons.js';
 import { createQaDevice } from './qa-crash.js';
+import { setupNotifications } from './notifications.js';
 
 const env = import.meta.env;
 const $ = (id) => document.getElementById(id);
@@ -55,6 +56,7 @@ const editor = setupEditor({
   },
 });
 const services = setupServicePanels({ firebase, session: () => operator, status, text, formatDate, track });
+const notifications = setupNotifications({ firebase, session: () => operator, status, errorMessage: adminErrorMessage });
 const qa = createQaDevice(env.VITE_QA_ANDROID_SERIAL?.trim(), () => {
   updateQaControls();
   status('qa-status', 'Đã mất kết nối Android QA.');
@@ -75,6 +77,7 @@ function route() {
     if (!catalogs.has(kind)) void loadCatalog(kind, true);
   }
   services.open(page);
+  if (page === 'notifications') notifications.open();
 }
 
 function text(tag, value, className) {
@@ -238,6 +241,7 @@ function showGate(message, blocked = false, error = false) {
   operator = undefined;
   catalogs = new Map();
   services.reset();
+  notifications.reset();
   editor.invalidate();
   detailVersion++;
   detailEntry = undefined;

@@ -61,7 +61,7 @@
           <div class="section-heading"><div><p class="eyebrow">CATALOG &amp; THÔNG BÁO</p><h2>Vận hành nội dung</h2></div></div>
           <div class="card-grid">
             <a class="action-card" href="#events"><span class="card-icon" data-icon="calendar"></span><span class="card-arrow" data-icon="arrow"></span><h3>Sự kiện</h3><p>Tạo, sửa và xuất bản sự kiện.</p></a>
-            <a class="action-card" href="#notifications"><span class="card-icon blue" data-icon="bell"></span><span class="card-arrow" data-icon="arrow"></span><h3>Thông báo mobile</h3><p>Xem luồng gửi push khi xuất bản hoặc đổi lịch.</p></a>
+            <a class="action-card" href="#notifications"><span class="card-icon blue" data-icon="bell"></span><span class="card-arrow" data-icon="arrow"></span><h3>Thông báo mobile</h3><p>Soạn nội dung và gửi push trực tiếp đến người dùng.</p></a>
             <a class="action-card" href="#vouchers"><span class="card-icon lilac" data-icon="ticket"></span><span class="card-arrow" data-icon="arrow"></span><h3>Voucher</h3><p>Xem danh sách phần thưởng và quản lý voucher.</p></a>
           </div>
           <div class="section-heading"><div><p class="eyebrow">CÔNG CỤ FIREBASE</p><h2>Theo dõi và kiểm thử</h2></div></div>
@@ -83,14 +83,28 @@
         </section>
 
         <section id="notifications" aria-labelledby="notifications-title" hidden>
-          <div class="page-heading"><div><p class="eyebrow">FIREBASE CLOUD MESSAGING</p><h1 id="notifications-title">Thông báo mobile</h1><p>Thông báo được gửi theo trạng thái và lịch của sự kiện.</p></div></div>
+          <div class="page-heading"><div><p class="eyebrow">FIREBASE CLOUD MESSAGING</p><h1 id="notifications-title">Thông báo mobile</h1><p>Gửi thông báo trực tiếp, không cần tạo sự kiện.</p></div></div>
+          <article class="panel instructions notification-cards">
+            <div class="panel-head inline"><h2>Gửi thông báo</h2><button id="notification-reload" class="button secondary" type="button">Tải lại người nhận</button></div>
+            <p>Trên điện thoại, đăng nhập bằng tài khoản nhận, mở Thông báo và cho phép ứng dụng gửi thông báo.</p>
+            <form id="notification-form">
+              <div class="form-grid">
+                <label class="wide">Người nhận<select name="uid" required aria-describedby="notification-users-status"><option value="">Chọn tài khoản nhận</option></select></label>
+                <label class="wide">Nội dung thông báo<textarea name="body" rows="4" required maxlength="500" placeholder="Nhập nội dung muốn hiển thị trên điện thoại…" aria-describedby="notification-body-hint"></textarea></label>
+              </div>
+              <p id="notification-body-hint" class="muted">Tối đa 500 ký tự. Tiêu đề: Thông báo từ Evia. Nhấn thông báo để mở hộp thư trong ứng dụng.</p>
+              <p id="notification-users-status" class="status" role="status"></p>
+              <div class="button-row"><button class="button primary" type="submit" disabled>Gửi thông báo</button></div>
+              <p id="notification-status" class="status" role="status"></p>
+            </form>
+          </article>
           <div class="card-grid notification-cards">
             <article class="action-card"><span class="card-icon" data-icon="bell"></span><h3>Xuất bản sự kiện</h3><p>Sự kiện công khai sắp diễn ra gửi thông báo tới người đã theo dõi ban tổ chức.</p></article>
             <article class="action-card"><span class="card-icon blue" data-icon="calendar"></span><h3>Cập nhật lịch</h3><p>Thay đổi lịch hoặc địa điểm gửi cho người đã đăng ký hoặc chọn Going.</p></article>
             <article class="action-card"><span class="card-icon lilac" data-icon="activity"></span><h3>Nhắc lịch</h3><p>Scheduler hiện có gửi nhắc theo điều kiện của sự kiện.</p></article>
           </div>
           <article class="panel instructions">
-            <h2>Xuất bản và kiểm tra push</h2>
+            <h2>Thông báo tự động theo sự kiện</h2>
             <ol>
               <li>Trên Android, đăng nhập bằng tài khoản người dùng đang hoạt động, theo dõi ban tổ chức, rồi mở Thông báo và cho phép ứng dụng gửi thông báo.</li>
               <li>Trên web, tạo sự kiện công khai có ngày bắt đầu trong tương lai. Thao tác tạo lưu bản nháp. Mở chi tiết và bấm Xuất bản để kích hoạt luồng gửi.</li>

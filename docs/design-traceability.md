@@ -1,5 +1,7 @@
 # Design traceability — Evia
 
+> **Form gửi thông báo:** owner yêu cầu ô nhập và nút gửi để demo FCM không cần tạo sự kiện. Thêm chọn người nhận theo tên/email, textarea và trạng thái trong trang Thông báo Vite; tái sử dụng styles hiện có, kiểm 360/412px, không sửa Figma/mobile. [Chi tiết](ADMIN_NOTIFICATIONS.md).
+
 > **Form sự kiện Vite — 06/11/2026:** owner yêu cầu bớt thao tác và thay URL ảnh bằng upload. Đã bỏ technical inputs, dùng danh mục/CLB theo tên, preview ảnh và nhóm Tùy chọn thêm; giữ styles/form components hiện có. Không sửa giao diện sinh viên/Figma. [Evidence](../evidence/event-editor/README.md).
 
 > **Analytics — 06/11/2026:** giữ layout các luồng hiện có; thêm nút xuất CSV và thông báo kết quả trong Coin History theo phạm vi Analytics/Lab 3 được owner cho phép. Dùng AppButton/tokens, không claim nút mới có nguồn Figma. Admin Vite thêm nguồn dữ liệu, nhãn hành vi và link DebugView. [Chi tiết](ANALYTICS_INTEGRATION.md).

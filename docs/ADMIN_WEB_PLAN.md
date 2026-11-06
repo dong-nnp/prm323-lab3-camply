@@ -1,5 +1,7 @@
 # Evia Admin — phạm vi 06/11/2026
 
+> **Thông báo Vite:** thêm `sendAdminNotification({uid,body,requestId})`, gửi nội dung tùy ý tới một active user có device, không yêu cầu event/demo flag. API demo cũ giữ tương thích. [Contract và demo](ADMIN_NOTIFICATIONS.md).
+
 > **Tạo sự kiện gọn/ảnh Storage — 06/11/2026:** Vite `admin/` bỏ các ô kỹ thuật owner nêu, tự điền policy và giữ dữ liệu cũ khi edit. Ảnh tải trực tiếp lên prefix Storage riêng cho active admin; Rules và quyền cross-service đã triển khai. Không đổi contract create/update event hoặc portal Flutter. [Phạm vi/evidence](ADMIN_EVENT_EDITOR.md).
 
 > **Analytics live — 06/11/2026:** đã deploy bộ lọc Android/Web, xác minh 6 tổ hợp nguồn/khoảng ngày, caller cũ và auth guards; UI Chrome hiển thị 4 loại hành vi Android. [Bằng chứng](../evidence/analytics-report-live/README.md).

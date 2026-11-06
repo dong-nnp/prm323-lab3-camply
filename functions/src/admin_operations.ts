@@ -85,6 +85,24 @@ export function adminOperations(db: Firestore, clock: () => Date) {
       });
       return { notificationId: ref.id, status: 'queued' };
     },
+    sendAdminNotification: async (actor: Actor | null, raw: unknown) => {
+      const actorUid = await admin(actor);
+      const { uid, body, requestId: rid } = z.object({ uid: id, body: z.string().trim().min(1).max(500), requestId }).strict().parse(raw);
+      const ref = db.doc(`notifications/${key('admin-message', actorUid, rid)}`);
+      await db.runTransaction(async tx => {
+        await activeUser(tx, db, actorUid);
+        await activeUser(tx, db, uid);
+        const prior = await tx.get(ref);
+        if (prior.exists) {
+          if (prior.get('uid') !== uid || prior.get('body') !== body) fail('DUPLICATE_CONFLICT', 'already-exists');
+          return;
+        }
+        const devices = await tx.get(db.collection(`users/${uid}/devices`).limit(1));
+        if (devices.empty) fail('NO_REGISTERED_DEVICE');
+        tx.create(ref, { uid, type: 'admin_message', title: 'Thông báo từ Evia', body, entityType: 'inbox', entityId: '', createdBy: actorUid, readAt: null, createdAt: Timestamp.fromDate(clock()) });
+      });
+      return { notificationId: ref.id, status: 'queued' };
+    },
     confirmPhysicalReward: async (actor: Actor | null, raw: unknown) => {
       const uid = await admin(actor), input = z.object({ redemptionId: id, requestId }).strict().parse(raw), now = Timestamp.fromDate(clock());
       await db.runTransaction(tx => voucherAdmin(tx, db, actor));

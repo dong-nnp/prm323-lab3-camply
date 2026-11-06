@@ -1,5 +1,7 @@
 # Test plan — template
 
+> **Gửi thông báo trực tiếp — 06/11/2026:** admin 15/15 + build; backend 84/84 Emulator tests + TypeScript build đạt. Browser form/danh sách thật và responsive 360/412px đã kiểm. Callable mới đã deploy; live guards anonymous/staff/invalid payload đạt, chưa gửi push thật trong lượt này. [Evidence](../evidence/admin-notifications/README.md).
+
 > **Form sự kiện/Storage — 06/11/2026:** admin 12/12 + build, đầy đủ 81/81 backend Emulator tests + TypeScript build đạt. Browser form/preview và 360/412px đã kiểm; Storage Rules đã deploy, upload/download hash thật và cleanup QA đạt. Không tạo event cloud, không đổi Dart/native nên không chạy lại Flutter. [Evidence và giới hạn](../evidence/event-editor/README.md).
 
 > **Analytics — 06/11/2026:** validation mới: Flutter 234/234, analyze sạch, admin 8/8 + build, backend query 2/2 + TypeScript build. APK bật Analytics và mặc định đều build/cold-start trên Android thật. Đã deploy riêng callable Analytics, kiểm API thật và bảng Chrome Android; chưa nghiệm thu parameters của toàn bộ events trong DebugView. [Evidence báo cáo live](../evidence/analytics-report-live/README.md). Tests mới kiểm schema/PII, thứ tự UID/logout, retry receipt không lặp, lỗi SDK không phá business action, baseline attendance, CSV success/cancel/error/đổi account và native channel contract. Node tests kiểm GA4 query/filter và nhãn nguồn; không coi fakes là DebugView/cloud evidence. [Cách nghiệm thu thật](ANALYTICS_INTEGRATION.md).

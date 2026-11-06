@@ -61,6 +61,8 @@ export function createFirebase(env) {
     },
     login: (email, password) => signInWithEmailAndPassword(auth, email, password),
     logout: () => signOut(auth),
+    notificationUsers: cursor => call('listAdminRecords', { kind: 'users', limit: 50, ...(cursor && { cursor }) }),
+    sendNotification: input => call('sendAdminNotification', input),
     list: (kind, cursor) => call(kind === 'events' ? 'listAdminEvents' : 'listAdminRewards', { limit: 20, ...(cursor && { cursor }) }),
     organizers: () => catalog('organizers'),
     categories: () => catalog('interests'),

@@ -1,5 +1,7 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Thông báo từ admin:** form gửi nội dung tùy ý tới một tài khoản, dùng FCM và inbox hiện có, không cần sự kiện. [Hướng dẫn demo và triển khai](docs/ADMIN_NOTIFICATIONS.md).
+
 > **Form sự kiện — 06/11/2026:** Vite admin tự sinh mã/nguồn/điều khoản, chọn danh mục và ban tổ chức bằng tên, bỏ lịch JSON khỏi form. Chọn ảnh có preview, tải trực tiếp Firebase Storage khi lưu. Rules đã deploy, upload/download thật đã kiểm và dọn ảnh QA. [Hướng dẫn và giới hạn](docs/ADMIN_EVENT_EDITOR.md).
 
 > **Analytics — 06/11/2026:** đã nối 11 events Android qua service/repository, thêm xuất CSV ở Coin History và bộ lọc Android/Web cho báo cáo Vite admin. Bật riêng `ANALYTICS_ENABLED=true` cùng `FIREBASE_ENABLED=true`; mặc định tắt, không tracking mock. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).

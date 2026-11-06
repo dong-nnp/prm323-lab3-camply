@@ -4,6 +4,7 @@ import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { createBackend } from '../lib/backend.js';
+import { deliverPush } from '../lib/push_notifications.js';
 assert.equal(process.env.GCLOUD_PROJECT, 'demo-evia-backend');
 assert.match(process.env.FIRESTORE_EMULATOR_HOST ?? '', /^(127\.0\.0\.1|localhost):/);
 const app = initializeApp({ projectId: 'demo-evia-backend' }, 'admin-workspace-tests'), db = getFirestore(app), auth = getAuth(app);
@@ -66,6 +67,57 @@ test('demo push is scoped, idempotent and requires registered devices', async ()
   assert.equal(a.notificationId, b.notificationId); assert.equal((await db.collection('notifications').get()).size, 1);
   await db.doc(`users/${member.uid}`).update({ isDemo: false });
   await reject(call('sendAdminDemoNotification', { ...input, requestId: 'admin-demo-request-2' }), 'DEMO_NOT_ALLOWED');
+});
+test('admin sends custom push to an active ordinary user without any event; retries create one inbox entry', async () => {
+  await db.doc('events/workspace-event').delete();
+  await db.doc(`users/${member.uid}`).update({ isDemo: false });
+  await db.doc(`users/${member.uid}/devices/test`).set({ token: 'test-only-token' });
+  const input = { uid: member.uid, body: '  Xin chào từ admin!  ', requestId: 'custom-message-001' };
+  const [a, b] = await Promise.all([call('sendAdminNotification', input), call('sendAdminNotification', input)]);
+  assert.deepEqual(a, b);
+  assert.equal(a.status, 'queued');
+  const messages = await db.collection('notifications').get();
+  assert.equal(messages.size, 1);
+  const message = messages.docs[0].data();
+  assert.equal(message.body, 'Xin chào từ admin!');
+  assert.equal(message.title, 'Thông báo từ Evia');
+  assert.equal(message.entityType, 'inbox');
+  assert.equal(message.createdBy, admin.uid);
+  assert.equal(message.readAt, null);
+  let sent;
+  const delivery = await deliverPush(db, { sendEachForMulticast: async payload => {
+    sent = payload;
+    return { successCount: 1, failureCount: 0, responses: [{ success: true }] };
+  } }, a.notificationId, message);
+  assert.equal(delivery.successCount, 1);
+  assert.equal(sent.notification.body, message.body);
+  assert.equal(sent.data.entityType, 'inbox');
+  assert.equal(sent.android.notification.channelId, 'evia_events_v1');
+  assert.deepEqual(sent.tokens, ['test-only-token']);
+  await reject(call('sendAdminNotification', { ...input, body: 'Different content' }), 'DUPLICATE_CONFLICT');
+  await reject(call('sendAdminNotification', { ...input, uid: staff.uid }), 'DUPLICATE_CONFLICT');
+  await db.doc(`users/${member.uid}/devices/test`).delete();
+  assert.deepEqual(await call('sendAdminNotification', input), a);
+});
+test('custom notification rejects missing devices, disabled recipient and unprivileged or disabled sender', async () => {
+  const input = { uid: member.uid, body: 'Test message', requestId: 'custom-message-002' };
+  await reject(call('sendAdminNotification', input), 'NO_REGISTERED_DEVICE');
+  await reject(call('sendAdminNotification', input, null), 'UNAUTHENTICATED');
+  await reject(call('sendAdminNotification', input, member), 'FORBIDDEN_ADMIN');
+  await reject(call('sendAdminNotification', input, staff), 'FORBIDDEN_ADMIN');
+  await db.doc(`users/${member.uid}`).update({ accountStatus: 'disabled' });
+  await reject(call('sendAdminNotification', input), 'ACCOUNT_DISABLED');
+  await db.doc(`users/${member.uid}`).update({ accountStatus: 'active' });
+  await db.doc(`users/${admin.uid}`).update({ accountStatus: 'disabled' });
+  await reject(call('sendAdminNotification', input), 'ACCOUNT_DISABLED');
+  assert.equal((await db.collection('notifications').get()).size, 0);
+});
+test('custom notification validates text, recipient, request id and extra fields before writing', async () => {
+  const input = { uid: member.uid, body: 'Test message', requestId: 'custom-message-003' };
+  for (const overrides of [{ body: ' \n ' }, { body: 'a'.repeat(501) }, { uid: '../user' }, { requestId: 'short' }, { title: 'Unapproved title' }]) {
+    await assert.rejects(call('sendAdminNotification', { ...input, ...overrides }));
+  }
+  assert.equal((await db.collection('notifications').get()).size, 0);
 });
 test('user reads exclude private fields and support ledger pagination', async () => {
   await db.doc(`users/${member.uid}`).update({ secret: 'test-only-secret' });

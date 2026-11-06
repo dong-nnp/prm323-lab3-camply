@@ -23,6 +23,10 @@ export function adminErrorMessage(error) {
     CRASHLYTICS_ACCESS_DENIED: 'Tài khoản chạy backend cần quyền truy vấn và đọc bảng Crashlytics.',
     CRASHLYTICS_QUERY_PENDING: 'BigQuery đang xử lý báo cáo. Hãy thử lại sau.',
     CLOUD_INTEGRATION_UNAVAILABLE_IN_EMULATOR: 'Chức năng này cần kết nối dự án Firebase thật.',
+    NO_REGISTERED_DEVICE: 'Tài khoản này chưa đăng ký thiết bị nhận push. Hãy đăng nhập trên điện thoại, mở Thông báo và cho phép nhận thông báo rồi gửi lại.',
+    ACCOUNT_DISABLED: 'Tài khoản gửi hoặc nhận không còn hoạt động. Hãy tải lại danh sách và kiểm tra tài khoản.',
+    ACCOUNT_NOT_INITIALIZED: 'Không tìm thấy hồ sơ tài khoản. Hãy tải lại danh sách người nhận.',
+    DUPLICATE_CONFLICT: 'Lượt gửi này đã được dùng cho nội dung khác. Hãy tải lại trang trước khi gửi tiếp.',
   };
   const code = error.details?.code;
   if (error.code?.startsWith('storage/')) {

@@ -80,6 +80,7 @@ export const getAdminUser = callable('getAdminUser');
 export const upsertOrganizer = callable('upsertOrganizer');
 export const listOperatorEvents = callable('listOperatorEvents');
 export const sendAdminDemoNotification = callable('sendAdminDemoNotification');
+export const sendAdminNotification = callable('sendAdminNotification');
 export const confirmPhysicalReward = callable('confirmPhysicalReward');
 
 const maintenance = createMaintenance(db);

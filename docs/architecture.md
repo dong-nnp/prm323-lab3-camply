@@ -1,5 +1,7 @@
 # Kiến trúc source base
 
+> **Gửi thông báo Vite admin:** `notifications.js` điều phối form/retry/session, `firebase.js` gọi callable `sendAdminNotification`. Backend kiểm quyền/recipient và ghi inbox idempotent; trigger FCM và điều hướng inbox của mobile giữ nguyên. [Contract](ADMIN_NOTIFICATIONS.md).
+
 > **Admin event editor — 06/11/2026:** `editor.js` dựng form/ràng buộc trạng thái; `catalogEntry` bổ sung technical defaults, giữ hidden fields khi sửa; Firebase adapter quản lý Storage upload/progress/URL. Cloud Rules giới hạn active admin và prefix event-images, đọc profile qua service agent. Mobile Storage adapter vẫn pending; không coi upload admin là tích hợp export/upload report trong app. [Chi tiết](ADMIN_EVENT_EDITOR.md).
 
 > **Analytics — 06/11/2026:** View → ViewModel → AnalyticsRepository → AnalyticsService/FirebaseAnalyticsService; queue identity/events, schema allowlist và dedupe RAM. Xuất CSV: CoinHistoryScreen → ReportExportViewModel → ReportExportRepository → AndroidReportExportService → native document picker. [Contract và giới hạn](ANALYTICS_INTEGRATION.md).

@@ -189,3 +189,5 @@ dialog::backdrop { background: #18281c77; }
 :root .event-image-preview[hidden] { display: none; }
 .editor-advanced { margin-top: 20px; }
 .editor-advanced > summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
+#notification-form select, #notification-form .button, #notification-reload { min-height: 48px; }
+#notification-form > p { margin: 12px 0; }
