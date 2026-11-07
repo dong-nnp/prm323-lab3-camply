@@ -48,8 +48,8 @@ export function createFirebase(env) {
     emulator,
     projectId: options.projectId,
     analyticsEnabled: !emulator && env.VITE_FIREBASE_ANALYTICS_ENABLED === 'true',
-    observeAuth(listener) {
-      return onIdTokenChanged(auth, listener);
+    observeAuth(listener, onError) {
+      return onIdTokenChanged(auth, listener, onError);
     },
     login: (email, password) => signInWithEmailAndPassword(auth, email, password),
     logout: () => signOut(auth),

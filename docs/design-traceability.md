@@ -1,7 +1,28 @@
 # Design traceability — Evia
 
+> **Admin typography — 07/11/2026:** Inter variable WOFF2 được bundle trong
+> `admin/public/fonts/inter` cùng giấy phép SIL OFL 1.1. CSS dùng 400/500/600/700,
+> heading/banner 700, section/card 600, sidebar 500 và active 600, body 400.
+> Kích thước dashboard và màu chữ theo bộ typography người dùng cung cấp.
+
 > **Check-in Walk-in:** nút **Scan Event QR** trong chi tiết sự kiện mở lại màn
 > quét `2083:1776`. Thao tác **I'm Going** vẫn là lựa chọn độc lập.
+
+> **Admin Login approved reference — 07/11/2026:** đối chiếu
+> `EVIA_Admin_Login_Option_3_Reference.png` ở 1648×928. Dùng nguyên ảnh logo và
+> lịch/vé có alpha trong assets, SVG/CSS cho đường cong nền. Card ~543px, input
+> 56px, error hồng và giao diện một cột dưới 768px. Giữ Firebase adapter và admin
+> guard; thêm password toggle, aria-busy/spinner và thông báo network an toàn.
+> Build, 14 admin tests và browser checks 4 viewport đạt. Auth responses trong
+> browser checks được intercept; ảnh so sánh dùng thông tin nhập test. Font dùng
+> Roboto/system fallback; hình minh họa theo asset được cung cấp có khác biệt nhỏ
+> về tỷ lệ/ánh sáng so với screenshot tham chiếu.
+
+> **Web Admin style — 07/11/2026:** `admin/src/style.css` ánh xạ primary, nền,
+> surface, border, trạng thái, radius và shadow từ `AppColors`/`EviaTheme`.
+> Logo dùng bản sao asset `evia-logo-lime-transparent(4).png`; font Roboto với
+> system fallback. Giữ hooks DOM và JavaScript hiện có. Đã kiểm tra bố cục 7 trang
+> tại 1440/768/360px, form tạo sự kiện và login; build và 14 admin tests đạt.
 
 > **Search event cards — 06/11/2026:** Search results và Suggested Events dùng
 > chung `UpcomingEventCard` với Happening Soon của Discover: thumbnail bên trái,

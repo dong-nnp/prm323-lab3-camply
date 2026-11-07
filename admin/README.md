@@ -1,5 +1,23 @@
 # Evia Admin
 
+> **Typography Inter — 07/11/2026:** web dùng Inter self-host trong
+> `public/fonts/inter/`, kèm SIL OFL 1.1. Bốn mức 400/500/600/700; banner 40px/700,
+> tiêu đề trang 28–30px/700, section 20px/600, card 16px/600, sidebar 14px/500
+> và active 600, body/button 14px. Màu chữ `#17243B`, `#475569`, `#64748B`,
+> accent `#1769F5`. Nguồn [Inter chính thức](https://github.com/rsms/inter/tree/353b61b9f4430d5f420d56605a6e7993e0941470).
+
+> **Admin Login reference — 07/11/2026:** trang đăng nhập dùng bố cục hai cột,
+> nền cong xanh/mint, logo EVIA và `3D Calendar and Event Ticket Icon.png` từ assets.
+> `src/login.css` giữ style login trong phạm vi riêng. Bổ sung hiện/ẩn mật khẩu,
+> spinner và thông báo lỗi mạng; Firebase adapter, session và admin claim guard
+> tiếp tục qua các hàm hiện có. Playwright kiểm tra tại 1648×928, 1440×900,
+> 1024×768, 390×844 với phản hồi Auth giả lập trong browser; build và 14 tests đạt.
+
+> **Giao diện EVIA — 07/11/2026:** dùng xanh chính `#2457F5`, nền `#F8F9FC`,
+> card trắng, viền và bán kính theo tokens mobile. Logo lấy từ asset EVIA hiện có.
+> Sidebar, nút, biểu mẫu, bảng và dialog dùng cùng style, hỗ trợ màn hình nhỏ.
+> Kiểm tra bố cục cục bộ ở 1440/768/360px và form editor, login; build và 14 tests đạt.
+
 > **Gửi thông báo trực tiếp:** mở Thông báo → chọn tài khoản → nhập nội dung → Gửi thông báo. Không cần tạo sự kiện; cần tài khoản active đã đăng ký thiết bị nhận push. [Cách demo/API](../docs/ADMIN_NOTIFICATIONS.md).
 
 > **Form sự kiện — 06/11/2026:** không nhập ID, nguồn, điều khoản/version hay JSON; dropdown lấy catalog thật. Ảnh JPG/PNG/WebP ≤5 MB tải lên Firebase Storage, cần `VITE_FIREBASE_STORAGE_BUCKET` trong `.env.local`. [Luồng tạo, Rules và validation](../docs/ADMIN_EVENT_EDITOR.md).
@@ -76,6 +94,14 @@ npm --prefix admin run dev
 Dùng tài khoản Auth Emulator có claim `admin: true`. Có thể kiểm tra sự kiện,
 voucher và luồng tạo inbox trong Emulator. Các trang Remote Config, Analytics
 và Crashlytics báo cần dự án Firebase thật khi web nối Emulator.
+
+## Khôi phục phiên khi tải lại trang
+
+Web hiển thị loading trong khi Firebase khôi phục phiên và xác minh claim
+`admin`. Dashboard chỉ hiện sau khi xác minh thành công. Khi chưa đăng nhập,
+thiếu quyền hoặc xác minh thất bại, web hiển thị form cùng thông báo tương ứng.
+Kiểm tra trình duyệt bằng auth mô phỏng đã bao phủ startup, F5, admin, đăng xuất,
+thiếu quyền, kết quả phiên cũ và lỗi observer. Build và 15 unit tests đã đạt.
 
 ## Vận hành và nghiệm thu
 
