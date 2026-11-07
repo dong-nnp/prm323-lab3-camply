@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:prm393_lab03/app/app.dart';
 import 'package:prm393_lab03/app/router.dart';
+import 'package:prm393_lab03/screens/evia/check_in_screen.dart';
 import 'package:prm393_lab03/screens/evia/discover_screen.dart';
 import 'package:prm393_lab03/screens/evia/event_details_screen.dart';
 import 'package:prm393_lab03/screens/evia/interests_screen.dart';
@@ -94,6 +95,31 @@ Future<ProviderContainer> open(
 }
 
 void main() {
+  testWidgets('Walk-in details open the QR scanner without marking Going', (
+    tester,
+  ) async {
+    final backend = Flow1TestBackend();
+    backend.handle = (operation, input) async => operation == 'getEvent'
+        ? {...testEvent(deposit: 0), 'participationMode': 'walk_in'}
+        : backend.respond(operation, input);
+    await open(tester, backend, '/event/about?event=server-event-17');
+
+    final scan = find.text('Scan Event QR');
+    await tester.ensureVisible(scan);
+    await tester.tap(scan);
+    await tester.pumpAndSettle();
+
+    final screen = tester.widget<EventCheckInScreen>(
+      find.byType(EventCheckInScreen),
+    );
+    expect(screen.eventId, 'server-event-17');
+    expect(find.text('Scan the Event QR'), findsOneWidget);
+    expect(
+      backend.calls.map((call) => call.name),
+      isNot(contains('setWalkInGoing')),
+    );
+  });
+
   testWidgets(
     'Following shows followed club events without registration and keeps the event ID',
     (tester) async {

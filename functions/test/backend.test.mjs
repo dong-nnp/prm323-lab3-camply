@@ -308,6 +308,42 @@ test('walk-in Going is only an intent and QR verification is unique/window-bound
   now = new Date(now.getTime() + 61_000);
   await rejects(call('verifyWalkInQr', bob, { ...input, requestId: 'walkin-expire' }), 'QR_INVALID');
 });
+
+test('admin can re-download a printable walk-in QR before opening; scans use the latest event window and grant once', async () => {
+  const admin = { ...operator, token: { ...operator.token, staff: false, admin: true } };
+  const walkIn = { participationMode: 'walk_in', depositCoins: 0, capacity: null };
+  const eventId = 'printable-walkin';
+  const eventRef = db.doc(`events/${eventId}`);
+  await event(eventId, { ...walkIn, status: 'draft' });
+  await rejects(call('getAdminWalkInQr', alice, { eventId }), 'FORBIDDEN_ADMIN');
+  await rejects(call('getAdminWalkInQr', admin, { eventId: 'registered' }), 'WRONG_PARTICIPATION_MODE');
+  await rejects(call('getAdminWalkInQr', admin, { eventId }), 'EVENT_NOT_FOUND');
+  await eventRef.update({ status: 'published', visibility: 'private' });
+  await rejects(call('getAdminWalkInQr', admin, { eventId }), 'EVENT_NOT_FOUND');
+  await eventRef.update({ visibility: 'public' });
+
+  now = new Date('2026-11-04T01:00:00Z');
+  const loadQr = () => call('getAdminWalkInQr', admin, { eventId });
+  const [qr, downloadedAgain] = await Promise.all([loadQr(), loadQr()]);
+  assert.deepEqual(qr, downloadedAgain);
+  assert.match(qr.qrPayload, /^evia:walkin:[A-Za-z0-9_-]{32}:[A-Za-z0-9_-]{43}$/);
+  assert.equal((await db.collection('checkin_tokens').get()).size, 1);
+  const scan = { qrPayload: qr.qrPayload, expectedEventId: eventId, requestId: 'printable-scan-01' };
+  await rejects(call('verifyWalkInQr', alice, scan), 'OUTSIDE_CHECKIN_WINDOW');
+
+  await eventRef.update({ checkInEndAt: Timestamp.fromDate(new Date('2026-11-04T06:00:00Z')) });
+  now = new Date('2026-11-04T05:30:00Z');
+  assert.deepEqual(await loadQr(), qr);
+  await rejects(call('verifyWalkInQr', alice, { ...scan, expectedEventId: 'registered' }), 'QR_EVENT_MISMATCH');
+  assert.equal((await call('verifyWalkInQr', alice, scan)).coinsGranted, 100);
+  await rejects(call('verifyWalkInQr', alice, { ...scan, requestId: 'printable-scan-02' }), 'ALREADY_CHECKED_IN');
+  assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 300);
+  assert.equal((await db.collection('attendance').get()).size, 1);
+  assert.equal((await db.collection('registrations').get()).size, 0);
+
+  now = new Date('2026-11-04T06:00:00Z');
+  await rejects(call('verifyWalkInQr', bob, scan), 'OUTSIDE_CHECKIN_WINDOW');
+});
 test('configured daily reward continues after day 7 and cannot change a prior claim', async () => {
   const policy = db.doc('server_config/daily_checkin');
   await policy.set({ rewards: [1, 2, 3, 4, 5, 6, 77], version: 1 });

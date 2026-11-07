@@ -1,5 +1,8 @@
 # PRM393 Lab 3 — Flutter source base
 
+> **Check-in Walk-in:** sinh viên mở chi tiết sự kiện → **Scan Event QR**. Ban tổ
+> chức tải PNG cố định từ [Evia Admin](admin/README.md) để in hoặc chiếu.
+
 > **ARTEMIS — 06/11/2026:** đã có Python/pytest suite, SDK pin, account/AVD test riêng,
 > thu trace, ảnh, structured observations và bảng kết quả. Chưa nghiệm thu đủ Lab:
 > xem [hướng dẫn chạy](e2e_test/README.md), [kế hoạch](docs/artemis-plan.md) và

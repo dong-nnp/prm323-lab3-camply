@@ -154,6 +154,8 @@ dialog::backdrop { background: #18281c77; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 15px; }
 .form-grid .wide { grid-column: 1 / -1; }
 .detail-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+.detail-qr { display: grid; justify-items: start; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); }
+.detail-qr img { display: block; width: 192px; max-width: 100%; height: auto; }
 #workspace-status { margin-top: 10px; }
 @media (max-width: 900px) {
   .workspace { grid-template-columns: 178px minmax(0, 1fr); }

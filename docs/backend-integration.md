@@ -160,6 +160,7 @@ owner cho mỗi event ứng viên; cần projection khi lượng sự kiện tă
 | `cancelRegistration` | `{eventId,requestId}` | `{registrationId,state:'cancelled',depositRefunded,depositForfeited,wallet}` |
 | `getTicketQr` | `{eventId}` | `{ticketId,ticketNumber,qrPayload,expiresAt}`; owner vé active, TTL 120 giây |
 | `issueWalkInQr` | `{eventId}` | `{eventId,qrPayload,expiresAt}`; staff được phân công, TTL tối đa 60 giây |
+| `getAdminWalkInQr` | `{eventId}` | `{qrPayload}`; admin đang hoạt động lấy cùng một QR cho sự kiện Walk-in công khai đã xuất bản, kể cả trước giờ check-in |
 | `verifyRegisteredTicket` | `{qrPayload,requestId}` | `{attendanceId,eventId,coinsGranted,depositRefunded}`; không lộ ví sinh viên cho staff |
 | `verifyWalkInQr` | `{qrPayload,requestId}` | Các field trên + `wallet` của sinh viên |
 | `claimDailyCheckin` | `{}` | `{dayKey,streakDay,coinsGranted,wallet}` |

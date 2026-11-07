@@ -1,5 +1,9 @@
 # Test plan — template
 
+> **QR Walk-in để in:** kiểm tra admin tải cùng một PNG trước giờ check-in, app
+> mở màn quét trực tiếp từ chi tiết sự kiện, mã chỉ hợp lệ trong khung giờ hiện
+> tại và quét lại không cộng xu lần hai. Ca kiểm tra dùng dữ liệu Emulator.
+
 > **Resolve merge — 06/11/2026:** giữ badge streak căn phải và dùng `streakDay`
 > từ lịch API mới; gộp tài liệu pytest/Gemini với DeepSeek. `flutter pub get`
 > đạt, format 2 file Dart không đổi, `flutter analyze --no-pub` sạch.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/activity_assets.dart';
+import '../../core/utils/exception_mapper.dart';
 import '../../data/mock/activity_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
@@ -77,16 +78,25 @@ class EventCheckInScreen extends ConsumerWidget {
     final state = ref.watch(activityViewModelProvider);
     final vm = ref.read(activityViewModelProvider.notifier);
     final live = ref.watch(realBackendEnabledProvider);
-    final snapshot = live
-        ? ref.watch(flow1ViewModelProvider).asData?.value
+    final remote = live && eventId.isNotEmpty
+        ? ref.watch(flow1EventProvider(eventId))
         : null;
-    final event = snapshot?.events.where((e) => e.id == eventId).firstOrNull;
+    if (remote != null && !remote.hasValue) {
+      return EviaPage(
+        header: const ActivityHeader('Event Check In'),
+        child: remote.hasError
+            ? AppErrorWidget(
+                message: ExceptionMapper.map(remote.error!).message,
+                onRetry: () => ref.invalidate(flow1EventProvider(eventId)),
+              )
+            : const AppLoadingWidget(),
+      );
+    }
+    final event = remote?.asData?.value;
     final confirmed = state.verified.contains(live ? eventId : 'club-live');
     if (live && (event == null || !event.walkIn)) {
       return const EviaPage(
-        child: AppErrorWidget(
-          message: 'Open a walk-in event from My Events to check in.',
-        ),
+        child: AppErrorWidget(message: 'Open a walk-in event to check in.'),
       );
     }
     void flash() => vm.toggleFlashlight();

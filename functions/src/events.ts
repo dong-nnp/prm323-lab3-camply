@@ -3,6 +3,7 @@ import { Firestore, Timestamp, DocumentData, Transaction } from 'firebase-admin/
 import { z } from 'zod';
 import { Actor, authenticated, activeUser, changeWallet, coins, fail, id, key, ledger, notification, operation, publicEvent, requestId, required, walletData } from './shared.js';
 import { emailAddress, fptStudentId } from './identity.js';
+import { requireAdmin } from './admin_catalog.js';
 
 const attendee = z.object({ fullName: z.string().trim().min(1).max(100), studentId: fptStudentId, universityEmail: emailAddress, phoneNumber: z.string().regex(/^\+?[0-9 ()-]{7,24}$/).optional() }).strict();
 const eventRequest = z.object({ eventId: id, requestId }).strict();
@@ -129,6 +130,22 @@ export function events(db: Firestore, clock: () => Date) {
         return { eventId, qrPayload: `evia:walkin:${tokenId}:${secret}`, manualCode, expiresAt };
       });
     },
+    getAdminWalkInQr: async (actor: Actor | null, raw: unknown) => {
+      const uid = requireAdmin(actor), { eventId } = z.object({ eventId: id }).strict().parse(raw);
+      const tokenId = Buffer.from(key('printable-walkin', eventId).slice(0, 48), 'hex').toString('base64url');
+      const tokenRef = db.doc(`checkin_tokens/${tokenId}`);
+      return db.runTransaction(async tx => {
+        await activeUser(tx, db, uid);
+        const event = publicEvent((await tx.get(db.doc(`events/${eventId}`))).data());
+        if (event.participationMode !== 'walk_in') fail('WRONG_PARTICIPATION_MODE');
+        const token = (await tx.get(tokenRef)).data();
+        if (token && (token.eventId !== eventId || token.mode !== 'walkin' || !token.printableSecret || token.revoked)) fail('QR_INVALID');
+        const secret = token?.printableSecret ?? randomBytes(32).toString('base64url');
+        // Keep the printable secret server-only so admin can download the same QR again.
+        if (!token) tx.create(tokenRef, { eventId, mode: 'walkin', printableSecret: secret, tokenHash: key(secret), revoked: false, issuedBy: uid });
+        return { qrPayload: `evia:walkin:${tokenId}:${secret}` };
+      });
+    },
     verifyRegisteredTicket: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true),
     verifyWalkInQr: async (actor: Actor | null, raw: unknown) => verify(actor, raw, false),
     verifyRegisteredCode: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true, true),
@@ -196,7 +213,8 @@ export function events(db: Firestore, clock: () => Date) {
       const event = publicEvent((await tx.get(db.doc(`events/${token.eventId}`))).data()); scope(event);
       checkWindow(event, now);
       if (token.mode !== (registered ? 'registered' : 'walkin') || !manual && token.tokenHash !== key(secret) || token.revoked) fail(manual ? 'CODE_INVALID' : 'QR_INVALID');
-      if (now.toMillis() < token.validFrom.toMillis() || now.toMillis() >= token.validUntil.toMillis()) fail(manual ? 'CODE_EXPIRED' : 'QR_INVALID');
+      // Printable QR validity follows the current event window checked above.
+      if (!token.printableSecret && (now.toMillis() < token.validFrom.toMillis() || now.toMillis() >= token.validUntil.toMillis())) fail(manual ? 'CODE_EXPIRED' : 'QR_INVALID');
       const attendanceId = key(uid, token.eventId), attendanceRef = db.doc(`attendance/${attendanceId}`), walletRef = db.doc(`wallets/${uid}`);
       const [prior, wallet] = await tx.getAll(attendanceRef, walletRef);
       if (prior.exists) fail('ALREADY_CHECKED_IN', 'already-exists');

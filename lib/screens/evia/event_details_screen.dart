@@ -361,6 +361,19 @@ class EventDetailsScreen extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(height: AppSpacing.lg),
+                          if (raw?.walkIn == true) ...[
+                            OutlinedButton.icon(
+                              onPressed: () {
+                                if (!ensureAuthenticated(context, ref)) return;
+                                context.push(
+                                  '/my-events/check-in?event=${event.id}',
+                                );
+                              },
+                              icon: const Icon(Icons.qr_code_scanner),
+                              label: const Text('Scan Event QR'),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                          ],
                           if (event.coins > 0)
                             EviaCard(
                               color: AppColors.primarySoft,

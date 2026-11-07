@@ -1,5 +1,8 @@
 # Design traceability — Evia
 
+> **Check-in Walk-in:** nút **Scan Event QR** trong chi tiết sự kiện mở lại màn
+> quét `2083:1776`. Thao tác **I'm Going** vẫn là lựa chọn độc lập.
+
 > **Search event cards — 06/11/2026:** Search results và Suggested Events dùng
 > chung `UpcomingEventCard` với Happening Soon của Discover: thumbnail bên trái,
 > bookmark cạnh tiêu đề, tag chính sách và xu dưới metadata; bỏ footer phân cách

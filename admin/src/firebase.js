@@ -77,6 +77,7 @@ export function createFirebase(env) {
       return getDownloadURL(task.snapshot.ref);
     },
     entry: (kind, id) => call(kind === 'events' ? 'getAdminEvent' : 'getAdminReward', { id }),
+    getWalkInQr: eventId => call('getAdminWalkInQr', { eventId }),
     save: (kind, entry, revision) => {
       const event = kind === 'events';
       const name = event ? (revision ? 'updateEvent' : 'createEvent') : (revision ? 'updateReward' : 'createReward');

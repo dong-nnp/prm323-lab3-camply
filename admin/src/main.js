@@ -202,6 +202,24 @@ async function showDetails(kind, id) {
       list.append(row);
     }
     content.append(list);
+    if (isEvent && item.participationMode === 'walk_in' && item.status === 'published' && item.visibility === 'public') {
+      status('detail-status', 'Đang tải QR check-in…');
+      const [{ qrPayload }, { default: qr }] = await Promise.all([firebase.getWalkInQr(id), import('qrcode')]);
+      const png = await qr.toDataURL(qrPayload, { scale: 16 });
+      if (version !== detailVersion || !dialog.open || !canOperate()) return;
+      const section = document.createElement('section');
+      section.className = 'detail-qr';
+      const image = document.createElement('img');
+      image.src = png;
+      image.alt = `Mã QR check-in cho ${item.title}`;
+      const download = text('a', 'Tải QR (.png)', 'button secondary');
+      download.href = png;
+      download.download = `evia-check-in-${id}.png`;
+      const checkInStart = formatDate(item.checkInStartAt, item.timezone);
+      const checkInEnd = formatDate(item.checkInEndAt, item.timezone);
+      section.append(text('h3', 'QR check-in'), text('p', `Quét bằng Evia từ ${checkInStart} đến ${checkInEnd}.`), image, download);
+      content.append(section);
+    }
     status('detail-status', '');
   } catch (error) {
     if (version === detailVersion && dialog.open) status('detail-status', adminErrorMessage(error), true);
