@@ -86,6 +86,11 @@ và Crashlytics báo cần dự án Firebase thật khi web nối Emulator.
   Walk-in công khai đã xuất bản. Có thể tải trước giờ check-in để in hoặc chiếu.
   Khi quét bằng Evia, máy chủ dùng khung giờ check-in hiện tại của sự kiện và
   chỉ ghi nhận tham dự, cộng xu một lần cho mỗi tài khoản.
+- **Quét vé đăng ký trước.** Mở tab **Check in**, chọn sự kiện đang mở check-in,
+  rồi bấm **Bật camera**. Trên Evia, sinh viên mở QR vé và đưa vào khung quét.
+  Web dùng camera trên `localhost` hoặc HTTPS. Máy chủ xác nhận vé qua
+  `verifyRegisteredTicket`, ghi nhận tham dự, hoàn cọc và cộng xu theo vé.
+  Khi vé hết hạn, sinh viên mở lại QR vé trong app.
 - **Voucher.** Tạo mẫu mới, mở **Chi tiết → Sửa** để cập nhật và bật/tắt mẫu.
   Nếu bản ghi thay đổi trong lúc chỉnh sửa, tải lại chi tiết để lấy tồn kho
   hiện tại trước khi lưu.

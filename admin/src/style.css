@@ -156,6 +156,10 @@ dialog::backdrop { background: #18281c77; }
 .detail-description { white-space: pre-wrap; overflow-wrap: anywhere; }
 .detail-qr { display: grid; justify-items: start; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); }
 .detail-qr img { display: block; width: 192px; max-width: 100%; height: auto; }
+.check-in-camera { position: relative; display: grid; place-items: center; width: min(100%, 640px); aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--ink); }
+.check-in-camera video { width: 100%; height: 100%; object-fit: contain; }
+.check-in-frame { position: absolute; width: 53%; aspect-ratio: 1; border: 2px solid var(--paper); border-radius: 12px; box-shadow: 0 0 0 1px var(--ink), 0 0 0 100vmax #0003; pointer-events: none; }
+.instructions > .check-in-result.success { color: var(--ink); background: var(--lime-soft); border-radius: 8px; padding: 10px 12px; }
 #workspace-status { margin-top: 10px; }
 @media (max-width: 900px) {
   .workspace { grid-template-columns: 178px minmax(0, 1fr); }

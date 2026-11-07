@@ -37,6 +37,7 @@
         <p class="nav-label">VẬN HÀNH</p>
         <a href="#overview" data-route="overview"><span data-icon="grid"></span>Tổng quan</a>
         <a href="#events" data-route="events"><span data-icon="calendar"></span>Sự kiện</a>
+        <a href="#check-in" data-route="check-in"><span data-icon="scan"></span>Check in</a>
         <a href="#notifications" data-route="notifications"><span data-icon="bell"></span>Thông báo</a>
         <a href="#vouchers" data-route="vouchers"><span data-icon="ticket"></span>Voucher</a>
         <p class="nav-label">FIREBASE</p>
@@ -80,6 +81,27 @@
             <div class="table-wrap" id="events-table"></div>
             <div class="panel-actions"><button class="button secondary" data-more="events" hidden>Tải thêm</button></div>
           </div>
+        </section>
+
+        <section id="check-in" aria-labelledby="check-in-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">VẬN HÀNH SỰ KIỆN</p><h1 id="check-in-title">Check in</h1><p id="check-in-description">Quét QR vé cho sự kiện đăng ký trước.</p></div><a class="button secondary" id="check-in-back" href="#check-in" hidden>Về danh sách</a></div>
+          <div id="check-in-list" class="panel">
+            <div class="panel-head"><div><h2>Sự kiện đăng ký trước</h2><p>Chọn sự kiện đang mở check-in để quét vé.</p></div><button id="check-in-reload" class="button secondary" type="button"><span data-icon="refresh"></span>Tải lại</button></div>
+            <p id="check-in-list-status" class="status panel-status" role="status"></p>
+            <div id="check-in-table" class="table-wrap"></div>
+          </div>
+          <article id="check-in-scanner" class="panel instructions" aria-labelledby="check-in-event-title" hidden>
+            <h2 id="check-in-event-title"></h2>
+            <p id="check-in-window"></p>
+            <p id="check-in-camera-status" class="status" role="status"></p>
+            <button id="check-in-start" class="button primary" type="button" hidden><span data-icon="scan"></span>Bật camera</button>
+            <p id="check-in-result" class="status check-in-result" role="status"></p>
+            <button id="check-in-retry" class="button secondary" type="button" hidden>Thử xác nhận lại</button>
+            <div id="check-in-camera" class="check-in-camera" hidden>
+              <video id="check-in-video" aria-label="Hình ảnh camera quét QR" playsinline muted></video>
+              <div class="check-in-frame" aria-hidden="true"></div>
+            </div>
+          </article>
         </section>
 
         <section id="notifications" aria-labelledby="notifications-title" hidden>
