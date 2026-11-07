@@ -31,12 +31,12 @@ export function createFirebase(env) {
   const call = async (name, data) => (await httpsCallable(functions, name)(data)).data;
   let analytics;
   let storage;
-  async function catalog(kind) {
+  async function catalog(kind, filters = {}) {
     const items = [];
     const cursors = new Set();
     let cursor;
     do {
-      const page = await call('getPublicCatalog', { kind, limit: 50, ...(cursor && { cursor }) });
+      const page = await call('getPublicCatalog', { kind, ...filters, limit: 50, ...(cursor && { cursor }) });
       items.push(...page.items);
       if (page.nextCursor && cursors.has(page.nextCursor)) throw new Error('Không tải được danh sách. Vui lòng thử lại.');
       cursor = page.nextCursor;
@@ -58,6 +58,11 @@ export function createFirebase(env) {
     list: (kind, cursor) => call(kind === 'events' ? 'listAdminEvents' : 'listAdminRewards', { limit: 20, ...(cursor && { cursor }) }),
     organizers: () => catalog('organizers'),
     categories: () => catalog('interests'),
+    checkInEvents: () => catalog('events', { participationMode: 'registration' }),
+    checkInEvent: eventId => call('getEvent', { eventId }),
+    serverInfo: () => call('getServerInfo', {}),
+    verifyTicket: input => call('verifyRegisteredTicket', input),
+    verifyTicketNumber: input => call('verifyAdminTicketNumber', input),
     async uploadEventImage(file, onProgress) {
       const extension = validateEventImage(file);
       const user = auth.currentUser;
@@ -77,6 +82,7 @@ export function createFirebase(env) {
       return getDownloadURL(task.snapshot.ref);
     },
     entry: (kind, id) => call(kind === 'events' ? 'getAdminEvent' : 'getAdminReward', { id }),
+    getWalkInQr: eventId => call('getAdminWalkInQr', { eventId }),
     save: (kind, entry, revision) => {
       const event = kind === 'events';
       const name = event ? (revision ? 'updateEvent' : 'createEvent') : (revision ? 'updateReward' : 'createReward');

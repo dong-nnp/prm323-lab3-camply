@@ -4,6 +4,7 @@ import { adminErrorMessage, setupServicePanels } from './service-panels.js';
 import { setupEditor } from './editor.js';
 import { renderIcons } from './icons.js';
 import { setupNotifications } from './notifications.js';
+import { setupCheckIn } from './check-in.js';
 
 const env = import.meta.env;
 const $ = (id) => document.getElementById(id);
@@ -57,11 +58,14 @@ const editor = setupEditor({
 });
 const services = setupServicePanels({ firebase, session: () => operator, status, text, track });
 const notifications = setupNotifications({ firebase, session: () => operator, status, errorMessage: adminErrorMessage });
+const checkIn = setupCheckIn({ firebase, session: () => operator, status, text, formatDate, errorMessage: adminErrorMessage });
 
 function route() {
   if (!canOperate()) return;
   const requested = location.hash.slice(1);
-  const page = routes.has(requested) ? requested : 'overview';
+  const page = requested.startsWith('check-in/') ? 'check-in' : routes.has(requested) ? requested : 'overview';
+  if (page === 'check-in') checkIn.open(requested === page ? null : requested.slice(page.length + 1));
+  else checkIn.close();
   for (const [key, link] of routes) {
     $(key).hidden = key !== page;
     if (key === page) link.setAttribute('aria-current', 'page');
@@ -202,6 +206,24 @@ async function showDetails(kind, id) {
       list.append(row);
     }
     content.append(list);
+    if (isEvent && item.participationMode === 'walk_in' && item.status === 'published' && item.visibility === 'public') {
+      status('detail-status', 'Đang tải QR check-in…');
+      const [{ qrPayload }, { default: qr }] = await Promise.all([firebase.getWalkInQr(id), import('qrcode')]);
+      const png = await qr.toDataURL(qrPayload, { scale: 16 });
+      if (version !== detailVersion || !dialog.open || !canOperate()) return;
+      const section = document.createElement('section');
+      section.className = 'detail-qr';
+      const image = document.createElement('img');
+      image.src = png;
+      image.alt = `Mã QR check-in cho ${item.title}`;
+      const download = text('a', 'Tải QR (.png)', 'button secondary');
+      download.href = png;
+      download.download = `evia-check-in-${id}.png`;
+      const checkInStart = formatDate(item.checkInStartAt, item.timezone);
+      const checkInEnd = formatDate(item.checkInEndAt, item.timezone);
+      section.append(text('h3', 'QR check-in'), text('p', `Quét bằng Evia từ ${checkInStart} đến ${checkInEnd}.`), image, download);
+      content.append(section);
+    }
     status('detail-status', '');
   } catch (error) {
     if (version === detailVersion && dialog.open) status('detail-status', adminErrorMessage(error), true);
@@ -213,6 +235,7 @@ function showGate(message, blocked = false, error = false) {
   catalogs = new Map();
   services.reset();
   notifications.reset();
+  checkIn.close();
   editor.invalidate();
   detailVersion++;
   detailEntry = undefined;
@@ -271,6 +294,8 @@ window.addEventListener('hashchange', () => {
   route();
   if (canOperate()) $('main').focus();
 });
+window.addEventListener('pagehide', checkIn.close);
+window.addEventListener('pageshow', event => { if (event.persisted) route(); });
 for (const button of all('[data-create]')) button.addEventListener('click', () => editor.open(button.dataset.create));
 for (const button of all('[data-refresh]')) button.addEventListener('click', () => { void loadCatalog(button.dataset.refresh, true); });
 for (const button of all('[data-more]')) button.addEventListener('click', () => { void loadCatalog(button.dataset.more, false); });

@@ -41,6 +41,60 @@ test('one admin issues walk-in QR and verifies tickets without a staff role or a
   assert.match((await call('issueWalkInQr', { eventId: 'walkin-event' })).qrPayload, /^evia:walkin:/);
   assert.equal((await db.collection('staff_assignments').get()).size, 0);
 });
+test('only an active admin can check in a matching active ticket number once', async () => {
+  const event = {
+    status: 'published', visibility: 'public', participationMode: 'registration',
+    capacity: 10, registeredCount: 0, depositCoins: 50, attendanceRewardCoins: 10,
+    startAt: Timestamp.fromDate(new Date('2026-11-06T06:00:00Z')),
+    checkInStartAt: Timestamp.fromDate(new Date('2026-11-06T03:00:00Z')),
+    checkInEndAt: Timestamp.fromDate(new Date('2026-11-06T08:00:00Z')),
+    registrationTerms: { version: 'v1' },
+  };
+  const eventId = 'workspace-event';
+  const eventRef = db.doc(`events/${eventId}`);
+  await eventRef.set(event);
+  await db.doc('events/other-event').set(event);
+  const wallet = db.doc(`wallets/${member.uid}`);
+  await wallet.set({ availableCoins: 200, heldCoins: 0, version: 1 });
+  async function register(requestId) {
+    const { ticketId } = await call('registerForEvent', {
+      eventId, requestId, expectedDepositCoins: 50, acceptedTermsVersion: 'v1',
+      attendeeInput: { fullName: 'Test Member', studentId: 'SE123456', universityEmail: 'member@example.com' },
+    }, member);
+    return db.doc(`tickets/${ticketId}`);
+  }
+  const revoked = await register('manual-register-first');
+  await call('cancelRegistration', { eventId, requestId: 'manual-cancel' }, member);
+  const ticket = await register('manual-register-second');
+  const qr = await call('getTicketQr', { eventId }, member);
+  const input = { eventId, ticketNumber: ` ${qr.ticketNumber.toLowerCase()} `, requestId: 'manual-checkin' };
+  const verifyNumber = (data, actor) => call('verifyAdminTicketNumber', data, actor);
+  await reject(verifyNumber(input, null), 'UNAUTHENTICATED');
+  await reject(verifyNumber(input, member), 'FORBIDDEN_ADMIN');
+  await reject(verifyNumber(input, staff), 'FORBIDDEN_ADMIN');
+  await reject(verifyNumber({ ...input, ticketNumber: '../tickets' }), 'VALIDATION_FAILED');
+  await reject(verifyNumber({ ...input, eventId: 'other-event' }), 'TICKET_NUMBER_NOT_FOUND');
+  await reject(verifyNumber({ ...input, ticketNumber: (await revoked.get()).get('ticketNumber') }), 'NO_ACTIVE_TICKET');
+  await eventRef.update({ checkInEndAt: Timestamp.fromDate(new Date('2026-11-06T04:00:00Z')) });
+  await reject(verifyNumber(input), 'OUTSIDE_CHECKIN_WINDOW');
+  await eventRef.update({ checkInEndAt: event.checkInEndAt });
+  const before = (await wallet.get()).data();
+  const [result, retry] = await Promise.all([verifyNumber(input), verifyNumber({ ...input, ticketNumber: qr.ticketNumber })]);
+  assert.deepEqual(result, retry);
+  assert.equal(result.coinsGranted, 10);
+  assert.equal(result.depositRefunded, 50);
+  assert.equal(result.wallet, undefined);
+  assert.equal((await wallet.get()).get('availableCoins'), before.availableCoins + 60);
+  assert.equal((await wallet.get()).get('heldCoins'), 0);
+  assert.equal((await ticket.get()).get('status'), 'checked_in');
+  const attendance = await db.collection('attendance').get();
+  assert.equal(attendance.size, 1);
+  assert.equal(attendance.docs[0].get('verificationMethod'), 'ticket_number');
+  await reject(verifyNumber({ ...input, requestId: 'manual-checkin-again' }), 'ALREADY_CHECKED_IN');
+  await reject(call('verifyRegisteredTicket', { qrPayload: qr.qrPayload, expectedEventId: eventId, requestId: 'qr-after-manual' }), 'ALREADY_CHECKED_IN');
+  await db.doc(`users/${admin.uid}`).update({ accountStatus: 'disabled' });
+  await reject(verifyNumber(input), 'ACCOUNT_DISABLED');
+});
 test('organizer edits use revisions and preserve follower counts', async () => {
   const organizer = { id: 'workspace-club', name: 'Club', description: 'Club description', published: true, sourceRef: 'https://example.com/club' };
   await call('upsertOrganizer', { organizer: { ...organizer, logoUrl: 'https://example.com/logo.png' }, expectedRevision: null });
