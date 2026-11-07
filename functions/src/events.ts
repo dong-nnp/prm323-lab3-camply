@@ -147,6 +147,26 @@ export function events(db: Firestore, clock: () => Date) {
       });
     },
     verifyRegisteredTicket: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true),
+    verifyAdminTicketNumber: async (actor: Actor | null, raw: unknown) => {
+      const scannerUid = requireAdmin(actor);
+      const input = eventRequest.extend({
+        ticketNumber: z.string().trim().max(32).toUpperCase().pipe(z.string().regex(/^EV-[0-9A-F]{12}$/)),
+      }).parse(raw);
+      const { eventId, ticketNumber } = input, now = Timestamp.fromDate(clock());
+      return operation(db, scannerUid, 'verify-ticket-number', input.requestId, input, now, async (tx, op) => {
+        const event = publicEvent((await tx.get(db.doc(`events/${eventId}`))).data());
+        scope(event);
+        if (event.participationMode !== 'registration') fail('WRONG_PARTICIPATION_MODE');
+        checkWindow(event, now);
+        const matches = await tx.get(db.collection('tickets').where('eventId', '==', eventId).where('ticketNumber', '==', ticketNumber).limit(2));
+        if (matches.empty) fail('TICKET_NUMBER_NOT_FOUND', 'not-found');
+        if (matches.size !== 1) fail('TICKET_NUMBER_AMBIGUOUS');
+        const ticket = matches.docs[0];
+        const uid = ticket.get('uid');
+        await activeUser(tx, db, uid);
+        return settleAttendance(tx, op, event, eventId, uid, scannerUid, now, { id: ticket.id, byNumber: true });
+      });
+    },
     verifyWalkInQr: async (actor: Actor | null, raw: unknown) => verify(actor, raw, false),
     verifyRegisteredCode: async (actor: Actor | null, raw: unknown) => verify(actor, raw, true, true),
     verifyWalkInCode: async (actor: Actor | null, raw: unknown) => verify(actor, raw, false, true),
@@ -215,26 +235,30 @@ export function events(db: Firestore, clock: () => Date) {
       if (token.mode !== (registered ? 'registered' : 'walkin') || !manual && token.tokenHash !== key(secret) || token.revoked) fail(manual ? 'CODE_INVALID' : 'QR_INVALID');
       // Printable QR validity follows the current event window checked above.
       if (!token.printableSecret && (now.toMillis() < token.validFrom.toMillis() || now.toMillis() >= token.validUntil.toMillis())) fail(manual ? 'CODE_EXPIRED' : 'QR_INVALID');
-      const attendanceId = key(uid, token.eventId), attendanceRef = db.doc(`attendance/${attendanceId}`), walletRef = db.doc(`wallets/${uid}`);
-      const [prior, wallet] = await tx.getAll(attendanceRef, walletRef);
-      if (prior.exists) fail('ALREADY_CHECKED_IN', 'already-exists');
-      let deposit = 0, reward = event.attendanceRewardCoins, registrationId: string | null = null;
-      if (registered) {
-        if (event.participationMode !== 'registration') fail('WRONG_PARTICIPATION_MODE');
-        registrationId = key(uid, token.eventId);
-        const regRef = db.doc(`registrations/${registrationId}`), ticketRef = db.doc(`tickets/${token.ticketId}`);
-        const [regDoc, ticketDoc] = await tx.getAll(regRef, ticketRef);
-        const reg = required(regDoc.data(), 'NO_ACTIVE_TICKET');
-        if (reg.state !== 'registered' || reg.ticketId !== token.ticketId || ticketDoc.get('status') !== 'active' || ticketDoc.get('uid') !== uid) fail('NO_ACTIVE_TICKET');
-        deposit = reg.depositCoins; reward = reg.attendanceRewardCoinsSnapshot;
-        tx.update(regRef, { state: 'attended', attendedAt: now, depositSettlement: deposit ? 'refunded' : 'none' });
-        tx.update(ticketRef, { status: 'checked_in', checkedInAt: now });
-      } else if (event.participationMode !== 'walk_in') fail('WRONG_PARTICIPATION_MODE');
-      const balance = changeWallet(tx, walletRef, walletData(wallet.data()), deposit + reward, -deposit, now);
-      tx.create(attendanceRef, { uid, eventId: token.eventId, mode: registered ? 'organizer_scanned_ticket' : 'student_scanned_walkin', registrationId, verifiedAt: now, verifiedBy: scannerUid, rewardCoinsGranted: reward });
-      if (deposit) ledger(tx, db, uid, op, 'deposit_refund', deposit, -deposit, registrationId!, now);
-      ledger(tx, db, uid, op, 'event_reward', reward, 0, token.eventId, now);
-      return { attendanceId, eventId: token.eventId, coinsGranted: reward, depositRefunded: deposit, ...(registered ? {} : { wallet: balance }) };
+      return settleAttendance(tx, op, event, token.eventId, uid, scannerUid, now, registered ? { id: token.ticketId } : null);
     });
+  }
+
+  async function settleAttendance(tx: Transaction, op: string, event: DocumentData, eventId: string, uid: string, scannerUid: string, now: Timestamp, ticket: { id: string; byNumber?: boolean } | null) {
+    const attendanceId = key(uid, eventId), attendanceRef = db.doc(`attendance/${attendanceId}`), walletRef = db.doc(`wallets/${uid}`);
+    const [prior, wallet] = await tx.getAll(attendanceRef, walletRef);
+    if (prior.exists) fail('ALREADY_CHECKED_IN', 'already-exists');
+    let deposit = 0, reward = event.attendanceRewardCoins, registrationId: string | null = null;
+    if (ticket) {
+      if (event.participationMode !== 'registration') fail('WRONG_PARTICIPATION_MODE');
+      registrationId = key(uid, eventId);
+      const regRef = db.doc(`registrations/${registrationId}`), ticketRef = db.doc(`tickets/${ticket.id}`);
+      const [regDoc, ticketDoc] = await tx.getAll(regRef, ticketRef);
+      const reg = required(regDoc.data(), 'NO_ACTIVE_TICKET');
+      if (reg.state !== 'registered' || reg.ticketId !== ticket.id || ticketDoc.get('status') !== 'active' || ticketDoc.get('uid') !== uid) fail('NO_ACTIVE_TICKET');
+      deposit = reg.depositCoins; reward = reg.attendanceRewardCoinsSnapshot;
+      tx.update(regRef, { state: 'attended', attendedAt: now, depositSettlement: deposit ? 'refunded' : 'none' });
+      tx.update(ticketRef, { status: 'checked_in', checkedInAt: now });
+    } else if (event.participationMode !== 'walk_in') fail('WRONG_PARTICIPATION_MODE');
+    const balance = changeWallet(tx, walletRef, walletData(wallet.data()), deposit + reward, -deposit, now);
+    tx.create(attendanceRef, { uid, eventId, mode: ticket ? 'organizer_scanned_ticket' : 'student_scanned_walkin', registrationId, verifiedAt: now, verifiedBy: scannerUid, rewardCoinsGranted: reward, ...(ticket?.byNumber && { verificationMethod: 'ticket_number' }) });
+    if (deposit) ledger(tx, db, uid, op, 'deposit_refund', deposit, -deposit, registrationId!, now);
+    ledger(tx, db, uid, op, 'event_reward', reward, 0, eventId, now);
+    return { attendanceId, eventId, coinsGranted: reward, depositRefunded: deposit, ...(ticket ? {} : { wallet: balance }) };
   }
 }

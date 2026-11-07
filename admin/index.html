@@ -97,9 +97,18 @@
             <button id="check-in-start" class="button primary" type="button" hidden><span data-icon="scan"></span>Bật camera</button>
             <p id="check-in-result" class="status check-in-result" role="status"></p>
             <button id="check-in-retry" class="button secondary" type="button" hidden>Thử xác nhận lại</button>
-            <div id="check-in-camera" class="check-in-camera" hidden>
-              <video id="check-in-video" aria-label="Hình ảnh camera quét QR" playsinline muted></video>
-              <div class="check-in-frame" aria-hidden="true"></div>
+            <div class="check-in-options">
+              <div id="check-in-camera" class="check-in-camera" hidden>
+                <video id="check-in-video" aria-label="Hình ảnh camera quét QR" playsinline muted></video>
+                <div class="check-in-frame" aria-hidden="true"></div>
+              </div>
+              <form id="check-in-manual" class="check-in-manual" hidden>
+                <h3>Nhập số vé</h3>
+                <p id="check-in-number-hint">Khi không quét được QR, nhập Ticket No. trên vé của sinh viên.</p>
+                <label for="check-in-number">Ticket No.</label>
+                <input id="check-in-number" aria-describedby="check-in-number-hint" placeholder="EV-012345ABCDEF" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+                <button id="check-in-confirm-number" class="button primary" type="submit">Xác nhận check-in</button>
+              </form>
             </div>
           </article>
         </section>

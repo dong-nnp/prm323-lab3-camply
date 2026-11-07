@@ -38,6 +38,7 @@ export const getTicketQr = callable('getTicketQr');
 export const issueWalkInQr = callable('issueWalkInQr');
 export const getAdminWalkInQr = callable('getAdminWalkInQr');
 export const verifyRegisteredTicket = callable('verifyRegisteredTicket');
+export const verifyAdminTicketNumber = callable('verifyAdminTicketNumber');
 export const verifyWalkInQr = callable('verifyWalkInQr');
 export const verifyRegisteredCode = callable('verifyRegisteredCode');
 export const verifyWalkInCode = callable('verifyWalkInCode');

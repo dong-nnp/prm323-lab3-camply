@@ -62,6 +62,7 @@ export function createFirebase(env) {
     checkInEvent: eventId => call('getEvent', { eventId }),
     serverInfo: () => call('getServerInfo', {}),
     verifyTicket: input => call('verifyRegisteredTicket', input),
+    verifyTicketNumber: input => call('verifyAdminTicketNumber', input),
     async uploadEventImage(file, onProgress) {
       const extension = validateEventImage(file);
       const user = auth.currentUser;

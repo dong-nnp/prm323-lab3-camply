@@ -2,6 +2,7 @@ import { directTicketCamera } from './ticket-camera.js';
 
 const eventIdPattern = /^[A-Za-z0-9_-]{1,128}$/;
 const ticketPattern = /^evia:ticket:[A-Za-z0-9_-]{32}:[A-Za-z0-9_-]{43}$/;
+const ticketNumberPattern = /^EV-[0-9A-F]{12}$/;
 const windowLabels = { upcoming: 'Chưa mở', open: 'Đang mở', closed: 'Đã đóng', unavailable: 'Chưa có khung giờ' };
 const ticketErrors = {
   QR_EVENT_MISMATCH: 'Vé thuộc sự kiện khác. Hãy kiểm tra tên sự kiện trên vé.',
@@ -9,6 +10,8 @@ const ticketErrors = {
   OUTSIDE_CHECKIN_WINDOW: 'Sự kiện hiện nằm ngoài khung giờ check-in.',
   QR_INVALID: 'QR vé đã hết hạn hoặc không hợp lệ. Nhờ sinh viên mở lại QR vé trong Evia.',
   NO_ACTIVE_TICKET: 'Vé này không còn hiệu lực.',
+  TICKET_NUMBER_NOT_FOUND: 'Không tìm thấy số vé này trong sự kiện. Kiểm tra lại Ticket No. và sự kiện đang mở.',
+  TICKET_NUMBER_AMBIGUOUS: 'Có nhiều vé trùng số trong sự kiện này. Hãy dùng mã QR trên vé.',
   EVENT_NOT_FOUND: 'Sự kiện hiện không khả dụng để check-in.',
   WRONG_PARTICIPATION_MODE: 'Sự kiện này không dùng vé đăng ký trước.',
   FORBIDDEN_STAFF: 'Tài khoản hiện tại không có quyền xác nhận vé.',
@@ -33,6 +36,7 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
   const $ = id => document.getElementById('check-in-' + id);
   const list = $('list'), scanner = $('scanner'), tableWrap = $('table'), reload = $('reload');
   const camera = $('camera'), start = $('start'), retry = $('retry');
+  const manual = $('manual'), ticketNumber = $('number'), confirmNumber = $('confirm-number');
   let view;
 
   const isCurrent = current => view === current && session() === current.session;
@@ -97,6 +101,7 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
   function updateScanner(current) {
     const { state, next } = checkInWindow(current.item, now(current));
     start.hidden = state !== 'open' || Boolean(current.camera);
+    manual.hidden = state !== 'open';
     if (state === 'open') {
       if (!current.camera) status('check-in-camera-status', 'Bật camera để quét mã QR vé trên app Evia.');
     } else {
@@ -121,8 +126,10 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
     reload.disabled = true;
     $('event-title').textContent = scanning ? 'Đang tải sự kiện…' : '';
     $('window').textContent = '';
-    start.hidden = retry.hidden = true;
-    start.disabled = false;
+    start.hidden = retry.hidden = manual.hidden = true;
+    start.disabled = confirmNumber.disabled = false;
+    ticketNumber.readOnly = false;
+    ticketNumber.value = '';
     showResult('');
     status('check-in-camera-status', '');
     status('check-in-list-status', 'Đang tải sự kiện…');
@@ -167,31 +174,39 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
 
   async function submit(current, attempt) {
     if (current.busy) return;
-    const scannedAt = now(current);
-    current.busy = true;
+    const submittedAt = now(current);
+    const byNumber = Boolean(attempt.ticketNumber);
+    current.busy = confirmNumber.disabled = true;
+    ticketNumber.readOnly = byNumber;
     retry.hidden = true;
     showResult('Đang xác nhận vé…');
     try {
-      const result = await firebase.verifyTicket({ expectedEventId: current.eventId, qrPayload: attempt.payload, requestId: attempt.requestId });
+      const { requestId } = attempt;
+      const result = byNumber
+        ? await firebase.verifyTicketNumber({ eventId: current.eventId, ticketNumber: attempt.ticketNumber, requestId })
+        : await firebase.verifyTicket({ expectedEventId: current.eventId, qrPayload: attempt.payload, requestId });
       if (!isCurrent(current)) return;
       attempt.retry = false;
+      if (byNumber && ticketNumber.value.trim().toUpperCase() === attempt.ticketNumber) ticketNumber.value = '';
       showResult(`Check-in thành công · +${result.coinsGranted} xu thưởng · Hoàn ${result.depositRefunded} xu đặt cọc.`, 'success');
     } catch (error) {
       if (!isCurrent(current)) return;
       attempt.retry = retryable.has(error.code);
       retry.hidden = !attempt.retry || checkInWindow(current.item, now(current)).state !== 'open';
-      const time = new Date(scannedAt).toLocaleTimeString('vi-VN', { timeZone: current.item.timezone ?? 'Asia/Ho_Chi_Minh' });
+      const time = new Date(submittedAt).toLocaleTimeString('vi-VN', { timeZone: current.item.timezone ?? 'Asia/Ho_Chi_Minh' });
       const code = error.details?.code;
       attempt.invalid = code === 'QR_INVALID';
       const message = ticketErrors[code] ?? errorMessage(error);
-      showResult(`Lượt quét lúc ${time} · ${message}`, 'error');
+      showResult(`${byNumber ? 'Nhập số vé' : 'Lượt quét'} lúc ${time} · ${message}`, 'error');
     } finally {
       current.busy = false;
+      if (isCurrent(current)) confirmNumber.disabled = ticketNumber.readOnly = false;
     }
   }
 
   function onScan(current, payload) {
     if (!isCurrent(current) || !current.camera) return;
+    if (document.activeElement === ticketNumber && ticketNumber.value) return;
     if (checkInWindow(current.item, now(current)).state !== 'open') return updateScanner(current);
     const previous = current.last;
     const detectedAt = performance.now();
@@ -254,6 +269,21 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
 
   reload.addEventListener('click', () => { void open(null); });
   start.addEventListener('click', () => { void startCamera(); });
+  manual.addEventListener('submit', event => {
+    event.preventDefault();
+    const current = view;
+    if (!current?.item || !isCurrent(current) || current.busy || checkInWindow(current.item, now(current)).state !== 'open') return;
+    const number = ticketNumber.value.trim().toUpperCase();
+    if (!ticketNumberPattern.test(number)) {
+      showResult('Nhập đúng Ticket No. trên vé, ví dụ EV-012345ABCDEF.', 'error');
+      ticketNumber.focus();
+      return;
+    }
+    const previous = current.last;
+    const requestId = previous?.retry && previous.ticketNumber === number ? previous.requestId : crypto.randomUUID();
+    const attempt = current.last = { ticketNumber: number, requestId };
+    void submit(current, attempt);
+  });
   retry.addEventListener('click', () => {
     if (view?.last?.retry && checkInWindow(view.item, now(view)).state === 'open') void submit(view, view.last);
   });
