@@ -1,3 +1,4 @@
 abstract interface class CrashReportingService {
   Future<void> recordError(Object error, StackTrace stackTrace);
+  Future<void> triggerTestCrash();
 }

@@ -1,4 +1,5 @@
 import './style.css';
+import './login.css';
 import { createFirebase } from './firebase.js';
 import { adminErrorMessage, setupServicePanels } from './service-panels.js';
 import { setupEditor } from './editor.js';
@@ -18,7 +19,16 @@ try {
 }
 const routes = new Map(all('[data-route]').map(link => [link.dataset.route, link]));
 const gateForm = $('login-form');
-const gateButton = gateForm.querySelector('button');
+const gateButton = gateForm.querySelector('button[type="submit"]');
+const passwordToggle = $('toggle-password');
+function setPasswordVisibility(visible) {
+  gateForm.elements.password.type = visible ? 'text' : 'password';
+  passwordToggle.setAttribute('aria-pressed', String(visible));
+  passwordToggle.setAttribute('aria-label', visible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+}
+passwordToggle.addEventListener('click', () => {
+  setPasswordVisibility(gateForm.elements.password.type === 'password');
+});
 const androidQaButton = $('android-qa-crash');
 const diagnosticsEnabled = import.meta.env.DEV && env.VITE_ENABLE_DIAGNOSTICS === 'true';
 const androidQaEnabled = diagnosticsEnabled && location.hostname === '127.0.0.1' &&
@@ -230,7 +240,7 @@ async function showDetails(kind, id) {
   }
 }
 
-function showGate(message, blocked = false, error = false) {
+function resetWorkspace() {
   operator = undefined;
   catalogs = new Map();
   services.reset();
@@ -245,12 +255,24 @@ function showGate(message, blocked = false, error = false) {
   $('editor-fields').replaceChildren();
   $('account-email').textContent = '';
   $('workspace').hidden = true;
+  androidQaButton.hidden = true;
+  status('android-qa-status', '');
+}
+
+function showGate(message, blocked = false, error = false) {
+  resetWorkspace();
+  $('auth-loading').hidden = true;
   $('gate').hidden = false;
+  setPasswordVisibility(false);
   $('denied-logout').hidden = !blocked;
   gateButton.disabled = blocked || !firebase;
   status('gate-status', message, error);
-  androidQaButton.hidden = true;
-  status('android-qa-status', '');
+}
+
+function showAuthLoading() {
+  resetWorkspace();
+  $('gate').hidden = true;
+  $('auth-loading').hidden = false;
 }
 
 async function updateAuth(user) {
@@ -259,7 +281,7 @@ async function updateAuth(user) {
     showGate('Đăng nhập bằng tài khoản quản trị đã được cấp quyền.');
     return;
   }
-  if (!operator || user.uid !== operator.uid) showGate('Đang xác minh quyền quản trị…', true);
+  if (!operator || user.uid !== operator.uid) showAuthLoading();
   try {
     const token = await user.getIdTokenResult();
     if (version !== authVersion) return;
@@ -272,6 +294,7 @@ async function updateAuth(user) {
     $('account-email').textContent = user.email ?? '';
     $('environment').textContent = firebase.emulator ? 'Emulator' : firebase.projectId;
     status('workspace-status', '');
+    $('auth-loading').hidden = true;
     $('gate').hidden = true;
     $('workspace').hidden = false;
     androidQaButton.hidden = !androidQaEnabled || firebase.emulator;
@@ -347,13 +370,20 @@ gateForm.addEventListener('submit', async (event) => {
   if (!firebase || gateButton.disabled) return;
   const fields = new FormData(gateForm);
   gateButton.disabled = true;
+  gateForm.setAttribute('aria-busy', 'true');
   status('gate-status', 'Đang đăng nhập…');
   try {
     await firebase.login(fields.get('email').trim(), fields.get('password'));
     gateForm.reset();
-  } catch {
+    setPasswordVisibility(false);
+  } catch (error) {
     gateButton.disabled = false;
-    status('gate-status', 'Đăng nhập thất bại. Kiểm tra tài khoản, mật khẩu hoặc kết nối.', true);
+    const message = error?.code === 'auth/network-request-failed'
+      ? 'Không thể kết nối. Kiểm tra mạng và thử đăng nhập lại.'
+      : 'Đăng nhập thất bại. Kiểm tra tài khoản, mật khẩu hoặc kết nối.';
+    status('gate-status', message, true);
+  } finally {
+    gateForm.removeAttribute('aria-busy');
   }
 });
 for (const [id, target] of [['logout', 'workspace-status'], ['denied-logout', 'gate-status']]) {
@@ -365,5 +395,8 @@ for (const [id, target] of [['logout', 'workspace-status'], ['denied-logout', 'g
     }
   });
 }
-if (firebase) firebase.observeAuth(user => { void updateAuth(user); });
+if (firebase) firebase.observeAuth(user => { void updateAuth(user); }, () => {
+  authVersion++;
+  showGate('Không tải được phiên đăng nhập. Tải lại trang để thử lại.', true, true);
+});
 else showGate(firebaseSetupError);

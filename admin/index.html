@@ -5,14 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Bảng điều hành Evia dành cho quản trị viên.">
   <title>Evia Admin · Bảng điều hành</title>
+  <link rel="preload" href="/fonts/inter/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
-  <div id="gate" class="gate">
+  <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+    <img src="/evia-logo.png" alt="EVIA" width="152" height="63">
+    <span class="auth-loading-indicator" aria-hidden="true"></span>
+    <p>Đang tải không gian quản trị…</p>
+  </div>
+  <div id="gate" class="gate" hidden>
+    <svg class="gate-sweep" viewBox="0 0 1648 928" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="login-sweep" x1="0" y1="0" x2="0.25" y2="1"><stop stop-color="#C7DBFF"/><stop offset=".38" stop-color="#EAF2FF" stop-opacity=".65"/><stop offset=".68" stop-color="#F0FBE8" stop-opacity=".5"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient></defs>
+      <path d="M810 0H1648V400H660C670 230 695 130 810 0Z" fill="url(#login-sweep)"/>
+    </svg>
     <div class="gate-art">
-      <div class="brand"><span class="brand-mark">e</span><span>evia<span class="brand-dot">.</span></span></div>
-      <div><p class="eyebrow">EVIA CONTROL CENTER</p><h1>Vận hành sự kiện, từ một nơi.</h1><p>Quản lý catalog, thông báo và các công cụ Firebase cho Evia.</p></div>
-      <div class="gate-ticket" aria-hidden="true"><span data-icon="ticket"></span></div>
+      <div class="brand"><img src="/evia-logo.png" alt="EVIA" width="1952" height="806"></div>
+      <div class="gate-copy">
+        <p class="eyebrow">EVIA CONTROL CENTER</p>
+        <h1><span>Vận hành sự kiện,</span><span>từ một nơi.</span></h1>
+        <p class="gate-description">Quản lý catalog, thông báo và các công cụ Firebase cho Evia.</p>
+      </div>
+      <div class="gate-illustration" aria-hidden="true"><img src="/evia-calendar-ticket.png" alt="" width="1536" height="1024" fetchpriority="high"></div>
     </div>
     <div class="gate-main">
       <div class="gate-form">
@@ -20,9 +34,20 @@
         <h2>Đăng nhập admin</h2>
         <p class="muted">Sử dụng tài khoản Firebase đã được cấp quyền admin.</p>
         <form id="login-form">
-          <label>Email<input type="email" name="email" autocomplete="username" placeholder="admin@example.com" required></label>
-          <label>Mật khẩu<input type="password" name="password" autocomplete="current-password" required></label>
-          <button class="button primary" type="submit" disabled>Đăng nhập <span data-icon="arrow"></span></button>
+          <div class="login-field">
+            <label for="admin-email">Email</label>
+            <input id="admin-email" type="email" name="email" autocomplete="username" placeholder="Nhập email admin" required>
+          </div>
+          <div class="login-field">
+            <label for="admin-password">Mật khẩu</label>
+            <div class="password-control">
+              <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required>
+              <button id="toggle-password" class="password-toggle" type="button" aria-label="Hiện mật khẩu" aria-controls="admin-password" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="password-strike" d="m3 3 18 18"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="button primary" type="submit" disabled><span class="login-spinner" aria-hidden="true"></span><span>Đăng nhập</span> <span class="login-arrow" data-icon="arrow"></span></button>
         </form>
         <p id="gate-status" class="status" role="status">Đang kiểm tra cấu hình Firebase…</p>
         <button id="denied-logout" class="button secondary" hidden>Đăng xuất</button>
@@ -32,7 +57,7 @@
 
   <div id="workspace" class="workspace" hidden>
     <aside class="sidebar">
-      <a class="brand" href="#overview" aria-label="Evia Admin"><span class="brand-mark">e</span><span>evia<span class="brand-dot">.</span></span><small>ADMIN</small></a>
+      <a class="brand" href="#overview" aria-label="Evia Admin"><img src="/evia-logo.png" alt="EVIA" width="1960" height="806"><small>ADMIN</small></a>
       <nav aria-label="Điều hướng quản trị">
         <p class="nav-label">VẬN HÀNH</p>
         <a href="#overview" data-route="overview"><span data-icon="grid"></span>Tổng quan</a>
@@ -56,8 +81,8 @@
       <main id="main" tabindex="-1">
         <section id="overview" aria-labelledby="overview-title">
           <div class="hero">
-            <div class="hero-copy"><p class="eyebrow">EVIA CONTROL CENTER</p><h1 id="overview-title">Điều hành Evia.</h1><p>Quản lý sự kiện, voucher và các luồng Firebase từ một không gian làm việc.</p><button type="button" class="button ink" data-create="events"><span data-icon="plus"></span>Tạo sự kiện</button></div>
-            <div class="hero-art" aria-hidden="true"><span class="hero-ring"></span><span class="hero-ring inner"></span><span class="hero-sparkle">✦</span><div class="hero-ticket"><span data-icon="ticket"></span><strong>EVIA<br>ACCESS</strong><i></i></div></div>
+            <div class="hero-copy"><p class="eyebrow">EVIA CONTROL CENTER</p><h1 id="overview-title">Điều hành Evia.</h1><p>Theo dõi, quản lý sự kiện, người tham gia và các công cụ Firebase trong một không gian làm việc.</p><button type="button" class="button ink" data-create="events"><span data-icon="plus"></span>Tạo sự kiện</button></div>
+            <div class="hero-art" aria-hidden="true"><img src="/evia-calendar-ticket.png" alt="" width="1536" height="1024"></div>
           </div>
           <div class="section-heading"><div><p class="eyebrow">CATALOG</p><h2>Vận hành nội dung</h2></div></div>
           <div class="card-grid">

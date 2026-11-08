@@ -20,7 +20,10 @@ final reportExportRepositoryProvider = Provider(
 );
 
 final bootstrapRepositoryProvider = Provider(
-  (ref) => BootstrapRepository(ref.watch(firebaseInitializerProvider)),
+  (ref) => BootstrapRepository(
+    ref.watch(firebaseInitializerProvider),
+    crashReporting: ref.watch(crashReportingServiceProvider),
+  ),
 );
 
 final authenticationRepositoryProvider = Provider(

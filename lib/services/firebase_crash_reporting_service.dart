@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
+import '../core/errors/app_exception.dart';
+import '../firebase/firebase_configuration.dart';
 import 'crash_reporting_service.dart';
 
 final class FirebaseCrashReportingService implements CrashReportingService {
@@ -61,6 +63,22 @@ final class FirebaseCrashReportingService implements CrashReportingService {
     final sdk = _sdk;
     if (sdk == null) return;
     await sdk.recordError(error, stackTrace);
+  }
+
+  @override
+  Future<void> triggerTestCrash() async {
+    if (!FirebaseConfiguration.crashTestEnabled) return;
+    final sdk = _sdk;
+    const unavailable = AppException(
+      code: 'crash_test_unavailable',
+      message: 'Crashlytics is unavailable or crash collection is disabled.',
+    );
+    if (sdk == null || !sdk.isCrashlyticsCollectionEnabled) throw unavailable;
+
+    await sdk.setCustomKey('is_test_crash', true);
+    await sdk.log('Manual crash triggered from Profile');
+    if (!sdk.isCrashlyticsCollectionEnabled) throw unavailable;
+    sdk.crash();
   }
 
   void dispose() {

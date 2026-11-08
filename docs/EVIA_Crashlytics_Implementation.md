@@ -2,24 +2,21 @@
 
 ## Android QA cho Lab 3
 
-Dùng Android Emulator trên cùng máy Windows với Web Admin và
-`android/app/google-services.json` của app Android cần nghiệm thu. Có thể thử
-ở chế độ khách. Đăng nhập nếu cần minh chứng có User ID.
+Dùng Android Emulator hoặc thiết bị QA có cấu hình `android/app/google-services.json`
+của app cần nghiệm thu. Đăng nhập để mở **Profile** và gắn UID vào báo cáo.
 
 ```powershell
 flutter run -d emulator-5554 --android-project-arg=eviaQaCrashlyticsEnabled=true --dart-define=FIREBASE_ENABLED=true
-npm --prefix admin run dev:android-qa -- emulator-5554
 ```
 
-Chạy hai lệnh ở hai terminal và thay `emulator-5554` bằng ID máy ảo của bạn.
-Điền cấu hình Firebase Web trong `admin/.env.local` và đặt
-`VITE_FIREBASE_EMULATORS=false`.
-Mở Web Admin ở `http://127.0.0.1:5174/#crashlytics` và đăng nhập admin.
+Thay `emulator-5554` bằng ID thiết bị. Nút **Crash** bật mặc định trong debug.
+Để thử trên bản release QA, thêm `--release --dart-define=ENABLE_CRASH_TEST=true`
+vào lệnh trên. Bản release thường vô hiệu hóa nút. Cờ Gradle QA bật thu thập
+theo cấu hình manifest và SDK vẫn tôn trọng thiết lập thu thập đã lưu trên thiết bị.
 
-1. **Fatal.** Giữ app Evia mở, bấm **Crash Android QA** trên Web Admin rồi
-   xác nhận. Nếu trình duyệt hỏi, cho phép mở trình kiểm thử Windows. Mở lại
-   app sau khi app đóng và tìm `CrashedByAdbException` trong Firebase Console.
-   Kiểm tra `app_surface=mobile_android` và UID nếu đã đăng nhập.
+1. **Fatal.** Bấm **Profile → Crash** trên app, sau đó mở lại app khi có mạng.
+   Trong Firebase Console, mở sự kiện fatal mới và kiểm tra key
+   `is_test_crash=true`, log `Manual crash triggered from Profile` và UID.
 2. **Non-fatal.** Chạy app theo luồng mặc định khi đang đăng nhập. Ngắt mạng
    trên thiết bị trước khi mở Discover trong một tiến trình app mới để yêu cầu
    tải catalog gặp lỗi thật. Đợi màn hình hiển thị lỗi và nút **Thử lại**, sau đó
@@ -32,10 +29,16 @@ Mở Web Admin ở `http://127.0.0.1:5174/#crashlytics` và đăng nhập admin.
    đường dẫn vào báo cáo hoặc slide. Chỉ dùng UID của tài khoản thử nghiệm
    khi chụp minh chứng.
 
-Nút QA chỉ xuất hiện khi đăng nhập admin trên phiên Web Admin cục bộ dành
-cho Android QA. Trình kiểm thử Windows chỉ gửi lệnh cho tiến trình Evia debug
-đã bật cờ thu thập trên máy ảo được chọn. Terminal Web Admin hiển thị đường
-dẫn log cục bộ. Dùng emulator thử nghiệm mới nếu một bản cài trước đó đã lưu
-trạng thái tắt thu thập và log vẫn báo `DISABLED by API` sau khi cài bản QA.
+Bật log chẩn đoán trước khi mở app và giữ logcat chạy qua lần khởi động lại.
+
+```powershell
+adb -s emulator-5554 shell setprop log.tag.FirebaseCrashlytics DEBUG
+adb -s emulator-5554 logcat -s FirebaseCrashlytics TRuntime.CctTransportBackend
+```
+
+Tìm `Crashlytics report upload complete`, HTTP `204` hoặc phản hồi thành công
+của request đến `crashlyticsreports-pa.googleapis.com`. Log đưa báo cáo vào
+hàng đợi chỉ xác nhận SDK đã xếp lịch gửi. Nếu bản cài trước đó đã lưu trạng
+thái tắt thu thập, dùng emulator QA mới hoặc giữ nguyên lựa chọn trên thiết bị.
 
 [Firebase Crashlytics cho Flutter](https://firebase.google.com/docs/crashlytics/flutter/get-started)

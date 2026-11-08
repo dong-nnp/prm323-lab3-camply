@@ -32,6 +32,9 @@ import '../helpers/startup_test_auth.dart';
 import '../helpers/sign_up_test_service.dart';
 
 class FailingCrashReporter implements CrashReportingService {
+  @override
+  Future<void> triggerTestCrash() async => throw UnsupportedError('QA only');
+
   final errors = <Object>[];
 
   @override

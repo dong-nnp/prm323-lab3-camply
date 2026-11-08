@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/flow_assets.dart';
+import '../../firebase/firebase_configuration.dart';
 import '../../data/mock/evia_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
@@ -241,6 +242,21 @@ class ProfileScreen extends ConsumerWidget {
                   Text('Log Out'),
                 ],
               ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton(
+              onPressed: FirebaseConfiguration.crashTestEnabled
+                  ? () async {
+                      final error = await ref
+                          .read(profileViewModelProvider.notifier)
+                          .triggerTestCrash();
+                      if (error != null && context.mounted) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(error)));
+                      }
+                    }
+                  : null,
+              child: const Text('Crash'),
             ),
           ],
         ),
