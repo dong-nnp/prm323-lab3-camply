@@ -10,6 +10,7 @@ import 'authentication_view_model.dart';
 import '../core/providers/service_providers.dart';
 import '../core/providers/repository_providers.dart';
 import '../core/utils/exception_mapper.dart';
+import '../firebase/firebase_configuration.dart';
 import '../models/flow1_models.dart';
 import 'flow1_view_model.dart';
 
@@ -99,6 +100,23 @@ final profileViewModelProvider =
     NotifierProvider<ProfileViewModel, ProfileState>(ProfileViewModel.new);
 
 class ProfileViewModel extends Notifier<ProfileState> {
+  bool _crashTestInProgress = false;
+
+  Future<String?> triggerTestCrash() async {
+    if (!FirebaseConfiguration.crashTestEnabled || _crashTestInProgress) {
+      return null;
+    }
+    _crashTestInProgress = true;
+    try {
+      await ref.read(bootstrapRepositoryProvider).triggerTestCrash();
+      return null;
+    } catch (error) {
+      return ExceptionMapper.map(error).message;
+    } finally {
+      _crashTestInProgress = false;
+    }
+  }
+
   @override
   ProfileState build() {
     if (!ref.watch(realBackendEnabledProvider)) {

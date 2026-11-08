@@ -21,6 +21,7 @@ val eviaDartDefines = providers.gradleProperty("dart-defines").orNull.orEmpty()
     .map { String(Base64.getDecoder().decode(it), Charsets.UTF_8) }.toSet()
 val eviaAnalyticsEnabled = "FIREBASE_ENABLED=true" in eviaDartDefines &&
     "ANALYTICS_ENABLED=true" in eviaDartDefines && "DEMO_AUTH=true" !in eviaDartDefines
+val qaCrashlyticsEnabled = providers.gradleProperty("eviaQaCrashlyticsEnabled").orNull == "true"
 
 android {
     namespace = "com.example.prm393_lab03"
@@ -34,6 +35,7 @@ android {
 
     defaultConfig {
         manifestPlaceholders["eviaAnalyticsDeactivated"] = (!eviaAnalyticsEnabled).toString()
+        manifestPlaceholders["eviaCrashlyticsCollectionEnabled"] = "false"
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.prm393_lab03"
         // You can update the following values to match your application needs.
@@ -50,10 +52,12 @@ android {
 
     buildTypes {
         debug {
-            val qaCrashlyticsEnabled = providers.gradleProperty("eviaQaCrashlyticsEnabled").orNull == "true"
             manifestPlaceholders["eviaQaCrashlyticsEnabled"] = qaCrashlyticsEnabled.toString()
         }
         release {
+            manifestPlaceholders["eviaCrashlyticsCollectionEnabled"] =
+                (qaCrashlyticsEnabled && "ENABLE_CRASH_TEST=true" in eviaDartDefines &&
+                    "FIREBASE_ENABLED=true" in eviaDartDefines).toString()
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

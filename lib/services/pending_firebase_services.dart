@@ -94,6 +94,9 @@ final class PendingFirebaseServices
       throw _pending;
 
   @override
+  Future<void> triggerTestCrash() async => throw _pending;
+
+  @override
   Future<bool> fetchAndActivate() async => throw _pending;
 
   @override
