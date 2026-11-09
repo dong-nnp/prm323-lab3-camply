@@ -213,46 +213,74 @@ void main() {
       await auth.close();
     },
   );
-  testWidgets(
-    'original eight interest cards wait for the server and send canonical IDs',
-    (tester) async {
-      final backend = Flow1TestBackend()
-        ..onboarded = false
-        ..selected = {};
-      final gate = Completer<Map<String, dynamic>>();
-      backend.handle = (name, input) async {
-        if (name == 'saveInterests') {
-          await gate.future;
-        }
-        return backend.respond(name, input);
-      };
-      final c = await open(tester, backend, '/profile');
-      expect(find.byType(EviaInterestsScreen), findsOneWidget);
-      expect(find.text('Gaming'), findsNothing);
-      expect(find.text('Environment'), findsNothing);
-      expect(find.text('Skip'), findsNothing);
-      for (final label in ['Technology', 'Music & Gigs', 'Arts & Culture']) {
-        await tester.ensureVisible(find.text(label));
-        await tester.tap(find.text(label));
-        await tester.pump();
+  testWidgets('ten category cards wait for the server and send canonical IDs', (
+    tester,
+  ) async {
+    final backend = Flow1TestBackend()
+      ..onboarded = false
+      ..selected = {};
+    final gate = Completer<Map<String, dynamic>>();
+    backend.handle = (name, input) async {
+      if (name == 'saveInterests') {
+        await gate.future;
       }
-      await tester.tap(find.text('Continue'));
+      return backend.respond(name, input);
+    };
+    final c = await open(tester, backend, '/profile');
+    expect(find.byType(EviaInterestsScreen), findsOneWidget);
+    expect(find.text('Skip'), findsNothing);
+    final continueButton = find.widgetWithText(FilledButton, 'Continue');
+    expect(tester.widget<FilledButton>(continueButton).onPressed, isNull);
+    for (final label in [
+      'Technology',
+      'Music',
+      'Arts',
+      'Sports',
+      'Photography',
+      'Career',
+      'Volunteering',
+      'Business',
+      'Gaming',
+      'Environment',
+    ]) {
+      expect(find.text(label), findsOneWidget);
+      await tester.ensureVisible(find.text(label));
+      await tester.tap(find.text(label));
       await tester.pump();
-      expect(c.read(eviaViewModelProvider).isSavingInterests, isTrue);
+      final count = c.read(eviaViewModelProvider).interests.length;
       expect(
-        c.read(routerProvider).routeInformationProvider.value.uri.path,
-        '/interests',
+        tester.widget<FilledButton>(continueButton).onPressed != null,
+        count >= 3,
       );
-      gate.complete({});
-      await tester.pumpAndSettle();
-      expect(backend.selected, {'technology', 'music', 'arts'});
-      expect(
-        c.read(routerProvider).routeInformationProvider.value.uri.path,
-        '/profile',
-      );
-      expect(tester.takeException(), isNull);
-    },
-  );
+    }
+    expect(find.text('10 interests selected'), findsOneWidget);
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+    expect(c.read(eviaViewModelProvider).isSavingInterests, isTrue);
+    expect(
+      c.read(routerProvider).routeInformationProvider.value.uri.path,
+      '/interests',
+    );
+    gate.complete({});
+    await tester.pumpAndSettle();
+    expect(backend.selected, {
+      'technology',
+      'music',
+      'arts',
+      'sports',
+      'photography',
+      'career',
+      'volunteer',
+      'business',
+      'gaming',
+      'environment',
+    });
+    expect(
+      c.read(routerProvider).routeInformationProvider.value.uri.path,
+      '/profile',
+    );
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'failed onboarding keeps the original error text and supports retry',
     (tester) async {
@@ -463,26 +491,38 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets('saving eight UI interests preserves unseen server IDs', (
-    tester,
-  ) async {
-    final backend = Flow1TestBackend()
-      ..selected = {'technology', 'music', 'arts', 'gaming', 'environment'};
-    final c = await open(tester, backend, '/interests');
-    final vm = c.read(eviaViewModelProvider.notifier);
-    vm.toggleInterest('Photography');
-    expect(await vm.finishPersonalization(), '/discover');
-    expect(backend.selected, {
-      'technology',
-      'music',
-      'arts',
-      'photography',
-      'gaming',
-      'environment',
-    });
-    expect(find.text('Gaming'), findsNothing);
-    expect(find.text('Environment'), findsNothing);
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'profile restores category selections and can remove new categories',
+    (tester) async {
+      final backend = Flow1TestBackend()
+        ..selected = {
+          'technology',
+          'music',
+          'arts',
+          'business',
+          'gaming',
+          'environment',
+        };
+      final c = await open(tester, backend, '/profile/interests');
+      expect(c.read(eviaViewModelProvider).interests, {
+        'Technology',
+        'Music',
+        'Arts',
+        'Business',
+        'Gaming',
+        'Environment',
+      });
+      for (final label in ['Gaming', 'Environment']) {
+        expect(find.text(label), findsOneWidget);
+        await tester.ensureVisible(find.text(label));
+        await tester.tap(find.text(label));
+        await tester.pump();
+      }
+      await tester.tap(find.text('Save Preferences'));
+      await tester.pumpAndSettle();
+      expect(backend.selected, {'technology', 'music', 'arts', 'business'});
+      expect(find.text('Preferences saved.'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

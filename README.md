@@ -6,6 +6,10 @@
 
 # PRM393 Lab 3 — Flutter source base
 
+> **Interests — 09/11/2026:** onboarding và My Interests dùng đủ 10 danh mục
+> sự kiện, tên tiếng Anh và ID backend hiện có; thêm Gaming/Environment.
+> Vẫn chọn tối thiểu 3. Thay thế giới hạn 8 thẻ trong ghi chú ngày 05/11 bên dưới.
+
 > **Check-in Walk-in:** sinh viên mở chi tiết sự kiện → **Scan Event QR**. Ban tổ
 > chức tải PNG cố định từ [Evia Admin](admin/README.md) để in hoặc chiếu.
 

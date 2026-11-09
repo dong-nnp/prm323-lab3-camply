@@ -1,5 +1,12 @@
 # Design traceability — Evia
 
+> **Interests — yêu cầu trực tiếp 09/11/2026:** đối chiếu ảnh danh mục admin và
+> màn interest người dùng gửi, dùng Technology, Music, Arts, Sports, Photography,
+> Career, Volunteering, Business, Gaming và Environment. Giữ bố cục hai cột,
+> cập nhật mô tả và thêm hai thẻ cuối ở onboarding lẫn My Interests.
+> `interest_gaming.svg` và `interest_environment.svg` là icon vector cục bộ mới,
+> không phải Figma exports. Yêu cầu này thay thế giới hạn 8 thẻ ngày 05/11.
+
 > **Evibaby — 09/11/2026:** theo yêu cầu và ảnh Discover người dùng khoanh vị trí:
 > bong bóng góc phải trên bottom navigation, sheet chat và card sự kiện nhỏ.
 > Tái sử dụng AppTextField, EviaCard và AppColors/Spacing/Radius/Theme, touch >=48dp.

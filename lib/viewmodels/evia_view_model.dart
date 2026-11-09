@@ -95,13 +95,15 @@ class EviaViewModel extends Notifier<EviaState> {
       live ? ref.read(flow1ViewModelProvider).asData?.value : null;
   static const interestIds = {
     'Technology': 'technology',
-    'Music & Gigs': 'music',
-    'Arts & Culture': 'arts',
-    'Sports & Fitness': 'sports',
+    'Music': 'music',
+    'Arts': 'arts',
+    'Sports': 'sports',
     'Photography': 'photography',
-    'Career & Skills': 'career',
+    'Career': 'career',
     'Volunteering': 'volunteer',
-    'Startups & Pitch': 'business',
+    'Business': 'business',
+    'Gaming': 'gaming',
+    'Environment': 'environment',
   };
   Set<String> _interestNames(Flow1Snapshot? data) => interestIds.entries
       .where((e) => data?.selectedInterests.contains(e.value) ?? false)
@@ -145,7 +147,7 @@ class EviaViewModel extends Notifier<EviaState> {
     try {
       if (live) {
         final ids = state.interests.map((name) => interestIds[name]!).toSet();
-        // Preserve server interests whose UI cards have not been provided yet.
+        // Preserve server interests unknown to this app when saving preferences.
         ids.addAll(
           (catalog?.selectedInterests ?? {}).where(
             (id) => !interestIds.containsValue(id),

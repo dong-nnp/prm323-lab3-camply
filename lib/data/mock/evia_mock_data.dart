@@ -4,11 +4,7 @@ import '../../models/evia_models.dart';
 /// Explicit UI demo content transcribed from Figma, authorized by the user.
 /// Replace this presentation source when a real event service is specified.
 abstract final class EviaMockData {
-  static const initialInterests = {
-    'Technology',
-    'Music & Gigs',
-    'Arts & Culture',
-  };
+  static const initialInterests = {'Technology', 'Music', 'Arts'};
   static const initialSaved = {'football', 'mobile'};
   static const recentSearches = [
     'campus music night',
@@ -162,17 +158,27 @@ abstract final class EviaMockData {
 
   static const topics = <InterestTopic>[
     InterestTopic('Technology', 'Hackathons, AI, coding', 'imgContainer1'),
-    InterestTopic('Music & Gigs', 'Live shows, jam sessions', 'imgContainer3'),
-    InterestTopic('Arts & Culture', 'Film, theatre, exhibits', 'imgContainer4'),
+    InterestTopic('Music', 'Live shows, jam sessions', 'imgContainer3'),
+    InterestTopic('Arts', 'Film, theatre, exhibits', 'imgContainer4'),
+    InterestTopic('Sports', 'Tournaments, team sports', 'imgContainer5'),
     InterestTopic(
-      'Sports & Fitness',
-      'Tournaments, intramural',
-      'imgContainer5',
+      'Photography',
+      'Photo walks, visual stories',
+      'imgContainer7',
     ),
-    InterestTopic('Photography', 'Walks, visual arts', 'imgContainer7'),
-    InterestTopic('Career & Skills', 'Networking, portfolios', 'imgContainer8'),
-    InterestTopic('Volunteering', 'Community, impact', 'imgContainer9'),
-    InterestTopic('Startups & Pitch', 'Founders, demo days', 'imgContainer10'),
+    InterestTopic('Career', 'Career talks, job fairs', 'imgContainer8'),
+    InterestTopic(
+      'Volunteering',
+      'Community service, social impact',
+      'imgContainer9',
+    ),
+    InterestTopic('Business', 'Entrepreneurship, networking', 'imgContainer10'),
+    InterestTopic('Gaming', 'Esports, gaming tournaments', 'imgGaming'),
+    InterestTopic(
+      'Environment',
+      'Sustainability, green projects',
+      'imgEnvironment',
+    ),
   ];
   static const organizers = <CampusOrganizer>[
     CampusOrganizer(

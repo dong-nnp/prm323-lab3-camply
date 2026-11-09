@@ -1,5 +1,10 @@
 # Kiến trúc source base
 
+> **Interests — 09/11/2026:** danh sách presentation dùng chung ở onboarding và
+> Profile gồm 10 danh mục. `EviaViewModel.interestIds` ánh xạ tên tiếng Anh sang
+> ID catalog hiện có, nên các lựa chọn đã lưu vẫn được khôi phục và chỉnh sửa.
+> Thay thế giới hạn 8 thẻ/Gaming và Environment pending trong ghi chú 05/11.
+
 > **Evibaby — 09/11/2026:** Chat → EvibabyViewModel → EvibabyRepository →
 > BackendService/FirebaseBackendService → callable `chatWithEvibaby` → DeepSeek.
 > Tools server chỉ đọc public catalog/detail và guide được duyệt; card lấy từ

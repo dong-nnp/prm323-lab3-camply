@@ -24,7 +24,18 @@ class Flow1TestBackend implements BackendService {
   bool onboarded = true, following = false, bookmarked = false;
   bool registered = false;
   List<Map<String, dynamic>> get interests => [
-    for (final id in ['technology', 'music', 'sports', 'arts'])
+    for (final id in [
+      'technology',
+      'music',
+      'sports',
+      'arts',
+      'photography',
+      'career',
+      'volunteer',
+      'business',
+      'gaming',
+      'environment',
+    ])
       {'id': id, 'label': 'Server $id'},
   ];
   @override

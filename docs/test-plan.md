@@ -1,5 +1,20 @@
 # Test plan — template
 
+> **Interests — 09/11/2026:** hai widget regression tests ở
+> `test/widgets/flow1_screens_test.dart` đạt: chọn/lưu đủ 10 danh mục bằng ID
+> canonical, nút Continue chỉ bật từ 3 lựa chọn và chờ server; My Interests khôi
+> phục tên mới từ ID đã lưu, cho bỏ chọn Gaming/Environment rồi lưu lại.
+> Fixtures chỉ nằm trong tests, không cần Firebase account. Các ca trên là kiểm thử
+> widget; thay thế giới hạn 8 thẻ ngày 05/11 bên dưới.
+> `flutter pub get`, format toàn bộ `lib test`, analyze và `git diff --check` đạt.
+> Full suite: **251 đạt, 4 lỗi**; cả 4 tái hiện trên bản sao commit `a063715`
+> trước thay đổi: Discover 360dp/chữ 2x overflow, retry mạng của Flow 1/3 và
+> `/registration/loading`. Bố cục My Interests 360/412dp, chữ 1x/2x đạt.
+> Android thật: build debug arm64 `2004`, `FIREBASE_ENABLED=true`, `DEMO_AUTH=false`
+> đạt và cài cập nhật trên Samsung SM-G996N. Đã mở onboarding, kiểm tên mới và
+> cuộn thấy đủ 10 thẻ, gồm Gaming/Environment với icon ở hàng cuối. Giữ nguyên
+> dữ liệu app; chưa bấm Continue hoặc kiểm lại lưu sở thích trên máy thật.
+
 > **Evibaby — 09/11/2026:** tests mới ở `test/evibaby_test.dart`,
 > `functions/test/evibaby.test.mjs`, `functions/test/evibaby_backend.test.mjs`.
 > Phạm vi: state/lifecycle/retry, card navigation, chữ lớn/keyboard, public-only

@@ -180,6 +180,8 @@ abstract final class FlowAssets {
     '2089:296/imgContainer8': 'assets/figma/2089_296_e9705.svg',
     '2089:296/imgContainer9': 'assets/figma/2089_296_1deb3.svg',
     '2089:296/imgContainer10': 'assets/figma/2089_296_61f1a.svg',
+    '2089:296/imgGaming': 'assets/figma/interest_gaming.svg',
+    '2089:296/imgEnvironment': 'assets/figma/interest_environment.svg',
     '2091:440/imgAb6AXuDi3UjSjz3P9BaYXcWePLdrVghTnYoufJw7GMAd8OpWinjJIrX7Wac4DeJ3Ak2HzZnBJXndbCmZu1GKyjlFItvb4YD5LqtwbtlMcFlYajAq6ThH9J0UovvtE0Iev8BvLcO5Xxuf5RtjIviPRnqjpdNyPsIjMpPk2UTq8En0Ph0Xx9MlACoC2Tx0Q0IqYdCrbV2JsaXmu8UIk9Gdqjaiu7HrXiCgfDag3MZ0ES':
         'assets/figma/2091_440_26e53.png',
     '2091:440/imgAb6AXuAaZzhPxquEcAs66Ll5YWbOnXTakvD5UAOsZb7Q5Zhm5LzHrBQrg1BmE4Vdf0Qj9FuacCbtotIfbijFoObLDhUpYvSyUxAs3W5D1FHgRa0GjPqLqwTky1FOeW3Tl8A3TzbHsUuICBb4924DQWhArVajeuXi96FONcjsms3LhVfcj35FOjnO5Rfnsf2GLfeCaaSeXa8SMjfSzXcXg995WbHaNZqB2Smep1Jy':
