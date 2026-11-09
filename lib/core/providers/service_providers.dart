@@ -1,3 +1,6 @@
+import '../../services/ai_filter_service.dart';
+import '../../services/firebase_ai_filter_service.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 
@@ -125,4 +128,11 @@ final remoteConfigServiceProvider = Provider<RemoteConfigService>(
 );
 final campusServiceProvider = Provider<CampusService>(
   (ref) => ref.watch(_pendingServicesProvider),
+);
+
+final aiFilterServiceProvider = Provider<AiFilterService>(
+  (ref) => FirebaseAiFilterService(
+    ref.watch(_firebaseReadyProvider),
+    ref.watch(remoteConfigServiceProvider),
+  ),
 );

@@ -1,4 +1,14 @@
+> **AI filters:** Explore → Filter Events → AI filter assistant. Cấu hình và giới hạn tại [AI feature](docs/ai-feature.md).
+
+> **Evibaby chat — 09/11/2026:** bong bóng ở Discover mở trợ lý tư vấn sự kiện
+> bằng DeepSeek và card mở chi tiết. Callable đã deploy, Android debug 2003 đã cài
+> trên Samsung và kiểm tra chat/card → chi tiết thật. [Cấu hình, quyền và kiểm thử](docs/evibaby-chat.md).
+
 # PRM393 Lab 3 — Flutter source base
+
+> **Interests — 09/11/2026:** onboarding và My Interests dùng đủ 10 danh mục
+> sự kiện, tên tiếng Anh và ID backend hiện có; thêm Gaming/Environment.
+> Vẫn chọn tối thiểu 3. Thay thế giới hạn 8 thẻ trong ghi chú ngày 05/11 bên dưới.
 
 > **Check-in Walk-in:** sinh viên mở chi tiết sự kiện → **Scan Event QR**. Ban tổ
 > chức tải PNG cố định từ [Evia Admin](admin/README.md) để in hoặc chiếu.
@@ -284,6 +294,8 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
 | firebase_analytics | 13.0.1 | 11 events; bật qua ANALYTICS_ENABLED |
 | firebase_crashlytics | 6.0.1 | Ghi lỗi Flutter toàn cục và lỗi tải catalog trên Android khi bật collection |
+| firebase_ai | 5.1.0 | Gemini qua Firebase AI Logic |
+| firebase_app_check | 0.5.1 | Xác thực request AI trên Android |
 | firebase_remote_config | 7.0.1 | Remote Config cho Event Milestones |
 | flutter_test | Flutter SDK | Unit/widget tests |
 | flutter_lints | 6.0.0 | Dart/Flutter conventions |

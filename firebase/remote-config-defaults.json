@@ -1,4 +1,7 @@
 {
   "event_milestones_enabled": true,
-  "event_milestones_intro": "Complete event milestones to earn extra Evia Coin."
+  "event_milestones_intro": "Complete event milestones to earn extra Evia Coin.",
+  "ai_filters_enabled": false,
+  "ai_filters_model": "",
+  "ai_filters_prompt": "Convert event preference keywords into supported filter values. Use the neutral Any/All value when unspecified or unsupported. Never invent categories. Return only schema JSON."
 }

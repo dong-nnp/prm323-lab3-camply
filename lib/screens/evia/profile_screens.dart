@@ -389,7 +389,7 @@ class ProfileInterestsScreen extends ConsumerWidget {
               style: EviaTheme.caption,
             ),
             const SizedBox(height: AppSpacing.xl),
-            for (var row = 0; row < 4; row++)
+            for (var row = 0; row < EviaMockData.topics.length ~/ 2; row++)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: IntrinsicHeight(

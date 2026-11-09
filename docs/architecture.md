@@ -1,5 +1,16 @@
 # Kiến trúc source base
 
+> **Interests — 09/11/2026:** danh sách presentation dùng chung ở onboarding và
+> Profile gồm 10 danh mục. `EviaViewModel.interestIds` ánh xạ tên tiếng Anh sang
+> ID catalog hiện có, nên các lựa chọn đã lưu vẫn được khôi phục và chỉnh sửa.
+> Thay thế giới hạn 8 thẻ/Gaming và Environment pending trong ghi chú 05/11.
+
+> **Evibaby — 09/11/2026:** Chat → EvibabyViewModel → EvibabyRepository →
+> BackendService/FirebaseBackendService → callable `chatWithEvibaby` → DeepSeek.
+> Tools server chỉ đọc public catalog/detail và guide được duyệt; card lấy từ
+> record canonical sau kiểm ID. Secret ở server, quota transaction riêng,
+> chat/context chỉ trong RAM và reset theo account. [Contract](evibaby-chat.md).
+
 > **QR Walk-in để in:** Evia Admin gọi `getAdminWalkInQr` và tạo PNG trên trình
 > duyệt. Mã cố định nằm trong `checkin_tokens`, chỉ máy chủ có quyền truy cập
 > trực tiếp. App dùng `ActivityViewModel` → `Flow1Repository` → `BackendService`
@@ -444,3 +455,8 @@ FlowEventSummary. FlowAssets chứa 180 exports; ActivityAssets compose map này
 Models trong registration_models.dart vẫn thuần Dart. Static map là SVG native;
 ảnh crowd ở hai error frames được crop đúng từ source snapshot do Figma cung cấp.
 Các controls chuyển actions cho VM; không gọi HTTP, auth, camera hoặc SDK.
+
+
+## AI filters — 09/11/2026
+
+AI filters dùng AiFilterPanel → AiFilterViewModel → AiFilterRepository → AiFilterService → FirebaseAiFilterService. SDK AI/App Check chỉ ở adapter. Gợi ý chỉ sửa draft khi người dùng xác nhận, Apply Filters giữ hành vi hiện có.

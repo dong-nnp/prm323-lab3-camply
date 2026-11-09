@@ -19,7 +19,9 @@ class FirebaseBackendService implements BackendService {
               .httpsCallable(
                 operation,
                 options: HttpsCallableOptions(
-                  timeout: const Duration(seconds: 25),
+                  timeout: Duration(
+                    seconds: operation == 'chatWithEvibaby' ? 65 : 25,
+                  ),
                 ),
               )
               .call<dynamic>(input);

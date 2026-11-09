@@ -1,5 +1,8 @@
 # Evia Firebase backend
 
+**Evibaby — 09/11/2026:** callable `chatWithEvibaby` đã deploy và kiểm tra từ Android.
+Secret, model/base URL, tools chỉ đọc và quota tại [Evibaby](../docs/evibaby-chat.md).
+
 **Release hiện tại:** 34 Functions và 34 latest Run revisions đã ready, hai Scheduler jobs ENABLED; xem [backend-release.md](../docs/backend-release.md). Các ghi chú local-only dưới đây mô tả mốc trước release.
 
 Readiness local 04/11/2026: [policy/jobs](../docs/BACKEND_POLICIES.md), [frontend handoff](../docs/FRONTEND_HANDOFF.md), [approved data preparation](../docs/DATA_READINESS.md). Source có 34 exports (thêm 2 scheduled Functions), **chưa deploy revision mới**; snapshot cloud vẫn 32. Suite mới 31/31 đạt trong Emulator; không phải proof Cloud Scheduler/FCM delivery thật.

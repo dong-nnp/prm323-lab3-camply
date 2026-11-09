@@ -61,3 +61,8 @@ theo sự kiện trong 7 hoặc 30 ngày. Vite admin chọn Android/Web trên to
 - [ ] Ít nhất một ARTEMIS test sau này kiểm event trong Logcat/DebugView.
 
 Nguồn: [Google recommended events](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [quy tắc không gửi PII](https://support.google.com/analytics/answer/6366371/).
+
+
+## AI filters — 09/11/2026
+
+AI filters thêm ai_request, ai_result_accepted (Use suggestion), ai_error với parameters rỗng. Không log nội dung nhập hoặc JSON. Tuân theo collection/identity queue hiện có.

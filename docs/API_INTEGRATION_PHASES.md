@@ -1,5 +1,9 @@
 # Các giai đoạn gắn API Evia
 
+> **Interests — 09/11/2026:** theo yêu cầu mới, onboarding và My Interests hiện
+> đủ 10 danh mục sự kiện, gồm Gaming/Environment; tên hiển thị tiếng Anh và ID
+> backend giữ tương ứng. Thay thế quyết định giữ 8 thẻ ngày 05/11 bên dưới.
+
 > **Flow 2 — 05/11/2026:** đã nối hủy/Going, lịch/My Events, check-in QR/mã
 > walk-in và inbox vào màn gốc; FCM adapter thật được chọn khi live. Owner cho
 > phép thêm nút nhỏ xác nhận đã quét trên vé trong debug để demo, thay màn staff.
