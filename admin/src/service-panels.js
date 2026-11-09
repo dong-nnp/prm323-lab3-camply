@@ -61,6 +61,7 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
   function showSelectedReward() {
     coins.value = config?.rewards[Number(day.value) - 1] ?? '';
   }
+  let realtimeTimer;
 
   function setConfig(value) {
     config = value;
@@ -104,11 +105,11 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     }
   }
 
-  function renderReport(items) {
+  function renderReport(items, realtime = false) {
     const target = $('analytics-report-table');
     target.replaceChildren();
     if (!items.length) return;
-    const columns = ['Hành vi', 'Lượt ghi nhận', 'Người dùng'];
+    const columns = ['Hành vi', 'Lượt ghi nhận', realtime ? 'Người dùng hoạt động' : 'Người dùng'];
     const table = document.createElement('table');
     table.createTHead().insertRow().append(...columns.map(value => text('th', value)));
     const body = table.createTBody();
@@ -120,22 +121,29 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     target.append(table);
   }
 
-  async function loadReport() {
+  async function loadReport({ background = false } = {}) {
     const current = session();
     if (!current || reportButton.disabled) return;
     analyticsRequested = true;
-    const days = Number(reportForm.elements.days.value);
+    const period = reportForm.elements.days.value;
+    const realtime = period === 'realtime';
+    const source = reportForm.elements.source.value;
     reportButton.disabled = reportForm.elements.days.disabled = true;
     if (reportForm.elements.source) reportForm.elements.source.disabled = true;
-    renderReport([]);
-    status('analytics-report-status', 'Đang tải báo cáo…');
+    if (!background) {
+      renderReport([]);
+      status('analytics-report-status', 'Đang tải báo cáo…');
+    }
     try {
-      const report = await firebase.report('analytics', days, reportForm.elements.source?.value);
+      const report = await firebase.analyticsReport(realtime
+        ? { realtime: true, source }
+        : { days: Number(period), source });
       if (session() !== current) return;
-      renderReport(report.items);
+      renderReport(report.items, realtime);
+      const updated = realtime ? ' Cập nhật lúc ' + new Date().toLocaleTimeString('vi-VN') + '.' : '';
       status('analytics-report-status', (report.items.length
         ? 'Đã tải ' + report.items.length + ' mục' + (report.scope === 'property' ? ' · Toàn bộ GA4 property.' : '.')
-        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') + ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.');
+        : 'Chưa có dữ liệu trong khoảng thời gian đã chọn.') + ' Nguồn: ' + analyticsScopeLabel(report.scope) + '.' + updated);
     } catch (error) {
       if (session() === current) status('analytics-report-status', adminErrorMessage(error), true);
     } finally {
@@ -159,8 +167,16 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
 
   return {
     open(page) {
+      clearInterval(realtimeTimer);
       if (page === 'config' && !configRequested) void runConfig(false);
-      if (page === 'analytics' && !analyticsRequested) void loadReport();
+      if (page === 'analytics') {
+        if (!analyticsRequested || reportForm.elements.days.value === 'realtime') void loadReport();
+        realtimeTimer = setInterval(() => {
+          if (!document.hidden && reportForm.elements.days.value === 'realtime') {
+            void loadReport({ background: true });
+          }
+        }, 30000);
+      }
     },
     reset() {
       configBusy = configRequested = false;
@@ -175,3 +191,5 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     },
   };
 }
+  reportForm.addEventListener('change', () => { void loadReport(); });
+      clearInterval(realtimeTimer);

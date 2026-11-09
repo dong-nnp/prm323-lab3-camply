@@ -64,8 +64,9 @@ và `file_size_kb:int` làm tròn lên. Chưa upload Storage/PDF; không sửa S
 
 ## Báo cáo admin Vite
 
-`admin/` có nguồn Android/Web/Theo cấu hình backend, tên tiếng Việt kèm raw
-event name và link Firebase Console. Android/Web lọc GA4 dimension `platform`
+`admin/` có nguồn Android/Web/Theo cấu hình backend, nhãn hành vi tiếng Việt
+và link Firebase Console. Với sự kiện chưa có bản dịch, bảng tách mã thành các từ.
+Android/Web lọc GA4 dimension `platform`
 trên toàn property; không giới hạn vào `ADMIN_GA4_STREAM_ID` của web admin cũ.
 Nguồn Web bao gồm tất cả web streams, không chỉ admin. Nguồn theo cấu hình
 giữ hành vi cũ: lọc stream nếu có, ngược lại toàn property. Phản hồi trả scope
@@ -77,6 +78,10 @@ suy ra funnel/tỷ lệ chuyển đổi từ bảng này. Báo cáo có độ tr
 để kiểm tra từng thao tác khi phát triển.
 
 Sau review code, deploy **riêng** callable đã đổi nếu muốn dùng bộ lọc mới:
+
+Chọn **Realtime · 30 phút** để xem dữ liệu gần đây qua `runRealtimeReport`.
+Web tự tải lại mỗi 30 giây khi trang Analytics đang hiển thị. GA4 cần thời
+gian nhận và xử lý sự kiện, nên số liệu vẫn có thể cập nhật sau vài phút.
 
 ```powershell
 npm --prefix functions run build

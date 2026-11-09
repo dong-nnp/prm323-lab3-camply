@@ -7,19 +7,24 @@ import { Actor, coins, empty, fail } from './shared.js';
 import { dailyRewardPolicy, dailyRewardsSchema, defaultDailyRewards } from './policy.js';
 
 const daysInput = z.object({ days: z.union([z.literal(7), z.literal(30)]) }).strict();
-const analyticsInput = daysInput.extend({
-  source: z.enum(['configured', 'android', 'web']).default('configured'),
-});
+const analyticsSource = z.enum(['configured', 'android', 'web']).default('configured');
+const analyticsInput = z.union([
+  daysInput.extend({ source: analyticsSource }),
+  z.object({ realtime: z.literal(true), source: analyticsSource }).strict(),
+]);
 
 export function analyticsReportQuery(raw: unknown, stream?: string) {
-  const { days, source } = analyticsInput.parse(raw);
+  const input = analyticsInput.parse(raw);
+  const { source } = input;
   const dimensionFilter = source === 'configured'
     ? (stream ? { filter: { fieldName: 'streamId', stringFilter: { matchType: 'EXACT', value: stream } } } : undefined)
     : { filter: { fieldName: 'platform', stringFilter: { matchType: 'EXACT', value: source === 'android' ? 'Android' : 'web', caseSensitive: false } } };
   return {
-    dateRanges: [{ startDate: String(days - 1) + 'daysAgo', endDate: 'today' }],
+    ...('days' in input
+      ? { dateRanges: [{ startDate: String(input.days - 1) + 'daysAgo', endDate: 'today' }] }
+      : { minuteRanges: [{ startMinutesAgo: 29, endMinutesAgo: 0 }] }),
     dimensions: [{ name: 'eventName' }],
-    metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
+    metrics: [{ name: 'eventCount' }, { name: 'realtime' in input ? 'activeUsers' : 'totalUsers' }],
     orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
     limit: '25',
     ...(dimensionFilter && { dimensionFilter }),
@@ -140,19 +145,21 @@ export function adminIntegrations(db: Firestore) {
     },
     getAdminAnalyticsReport: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
-      const { days, source } = analyticsInput.parse(raw);
+      const input = analyticsInput.parse(raw);
+      const { source } = input;
+      const method = 'realtime' in input ? 'runRealtimeReport' : 'runReport';
       cloudOnly();
       const property = process.env.ADMIN_GA4_PROPERTY_ID;
       const stream = process.env.ADMIN_GA4_STREAM_ID;
       if (!property || !/^\d+$/.test(property) || (stream && !/^\d+$/.test(stream))) fail('ANALYTICS_NOT_CONFIGURED');
       try {
         const { data } = await analyticsAuth.request<AnalyticsReport>({
-          url: 'https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':runReport',
+          url: 'https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':' + method,
           method: 'POST',
           timeout: 12000,
           data: analyticsReportQuery(raw, stream),
         });
-        return { days, scope: source === 'configured' ? (stream ? 'stream' : 'property') : source, items: (data.rows ?? []).map(row => ({
+        return { ...('days' in input ? { days: input.days } : { realtime: true }), scope: source === 'configured' ? (stream ? 'stream' : 'property') : source, items: (data.rows ?? []).map(row => ({
           name: row.dimensionValues[0].value, count: row.metricValues[0].value, users: row.metricValues[1].value,
         })) };
       } catch (error) {
