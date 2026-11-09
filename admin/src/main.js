@@ -292,7 +292,7 @@ async function updateAuth(user) {
     if (operator?.uid === user.uid) return;
     operator = user;
     $('account-email').textContent = user.email ?? '';
-    $('environment').textContent = firebase.emulator ? 'Emulator' : firebase.projectId;
+    $('environment').hidden = !firebase.emulator;
     status('workspace-status', '');
     $('auth-loading').hidden = true;
     $('gate').hidden = true;
