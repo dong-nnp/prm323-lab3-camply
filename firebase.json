@@ -29,7 +29,15 @@
         "npm --prefix \"$RESOURCE_DIR\" run build"
       ],
       "runtime": "nodejs22",
-      "source": "functions"
+      "source": "functions",
+      "ignore": [
+        "node_modules",
+        ".git",
+        ".env*",
+        "*.local",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
     }
   ],
   "storage": {

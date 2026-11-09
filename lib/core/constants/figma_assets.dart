@@ -1,4 +1,4 @@
-// Assets exported from the nine approved Figma nodes. No remote runtime URLs.
+// Approved Figma exports and local interest icons. No remote runtime URLs.
 abstract final class FigmaAssets {
   static const paths = <String, String>{
     '2083:4509/imgEviaLogo': 'assets/figma/2083_4509_97bee.png',
@@ -35,6 +35,8 @@ abstract final class FigmaAssets {
     '2088:2/imgContainer9': 'assets/figma/2088_2_1deb3.svg',
     '2088:2/imgContainer10': 'assets/figma/2088_2_61f1a.svg',
     '2088:2/imgContainer11': 'assets/figma/2088_2_344d5.svg',
+    '2088:2/imgGaming': 'assets/figma/interest_gaming.svg',
+    '2088:2/imgEnvironment': 'assets/figma/interest_environment.svg',
     '2083:456/imgCampusClubFair': 'assets/figma/2083_456_a9113.png',
     '2083:456/imgCreativePhotographyMeetup': 'assets/figma/2083_456_1317e.png',
     '2083:456/imgEviaLogo': 'assets/figma/2083_456_33196.png',

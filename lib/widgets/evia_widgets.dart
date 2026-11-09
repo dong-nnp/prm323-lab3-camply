@@ -59,11 +59,12 @@ class EviaPage extends StatelessWidget {
     required this.child,
     this.header,
     this.footer,
+    this.floatingActionButton,
     this.background = AppColors.background,
     super.key,
   });
   final Widget child;
-  final Widget? header, footer;
+  final Widget? header, footer, floatingActionButton;
   final Color background;
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -77,7 +78,21 @@ class EviaPage extends StatelessWidget {
             child: Column(
               children: [
                 ?header,
-                Expanded(child: child),
+                Expanded(
+                  child: floatingActionButton == null
+                      ? child
+                      : Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            child,
+                            Positioned(
+                              right: AppSpacing.lg,
+                              bottom: AppSpacing.lg,
+                              child: floatingActionButton!,
+                            ),
+                          ],
+                        ),
+                ),
                 ?footer,
               ],
             ),

@@ -1,3 +1,5 @@
+import '../../widgets/ai_filter_panel.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -76,6 +78,7 @@ class EviaFiltersScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AiFilterPanel(),
             for (final entry in groups.entries) ...[
               if (entry.key != 'Category')
                 const Padding(

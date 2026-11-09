@@ -1,3 +1,6 @@
+import '../../repositories/ai_filter_repository.dart';
+import '../../repositories/evibaby_repository.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../repositories/authentication_repository.dart';
@@ -48,4 +51,12 @@ final flow1RepositoryProvider = Provider(
     ref.watch(backendServiceProvider),
     crashReporting: ref.watch(crashReportingServiceProvider),
   ),
+);
+
+final aiFilterRepositoryProvider = Provider(
+  (ref) => AiFilterRepository(ref.watch(aiFilterServiceProvider)),
+);
+
+final evibabyRepositoryProvider = Provider(
+  (ref) => EvibabyRepository(ref.watch(backendServiceProvider)),
 );

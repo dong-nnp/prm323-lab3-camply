@@ -14,6 +14,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../core/providers/service_providers.dart';
 import '../../widgets/evia_brand.dart';
 import '../../widgets/evia_widgets.dart';
+import '../../widgets/evibaby_chat.dart';
 import '../../widgets/coin_icon.dart';
 import 'explore_screen.dart';
 
@@ -61,6 +62,7 @@ class _EviaDiscoverScreenState extends ConsumerState<EviaDiscoverScreen> {
         : vm.followedClubEvents;
     final screen = guest ? '2083:1143' : '2083:456';
     return EviaPage(
+      floatingActionButton: const EvibabyLauncher(),
       header: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,

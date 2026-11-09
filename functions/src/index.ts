@@ -5,6 +5,9 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { setGlobalOptions } from 'firebase-functions/v2';
+import { defineSecret } from 'firebase-functions/params';
+import { z } from 'zod';
+import { evibabyConfigured, evibabyReply, evibabyRequest, reserveEvibabyRequest } from './evibaby.js';
 import { createBackend } from './backend.js';
 import { REGION, PRODUCT_TIMEZONE } from './policy.js';
 import { createMaintenance } from './maintenance.js';
@@ -15,6 +18,24 @@ initializeApp();
 // Lab traffic fits fractional CPU and avoids exhausting the project's regional CPU quota.
 setGlobalOptions({ region: REGION, minInstances: 0, maxInstances: 3, memory: '256MiB', cpu: 'gcf_gen1', concurrency: 1 });
 const db = getFirestore(), backend = createBackend(db);
+const evibabyApiKey = defineSecret('EVIBABY_API_KEY');
+export const chatWithEvibaby = onCall({
+  secrets: [evibabyApiKey], timeoutSeconds: 60,
+  enforceAppCheck: process.env.ENFORCE_APP_CHECK === 'true',
+}, async request => {
+  try {
+    const input = evibabyRequest.parse(request.data);
+    const settings = { apiKey: evibabyApiKey.value(), baseUrl: process.env.EVIBABY_BASE_URL ?? '', model: process.env.EVIBABY_MODEL ?? '' };
+    if (!evibabyConfigured(settings)) throw new HttpsError('unavailable', 'EVIBABY_NOT_CONFIGURED', { code: 'EVIBABY_NOT_CONFIGURED' });
+    await reserveEvibabyRequest(db, request.auth ? { uid: request.auth.uid, token: request.auth.token } : null, new Date());
+    return await evibabyReply(input, settings, (name, data) => backend.invoke(name, null, data));
+  } catch (error) {
+    if (error instanceof HttpsError) throw error;
+    if (error instanceof z.ZodError) throw new HttpsError('invalid-argument', 'VALIDATION_FAILED', { code: 'VALIDATION_FAILED' });
+    console.error('Backend failure', { operation: 'chatWithEvibaby' });
+    throw new HttpsError('internal', 'EVIBABY_UNAVAILABLE', { code: 'EVIBABY_UNAVAILABLE' });
+  }
+});
 const callable = (name: string) => onCall({ enforceAppCheck: process.env.ENFORCE_APP_CHECK === 'true' }, async request => {
   try { return await backend.invoke(name, request.auth ? { uid: request.auth.uid, token: request.auth.token } : null, request.data ?? {}); }
   catch (error) {

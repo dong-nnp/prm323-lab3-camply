@@ -1,5 +1,18 @@
 # Design traceability — Evia
 
+> **Interests — yêu cầu trực tiếp 09/11/2026:** đối chiếu ảnh danh mục admin và
+> màn interest người dùng gửi, dùng Technology, Music, Arts, Sports, Photography,
+> Career, Volunteering, Business, Gaming và Environment. Giữ bố cục hai cột,
+> cập nhật mô tả và thêm hai thẻ cuối ở onboarding lẫn My Interests.
+> `interest_gaming.svg` và `interest_environment.svg` là icon vector cục bộ mới,
+> không phải Figma exports. Yêu cầu này thay thế giới hạn 8 thẻ ngày 05/11.
+
+> **Evibaby — 09/11/2026:** theo yêu cầu và ảnh Discover người dùng khoanh vị trí:
+> bong bóng góc phải trên bottom navigation, sheet chat và card sự kiện nhỏ.
+> Tái sử dụng AppTextField, EviaCard và AppColors/Spacing/Radius/Theme, touch >=48dp.
+> Chưa có asset/handoff riêng của linh vật; dùng Material support-agent icon,
+> không tự dựng hình Evibaby. TODO đối chiếu đồ họa mascot khi có thiết kế được duyệt.
+
 > **Admin typography — 07/11/2026:** Inter variable WOFF2 được bundle trong
 > `admin/public/fonts/inter` cùng giấy phép SIL OFL 1.1. CSS dùng 400/500/600/700,
 > heading/banner 700, section/card 600, sidebar 500 và active 600, body 400.
@@ -471,3 +484,8 @@ acceptance của 44 frames. Các nghiệp vụ chưa chốt vẫn bị backend k
 User requested visible mock data with local currency mutation/persistence removed.
 Daily Check-in previews day 8 (+20 from day 7). Financial actions wait for API.
 CoinIcon defaults to FlowTheme.gold. My Rewards Back returns to Rewards catalog.
+
+
+## AI filters — 09/11/2026
+
+AI filter assistant là mở rộng theo yêu cầu ngày 09/11/2026 trong Filter Events, tái sử dụng AppTextField/AppButton và tokens. TODO đối chiếu handoff Figma cho panel AI khi có thiết kế được duyệt.
