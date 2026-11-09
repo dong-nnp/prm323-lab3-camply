@@ -6,13 +6,16 @@ Dùng Android Emulator hoặc thiết bị QA có cấu hình `android/app/googl
 của app cần nghiệm thu. Đăng nhập để mở **Profile** và gắn UID vào báo cáo.
 
 ```powershell
-flutter run -d emulator-5554 --android-project-arg=eviaQaCrashlyticsEnabled=true --dart-define=FIREBASE_ENABLED=true
+flutter run
 ```
 
-Thay `emulator-5554` bằng ID thiết bị. Nút **Crash** bật mặc định trong debug.
-Để thử trên bản release QA, thêm `--release --dart-define=ENABLE_CRASH_TEST=true`
-vào lệnh trên. Bản release thường vô hiệu hóa nút. Cờ Gradle QA bật thu thập
-theo cấu hình manifest và SDK vẫn tôn trọng thiết lập thu thập đã lưu trên thiết bị.
+Nếu có nhiều thiết bị, thêm `-d DEVICE_ID`. Bản debug có cấu hình Firebase thật
+tự bật thu thập Crashlytics và nút **Crash**. SDK vẫn tôn trọng thiết lập thu
+thập đã lưu trên thiết bị. Bản release thường vô hiệu hóa nút. Để thử release QA:
+
+```powershell
+flutter run --release --android-project-arg=eviaQaCrashlyticsEnabled=true --dart-define=FIREBASE_ENABLED=true --dart-define=ENABLE_CRASH_TEST=true
+```
 
 1. **Fatal.** Bấm **Profile → Crash** trên app, sau đó mở lại app khi có mạng.
    Trong Firebase Console, mở sự kiện fatal mới và kiểm tra key

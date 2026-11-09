@@ -137,7 +137,7 @@ Android đã được FlutterFire cấu hình cho `evia-lab3-kiet-2026`; xem
 [firebase-setup.md](firebase-setup.md). Firestore cloud đã tạo với Rules deny-all,
 chưa có adapter/data model nghiệp vụ trong app. Dependency flow và sáu
 `PendingFirebaseServices` giữ nguyên; Firebase Core ready chỉ xác nhận bootstrap.
-`FIREBASE_ENABLED` tiếp tục mặc định false, có thể mở `/foundation` để kiểm tra.
+Có thể mở `/foundation` để kiểm tra trạng thái khởi tạo Firebase.
 
 Ứng dụng Android `prm393_lab03` dùng MVVM, Riverpod cho state và dependency
 injection, go_router cho navigation. Foundation kiểm tra cấu hình khởi động ở
@@ -214,7 +214,7 @@ sequenceDiagram
     VM-->>V: AppLoading
     VM->>R: initialize
     R->>S: initialize
-    alt FIREBASE_ENABLED false
+    alt Firebase chưa được bật
         S-->>R: notConfigured (không gọi SDK)
         R-->>VM: notConfigured
         VM-->>V: AppEmpty
@@ -300,18 +300,19 @@ theo user ID, không đổi session và không xóa sở thích. Không ghi nh�
 Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `BootstrapViewModel` → `BootstrapRepository`
 → `FirebaseInitializer`.
 
-1. Mặc định `FIREBASE_ENABLED=false`: service trả `notConfigured` trước mọi SDK
-   call; ViewModel chuyển sang `AppEmpty` với thông báo rõ ràng.
-2. Khi bật cờ sau cấu hình Android thật: service gọi `Firebase.initializeApp()`
-   dựa trên native resources do Google Services Gradle plugin tạo.
+1. Android debug tự phát hiện cấu hình Firebase native nếu không truyền cờ
+   `FIREBASE_ENABLED` và không dùng `DEMO_AUTH`. Khi Firebase tắt hoặc cấu hình
+   vắng mặt, service trả `notConfigured` và ViewModel hiển thị `AppEmpty`.
+2. Khi Firebase được bật, service gọi `Firebase.initializeApp()` dựa trên native
+   resources do Google Services Gradle plugin tạo.
 3. Thành công chỉ có nghĩa Firebase Core đã khởi tạo (`AppData`), chưa có nghĩa
    sáu dịch vụ đã được tích hợp. Adapter pending vẫn giữ nguyên.
 4. Khởi tạo lỗi hoặc quá 15 giây: hiển thị `AppError`, cho phép thử lại.
    Raw SDK error không được hiển thị cho người dùng.
 
-Trong cấu hình nền tảng mặc định không gắn Crashlytics handlers, Analytics observers, FCM permission prompts,
-background messaging handlers hoặc Remote Config fetch trong foundation.
-Android manifest tắt auto collection của Analytics, Crashlytics, FCM auto-init.
+Android debug đã cấu hình Firebase bật Analytics qua service adapter và
+Crashlytics qua manifest. Bản release cần bật thu thập bằng cấu hình riêng.
+FCM auto-init tiếp tục được kiểm soát bởi adapter sau đăng nhập.
 
 ## Navigation và authentication
 

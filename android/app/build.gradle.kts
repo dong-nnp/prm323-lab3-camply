@@ -10,17 +10,23 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Keep the default offline build available on machines without Firebase config.
-if (file("google-services.json").exists()) {
+val firebaseConfigured = file("google-services.json").exists()
+// Keep offline builds available on machines without Firebase config.
+if (firebaseConfigured) {
     apply(plugin = "com.google.gms.google-services")
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
 val eviaDartDefines = providers.gradleProperty("dart-defines").orNull.orEmpty()
     .split(',').filter { it.isNotEmpty() }
-    .map { String(Base64.getDecoder().decode(it), Charsets.UTF_8) }.toSet()
-val eviaAnalyticsEnabled = "FIREBASE_ENABLED=true" in eviaDartDefines &&
-    "ANALYTICS_ENABLED=true" in eviaDartDefines && "DEMO_AUTH=true" !in eviaDartDefines
+    .map { String(Base64.getDecoder().decode(it), Charsets.UTF_8) }
+    .associate { it.substringBefore('=') to it.substringAfter('=', "") }
+val firebaseFlag = eviaDartDefines["FIREBASE_ENABLED"]
+val analyticsFlag = eviaDartDefines["ANALYTICS_ENABLED"]?.toBooleanStrictOrNull()
+val demoAuthEnabled = eviaDartDefines["DEMO_AUTH"] == "true"
+val debugFirebaseEnabled = firebaseConfigured && (firebaseFlag == null || firebaseFlag == "true") && !demoAuthEnabled
+val debugCrashlyticsEnabled = debugFirebaseEnabled &&
+    providers.gradleProperty("eviaQaCrashlyticsEnabled").orNull != "false"
 val qaCrashlyticsEnabled = providers.gradleProperty("eviaQaCrashlyticsEnabled").orNull == "true"
 
 android {
@@ -34,7 +40,8 @@ android {
     }
 
     defaultConfig {
-        manifestPlaceholders["eviaAnalyticsDeactivated"] = (!eviaAnalyticsEnabled).toString()
+        manifestPlaceholders["eviaAnalyticsDeactivated"] =
+            (!(firebaseConfigured && firebaseFlag == "true" && analyticsFlag == true && !demoAuthEnabled)).toString()
         manifestPlaceholders["eviaCrashlyticsCollectionEnabled"] = "false"
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.prm393_lab03"
@@ -52,12 +59,16 @@ android {
 
     buildTypes {
         debug {
-            manifestPlaceholders["eviaQaCrashlyticsEnabled"] = qaCrashlyticsEnabled.toString()
+            manifestPlaceholders["eviaAnalyticsDeactivated"] =
+                (!(debugFirebaseEnabled && analyticsFlag != false)).toString()
+            manifestPlaceholders["eviaCrashlyticsCollectionEnabled"] = debugCrashlyticsEnabled.toString()
+            manifestPlaceholders["eviaQaCrashBridgeEnabled"] =
+                (debugCrashlyticsEnabled && qaCrashlyticsEnabled).toString()
         }
         release {
             manifestPlaceholders["eviaCrashlyticsCollectionEnabled"] =
-                (qaCrashlyticsEnabled && "ENABLE_CRASH_TEST=true" in eviaDartDefines &&
-                    "FIREBASE_ENABLED=true" in eviaDartDefines).toString()
+                (firebaseConfigured && qaCrashlyticsEnabled && eviaDartDefines["ENABLE_CRASH_TEST"] == "true" &&
+                    firebaseFlag == "true").toString()
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

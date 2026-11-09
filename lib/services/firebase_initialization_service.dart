@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 
 import '../core/constants/app_strings.dart';
 import '../core/errors/app_exception.dart';
@@ -12,6 +13,15 @@ final class FirebaseInitializationService implements FirebaseInitializer {
 
   final bool enabled;
   final Future<void> Function()? onReady;
+
+  static Future<bool> hasAndroidConfig() async {
+    const channel = MethodChannel('evia/firebase_configuration');
+    try {
+      return await channel.invokeMethod<bool>('hasAndroidConfig') ?? false;
+    } on MissingPluginException {
+      return false;
+    }
+  }
 
   @override
   Future<FirebaseStatus> initialize() async {

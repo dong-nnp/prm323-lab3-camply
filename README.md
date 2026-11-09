@@ -13,7 +13,7 @@
 
 > **Form sự kiện — 06/11/2026:** Vite admin tự sinh mã/nguồn/điều khoản, chọn danh mục và ban tổ chức bằng tên, bỏ lịch JSON khỏi form. Chọn ảnh có preview, tải trực tiếp Firebase Storage khi lưu. Rules đã deploy, upload/download thật đã kiểm và dọn ảnh QA. [Hướng dẫn và giới hạn](docs/ADMIN_EVENT_EDITOR.md).
 
-> **Analytics — 06/11/2026:** đã nối 11 events Android qua service/repository, thêm xuất CSV ở Coin History và bộ lọc Android/Web cho báo cáo Vite admin. Bật riêng `ANALYTICS_ENABLED=true` cùng `FIREBASE_ENABLED=true`; mặc định tắt, không tracking mock. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).
+> **Analytics:** đã nối 11 events Android qua service/repository, thêm xuất CSV ở Coin History và bộ lọc Android/Web cho báo cáo Vite admin. `flutter run` tự bật Analytics và Crashlytics trên Android debug đã cấu hình Firebase. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).
 
 > **Admin Flutter Web — 06/11/2026:** [Portal quản trị độc lập](admin_flutter/README.md).
 > Một admin quản lý CLB/sự kiện/check-in/quà/thành tựu/thông báo và tra cứu ví,
@@ -259,10 +259,9 @@ text/buttons Flutter thật. `assets/EVIA_S01_Welcome_Reference.png` chỉ là t
 layout, không bundle hay dùng làm background. Bố cục scroll trên màn thấp/chữ lớn.
 Repository chưa có iOS host; chưa xác minh native splash iOS.
 
-`FIREBASE_ENABLED` mặc định false, được đọc ở compile time. Nếu bật true mà thiếu
-cấu hình hợp lệ, Dart initialization error sẽ chuyển thành error state có Retry,
-không để exception SDK thoát thẳng ra màn hình. Không bật cờ trước khi hoàn tất
-cấu hình Android/Gradle.
+`FIREBASE_ENABLED` là cờ compile time để ghi đè cấu hình tự động của Android
+debug. Nếu đặt `true` khi thiếu cấu hình hợp lệ, app hiển thị lỗi khởi tạo và
+nút Retry. Hãy đặt cấu hình Firebase hợp lệ trước khi bật cờ này.
 
 ## Dependencies
 
@@ -461,11 +460,13 @@ hiện các bước sau bằng tài khoản và project thật được cấp qu
 5. Kiểm tra Core initialization bằng:
 
    ```powershell
-   flutter run -d DEVICE_ID --dart-define=FIREBASE_ENABLED=true
+   flutter run
    ```
 
-   Nếu chưa cấu hình thật, tiếp tục dùng `flutter run` mặc định. Cờ chỉ kiểm soát
-   Dart bootstrap; native Firebase có thể auto-initialize khi có native config.
+   Android debug kiểm tra cấu hình Firebase native trước khi bật các adapter.
+   Nếu thiếu `google-services.json`, app chạy ở chế độ chưa cấu hình. Để chọn
+   thiết bị, thêm `-d DEVICE_ID`. Dùng `--dart-define=FIREBASE_ENABLED=false`
+   để tắt các adapter Firebase ở bản debug.
 6. Sau khi xác nhận yêu cầu và phạm vi tích hợp, triển khai từng service adapter:
    - **Authentication:** bật Google provider trong Firebase Console, đăng ký
      SHA-1/SHA-256 của signing certificate thực tế, tải/cập nhật config nếu cần;
@@ -477,8 +478,8 @@ hiện các bước sau bằng tài khoản và project thật được cấp qu
      mở truy cập; không thay bằng public allow-all để demo.
    - **Messaging:** triển khai token, permission và message handlers trong service
      sau khi xác định flow; không đăng ký token/yêu cầu quyền ở foundation.
-   - **Analytics:** Android manifest mặc định tắt auto collection và automatic
-     screen reporting.
+   - **Analytics:** Debug đã cấu hình Firebase bật collection qua adapter; automatic
+     screen reporting vẫn tắt.
    - **Crashlytics:** xem quy trình bật collection và kiểm thử Android debug QA
      trong [hướng dẫn Crashlytics](docs/EVIA_Crashlytics_Implementation.md).
    - **Remote Config:** `firebase/remote-config-defaults.json` hiện là `{}` vì
@@ -486,7 +487,7 @@ hiện các bước sau bằng tài khoản và project thật được cấp qu
      file này chưa được tải tự động vào app hoặc publish lên Console.
 7. Thay provider tương ứng trong `lib/core/providers/service_providers.dart`,
    thêm tests và chỉ chủ động bật collection/FCM auto-init khi integration đó
-   đã được yêu cầu. `FIREBASE_ENABLED=true` tự nó không bật tracking hay adapters.
+   đã được yêu cầu.
 
 Các file cấu hình môi trường được ignore để mỗi máy tự cấu hình bằng CLI. Không
 commit service-account keys, signing keys, tokens hoặc secrets. Nếu nhóm cần

@@ -18,13 +18,15 @@ không suy đoán Google sign-up. Sáu events còn lại trong analytics-plan v�
 ## Chạy Android
 
 ```powershell
-& 'F:\Mobile_Programing\flutter_evia_lab3\bin\flutter.bat' run -d R3CR60CT0WZ --dart-define=FIREBASE_ENABLED=true --dart-define=ANALYTICS_ENABLED=true
+flutter run
 ```
 
-`ANALYTICS_ENABLED` mặc định false. Firebase chưa bật hoặc `DEMO_AUTH=true`
-không chọn real adapter. Android build dùng metadata deactivated khi không
-bật đủ hai cờ hoặc bật DEMO_AUTH; điều này chặn cả preference collection được
-lưu từ APK trước. SDK chỉ bật collection qua service sau bootstrap thật.
+Android debug tự bật Firebase và Analytics khi có `android/app/google-services.json`
+hợp lệ. Dùng `--dart-define=ANALYTICS_ENABLED=false` để tắt Analytics khi debug.
+Thiếu cấu hình Firebase hoặc chạy `DEMO_AUTH=true` sẽ không chọn real adapter.
+Bản profile/release cần bật cả `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`.
+Android build dùng metadata deactivated khi Analytics bị tắt để chặn cả preference
+đã lưu từ APK trước. SDK bật collection qua service sau bootstrap thật.
 Automatic screen reporting vẫn tắt. Cờ này dành cho build demo đã cho phép;
 consent/retention/access production vẫn phải chốt trước khi phát hành.
 
@@ -77,11 +79,11 @@ API vẫn yêu cầu admin; client cũ chỉ gửi `{days}` vẫn hoạt động
 suy ra funnel/tỷ lệ chuyển đổi từ bảng này. Báo cáo có độ trễ, dùng DebugView
 để kiểm tra từng thao tác khi phát triển.
 
-Sau review code, deploy **riêng** callable đã đổi nếu muốn dùng bộ lọc mới:
-
 Chọn **Realtime · 30 phút** để xem dữ liệu gần đây qua `runRealtimeReport`.
 Web tự tải lại mỗi 30 giây khi trang Analytics đang hiển thị. GA4 cần thời
 gian nhận và xử lý sự kiện, nên số liệu vẫn có thể cập nhật sau vài phút.
+
+Sau review code, deploy **riêng** callable đã đổi nếu muốn dùng bộ lọc mới:
 
 ```powershell
 npm --prefix functions run build
