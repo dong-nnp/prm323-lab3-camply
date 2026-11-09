@@ -1,6 +1,9 @@
 /// Only content IDs and enumerated values may cross the telemetry boundary.
 abstract final class AnalyticsEvents {
   static const _schema = <String, Map<String, Type>>{
+    'ai_request': {},
+    'ai_result_accepted': {},
+    'ai_error': {},
     'login': {'method': String},
     'sign_up': {'method': String},
     'logout': {},

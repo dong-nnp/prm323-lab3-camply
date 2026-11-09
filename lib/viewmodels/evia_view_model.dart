@@ -264,6 +264,18 @@ class EviaViewModel extends Notifier<EviaState> {
   void selectOrganizer(String organizer) =>
       state = state.copyWith(organizer: organizer);
   void toggleSort() => state = state.copyWith(descending: !state.descending);
+  void useAiFilters(EventFilters suggestion) {
+    var draft = state.draft
+        .withValue('Category', suggestion.category)
+        .withValue('Date', suggestion.date)
+        .withValue('Time', suggestion.time)
+        .withValue('Duration', suggestion.duration);
+    if (suggestion.rangeStart != null && suggestion.rangeEnd != null) {
+      draft = draft.withRange(suggestion.rangeStart!, suggestion.rangeEnd!);
+    }
+    state = state.copyWith(draft: draft);
+  }
+
   void beginFilters() => state = state.copyWith(draft: state.filters);
   void selectFilter(String group, String value) =>
       state = state.copyWith(draft: state.draft.withValue(group, value));
