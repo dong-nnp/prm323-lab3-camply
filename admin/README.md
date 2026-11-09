@@ -127,6 +127,9 @@ thiếu quyền, kết quả phiên cũ và lỗi observer. Build và 15 unit te
   số xu và bấm **Xuất bản và áp dụng**. Mở lại **Rewards → Daily Check-in**
   trên mobile và kiểm tra lịch mới cùng số xu cộng vào ví khi điểm danh.
   Từ ngày 8 trở đi, mức thưởng bằng Ngày 7.
+  Trong **Giới thiệu Event Milestones**, chọn **Hiển thị** hoặc **Ẩn**, nhập
+  nội dung giới thiệu (tối đa 500 ký tự), rồi xuất bản. Mở lại **Rewards →
+  Event Milestones** trên Flutter để kiểm tra sau khi app tải cấu hình.
 - **Analytics.** Thực hiện thao tác trên admin web, chọn khoảng ngày và
   tải báo cáo khi GA4 đã xử lý dữ liệu. Báo cáo xếp theo lượt ghi nhận.
 - **Crashlytics.** Dùng `npm --prefix admin run dev:android-qa -- emulator-5554`

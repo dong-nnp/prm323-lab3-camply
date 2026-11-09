@@ -7,44 +7,73 @@ import { Actor, coins, empty, fail } from './shared.js';
 import { dailyRewardPolicy, dailyRewardsSchema, defaultDailyRewards } from './policy.js';
 
 const daysInput = z.object({ days: z.union([z.literal(7), z.literal(30)]) }).strict();
-const analyticsInput = daysInput.extend({
-  source: z.enum(['configured', 'android', 'web']).default('configured'),
-});
+const analyticsSource = z.enum(['configured', 'android', 'web']).default('configured');
+const analyticsInput = z.union([
+  daysInput.extend({ source: analyticsSource }),
+  z.object({ realtime: z.literal(true), source: analyticsSource }).strict(),
+]);
 
 export function analyticsReportQuery(raw: unknown, stream?: string) {
-  const { days, source } = analyticsInput.parse(raw);
+  const input = analyticsInput.parse(raw);
+  const { source } = input;
   const dimensionFilter = source === 'configured'
     ? (stream ? { filter: { fieldName: 'streamId', stringFilter: { matchType: 'EXACT', value: stream } } } : undefined)
     : { filter: { fieldName: 'platform', stringFilter: { matchType: 'EXACT', value: source === 'android' ? 'Android' : 'web', caseSensitive: false } } };
   return {
-    dateRanges: [{ startDate: String(days - 1) + 'daysAgo', endDate: 'today' }],
+    ...('days' in input
+      ? { dateRanges: [{ startDate: String(input.days - 1) + 'daysAgo', endDate: 'today' }] }
+      : { minuteRanges: [{ startMinutesAgo: 29, endMinutesAgo: 0 }] }),
     dimensions: [{ name: 'eventName' }],
-    metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
+    metrics: [{ name: 'eventCount' }, { name: 'realtime' in input ? 'activeUsers' : 'totalUsers' }],
     orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
     limit: '25',
     ...(dimensionFilter && { dimensionFilter }),
   };
 }
-const configInput = z.object({
+const dailyRewardInput = z.object({
   etag: z.string().min(1).max(500),
   day: z.number().int().min(1).max(7),
   coins,
 }).strict();
+const milestoneInput = dailyRewardInput.pick({ etag: true }).extend({
+  milestones: z.object({
+    enabled: z.boolean(),
+    intro: z.string().trim().min(1).max(500),
+  }).strict(),
+});
+const configInput = z.union([dailyRewardInput, milestoneInput]);
 const rewardKey = 'daily_checkin_rewards';
+const milestoneEnabledKey = 'event_milestones_enabled';
+const milestoneIntroKey = 'event_milestones_intro';
+const defaultMilestoneIntro = 'Complete event milestones to earn extra Evia Coin.';
 
-function rewardParameters(template: RemoteConfigTemplate) {
-  const group = Object.values(template.parameterGroups ?? {}).find(item => rewardKey in item.parameters);
+function parameterMap(template: RemoteConfigTemplate, key: string) {
+  const group = Object.values(template.parameterGroups ?? {}).find(item => key in item.parameters);
   return group?.parameters ?? template.parameters;
 }
 
+function parameterDefault(template: RemoteConfigTemplate, key: string) {
+  const value = parameterMap(template, key)[key]?.defaultValue;
+  return value && 'value' in value ? value.value : undefined;
+}
+
 function publishedRewards(template: RemoteConfigTemplate): readonly number[] {
-  const value = rewardParameters(template)[rewardKey]?.defaultValue;
-  if (!value || !('value' in value)) return defaultDailyRewards;
+  const value = parameterDefault(template, rewardKey);
+  if (value === undefined) return defaultDailyRewards;
   try {
-    return dailyRewardsSchema.parse(JSON.parse(value.value));
+    return dailyRewardsSchema.parse(JSON.parse(value));
   } catch {
     fail('REMOTE_CONFIG_REWARD_INVALID');
   }
+}
+
+function publishedMilestones(template: RemoteConfigTemplate) {
+  const enabled = parameterDefault(template, milestoneEnabledKey)?.trim().toLowerCase();
+  const intro = parameterDefault(template, milestoneIntroKey)?.trim();
+  return {
+    enabled: enabled !== 'false',
+    intro: intro && intro.length <= 500 ? intro : defaultMilestoneIntro,
+  };
 }
 
 function remoteConfigView(template: RemoteConfigTemplate, appliedRewards: readonly number[]) {
@@ -53,18 +82,37 @@ function remoteConfigView(template: RemoteConfigTemplate, appliedRewards: readon
     version: template.version?.versionNumber ?? null,
     rewards: publishedRewards(template),
     appliedRewards,
+    milestones: publishedMilestones(template),
   };
 }
 
-export function updateDailyReward(template: RemoteConfigTemplate, input: z.infer<typeof configInput>) {
+export function updateDailyReward(template: RemoteConfigTemplate, input: z.infer<typeof dailyRewardInput>) {
   if (template.etag !== input.etag) fail('REMOTE_CONFIG_CHANGED', 'aborted');
   const rewards = [...publishedRewards(template)];
   rewards[input.day - 1] = input.coins;
-  const parameters = rewardParameters(template);
+  const parameters = parameterMap(template, rewardKey);
   parameters[rewardKey] = {
     ...parameters[rewardKey],
     defaultValue: { value: JSON.stringify(rewards) },
     valueType: 'JSON',
+  };
+  return template;
+}
+
+export function updateMilestonePresentation(template: RemoteConfigTemplate, raw: unknown) {
+  const { etag, milestones } = milestoneInput.parse(raw);
+  if (template.etag !== etag) fail('REMOTE_CONFIG_CHANGED', 'aborted');
+  const enabled = parameterMap(template, milestoneEnabledKey);
+  enabled[milestoneEnabledKey] = {
+    ...enabled[milestoneEnabledKey],
+    defaultValue: { value: String(milestones.enabled) },
+    valueType: enabled[milestoneEnabledKey]?.valueType ?? 'BOOLEAN',
+  };
+  const intro = parameterMap(template, milestoneIntroKey);
+  intro[milestoneIntroKey] = {
+    ...intro[milestoneIntroKey],
+    defaultValue: { value: milestones.intro },
+    valueType: 'STRING',
   };
   return template;
 }
@@ -114,14 +162,25 @@ export function adminIntegrations(db: Firestore) {
       const service = getRemoteConfig();
       let template = await service.getTemplate().catch(error => upstream(error, 'REMOTE_CONFIG'));
       if (template.etag !== input.etag) fail('REMOTE_CONFIG_CHANGED', 'aborted');
-      if (publishedRewards(template)[input.day - 1] !== input.coins) {
-        const updated = updateDailyReward(template, input);
+      const rewardsBefore = publishedRewards(template);
+      const changed = 'milestones' in input
+        ? parameterDefault(template, milestoneEnabledKey) !== String(input.milestones.enabled) ||
+          parameterDefault(template, milestoneIntroKey) !== input.milestones.intro
+        : rewardsBefore[input.day - 1] !== input.coins;
+      if (changed) {
+        const updated = 'milestones' in input
+          ? updateMilestonePresentation(template, input)
+          : updateDailyReward(template, input);
         try {
           const validated = await service.validateTemplate(updated);
           template = await service.publishTemplate(validated);
         } catch (error) {
           upstream(error, 'REMOTE_CONFIG');
         }
+      }
+      if ('milestones' in input) {
+        const applied = await policy.get();
+        return remoteConfigView(template, applied.get('rewards') ?? defaultDailyRewards);
       }
       // Daily check-in reads this policy in the same transaction as the wallet.
       // Reapplying a published value repairs a failed write without publishing again.
@@ -140,19 +199,21 @@ export function adminIntegrations(db: Firestore) {
     },
     getAdminAnalyticsReport: async (actor: Actor | null, raw: unknown) => {
       requireAdmin(actor);
-      const { days, source } = analyticsInput.parse(raw);
+      const input = analyticsInput.parse(raw);
+      const { source } = input;
+      const method = 'realtime' in input ? 'runRealtimeReport' : 'runReport';
       cloudOnly();
       const property = process.env.ADMIN_GA4_PROPERTY_ID;
       const stream = process.env.ADMIN_GA4_STREAM_ID;
       if (!property || !/^\d+$/.test(property) || (stream && !/^\d+$/.test(stream))) fail('ANALYTICS_NOT_CONFIGURED');
       try {
         const { data } = await analyticsAuth.request<AnalyticsReport>({
-          url: 'https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':runReport',
+          url: 'https://analyticsdata.googleapis.com/v1beta/properties/' + property + ':' + method,
           method: 'POST',
           timeout: 12000,
           data: analyticsReportQuery(raw, stream),
         });
-        return { days, scope: source === 'configured' ? (stream ? 'stream' : 'property') : source, items: (data.rows ?? []).map(row => ({
+        return { ...('days' in input ? { days: input.days } : { realtime: true }), scope: source === 'configured' ? (stream ? 'stream' : 'property') : source, items: (data.rows ?? []).map(row => ({
           name: row.dimensionValues[0].value, count: row.metricValues[0].value, users: row.metricValues[1].value,
         })) };
       } catch (error) {

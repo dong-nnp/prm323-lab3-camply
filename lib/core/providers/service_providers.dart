@@ -24,9 +24,13 @@ import '../../services/firebase_authentication_service.dart';
 import '../../services/firebase_messaging_service.dart';
 import '../../services/unavailable_backend_service.dart';
 
+final firebaseEnabledProvider = Provider<bool>(
+  (ref) => FirebaseConfiguration.enabled,
+);
+
 final firebaseInitializerProvider = Provider<FirebaseInitializer>(
   (ref) => FirebaseInitializationService(
-    enabled: FirebaseConfiguration.enabled,
+    enabled: ref.watch(firebaseEnabledProvider),
     onReady: ref.watch(_androidCrashReportingProvider)?.start,
   ),
 );
@@ -38,10 +42,11 @@ final _pendingServicesProvider = Provider(
 );
 
 final demoAuthEnabledProvider = Provider<bool>(
-  (ref) => kDebugMode && const bool.fromEnvironment('DEMO_AUTH'),
+  (ref) => FirebaseConfiguration.demoAuthEnabled,
 );
 final realBackendEnabledProvider = Provider<bool>(
-  (ref) => FirebaseConfiguration.enabled && !ref.watch(demoAuthEnabledProvider),
+  (ref) =>
+      ref.watch(firebaseEnabledProvider) && !ref.watch(demoAuthEnabledProvider),
 );
 final _firebaseReadyProvider = Provider<Future<void> Function()>((ref) {
   Future<void>? ready;
@@ -90,7 +95,7 @@ final analyticsServiceProvider = Provider<AnalyticsService>(
 final analyticsEnabledProvider = Provider<bool>(
   (ref) =>
       ref.watch(realBackendEnabledProvider) &&
-      const bool.fromEnvironment('ANALYTICS_ENABLED'),
+      FirebaseConfiguration.analyticsEnabled,
 );
 final reportExportServiceProvider = Provider<ReportExportService>(
   (ref) => AndroidReportExportService(),

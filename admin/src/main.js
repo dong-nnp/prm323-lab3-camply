@@ -298,7 +298,6 @@ async function updateAuth(user) {
     $('gate').hidden = true;
     $('workspace').hidden = false;
     androidQaButton.hidden = !androidQaEnabled || firebase.emulator;
-    $('android-qa-hint').hidden = !androidQaButton.hidden;
     const dashboard = $('crashlytics-dashboard');
     dashboard.hidden = firebase.emulator;
     if (!firebase.emulator) {

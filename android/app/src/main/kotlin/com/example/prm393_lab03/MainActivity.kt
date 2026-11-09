@@ -22,8 +22,10 @@ class MainActivity : FlutterActivity() {
 
         val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
         val marker = File(filesDir, "evia-qa-crash-pid")
-        if (metadata?.getBoolean("firebase_crashlytics_collection_enabled") == true) {
+        if (metadata?.getBoolean("evia_android_qa_crash_bridge_enabled") == true) {
             runCatching { marker.writeText(Process.myPid().toString()) }
+        } else {
+            runCatching { marker.delete() }
         }
     }
 
@@ -70,6 +72,15 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "evia/firebase_configuration")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "hasAndroidConfig") {
+                    // google-services generates this resource only for a configured Android app.
+                    result.success(resources.getIdentifier("google_app_id", "string", packageName) != 0)
+                } else {
+                    result.notImplemented()
+                }
+            }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "evia/reports")
             .setMethodCallHandler { call, result ->
                 if (call.method != "saveCsv") { result.notImplemented(); return@setMethodCallHandler }
