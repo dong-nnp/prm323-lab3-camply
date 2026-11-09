@@ -4,7 +4,7 @@ import test, { after } from 'node:test';
 import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createBackend } from '../lib/backend.js';
-import { updateDailyReward } from '../lib/admin_integrations.js';
+import { updateDailyReward, updateMilestonePresentation } from '../lib/admin_integrations.js';
 
 const projectId = 'demo-evia-backend';
 assert.equal(process.env.GCLOUD_PROJECT, projectId);
@@ -112,4 +112,29 @@ test('Remote Config edits only the selected daily reward and refuses a stale tem
   });
   updateDailyReward(template, { etag: 'version-one', day: 1, coins: 0 });
   assert.deepEqual(JSON.parse(template.parameters.daily_checkin_rewards.defaultValue.value), [0, 10, 15, 30, 50, 70, 80]);
+});
+
+test('Remote Config publishes the milestone defaults without replacing targeting or daily rewards', () => {
+  const dailyRewards = { defaultValue: { value: '[5,10,15,30,50,70,100]' }, valueType: 'JSON' };
+  const conditionalValues = { QA: { value: 'true' } };
+  const template = {
+    etag: 'current',
+    conditions: [{ name: 'QA', expression: "app.id == 'example'" }],
+    parameters: { daily_checkin_rewards: dailyRewards },
+    parameterGroups: { Features: { parameters: {
+      event_milestones_enabled: { defaultValue: { value: 'true' }, conditionalValues, valueType: 'BOOLEAN' },
+    } } },
+  };
+  const input = { etag: 'current', milestones: { enabled: false, intro: '  Earn coins at events.  ' } };
+  assert.throws(() => updateMilestonePresentation(template, { ...input, etag: 'stale' }), appError('REMOTE_CONFIG_CHANGED'));
+  assert.throws(() => updateMilestonePresentation(template, { ...input, milestones: { enabled: false, intro: '  ' } }));
+  updateMilestonePresentation(template, input);
+  assert.deepEqual(template.parameterGroups.Features.parameters.event_milestones_enabled, {
+    defaultValue: { value: 'false' }, conditionalValues, valueType: 'BOOLEAN',
+  });
+  assert.deepEqual(template.parameters.event_milestones_intro, {
+    defaultValue: { value: 'Earn coins at events.' }, valueType: 'STRING',
+  });
+  assert.equal(template.parameters.daily_checkin_rewards, dailyRewards);
+  assert.equal(template.conditions[0].name, 'QA');
 });

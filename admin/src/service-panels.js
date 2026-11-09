@@ -51,52 +51,74 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
   const coins = form.elements.rewardCoins;
   const reload = $('fetch-config');
   const publish = $('publish-config');
+  const milestoneForm = $('milestone-config-form');
+  const milestoneEnabled = milestoneForm.elements.enabled;
+  const milestoneIntro = milestoneForm.elements.intro;
+  const publishMilestones = $('publish-milestone-config');
   let config;
   let configRequested = false;
   let configBusy = false;
   const reportForm = $('analytics-report-form');
   const reportButton = reportForm.querySelector('button');
   let analyticsRequested = false;
+  let realtimeTimer;
 
   function showSelectedReward() {
     coins.value = config?.rewards[Number(day.value) - 1] ?? '';
-  }
-  let realtimeTimer;
-
-  function setConfig(value) {
-    config = value;
-    showSelectedReward();
   }
 
   function syncConfigControls() {
     reload.disabled = configBusy;
     publish.disabled = day.disabled = coins.disabled = configBusy || !config;
+    publishMilestones.disabled = milestoneEnabled.disabled = milestoneIntro.disabled = configBusy || !config?.milestones;
   }
 
-  async function runConfig(saving) {
+  function showMilestoneConfig() {
+    milestoneEnabled.value = String(config?.milestones?.enabled ?? true);
+    milestoneIntro.value = config?.milestones?.intro ?? '';
+  }
+
+  async function runConfig(changes) {
     const current = session();
-    if (!current || configBusy || (saving && !config)) return;
+    if (!current || configBusy || (changes && !config)) return;
     configRequested = true;
-    const input = saving ? { etag: config.etag, day: Number(day.value), coins: coins.valueAsNumber } : null;
+    const editingMilestones = Boolean(changes?.milestones);
+    const statusId = editingMilestones ? 'milestone-config-status' : 'config-status';
     configBusy = true;
     syncConfigControls();
-    status('config-status', saving ? 'Đang xuất bản…' : 'Đang tải cấu hình…');
+    status(statusId, changes ? 'Đang xuất bản…' : 'Đang tải cấu hình…');
     try {
-      const value = await (saving ? firebase.publishRemoteConfig(input) : firebase.getRemoteConfig());
+      const value = await (changes
+        ? firebase.publishRemoteConfig({ etag: config.etag, ...changes })
+        : firebase.getRemoteConfig());
       if (session() !== current) return;
       if (!Array.isArray(value.rewards) || !Array.isArray(value.appliedRewards)) {
         throw new Error('Backend chưa hỗ trợ lịch Daily Check-in. Cập nhật Cloud Functions rồi tải lại.');
       }
-      setConfig(value);
-      if (saving) void track('admin_remote_config_published');
-      const message = saving ? 'Đã áp dụng mức thưởng Daily Check-in.' : 'Đã tải cấu hình.';
-      const pending = value.rewards.some((coins, index) => coins !== value.appliedRewards[index])
-        ? ' Lịch đã xuất bản chưa đồng bộ. Bấm Xuất bản và áp dụng để đồng bộ.' : '';
-      status('config-status', message + pending);
+      config = value;
+      if (changes) void track('admin_remote_config_published');
+      if (!editingMilestones) {
+        showSelectedReward();
+        const message = changes ? 'Đã áp dụng mức thưởng Daily Check-in.' : 'Đã tải cấu hình.';
+        const pending = value.rewards.some((coins, index) => coins !== value.appliedRewards[index])
+          ? ' Lịch đã xuất bản chưa đồng bộ. Bấm Xuất bản và áp dụng để đồng bộ.' : '';
+        status('config-status', message + pending);
+      }
+      if (!changes || editingMilestones) {
+        showMilestoneConfig();
+        status('milestone-config-status', value.milestones
+          ? (editingMilestones ? 'Đã xuất bản cấu hình Event Milestones.' : '')
+          : 'Cập nhật Cloud Functions để chỉnh cấu hình Event Milestones.', !value.milestones);
+      }
     } catch (error) {
       if (session() !== current) return;
-      setConfig(undefined);
-      status('config-status', adminErrorMessage(error), true);
+      if (!changes) {
+        config = undefined;
+        showSelectedReward();
+        showMilestoneConfig();
+        status('milestone-config-status', '');
+      }
+      status(statusId, adminErrorMessage(error), true);
     } finally {
       if (session() === current) {
         configBusy = false;
@@ -157,18 +179,33 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
   day.addEventListener('change', showSelectedReward);
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (config && window.confirm('Xuất bản và áp dụng mức thưởng cho ngày đã chọn?')) void runConfig(true);
+    if (config && window.confirm('Xuất bản và áp dụng mức thưởng cho ngày đã chọn?')) {
+      void runConfig({ day: Number(day.value), coins: coins.valueAsNumber });
+    }
   });
-  reload.addEventListener('click', () => void runConfig(false));
+  milestoneForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const intro = milestoneIntro.value.trim();
+    if (!intro) {
+      status('milestone-config-status', 'Nhập nội dung giới thiệu.', true);
+      milestoneIntro.focus();
+      return;
+    }
+    if (config?.milestones && window.confirm('Xuất bản cấu hình giới thiệu Event Milestones?')) {
+      void runConfig({ milestones: { enabled: milestoneEnabled.value === 'true', intro } });
+    }
+  });
+  reload.addEventListener('click', () => void runConfig());
   reportForm.addEventListener('submit', event => {
     event.preventDefault();
     void loadReport();
   });
+  reportForm.addEventListener('change', () => { void loadReport(); });
 
   return {
     open(page) {
       clearInterval(realtimeTimer);
-      if (page === 'config' && !configRequested) void runConfig(false);
+      if (page === 'config' && !configRequested) void runConfig();
       if (page === 'analytics') {
         if (!analyticsRequested || reportForm.elements.days.value === 'realtime') void loadReport();
         realtimeTimer = setInterval(() => {
@@ -179,11 +216,15 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
       }
     },
     reset() {
+      clearInterval(realtimeTimer);
       configBusy = configRequested = false;
       analyticsRequested = false;
-      setConfig(undefined);
+      config = undefined;
+      showSelectedReward();
+      showMilestoneConfig();
       syncConfigControls();
       status('config-status', '');
+      status('milestone-config-status', '');
       reportButton.disabled = reportForm.elements.days.disabled = false;
       if (reportForm.elements.source) reportForm.elements.source.disabled = false;
       renderReport([]);
@@ -191,5 +232,3 @@ export function setupServicePanels({ firebase, session, status, text, track }) {
     },
   };
 }
-  reportForm.addEventListener('change', () => { void loadReport(); });
-      clearInterval(realtimeTimer);

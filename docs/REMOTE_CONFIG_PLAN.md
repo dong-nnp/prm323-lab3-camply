@@ -4,8 +4,14 @@ Cập nhật: **05/11/2026**. Hai key Event Milestones đã publish lên Firebas
 Flutter live đọc hai key Event Milestones để hiển thị lời giới thiệu.
 Các key Discover/banner bên dưới vẫn là đề xuất, chưa publish.
 
-Web admin dùng Remote Config để điều chỉnh xu thưởng Daily Check-in. Hai key
-milestone dùng `RemoteConfigService` trong Flutter live.
+Web Admin chỉnh ba tham số qua hai callable hiện có `getAdminRemoteConfig` và
+`publishAdminRemoteConfig`. `daily_checkin_rewards` lưu lịch xu theo ngày và
+đồng bộ sang `server_config/daily_checkin` để backend tính xu. Hai tham số
+`event_milestones_enabled` và `event_milestones_intro` điều khiển việc hiển thị
+và nội dung lời giới thiệu trên màn **Event Milestones**. Web Admin chỉnh giá
+trị mặc định, giữ nguyên các điều kiện nhắm mục tiêu. Flutter đọc hai tham số
+qua `RemoteConfigService` khi mở màn hình. Bản release có khoảng fetch tối
+thiểu 12 giờ, bản debug không đặt khoảng chờ tối thiểu.
 `firebase/remote-config-defaults.json` có đúng hai key đã chốt:
 `event_milestones_enabled=true` và `event_milestones_intro` (nội dung giới thiệu).
 [Hợp đồng thành tựu](EVENT_MILESTONES.md) ghi rõ quyền admin và giới hạn.
