@@ -2,7 +2,9 @@
 
 Cập nhật 06/11/2026: đã triển khai 11 events Android sau trong bảng: AN-01/02/03/05/08/09/11/12/13/15/17. AN-02 chỉ xác định email/password signup; Google chỉ log login vì contract chưa trả isNewUser. AN-04/06/07/10/14/16 vẫn pending; bảng 17 dòng là kế hoạch tổng, không phải toàn bộ đã tích hợp. Chưa có ảnh DebugView cho revision này. [Chạy và giới hạn](ANALYTICS_INTEGRATION.md).
 
-AN-15 xuất CSV các giao dịch đang hiển thị trong Coin History, không tạo PDF hoặc upload Storage. `report_type=coin_history_csv`, `file_size_kb:int` làm tròn lên sau native save thành công; hủy không log success.
+Cập nhật 12/11/2026: đã kích hoạt thêm `AN-16` (`upload_report`, `report_type=coin_history_pdf`, `file_size_kb:int` làm tròn lên) cho Cloud Storage và `AN-04` (`search`, `search_term` đã redact qua allowlist hoặc `free_text_redacted`, `loaded_count:int`, `has_more:int` 0/1, `outcome:string` `data`/`empty`/`error`) qua `EviaViewModel` cho mỗi lượt tìm kiếm/danh mục/bộ lọc/retry hoàn tất (`action_error` với `action=search` khi lỗi). Tổng đã nối 13/17 events Android; `AN-06`/`07`/`10`/`14` vẫn pending.
+
+AN-15 xuất CSV cục bộ qua Android SAF các giao dịch đang hiển thị trong Coin History (`report_type=coin_history_csv`, `file_size_kb:int` làm tròn lên sau native save thành công; hủy không log success). Song song đó, nút `Tải báo cáo PDF lên Cloud Storage` tạo PDF 1.4 thuần Dart không chứa PII, upload lên Cloud Storage và phát AN-16 `upload_report` (`report_type=coin_history_pdf`) hoặc `action_error` (`action=upload_report`) khi thất bại.
 
 ## Mục tiêu và quy tắc chung
 
@@ -59,6 +61,8 @@ theo sự kiện trong 7 hoặc 30 ngày. Vite admin chọn Android/Web trên to
 - [x] Tests session/UID/logout và SDK failure; kiểm chứng SDK/UID trong DebugView vẫn chưa thực hiện.
 - [ ] DebugView dev build xác nhận từng AN-ID/parameters và error-path, lưu evidence theo build/thiết bị.
 - [ ] Ít nhất một ARTEMIS test sau này kiểm event trong Logcat/DebugView.
+
+Cập nhật Logcat `FA-SVC` ngày 12/11/2026 trên `SM-A135F` (`R58T80PE55F`): đã quan sát thực tế qua ARTEMIS + `adb logcat -s FA-SVC` (HTTP `204` upload thành công) các events `AN-04 search` (`outcome=data` và `outcome=error`), `AN-05 view_event`, `AN-12 view_reward`, `AN-16 upload_report`, `AN-17 action_error`; chưa có ảnh Console DebugView cho đủ 13/17 events.
 
 Nguồn: [Google recommended events](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [quy tắc không gửi PII](https://support.google.com/analytics/answer/6366371/).
 

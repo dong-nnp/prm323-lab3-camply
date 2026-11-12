@@ -23,7 +23,7 @@
 
 > **Form sự kiện — 06/11/2026:** Vite admin tự sinh mã/nguồn/điều khoản, chọn danh mục và ban tổ chức bằng tên, bỏ lịch JSON khỏi form. Chọn ảnh có preview, tải trực tiếp Firebase Storage khi lưu. Rules đã deploy, upload/download thật đã kiểm và dọn ảnh QA. [Hướng dẫn và giới hạn](docs/ADMIN_EVENT_EDITOR.md).
 
-> **Analytics:** đã nối 11 events Android qua service/repository, thêm xuất CSV ở Coin History và bộ lọc Android/Web cho báo cáo Vite admin. `flutter run` tự bật Analytics và Crashlytics trên Android debug đã cấu hình Firebase. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).
+> **Analytics & Storage (cập nhật 12/11/2026):** đã nối 13/17 events Android qua service/repository (bổ sung `AN-04 search` cho Search & Explore qua `EviaViewModel` và `AN-16 upload_report` cho luồng tải báo cáo PDF Coin History lên Firebase Cloud Storage tại `reports/{uid}/...`), giữ nguyên xuất CSV cục bộ (`AN-15`) và bộ lọc Android/Web cho báo cáo Vite admin (`AN-06/07/10/14` vẫn pending). `flutter run` tự bật Analytics và Crashlytics trên Android debug đã cấu hình Firebase. [Chạy, deploy callable và giới hạn evidence](docs/ANALYTICS_INTEGRATION.md).
 
 > **Admin Flutter Web — 06/11/2026:** [Portal quản trị độc lập](admin_flutter/README.md).
 > Một admin quản lý CLB/sự kiện/check-in/quà/thành tựu/thông báo và tra cứu ví,
@@ -290,9 +290,9 @@ constraints; nâng version cần chạy lại analyzer/tests và native build.
 | qr_flutter | 4.1.0 | Render QR vé do backend cấp |
 | mobile_scanner | 7.5.0 | Camera quét QR walk-in trong khung màn hiện có |
 | google_sign_in | 7.2.0 | Chuẩn bị Google Sign-In |
-| firebase_storage | 14.0.1 | Chuẩn bị Cloud Storage |
+| firebase_storage | 14.0.1 | Cloud Storage tải & đọc đối chiếu báo cáo PDF Coin History |
 | firebase_messaging | 17.0.1 | FCM push, quyền Android, mở thông báo và gỡ thiết bị khi logout |
-| firebase_analytics | 13.0.1 | 11 events; bật qua ANALYTICS_ENABLED |
+| firebase_analytics | 13.0.1 | 13/17 events (gồm `search`, `upload_report`); bật qua ANALYTICS_ENABLED |
 | firebase_crashlytics | 6.0.1 | Ghi lỗi Flutter toàn cục và lỗi tải catalog trên Android khi bật collection |
 | firebase_ai | 5.1.0 | Gemini qua Firebase AI Logic |
 | firebase_app_check | 0.5.1 | Xác thực request AI trên Android |

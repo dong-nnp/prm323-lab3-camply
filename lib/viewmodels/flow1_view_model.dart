@@ -244,6 +244,7 @@ final flow1SearchProvider = FutureProvider.autoDispose
       (ref, input) => ref
           .watch(flow1RepositoryProvider)
           .search(input.query, input.category, input.filters),
+      retry: (_, _) => null,
     );
 final flow1TicketProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, String>((ref, id) async {

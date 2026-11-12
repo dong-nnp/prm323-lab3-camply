@@ -19,7 +19,10 @@ final analyticsRepositoryProvider = Provider(
   ),
 );
 final reportExportRepositoryProvider = Provider(
-  (ref) => ReportExportRepository(ref.watch(reportExportServiceProvider)),
+  (ref) => ReportExportRepository(
+    ref.watch(reportExportServiceProvider),
+    storageService: ref.watch(storageServiceProvider),
+  ),
 );
 
 final bootstrapRepositoryProvider = Provider(

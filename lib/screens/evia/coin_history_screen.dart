@@ -42,8 +42,34 @@ class CoinHistoryScreen extends ConsumerWidget {
                           .read(reportExportViewModelProvider.notifier)
                           .exportHistory(),
               ),
-              if (export.message != null)
+              if (export.message != null) ...[
+                const SizedBox(height: AppSpacing.sm),
                 Semantics(liveRegion: true, child: Text(export.message!)),
+              ],
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: 'Tải báo cáo PDF lên Cloud Storage',
+                isLoading: export.uploading,
+                onPressed:
+                    vm.rewardsData == null || vm.rewardsBusy || export.uploading
+                    ? null
+                    : () => ref
+                          .read(reportExportViewModelProvider.notifier)
+                          .uploadHistoryToCloud(),
+              ),
+              if (export.uploading) ...[
+                const SizedBox(height: AppSpacing.sm),
+                LinearProgressIndicator(value: export.progress),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Đang tải lên Cloud Storage: ${(((export.progress ?? 0) * 100).round())}%',
+                  style: EviaTheme.caption,
+                ),
+              ],
+              if (export.uploadMessage != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                _CloudUploadStatusCard(export: export),
+              ],
               const SizedBox(height: AppSpacing.lg),
             ],
             const Row(
@@ -155,6 +181,66 @@ class _CoinEntryRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CloudUploadStatusCard extends StatelessWidget {
+  const _CloudUploadStatusCard({required this.export});
+
+  final ReportExportState export;
+
+  @override
+  Widget build(BuildContext context) {
+    final failed = export.uploadFailed;
+    final foreground = failed ? AppColors.error : AppColors.success;
+    final background = failed
+        ? AppColors.errorSurface
+        : AppColors.successSurface;
+    return Semantics(
+      liveRegion: true,
+      child: EviaCard(
+        color: background,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  failed ? Icons.error_outline : Icons.cloud_done_outlined,
+                  color: foreground,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    export.uploadMessage!,
+                    style: EviaTheme.label.copyWith(color: foreground),
+                  ),
+                ),
+              ],
+            ),
+            if (!failed && export.uploadedPath != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Path: ${export.uploadedPath!}',
+                style: EviaTheme.caption.copyWith(color: AppColors.textPrimary),
+              ),
+              Text(
+                'Size: ${export.uploadedSizeBytes ?? 0} bytes · Progress: 100%',
+                style: EviaTheme.caption.copyWith(color: AppColors.textPrimary),
+              ),
+              if (export.verifiedSummary != null)
+                Text(
+                  'Verified (${export.verifiedContentMatch == true ? 'Matched' : 'Mismatch'}): ${export.verifiedSummary!}',
+                  style: EviaTheme.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

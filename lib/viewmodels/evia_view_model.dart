@@ -6,6 +6,7 @@ import '../data/mock/evia_mock_data.dart';
 import '../core/providers/repository_providers.dart';
 import '../core/utils/exception_mapper.dart';
 import '../data/mock/registration_mock_data.dart';
+import '../models/analytics_events.dart';
 import '../models/evia_models.dart';
 import '../models/auth_session.dart';
 import '../core/constants/app_routes.dart';
@@ -109,8 +110,16 @@ class EviaViewModel extends Notifier<EviaState> {
       .where((e) => data?.selectedInterests.contains(e.value) ?? false)
       .map((e) => e.key)
       .toSet();
+  ProviderSubscription<AsyncValue<List<Flow1Event>>>? _searchSub;
+  int _searchNonce = 0;
+
   @override
   EviaState build() {
+    ref.onDispose(() {
+      _searchSub?.close();
+      _searchSub = null;
+      _searchNonce++;
+    });
     if (!ref.read(realBackendEnabledProvider)) {
       ref.watch(
         authenticationViewModelProvider.select(
@@ -248,21 +257,35 @@ class EviaViewModel extends Notifier<EviaState> {
           ? state.history
           : [query, ...state.history.where((e) => e != query)].take(5).toList(),
     );
+    _recordSearchSubmission();
   }
 
-  void showSearch({bool referenceResults = false}) => state = state.copyWith(
-    query: referenceResults ? 'workshop' : '',
-    results: referenceResults,
-    category: 'All',
-    filters: referenceResults
-        ? const EventFilters(date: 'Next week', audience: 'University Students')
-        : const EventFilters(),
-  );
-  void selectCategory(String category) => state = state.copyWith(
-    category: category,
-    results:
-        category != 'All' || state.query.isNotEmpty || state.filters.isActive,
-  );
+  void showSearch({bool referenceResults = false}) {
+    state = state.copyWith(
+      query: referenceResults ? 'workshop' : '',
+      results: referenceResults,
+      category: 'All',
+      filters: referenceResults
+          ? const EventFilters(
+              date: 'Next week',
+              audience: 'University Students',
+            )
+          : const EventFilters(),
+    );
+    if (referenceResults) {
+      _recordSearchSubmission();
+    }
+  }
+
+  void selectCategory(String category) {
+    state = state.copyWith(
+      category: category,
+      results:
+          category != 'All' || state.query.isNotEmpty || state.filters.isActive,
+    );
+    _recordSearchSubmission();
+  }
+
   void selectOrganizer(String organizer) =>
       state = state.copyWith(organizer: organizer);
   void toggleSort() => state = state.copyWith(descending: !state.descending);
@@ -286,22 +309,125 @@ class EviaViewModel extends Notifier<EviaState> {
   void setEligible(bool value) =>
       state = state.copyWith(draft: state.draft.withEligibility(value));
   void resetDraft() => state = state.copyWith(draft: const EventFilters());
-  void applyFilters() => state = state.copyWith(
-    filters: state.draft,
-    category: 'All',
-    results: true,
-  );
-  void clearFilters() => state = state.copyWith(
-    filters: const EventFilters(),
-    draft: const EventFilters(),
-    category: 'All',
-  );
-  void removeFilter(String key) => state = state.copyWith(
-    filters: state.filters.withValue(
-      key,
-      key == 'Date' ? 'Any date' : 'Any audience',
-    ),
-  );
+  void applyFilters() {
+    state = state.copyWith(
+      filters: state.draft,
+      category: 'All',
+      results: true,
+    );
+    _recordSearchSubmission();
+  }
+
+  void clearFilters() {
+    state = state.copyWith(
+      filters: const EventFilters(),
+      draft: const EventFilters(),
+      category: 'All',
+    );
+    _recordSearchSubmission();
+  }
+
+  void removeFilter(String key) {
+    state = state.copyWith(
+      filters: state.filters.withValue(
+        key,
+        key == 'Date' ? 'Any date' : 'Any audience',
+      ),
+    );
+    _recordSearchSubmission();
+  }
+
+  void retrySearch() {
+    final input = (
+      query: state.query,
+      category: state.category,
+      filters: state.filters,
+    );
+    if (live) {
+      ref.invalidate(flow1SearchProvider(input));
+    }
+    _recordSearchSubmission();
+  }
+
+  void _recordSearchSubmission() {
+    if (!live || !state.results) return;
+    _searchSub?.close();
+    _searchSub = null;
+    final nonce = ++_searchNonce;
+    final input = (
+      query: state.query,
+      category: state.category,
+      filters: state.filters,
+    );
+    final searchTerm = AnalyticsEvents.redactSearchTerm(
+      query: input.query,
+      category: input.category,
+      filterCategory: input.filters.category,
+    );
+
+    bool handle(AsyncValue<List<Flow1Event>> next) {
+      if (!ref.mounted || nonce != _searchNonce || next.isLoading) {
+        return false;
+      }
+      final items = next.asData?.value;
+      if (items != null) {
+        unawaited(
+          ref
+              .read(analyticsRepositoryProvider)
+              .track(
+                'search',
+                parameters: {
+                  'search_term': searchTerm,
+                  'loaded_count': items.length,
+                  'has_more': 0,
+                  'outcome': items.isEmpty ? 'empty' : 'data',
+                },
+              ),
+        );
+        return true;
+      }
+      if (next.hasError) {
+        final analytics = ref.read(analyticsRepositoryProvider);
+        unawaited(
+          analytics.track(
+            'search',
+            parameters: {
+              'search_term': searchTerm,
+              'loaded_count': 0,
+              'has_more': 0,
+              'outcome': 'error',
+            },
+          ),
+        );
+        unawaited(analytics.error('search', next.error!));
+        return true;
+      }
+      return false;
+    }
+
+    var completed = false;
+    final sub = ref.listen<AsyncValue<List<Flow1Event>>>(
+      flow1SearchProvider(input),
+      (_, next) {
+        if (completed) return;
+        if (handle(next)) {
+          completed = true;
+          _searchSub?.close();
+          _searchSub = null;
+        }
+      },
+    );
+    final current = ref.read(flow1SearchProvider(input));
+    if (handle(current)) {
+      completed = true;
+      sub.close();
+    } else if (ref.mounted && nonce == _searchNonce) {
+      _searchSub = sub;
+    } else {
+      sub.close();
+    }
+  }
+
   void togglePassword() =>
       state = state.copyWith(showPassword: !state.showPassword);
   bool get canContinue => state.interests.length >= 3;

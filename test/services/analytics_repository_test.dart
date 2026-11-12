@@ -22,6 +22,58 @@ void main() {
       throwsArgumentError,
     );
     expect(
+      () => AnalyticsEvents.validate('search', {
+        'search_term': 'private',
+        'loaded_count': 2,
+        'has_more': 0,
+        'outcome': 'data',
+      }),
+      throwsArgumentError,
+    );
+    expect(
+      () => AnalyticsEvents.validate('search', {
+        'search_term': 'free_text_redacted',
+        'loaded_count': 2,
+        'has_more': 2,
+        'outcome': 'data',
+      }),
+      throwsArgumentError,
+    );
+    expect(
+      () => AnalyticsEvents.validate('search', {
+        'search_term': 'free_text_redacted',
+        'loaded_count': 2,
+        'has_more': 0,
+        'outcome': 'unknown',
+      }),
+      throwsArgumentError,
+    );
+    AnalyticsEvents.validate('search', {
+      'search_term': 'free_text_redacted',
+      'loaded_count': 2,
+      'has_more': 0,
+      'outcome': 'data',
+    });
+    AnalyticsEvents.validate('search', {
+      'search_term': 'technology',
+      'loaded_count': 0,
+      'has_more': 1,
+      'outcome': 'empty',
+    });
+    expect(
+      AnalyticsEvents.redactSearchTerm(query: 'Flutter secret'),
+      'free_text_redacted',
+    );
+    expect(
+      AnalyticsEvents.redactSearchTerm(query: '  ', category: 'Technology'),
+      'technology',
+    );
+    expect(AnalyticsEvents.redactSearchTerm(query: '', category: 'All'), 'all');
+    expect(
+      AnalyticsEvents.redactSearchTerm(query: '', category: 'Custom Label'),
+      'free_text_redacted',
+    );
+    expect(
       () => AnalyticsEvents.validate('view_event', {
         'event_id': 'id',
         'participation_mode': 'anything',

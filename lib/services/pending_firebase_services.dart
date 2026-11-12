@@ -64,6 +64,13 @@ final class PendingFirebaseServices
     required String path,
     required Uint8List bytes,
     required String contentType,
+    void Function(double progress)? onProgress,
+  }) async => throw _pending;
+
+  @override
+  Future<Uint8List> readBytes({
+    required String path,
+    int maxSizeBytes = 5 * 1024 * 1024,
   }) async => throw _pending;
 
   @override

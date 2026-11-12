@@ -1,8 +1,8 @@
 # Báo cáo Kiểm thử E2E ARTEMIS — EVIA (`TC01`–`TC19`)
 
 > [!IMPORTANT]
-> **Trạng thái sửa lỗi: CHƯA SỬA MÃ NGUỒN (Chỉ ghi nhận kết quả & hướng dẫn khắc phục).**
-> Toàn bộ 19 test case (21 biến thể) dưới đây được thực thi trên bản build thật (`FIREBASE_ENABLED=true`) mà **không sửa code app (`lib/`, `functions/`, `firebase/`)** trước hoặc sau khi chạy test. Mọi lỗi/vấn đề phát hiện chỉ được ghi nhận kèm phân tích nguyên nhân và phương án sửa ở [Mục 4](#4-tổng-hợp-lỗi--vấn-đề-chưa-sửa-và-hướng-dẫn-khắc-phục).
+> **Trạng thái sửa lỗi: ĐÃ SỬA VÀ XÁC MINH ĐẠT `TC15`, `TC03` VÀ `TC19` (`18/19` TCs PASSED HOÀN TOÀN); CÒN `TC11` CHỜ `firebase login` + DEPLOY `verifyAdminTicketNumber`.**
+> Đợt kiểm thử nền tảng ngày `2026-11-11` chạy 19 test cases (21 biến thể) trên bản build thật (`FIREBASE_ENABLED=true`). Ngày `2026-11-12`, đã khắc phục theo kiến trúc MVVM và tái kiểm chứng PASSED trên thiết bị thật qua Google ARTEMIS + `adb logcat -s FA-SVC`: **`TC15`** ([Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15)), **`TC03`** và **`TC19`** ([Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11)). Với **`TC11`** ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404)), Cloud Function `verifyAdminTicketNumber` đã có sẵn trong `functions/src/` và build TypeScript (`tsc`) thành công, nhưng việc deploy lên Firebase project `prm393-31822` đang bị chặn bởi `firebase login` tương tác nên endpoint `asia-southeast1` vẫn trả HTTP `404`.
 
 ---
 
@@ -13,9 +13,12 @@
 - **Thiết bị vật lý:** Samsung Galaxy A13 (`SM-A135F`, Serial `R58T80PE55F`, Android 14, không lắp SIM — dùng Wi-Fi)
 - **Tài khoản kiểm thử Android:** `phuc250805@gmail.com` (`Phuc Tran Dinh`)
 - **Admin Web đối ứng:** `https://admin-evia.vercel.app/` (kiểm thử chéo qua Chrome MCP)
-- **Công cụ điều phối:** Google ARTEMIS (`Flash` mặc định cho 18 TCs; `Pro` cho `TC19` + `Flash` xác minh bổ sung)
-- **Thư mục ảnh chứng cứ của phiên chạy:** [`evidence-2026-11-11/`](evidence-2026-11-11/) (`40` ảnh đã đối chiếu trực quan theo từng bước trace)
-- **Phạm vi báo cáo:** Phản ánh toàn bộ **phiên hồi quy đầy đủ ngày `2026-11-11`** (`19/19` TCs với `FIREBASE_ENABLED=true`).
+- **Công cụ điều phối:** Google ARTEMIS (`Flash` mặc định cho 18 TCs + re-test `TC15`; `Pro` cho `TC19` + `Flash` xác minh bổ sung)
+- **Thư mục ảnh chứng cứ:**
+  - Phiên đầy đủ ngày `2026-11-11`: [`evidence-2026-11-11/`](evidence-2026-11-11/) (`40` ảnh đã đối chiếu trực quan theo từng bước trace)
+  - Đợt sửa & tái kiểm chứng `TC15` ngày `2026-11-12`: [`evidence-2026-11-12-tc15/`](evidence-2026-11-12-tc15/) (`3` ảnh xác minh trực quan theo Trace `89501bda`)
+  - Đợt sửa & tái kiểm chứng `TC03`, `TC19` ngày `2026-11-12`: [`evidence-2026-11-12-fixes/`](evidence-2026-11-12-fixes/) (`3` ảnh xác minh trực quan từ các Traces `dfb740a1` và `1f7cb4e5`)
+- **Phạm vi báo cáo:** Tổng hợp **phiên hồi quy đầy đủ ngày `2026-11-11`** (`19/19` TCs với `FIREBASE_ENABLED=true`), **đợt sửa & tái kiểm chứng `TC15`** và **đợt sửa `TC03`, `TC19` + chẩn đoán `TC11` ngày `2026-11-12`**.
 
 ---
 
@@ -23,11 +26,15 @@
 
 | Chỉ số thời gian | Giá trị quan sát thực tế | Ghi chú / Phạm vi tính |
 | --- | --- | --- |
-| **Tổng thời gian phiên làm việc (Wall-clock)** | **`3 giờ 46 phút 35 giây`** | Từ trace đầu tiên `14:23:29` (`f8832ee0`) đến trace cuối `18:10:04` (`94e8d1c9`) ngày `2026-11-11`. |
-| **Khoảng tạm dừng đổi model / chờ quota** | **`79 phút 29 giây`** | Từ `15:03:53` (lỗi quota ở `065b49ce` — `TC08`) đến `16:23:22` (`e4dddd4c`). |
-| **Thời gian vận hành liên tục thực tế (Wall-clock trừ thời gian nghỉ)** | **`~2 giờ 27 phút`** | Bao gồm toàn bộ thời gian ARTEMIS chạy trên thiết bị, thao tác chuẩn bị/xác minh trên Admin Web (`#events`, `#checkin`, `#config`), `adb` và kiểm tra log. |
-| **Tổng thời gian ARTEMIS chạy thực tế (toàn bộ `41` traces)** | **`4,665.1 giây` (`77 phút 45.1 giây`)** | Cộng dồn `end_time - start_time` trong `status.json` của cả `41` traces (gồm `2` pre-check ban đầu, các lần chạy thử/bị hủy và các lần chạy chính thức). |
-| **Tổng thời gian ARTEMIS của riêng các traces hiệu lực (`TC01`–`TC19`)** | **`3,374.2 giây` (`56 phút 14.2 giây`)** | Tính tổng `24` traces hiệu lực (kể cả `23bbc0ca` chuẩn bị trạng thái *I'm Going* cho `TC17`), loại trừ `2` pre-check ban đầu và các lần retry/cancelled trước đó. |
+| **Tổng thời gian phiên làm việc nền `2026-11-11` (Wall-clock)** | **`3 giờ 46 phút 35 giây`** | Từ trace đầu tiên `14:23:29` (`f8832ee0`) đến trace cuối `18:10:04` (`94e8d1c9`) ngày `2026-11-11`. |
+| **Khoảng tạm dừng đổi model / chờ quota (`2026-11-11`)** | **`79 phút 29 giây`** | Từ `15:03:53` (lỗi quota ở `065b49ce` — `TC08`) đến `16:23:22` (`e4dddd4c`). |
+| **Thời gian vận hành liên tục thực tế `2026-11-11`** | **`~2 giờ 27 phút`** | Bao gồm toàn bộ thời gian ARTEMIS chạy trên thiết bị, thao tác chuẩn bị/xác minh trên Admin Web (`#events`, `#checkin`, `#config`), `adb` và kiểm tra log. |
+| **Tổng thời gian ARTEMIS chạy thực tế ngày `2026-11-11` (toàn bộ `41` traces)** | **`4,665.1 giây` (`77 phút 45.1 giây`)** | Cộng dồn `end_time - start_time` trong `status.json` của cả `41` traces ngày `2026-11-11`. |
+| **Tổng thời gian ARTEMIS của riêng các traces hiệu lực `2026-11-11` (`TC01`–`TC19`)** | **`3,374.2 giây` (`56 phút 14.2 giây`)** | Tính tổng `24` traces hiệu lực ngày `2026-11-11` (kể cả `23bbc0ca` chuẩn bị trạng thái *I'm Going* cho `TC17`), loại trừ `2` pre-check ban đầu và các lần retry/cancelled trước đó. |
+| **Thời gian chạy lại `TC15` sau sửa (`2026-11-12`, Trace `89501bda`)** | **`88.6 giây` (`1 phút 28.6 giây`)** | Từ `11:27:37` đến `11:29:06` ngày `2026-11-12` trên thiết bị `SM-A135F` (`R58T80PE55F`), model `Flash`, trạng thái `completed`. |
+| **Thời gian chạy lại `TC03` sau sửa (`2026-11-12`, Trace `88a878c4`)** | **`95.3 giây` (`1 phút 35.3 giây`)** | Đợt `2026-11-12` trên bản APK bật cả `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`, model `Flash`, `completed`. |
+| **Thời gian chạy lại `TC19` Phase 1 — Offline Error (`2026-11-12`, Trace `dfb740a1`)** | **`49.0 giây`** | Tắt Wi-Fi qua `svc wifi disable`, tìm `"Flutter"`, kiểm tra ẩn `EviaSkeleton` và hiện ngay nút `'Thử lại'`, model `Flash`, `completed`. |
+| **Thời gian chạy lại `TC19` Phase 2 — Recovery (`2026-11-12`, Trace `1f7cb4e5`)** | **`48.3 giây`** | Bật lại Wi-Fi (`svc wifi enable`), chạm trực tiếp nút `'Thử lại'` từ màn lỗi, phục hồi `"2 events found"`, model `Flash`, `completed`. |
 
 ---
 
@@ -37,92 +44,84 @@
 
 | Nhóm kết quả | Số Test Case (`19` TCs) | Số biến thể (`21` biến thể) | Danh sách cụ thể |
 | --- | --- | --- | --- |
-| **PASSED hoàn toàn** | **15** | **17** | `TC01`, `TC02`, `TC04`, `TC05`, `TC06`, `TC07`, `TC08`, `TC09`, `TC10`, `TC12`, `TC13`, `TC14`, `TC16`, `TC17` (`foreground`, `background`, `terminated`), `TC18` |
-| **PASSED kèm vấn đề phụ** (`PARTIAL / UX / BACKEND BUG`) | **3** | **3** | **`TC03`** (Search PASS / thiếu Analytics `'search'`), **`TC11`** (QR Check-in PASS / Admin Web nhập tay ticket HTTP `404`), **`TC19`** (Offline error & recovery PASS / UX `EviaSkeleton` đè `AppErrorWidget`) |
-| **FAILED** | **1** | **1** | **`TC15`** (Lưu CSV nội bộ SAF PASS, nhưng upload lên Firebase Cloud Storage **FAILED**) |
-| **Tổng cộng** | **19** | **21** | **18 / 19 TCs đạt luồng chính trên app; 1 / 19 TC FAILED (`TC15`); 4 điểm cần sửa (`TC15`, `TC11`, `TC03`, `TC19`)** |
+| **PASSED hoàn toàn** | **18** *(trước các đợt sửa `2026-11-12`: 15)* | **20** *(trước sửa: 17)* | `TC01`, `TC02`, **`TC03` (Đã sửa & Re-test `2026-11-12`)**, `TC04`, `TC05`, `TC06`, `TC07`, `TC08`, `TC09`, `TC10`, `TC12`, `TC13`, `TC14`, **`TC15` (Đã sửa & Re-test `2026-11-12`)**, `TC16`, `TC17` (`foreground`, `background`, `terminated`), `TC18`, **`TC19` (Đã sửa & Re-test `2026-11-12`)** |
+| **PASSED App QR / CHỜ DEPLOY Admin Web** | **1** *(chờ `firebase login`)* | **1** | **`TC11`** (QR Check-in PASS; Admin Web nhập tay ticket gọi `verifyAdminTicketNumber` gặp HTTP `404` do chưa deploy lên `prm393-31822`) |
+| **FAILED** | **0** *(trước sửa `TC15`: 1)* | **0** *(trước sửa: 1)* | *(Không còn TC FAILED; 3/4 tồn đọng đã sửa và verified — xem [Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15) và [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11))* |
+| **Tổng cộng** | **19** | **21** | **18 / 19 TCs PASSED hoàn toàn (20/21 biến thể); 0 / 19 TC FAILED; còn 1 điểm deploy Cloud Functions (`TC11`) chờ `firebase login`** |
 
 ---
 
-## 4. Tổng hợp lỗi / vấn đề (CHƯA SỬA) và hướng dẫn khắc phục
+## 4. Tổng hợp lỗi và trạng thái xử lý
 
-**Tất cả 4 vấn đề dưới đây đều CHƯA ĐƯỢC SỬA trong repository.**
+**`TC15` ([Mục 4.1](#41-tc15-đã-sửa-và-passed--lưu-csv-cục-bộ-và-tải-báo-cáo-pdf-lên-firebase-cloud-storage)), `TC03` ([Mục 4.3](#43-tc03-đã-sửa-và-passed--search--explore-bắn-sự-kiện-firebase-analytics-search)) và `TC19` ([Mục 4.4](#44-tc19-đã-sửa-và-passed--hết-chồng-eviaskeleton-trên-apperrorwidget-và-khôi-phục-nút-thử-lại)) đã được sửa và tái kiểm chứng PASSED ngày `2026-11-12`; hiện chỉ còn `TC11` ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404)) chờ người dùng `firebase login` để deploy Cloud Function `verifyAdminTicketNumber`.**
 
-### 4.1. `TC15` [FAILED] — Lưu CSV cục bộ chạy được, nhưng upload Firebase Cloud Storage chưa được tích hợp
+### 4.1. TC15 ĐÃ SỬA VÀ PASSED — Lưu CSV cục bộ và tải báo cáo PDF lên Firebase Cloud Storage
 
-- **Hiện tượng quan sát:**
+- **Hiện tượng ban đầu (`2026-11-11`, Trace `50d8a6b7`, `FAILED`):**
   - Nút xuất CSV trên `Coin History` tạo file local thành công qua Android Storage Access Framework (`/sdcard/Download/evia-coin-history.csv`, dung lượng `388` bytes, UTF-8 BOM `\ufeffdate,kind,coins`, 10 giao dịch), UI báo `"Đã lưu báo cáo CSV (10 giao dịch đã tải)."`.
-  - Tuy nhiên **không có thao tác upload nào lên Firebase Cloud Storage (`reports/{uid}/...`)**.
-- **Nguyên nhân gốc rễ đã kiểm chứng trong code:**
-  1. Tại [`lib/core/providers/service_providers.dart`](../lib/core/providers/service_providers.dart#L85-L87), `storageServiceProvider` vẫn đang trỏ vào `_pendingServicesProvider` ([`PendingFirebaseServices`](../lib/services/pending_firebase_services.dart#L21-L30), trả lỗi `firebase_service_pending`).
-  2. [`ReportExportRepository`](../lib/repositories/report_export_repository.dart#L7-L21) và [`ReportExportViewModel`](../lib/viewmodels/report_export_view_model.dart#L39-L50) hiện chỉ gọi `ReportExportService.saveCsv(bytes)` qua MethodChannel Android rồi ghi analytics `'generate_report'`, chưa gọi hợp đồng [`StorageService.upload(...)`](../lib/services/storage_service.dart#L3-L8).
-  3. Tại [`firebase/storage.rules`](../firebase/storage.rules#L18-L27), nhánh `/reports/{uid}/{fileName}` hiện chỉ cho phép `contentType == 'application/pdf'` và tên file khớp `[A-Za-z0-9_-]+[.]pdf` (tối đa 5 MB); mọi định dạng khác bị rule cuối `allow read, write: if false;` từ chối.
-- **Trạng thái:** **Chưa sửa.**
-- **Hướng dẫn sửa:**
-  1. Tạo adapter `FirebaseStorageService` implement [`StorageService`](../lib/services/storage_service.dart#L3-L8) sử dụng `firebase_storage` (đã khai báo `firebase_storage: ^14.0.1` trong [`pubspec.yaml`](../pubspec.yaml#L19)).
-  2. Chuyển [`storageServiceProvider`](../lib/core/providers/service_providers.dart#L85-L87) sang trả về `FirebaseStorageService` khi `realBackendEnabledProvider` là `true`.
-  3. Mở rộng [`ReportExportRepository`](../lib/repositories/report_export_repository.dart) / [`ReportExportViewModel`](../lib/viewmodels/report_export_view_model.dart) để gọi `StorageService.upload(path: 'reports/$uid/$fileName', bytes: ..., contentType: ...)` song song hoặc kết hợp xuất local SAF, kèm hiển thị trạng thái lỗi rõ ràng nếu upload thất bại.
-  4. Nếu giữ định dạng `.csv` khi upload lên Cloud Storage, cập nhật [`firebase/storage.rules`](../firebase/storage.rules#L18-L24) cho phép `text/csv` và `[A-Za-z0-9_-]+[.]csv` (hoặc tạo PDF theo rule `.pdf` hiện có), rồi chạy `firebase deploy --only storage`.
+  - Tuy nhiên **chưa có thao tác upload nào lên Firebase Cloud Storage (`reports/{uid}/...`)**.
+- **Nguyên nhân gốc rễ đã kiểm chứng trong code trước khi sửa:**
+  1. Tại [`lib/core/providers/service_providers.dart`](../lib/core/providers/service_providers.dart), `storageServiceProvider` ban đầu trỏ cố định vào `_pendingServicesProvider` ([`PendingFirebaseServices`](../lib/services/pending_firebase_services.dart), trả lỗi `firebase_service_pending`).
+  2. [`ReportExportRepository`](../lib/repositories/report_export_repository.dart) và [`ReportExportViewModel`](../lib/viewmodels/report_export_view_model.dart) trước đây chỉ gọi `ReportExportService.saveCsv(bytes)` rồi ghi analytics `'generate_report'`, chưa gọi hợp đồng [`StorageService.upload(...)`](../lib/services/storage_service.dart).
+  3. Tại [`firebase/storage.rules`](../firebase/storage.rules#L18-L27), nhánh `/reports/{uid}/{fileName}` chỉ cho phép `allow create` khi `resource == null`, `contentType == 'application/pdf'` và tên file khớp `[A-Za-z0-9_-]+[.]pdf` (tối đa 5 MiB).
+- **Trạng thái:** **ĐÃ SỬA VÀ TÁI KIỂM CHỨNG PASSED (`2026-11-12`, Trace `89501bda`, `88.6s`).**
+- **Tóm tắt phương án đã triển khai (Phương án A — giữ CSV cục bộ + bổ sung PDF Cloud Storage khớp 100% `storage.rules`):**
+  1. Bổ sung [`FirebaseStorageService`](../lib/services/firebase_storage_service.dart) (`firebase_storage: ^14.0.1`) gọi `ready()`, stream tiến trình `UploadTask.snapshotEvents`, trả URI `gs://` (không phát tán bearer token URL) và đọc đối chiếu `getData(...)`, đồng thời map `FirebaseException` sang `AppException`.
+  2. Cập nhật [`storageServiceProvider`](../lib/core/providers/service_providers.dart) để dùng `FirebaseStorageService` khi `realBackendEnabledProvider == true`, và tiêm vào [`reportExportRepositoryProvider`](../lib/core/providers/repository_providers.dart).
+  3. Mở rộng [`ReportExportRepository`](../lib/repositories/report_export_repository.dart) (giữ nguyên `exportHistory` xuất CSV SAF, bổ sung `uploadHistoryPdf` tạo PDF 1.4 thuần Dart không PII, upload tới `reports/$uid/coin_history_<timestamp>_<seq>.pdf`, đọc lại bytes và đối chiếu nội dung) cùng [`AnalyticsEvents`](../lib/models/analytics_events.dart) (`AN-16 upload_report`).
+  4. Bổ sung `ReportExportViewModel.uploadHistoryToCloud()` tại [`report_export_view_model.dart`](../lib/viewmodels/report_export_view_model.dart) (chặn bấm trùng, kiểm tra UID phiên đăng nhập sau mỗi `await`, ghi `upload_report` / `action_error`) và giao diện tải lên + thanh tiến trình + thẻ trạng thái `_CloudUploadStatusCard` tại [`coin_history_screen.dart`](../lib/screens/evia/coin_history_screen.dart). Xem chi tiết đầy đủ tại [Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15).
 
 ---
 
-### 4.2. `TC11` [PASSED QR / BUG ADMIN WEB] — Nhập tay Ticket Number trên Admin Web bị HTTP `404`
+### 4.2. TC11 CHỜ DEPLOY — Nhập tay Ticket Number trên Admin Web trả HTTP 404
 
 - **Hiện tượng quan sát:**
   - Check-in bằng QR (`verifyRegisteredTicket`) chạy thành công (lần 1 HTTP `200`, `coinsGranted: 60`, `depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`), app cập nhật `Attendance confirmed` và ví lên `160 coins`.
   - Khi kiểm tra luồng nhập tay số vé `EV-0136E01E5D6C` trên Admin Web `#checkin`, trình duyệt gọi `https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` và gặp lỗi **HTTP `404` (`net::ERR_FAILED`)**.
-- **Nguyên nhân gốc rễ đã kiểm chứng trong code:**
-  - Hàm `verifyAdminTicketNumber` **đã được cài đặt và export sẵn** trong mã nguồn tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) (ngay cạnh `verifyRegisteredTicket` ở dòng 61 vốn đang hoạt động bình thường). Việc endpoint Cloud Functions trả về HTTP `404` cho thấy bản Cloud Functions hiện đang chạy trên Firebase project `prm393-31822` **chưa được deploy lại** sau khi bổ sung hàm này.
-- **Trạng thái:** **Chưa sửa.**
-- **Hướng dẫn sửa:**
-  1. Kiểm tra lại cấu hình region (`asia-southeast1`) và build TypeScript trong thư mục `functions/`.
-  2. Chạy `firebase deploy --only functions:verifyAdminTicketNumber` (hoặc `firebase deploy --only functions`) để xuất bản endpoint còn thiếu lên project `prm393-31822`.
-  3. Mở Admin Web `#checkin`, nhập tay một mã vé `EV-...` hợp lệ để xác nhận trả HTTP `200` (hoặc `409 ALREADY_CHECKED_IN` nếu vé đã quét).
-
----
-
-### 4.3. `TC03` [PASSED SEARCH / GAP ANALYTICS] — `Search & Explore` chưa bắn sự kiện Firebase Analytics `'search'`
-
-- **Hiện tượng quan sát:**
-  - Gõ `"Flutter"` trả kết quả `"2 events found"` đúng dữ liệu Firestore/backend.
-  - Tuy nhiên khi theo dõi Logcat (`FA-SVC`) và kiểm tra mã nguồn, thao tác tìm kiếm không phát sự kiện `'search'` lên Firebase Analytics (trong khi `view_event` và `view_reward` ở `TC06` vẫn log bình thường qua `FA-SVC`).
-- **Nguyên nhân gốc rễ đã kiểm chứng trong code:**
-  1. [`AnalyticsEvents._schema`](../lib/models/analytics_events.dart#L3-L22) hiện chưa định nghĩa sự kiện `'search'` (nếu gọi `analytics.track('search', ...)` trực tiếp, [`AnalyticsEvents.validate`](../lib/models/analytics_events.dart#L57-L60) sẽ ném `ArgumentError`).
-  2. [`EviaExploreScreen`](../lib/screens/evia/explore_screen.dart#L52-L80) và [`flow1SearchProvider`](../lib/viewmodels/flow1_view_model.dart#L242-L245) hiện không đọc hoặc gọi `analyticsRepositoryProvider`.
-- **Trạng thái:** **Chưa sửa.**
-- **Hướng dẫn sửa:**
-  1. Thêm `'search'` vào `AnalyticsEvents._schema` (với tham số không chứa PII như `category`, `result_count` theo quy định tại dòng 1 file [`analytics_events.dart`](../lib/models/analytics_events.dart#L1)).
-  2. Kết nối `analyticsRepositoryProvider` trong ViewModel phụ trách tìm kiếm để gọi `track('search', ...)` khi kết quả tìm kiếm trả về hợp lệ.
-  3. Cập nhật [`docs/analytics-plan.md`](../docs/analytics-plan.md) và kiểm tra lại với Firebase DebugView / Logcat `FA-SVC`.
-
----
-
-### 4.4. `TC19` [PASSED / UX NOTE] — `EviaSkeleton` xếp trên `AppErrorWidget` đẩy nút `'Thử lại'` xuống ngoài màn hình
-
-- **Hiện tượng quan sát:**
-  - Khi tắt Wi-Fi (`svc wifi disable`) và tìm `"EVIA_OFFLINE_6f0a9dc2"`, app hiển thị đúng thông báo lỗi từ `FirebaseBackendService`: `"Cannot reach the service. Check your connection and retry."`.
-  - Tuy nhiên, khi trạng thái loading và error xuất hiện cùng nhau trên `EviaExploreScreen`, phần khung xương `EviaSkeleton()` chiếm nửa trên màn hình và đẩy `AppErrorWidget` cùng nút **`Thử lại`** xuống quá chiều cao màn hình ban đầu (`y > 2408` khi chưa cuộn). Ngoài ra, khi bật lại Wi-Fi (`svc wifi enable`), provider tự động tải lại danh sách trước khi người dùng kịp bấm nút `Thử lại`. (Ở một lần test full-screen error độc lập, nút `'Thử lại'` hiện rõ giữa màn hình tại `[400,567][600,624]` và phục hồi về `Discover` khi bấm sau lúc có mạng).
-- **Nguyên nhân gốc rễ đã kiểm chứng trong code:**
-  - Tại [`lib/screens/evia/explore_screen.dart`](../lib/screens/evia/explore_screen.dart#L247-L253), hai lệnh `if` đứng nối tiếp nhau nên có thể render cùng lúc:
-    ```dart
-    if (remote?.isLoading == true && remote?.hasValue != true)
-      const EviaSkeleton(),
-    if (remote?.hasError == true)
-      AppErrorWidget(
-        message: ExceptionMapper.map(remote!.error!).message,
-        onRetry: () => ref.invalidate(flow1SearchProvider(input)),
-      ),
-    ```
-- **Trạng thái:** **Chưa sửa.**
-- **Hướng dẫn sửa:**
-  1. Đổi cấu trúc điều kiện thành ưu tiên hiển thị lỗi rõ ràng (không xếp chồng `EviaSkeleton()` phía trên `AppErrorWidget`):
-     ```dart
-     if (remote?.hasError == true && remote?.isLoading != true)
-       AppErrorWidget(...)
-     else if (remote?.isLoading == true && remote?.hasValue != true)
-       const EviaSkeleton(),
+- **Kết quả chẩn đoán ngày `2026-11-12`:**
+  1. Hàm `verifyAdminTicketNumber` **đã được cài đặt và export sẵn** trong mã nguồn tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) với region `asia-southeast1` ([`functions/src/policy.ts`](../functions/src/policy.ts#L5), [`firebase.json`](../firebase.json#L27) codebase `evia`), khớp lời gọi tại [`admin/src/firebase.js`](../admin/src/firebase.js#L25-L65).
+  2. Đã chạy `npm --prefix functions ci` (`248 packages`) và `npm --prefix functions run build` (`tsc`) -> **biên dịch sạch, `0` lỗi TypeScript**.
+  3. Probe trực tiếp `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` ngày `2026-11-12` vẫn trả **HTTP `404`**, xác nhận endpoint chưa được deploy lên `prm393-31822`.
+  4. Kiểm tra CLI (`npx --yes firebase-tools@15.30.2 login:list`) trả về **`! No authorized accounts, run "firebase login"`**; bộ test `functions/test/*.test.mjs` cũng yêu cầu Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Do quy tắc không tự vượt xác thực, bước deploy đang **chờ người dùng đăng nhập Firebase CLI**.
+- **Trạng thái:** **Đã chẩn đoán & build sạch; CHỜ DEPLOY (`firebase login`).**
+- **Lệnh cần chạy khi có tài khoản triển khai:**
+  1. Đăng nhập tương tác qua trình duyệt:
+     ```powershell
+     & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login
      ```
-  2. Kiểm tra lại trên màn 360dp và 412dp để nút **`Thử lại`** (`AppStrings.retry` trong [`status_widgets.dart`](../lib/widgets/status_widgets.dart#L58-L60)) luôn hiển thị trọn vẹn không cần cuộn.
+  2. Deploy function còn thiếu trên codebase `evia`:
+     ```powershell
+     & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 deploy --project prm393-31822 --only functions:evia:verifyAdminTicketNumber
+     ```
+  3. Mở Admin Web (`https://admin-evia.vercel.app/` -> `#checkin`), nhập tay một mã vé `EV-...` hợp lệ để xác nhận trả HTTP `200` (hoặc `409 ALREADY_CHECKED_IN` nếu vé đã quét).
+
+---
+
+### 4.3. TC03 ĐÃ SỬA VÀ PASSED — Search & Explore bắn sự kiện Firebase Analytics search
+
+- **Hiện tượng ban đầu (`2026-11-11`, Trace `c3b37ab8`):** Gõ `"Flutter"` trả kết quả `"2 events found"` đúng dữ liệu backend, nhưng không ghi nhận sự kiện `'search'` trên Firebase Analytics (`FA-SVC`).
+- **Nguyên nhân gốc rễ:**
+  1. [`AnalyticsEvents._schema`](../lib/models/analytics_events.dart) trước đây chưa định nghĩa `'search'`.
+  2. Luồng tìm kiếm tại [`EviaViewModel`](../lib/viewmodels/evia_view_model.dart) chưa theo dõi kết quả hoàn tất của [`flow1SearchProvider`](../lib/viewmodels/flow1_view_model.dart) để phát `AN-04 search` qua `AnalyticsRepository`.
+- **Trạng thái:** **ĐÃ SỬA VÀ TÁI KIỂM CHỨNG PASSED (`2026-11-12`, Traces `88a878c4` & `1f7cb4e5` + `FA-SVC` HTTP `204`).**
+- **Tóm tắt phương án đã triển khai:**
+  1. Cập nhật [`lib/models/analytics_events.dart`](../lib/models/analytics_events.dart): thêm `'search'` (`search_term: String`, `loaded_count: int`, `has_more: int` `0/1`, `outcome: String` thuộc `{'data', 'empty', 'error'}`), allowlist `searchTerms` + hàm `redactSearchTerm(...)` quy mọi truy vấn tự do thành `'free_text_redacted'` (không gửi PII), và kiểm tra ràng buộc trong `validate()`.
+  2. Cập nhật [`lib/viewmodels/evia_view_model.dart`](../lib/viewmodels/evia_view_model.dart): bổ sung `_searchSub`, `_searchNonce` (đóng subscription trong `ref.onDispose`), `retrySearch()`, và `_recordSearchSubmission()` gắn tại `submitSearch`, `showSearch(referenceResults: true)`, `selectCategory`, `applyFilters`, `clearFilters`, `removeFilter`, `retrySearch` — phát đúng **1 event `search`** khi request hoàn tất/lỗi (kèm `action_error` khi lỗi).
+  3. Đồng bộ tài liệu [`docs/analytics-plan.md`](../docs/analytics-plan.md), [`docs/ANALYTICS_INTEGRATION.md`](../docs/ANALYTICS_INTEGRATION.md) và [`README.md`](../README.md) (`13/17` events). Xem chi tiết & log `FA-SVC` tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+
+---
+
+### 4.4. TC19 ĐÃ SỬA VÀ PASSED — Hết chồng EviaSkeleton trên AppErrorWidget và khôi phục nút Thử lại
+
+- **Hiện tượng ban đầu (`2026-11-11`):** Khi offline trên `Search & Explore`, `EviaSkeleton()` hiển thị cùng `AppErrorWidget` đẩy nút `'Thử lại'` xuống ngoài màn hình ban đầu (`y > 2408`). Ngoài ra, hành vi auto-retry mặc định của Riverpod giữ provider ở `isLoading: true` ~38s khiến khung xương xuất hiện chồng lên trạng thái lỗi.
+- **Nguyên nhân gốc rễ:**
+  1. Tại `riverpod-3.4.3`, `flow1SearchProvider` dùng `ProviderContainer.defaultRetry` (thử lại tối đa 10 lần với backoff ~38s), giữ `AsyncLoading(isLoading: true, hasError: true, hasValue: false)` trong suốt thời gian chờ.
+  2. Tại [`lib/screens/evia/explore_screen.dart`](../lib/screens/evia/explore_screen.dart#L247-L266), hai lệnh `if` độc lập nhau nên render đồng thời cả `EviaSkeleton()` và `AppErrorWidget`, đồng thời gọi trực tiếp `ref.invalidate(...)` thay vì `vm.retrySearch()`.
+- **Trạng thái:** **ĐÃ SỬA VÀ TÁI KIỂM CHỨNG PASSED (`2026-11-12`, Traces `dfb740a1` Offline & `1f7cb4e5` Recovery).**
+- **Tóm tắt phương án đã triển khai:**
+  1. Tắt retry ngầm trên [`flow1SearchProvider`](../lib/viewmodels/flow1_view_model.dart#L241-L248) bằng `retry: (_, _) => null` để lỗi mạng trả về `AsyncError` tức thì.
+  2. Đổi nhánh hiển thị trong [`EviaExploreScreen`](../lib/screens/evia/explore_screen.dart#L247-L266) thành loại trừ lẫn nhau hoàn toàn (`hasError` -> `AppErrorWidget(onRetry: vm.retrySearch)` | `isLoading` -> `EviaSkeleton()` | empty | list), không bao giờ xếp chồng skeleton và lỗi; đồng thời thêm null-safety `vm.catalog?.organizerName(event.organizerId) ?? event.organizerId` khi tìm lỗi ngay từ đầu phiên chưa có catalog.
+  3. Bổ sung `operator ==` và `hashCode` theo giá trị cho [`EventFilters`](../lib/models/evia_models.dart#L100-L137) để tránh family key của `flow1SearchProvider` tạo instance mới không cần thiết khi lọc. Xem chi tiết & ảnh chứng cứ tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
 
 ---
 
@@ -140,7 +139,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | **TC01** | Google Sign-In (`phuc250805@gmail.com`) | `8d179375` | Flash | `62.6s` | **PASSED** | Hiện picker Google native, vào `Discover`, greeting + `100 coins`. |
 | **TC02** | Hủy Google Sign-In Picker (`BACK`) | `408dd619` | Flash | `45.2s` | **PASSED** | Hiện `"Google sign-in was cancelled."`, `signed_in=False`. |
-| **TC03** | Search & Explore + Analytics | `c3b37ab8` | Flash | `39.8s` | **PASSED / GAP** | Search `"Flutter"` ra `"2 events found"`; **chưa log Analytics `'search'`**. |
+| **TC03** | Search & Explore + Analytics (`AN-04`) | `88a878c4` + `1f7cb4e5` (Re-test `2026-11-12`; nền `c3b37ab8`) | Flash | `95.3s` (re-test; nền `39.8s`) | **PASSED (Đã sửa)** | Search `"Flutter"` ra `"2 events found"`; **`FA-SVC` ghi nhận live `search` (`outcome=data`, `free_text_redacted`) + HTTP `204`**. |
 | **TC04** | Search không khớp & Clear khôi phục | `b8d939ac` (`+ d50acf87`) | Flash | `70.0s` (`202.9s`) | **PASSED** | `"EVIA_NO_MATCH_6f0a9dc2"` -> `"0 events found"`, bấm xóa ra `Suggested Events`. |
 | **TC05** | Điều hướng Bottom Navigation Tabs | `8760190e` | Flash | `55.3s` | **PASSED** | Đi qua `Discover` -> `Events` -> `Rewards` -> `Profile` (`phuc250805@gmail.com`). |
 | **TC06** | Chi tiết Event, Organizer, Reward & Back | `5e599f06` | Flash | `206.2s` | **PASSED** | Xác minh 3 màn chi tiết và quay lại đúng luồng; log `FA-SVC` `view_event`/`view_reward`. |
@@ -148,15 +147,15 @@
 | **TC08** | Đăng ký sự kiện có cọc Coin (`50 coins`) | `e4dddd4c` + `90acf51c` (`+ 065b49ce`) | Flash | `381.7s` (`814.5s`) | **PASSED** | `100 -> 50 available / 50 held`, sinh vé `EV-0136E01E5D6C`, `Upcoming 1`. |
 | **TC09** | Từ chối sự kiện đã hết vé (`0 spots left`) | `1df86f72` (`+ 82809e4a, 1c447dac`) | Flash | `122.1s` (`364.1s`) | **PASSED** | `[DEMO] Workshop đã đóng số lượng vé`, nút `Registration Full` disabled, ví giữ nguyên `50/50`. |
 | **TC10** | Hủy đăng ký & hoàn cọc 30% (`+15 coins`) | `0cfbb0ef` + `a53044a2` | Flash | `360.0s` | **PASSED** | `110 -> 125 available / 0 held`, `Coin History` ghi `+15 coins`, vé bị thu hồi, không hoàn trùng. |
-| **TC11** | Check-in QR & thưởng Coin + Admin Web | `b7e43924` + `dc7a050c` (+ Chrome MCP) | Flash | `139.4s` | **PASSED / BUG** | QR `verifyRegisteredTicket` OK (`Attended`, `+60 coins`, `160` tổng, lần 2 `409`); **nhập tay HTTP `404`**. |
+| **TC11** | Check-in QR & thưởng Coin + Admin Web | `b7e43924` + `dc7a050c` (+ Chrome MCP) | Flash | `139.4s` | **PASSED QR / CHỜ DEPLOY** | QR `verifyRegisteredTicket` OK (`Attended`, `+60 coins`, `160` tổng, lần 2 `409`); **nhập tay HTTP `404` (`functions` đã build `tsc` OK, chờ `firebase login` để deploy)**. |
 | **TC12** | Daily Check-In & chặn nhận trùng trong ngày | `28a8e3d2` | Flash | `58.9s` | **PASSED** | `125 -> 130 coins`, nút chuyển `Checked In Today · +5 coins` disabled, giữ nguyên sau chuyển tab. |
 | **TC13** | Đổi thưởng tạo Voucher & trừ Coin | `fcc4064d` | Flash | `116.9s` | **PASSED** | Đổi `[DEMO] Combo nước và bánh` (`100 coins`), còn `30 coins`, voucher `Available (1)`. |
 | **TC14** | Từ chối đổi quà khi không đủ Coin | `31744963` + `d4d52279` | Flash | `109.2s` | **PASSED** | `[DEMO] Áo hoodie Evia` (`800 coins`) disabled `'Not enough coins'` khi ví còn `30`. |
-| **TC15** | Xuất CSV lịch sử Coin & Cloud Storage | `50d8a6b7` | Flash | `79.3s` | **FAILED** | Local SAF `/sdcard/Download/evia-coin-history.csv` (`388` bytes) OK; **Cloud Storage chưa cài đặt**. |
+| **TC15** | Xuất CSV lịch sử Coin & Cloud Storage | `89501bda` (Re-test `2026-11-12`; nền `50d8a6b7`) | Flash | `88.6s` (re-test; nền `79.3s`) | **PASSED (Đã sửa)** | Local SAF CSV OK; **Cloud Storage PDF upload OK** (`1153` bytes, `Path` theo UID, `Verified (Matched)` + `upload_report` HTTP `204`). |
 | **TC16** | Remote Config cập nhật live không rebuild | `51d316f5` + `f80afbe4` | Flash | `115.7s` | **PASSED** | Banner `Event Milestones` đổi live `"hello"` -> `"TC16 live config test"` và khôi phục về `"hello"`. |
 | **TC17** | Push Notification (`foreground` / `background` / `terminated`) | `23bbc0ca` + `5dc350dd` + `b753de0b` + `c243ca29` + `47cee4c9` + `57000c9e` (`+ b11a22c3, b6492dac`) | Flash | `495.6s` (`612.7s`) | **PASSED** | Cả 3 trạng thái hiện shade `Lịch sự kiện thay đổi`, bấm vào đúng `[DEMO] Một ngày campus xanh` (`FG`/`BG`/`TERM-test`) và lưu vào inbox. |
 | **TC18** | Sign out & kiểm tra Auth Guard | `4d0e5597` (`+ 2900b06d`) | Flash | `86.5s` (`233.9s`) | **PASSED** | Đăng xuất không còn cache user cũ; Guest bấm route bảo vệ (`Profile`) chuyển về `"Welcome back!"`. |
-| **TC19** | Lỗi mạng Offline & khôi phục kết nối | `ac91fb8a` (`Pro`) + `22b0579b` + `94e8d1c9` | Pro + Flash | `599.8s` | **PASSED / UX** | Hiện đúng `"Cannot reach the service. Check your connection and retry."` và hồi phục sau bật Wi-Fi; **UX note về `EviaSkeleton`**. |
+| **TC19** | Lỗi mạng Offline & khôi phục kết nối | `dfb740a1` + `1f7cb4e5` (Re-test `2026-11-12`; nền `ac91fb8a`+`22b0579b`+`94e8d1c9`) | Flash (re-test) | `49.0s` + `48.3s` | **PASSED (Đã sửa)** | Mất mạng hiện ngay lỗi sạch (không `EviaSkeleton`), thấy rõ nút `'Thử lại'` trên bàn phím; bật Wi-Fi và bấm `'Thử lại'` phục hồi `"2 events found"`. |
 
 ---
 
@@ -180,13 +179,15 @@
 
 ---
 
-#### TC03 — Search & Explore + Analytics (`PASSED SEARCH / GAP ANALYTICS`, `39.8s`, Trace `c3b37ab8-3d00-457f-a9d3-c11fb433381e`)
-- **Kết quả:**
-  - **Tìm kiếm (PASS):** Gõ `"Flutter"` vào `Search & Explore` trả về `"2 events found"`: `[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`.
-  - **Analytics (GAP — CHƯA SỬA):** Không ghi nhận sự kiện `'search'` lên Firebase Analytics (xem chi tiết ở [Mục 4.3](#43-tc03-passed-search--gap-analytics--search--explore-chưa-bắn-sự-kiện-firebase-analytics-search)).
-- **Ảnh chụp màn hình:**
+#### TC03 — Search & Explore + Analytics (`PASSED — Đã sửa & Re-test 2026-11-12`, Trace nền `c3b37ab8` [`39.8s`] -> Re-test `88a878c4-6002-49e4-86f0-692504baa441` [`95.3s`] + `1f7cb4e5`)
+- **Kết quả đợt nền (`2026-11-11`, Trace `c3b37ab8`):** Tìm `"Flutter"` trả về `"2 events found"`, nhưng chưa phát `AN-04 search`.
+- **Kết quả sau sửa & tái kiểm chứng (`2026-11-12`, Traces `88a878c4` & `1f7cb4e5`):**
+  - **Tìm kiếm & Analytics `AN-04` (PASSED):** Trên bản build bật `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`, gõ `"Flutter"` trả về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`). `adb logcat -d -s FA-SVC` xác nhận log `name=search` (`search_term=free_text_redacted`, `loaded_count=2`, `has_more=0`, `outcome=data`) và upload thành công HTTP `204` (`12:14:16.976` và `12:24:36.335`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+- **Ảnh chụp màn hình (Đợt nền `2026-11-11` vs Sau sửa `2026-11-12` — trạng thái kết quả ổn định):**
 
-![TC03 Search Flutter Results](evidence-2026-11-11/tc03-search-flutter.jpg)
+| Đợt nền `2026-11-11` (chưa log `AN-04 search`) | Sau sửa `2026-11-12` (`"2 events found"` + `FA-SVC` HTTP `204`) |
+| :---: | :---: |
+| ![TC03 Search Flutter Results](evidence-2026-11-11/tc03-search-flutter.jpg) | ![TC03 Search Flutter Verified](evidence-2026-11-12-fixes/tc03-search-flutter-verified.jpg) |
 
 ---
 
@@ -256,10 +257,10 @@
 
 ---
 
-#### TC11 — Check-in QR & cộng thưởng Coin (`PASSED QR / BUG ADMIN WEB 404`, `139.4s` ARTEMIS + Admin Web Chrome MCP, Trace `b7e43924-5d31-414f-abb9-87c656bf8f35` + `dc7a050c-456e-4d5e-b3f2-846227904cd6`)
+#### TC11 — Check-in QR & thưởng Coin + Admin Web (`PASSED QR / CHỜ DEPLOY ADMIN WEB`, `139.4s` ARTEMIS + Admin Web Chrome MCP, Trace `b7e43924-5d31-414f-abb9-87c656bf8f35` + `dc7a050c-456e-4d5e-b3f2-846227904cd6`)
 - **Kết quả:**
   - **QR Check-in (PASS):** Dùng mã QR vé `EV-0136E01E5D6C` trên Android gửi tới callable `verifyRegisteredTicket` (lần 1 HTTP `200`: `coinsGranted: 60, depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`). Trên app vé chuyển thành `Attendance confirmed`, ví tăng từ `50 available / 50 held` lên `160 available / 0 held`.
-  - **Admin Web nhập tay số vé (BUG — CHƯA SỬA):** Form nhập tay `EV-...` gọi `verifyAdminTicketNumber` gặp HTTP `404` trên endpoint Cloud Functions (xem [Mục 4.2](#42-tc11-passed-qr--bug-admin-web--nhập-tay-ticket-number-trên-admin-web-bị-http-404)).
+  - **Admin Web nhập tay số vé (ĐÃ CHẨN ĐOÁN / CHỜ DEPLOY):** Form nhập tay `EV-...` gọi `verifyAdminTicketNumber` gặp HTTP `404` trên `asia-southeast1-prm393-31822.cloudfunctions.net`. Đã xác minh mã nguồn & build `tsc` sạch (`0` lỗi), nhưng chưa thể deploy do Firebase CLI chưa đăng nhập (xem [Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404) và [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)).
 - **Ảnh chụp màn hình:**
 
 | QR trước khi scan | Vé chuyển `Attendance confirmed` | Ví sau check-in: `160 coins` |
@@ -294,13 +295,17 @@
 
 ---
 
-#### TC15 — Xuất báo cáo lịch sử Coin & Cloud Storage (`FAILED`, `79.3s`, Trace `50d8a6b7-46d8-4d42-8572-11d4832949bd`)
-- **Kết quả:**
-  - **Xuất file cục bộ SAF (Đạt phần phụ):** Lưu thành công `/sdcard/Download/evia-coin-history.csv` (`388` bytes, 10 giao dịch), app hiển thị `"Đã lưu báo cáo CSV (10 giao dịch đã tải)."`.
-  - **Firebase Cloud Storage (FAILED — CHƯA SỬA):** Không upload lên bucket `reports/{uid}/...` vì `storageServiceProvider` vẫn trỏ `PendingFirebaseServices` (`firebase_service_pending`) và `firebase/storage.rules` chỉ cho phép `.pdf` (xem chi tiết ở [Mục 4.1](#41-tc15-failed--lưu-csv-cục-bộ-chạy-được-nhưng-upload-firebase-cloud-storage-chưa-được-tích-hợp)).
-- **Ảnh chụp màn hình:**
+#### TC15 — Xuất báo cáo lịch sử Coin & Cloud Storage (`PASSED — Đã sửa & Re-test 2026-11-12`, Trace nền `50d8a6b7` [`79.3s`, FAILED] -> Re-test `89501bda-bb33-4334-a19d-77c05d76a9ab` [`88.6s`, PASSED])
+- **Kết quả đợt nền (`2026-11-11`, Trace `50d8a6b7`):**
+  - **Xuất file cục bộ SAF:** Lưu thành công `/sdcard/Download/evia-coin-history.csv` (`388` bytes, 10 giao dịch), app hiển thị `"Đã lưu báo cáo CSV (10 giao dịch đã tải)."`.
+  - **Firebase Cloud Storage (trước khi sửa):** FAILED vì `storageServiceProvider` vẫn trỏ `PendingFirebaseServices`.
+- **Kết quả sau sửa & tái kiểm chứng (`2026-11-12`, Trace `89501bda`):**
+  - **PASSED hoàn toàn:** Trên `Coin History` (`10 items`), bấm **`Tải báo cáo PDF lên Cloud Storage`** tải thành công tệp PDF lên `reports/BcQhwvBW6tXOfw05cVNI5FP7dNZ2/coin_history_1794457723506_1.pdf`, dung lượng **`1153` bytes**, `Progress: 100%`, thẻ xanh xác nhận **`Verified (Matched): 1153 bytes · 10 rows · 2026-11-11T17:09:55.523Z | spent | -100`**. Chi tiết đối chiếu và ảnh mới xem tại [Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15).
+- **Ảnh chụp đối chiếu (Trước sửa — Local CSV vs Sau sửa — Cloud Storage PDF):**
 
-![TC15 Local CSV Export Only](evidence-2026-11-11/tc15-local-csv-export.jpg)
+| Đợt nền `2026-11-11` (`FAILED` Storage, chỉ xuất CSV cục bộ) | Sau sửa `2026-11-12` (`PASSED` Cloud Storage PDF & Verified) |
+| :---: | :---: |
+| ![TC15 Local CSV Export Only](evidence-2026-11-11/tc15-local-csv-export.jpg) | ![TC15 Cloud Storage PDF Verified](evidence-2026-11-12-tc15/tc15-cloud-upload-verified.jpg) |
 
 ---
 
@@ -341,20 +346,135 @@
 
 ---
 
-#### TC19 — Offline Error State & Network Recovery (`PASSED / UX NOTE`, `599.8s`, Trace `ac91fb8a` [`Pro`, `490.9s`] + `22b0579b` [`Flash`, `46.2s`] + `94e8d1c9` [`Flash`, `62.7s`])
-- **Kết quả:**
-  - Tắt Wi-Fi (`svc wifi disable`) và tìm kiếm `"EVIA_OFFLINE_6f0a9dc2"`, app hiển thị thông báo lỗi mạng chuẩn từ [`FirebaseBackendService`](../lib/services/firebase_backend_service.dart#L80): `"Cannot reach the service. Check your connection and retry."`.
-  - Khi bật lại Wi-Fi (`svc wifi enable`), màn kết quả tự hồi phục về `"0 events found"`; ở lần thử màn full-screen lỗi khác hiển thị nút `'Thử lại'` ở giữa `[400,567][600,624]` và phục hồi sạch về `Discover` (`30 coins`) sau khi bấm `'Thử lại'` (Ghi chú: agent Flash `94e8d1c9` tự báo `failed` do timeout đánh giá ngay sau tap, trong khi ảnh live chụp trực tiếp trên thiết bị xác nhận app đã hồi phục về `Discover`).
-  - **UX Note (CHƯA SỬA):** Trên `EviaExploreScreen`, `EviaSkeleton()` hiển thị phía trên `AppErrorWidget` làm nút `'Thử lại'` bị đẩy xuống khỏi khung hình đầu (xem [Mục 4.4](#44-tc19-passed--ux-note--eviaskeleton-xếp-trên-apperrorwidget-đẩy-nút-thử-lại-xuống-ngoài-màn-hình)).
-- **Ảnh chụp màn hình:**
+#### TC19 — Offline Error State & Network Recovery (`PASSED — Đã sửa & Re-test 2026-11-12`, Trace nền `ac91fb8a`+`22b0579b`+`94e8d1c9` [`599.8s`] -> Re-test `dfb740a1` [`49.0s`] + `1f7cb4e5` [`48.3s`])
+- **Kết quả đợt nền (`2026-11-11`):** Tắt Wi-Fi hiện đúng lỗi kết nối nhưng `EviaSkeleton()` hiển thị cùng `AppErrorWidget` đẩy nút `'Thử lại'` xuống ngoài màn hình đầu (`y > 2408`).
+- **Kết quả sau sửa & tái kiểm chứng (`2026-11-12`, Traces `dfb740a1` & `1f7cb4e5`):**
+  - **Phase 1 — Offline (`dfb740a1`, `49.0s`, `completed`):** Tắt Wi-Fi (`svc wifi disable`) và tìm `"Flutter"`, ứng dụng chuyển thẳng sang thông báo lỗi `"The server could not complete this request. Please retry."` cùng nút **`Thử lại`** căn giữa ngay trên bàn phím, **không còn `EviaSkeleton()` / `"Searching..."`**; `FA-SVC` ghi `search` (`outcome=error`, `loaded_count=0`) và `action_error` (`action=search`).
+  - **Phase 2 — Recovery (`1f7cb4e5`, `48.3s`, `completed`):** Bật lại Wi-Fi (`svc wifi enable`) và bấm nút **`Thử lại`**, màn kết quả tải sạch về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`), `FA-SVC` ghi `search` (`outcome=data`, `loaded_count=2`, HTTP `204`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+- **Ảnh chụp màn hình (Trước sửa `2026-11-11` vs Sau sửa `2026-11-12`):**
 
-| Lỗi Offline trên Search (`Cannot reach the service...`) | Full-screen lỗi hiển thị nút `'Thử lại'` | Khôi phục sạch về `Discover` (`30 coins`) |
+| Đợt nền: Offline Error | Sau sửa Phase 1: Lỗi sạch & nút `'Thử lại'` hiện rõ | Sau sửa Phase 2: Bấm `'Thử lại'` phục hồi `"2 events found"` |
 | :---: | :---: | :---: |
-| ![TC19 Offline Search Error](evidence-2026-11-11/tc19-offline-search-error.jpg) | ![TC19 Retry Button Error](evidence-2026-11-11/tc19-retry-button-error.jpg) | ![TC19 Network Recovered](evidence-2026-11-11/tc19-network-recovered.jpg) |
+| ![TC19 Offline Search Error](evidence-2026-11-11/tc19-offline-search-error.jpg) | ![TC19 Offline Error Clean](evidence-2026-11-12-fixes/tc19-offline-error-clean.jpg) | ![TC19 Recovery Verified](evidence-2026-11-12-fixes/tc19-recovery-verified.jpg) |
+
+*(Tham chiếu bổ sung từ đợt nền `2026-11-11`: ![TC19 Retry Button Error](evidence-2026-11-11/tc19-retry-button-error.jpg) · ![TC19 Network Recovered](evidence-2026-11-11/tc19-network-recovered.jpg))*
 
 ---
 
-## 6. Phụ lục: Danh sách toàn bộ 41 ARTEMIS Traces ngày `2026-11-11`
+## 6. Bằng chứng khắc phục và tái kiểm chứng lỗi TC15
+
+> Sau đợt hồi quy ngày `2026-11-11`, lỗi `TC15` (`FAILED`) được khắc phục bằng **Phương án A** (giữ nguyên xuất CSV cục bộ qua Android SAF, bổ sung luồng tạo báo cáo **PDF 1.4 thuần Dart không chứa PII** và upload theo `uid` lên Firebase Cloud Storage khớp 100% [`firebase/storage.rules`](../firebase/storage.rules#L18-L27)).
+
+### 6.1. Phạm vi mã nguồn và tài liệu đã cập nhật
+
+| Tầng (MVVM / Docs) | Tệp | Thay đổi chính đã áp dụng |
+| --- | --- | --- |
+| **Service contract** | [`lib/services/storage_service.dart`](../lib/services/storage_service.dart#L3-L15) | Thêm callback `onProgress` cho `upload(...)` và phương thức `readBytes(...)` để đọc đối chiếu bằng SDK có xác thực. |
+| **Pending adapter** | [`lib/services/pending_firebase_services.dart`](../lib/services/pending_firebase_services.dart#L62-L75) | Đồng bộ chữ ký `upload(..., onProgress)` và `readBytes(...)`, ném `firebase_service_pending` khi chưa bật Firebase. |
+| **Firebase adapter *(mới)*** | [`lib/services/firebase_storage_service.dart`](../lib/services/firebase_storage_service.dart#L10-L126) | Cài đặt `FirebaseStorageService` (`firebase_storage: ^14.0.1`), gọi `await ready()`, kiểm tra `<= 5 MiB`, stream `UploadTask.snapshotEvents` (`0.0`–`1.0`), trả URI `gs://` (không lộ bearer token URL), đọc đối chiếu `getData(...)` và map `FirebaseException` sang `AppException`. |
+| **DI Providers** | [`lib/core/providers/service_providers.dart`](../lib/core/providers/service_providers.dart#L86-L90), [`repository_providers.dart`](../lib/core/providers/repository_providers.dart#L21-L26) | Chuyển `storageServiceProvider` sang `FirebaseStorageService` khi `realBackendEnabledProvider == true`; tiêm `storageService` vào `reportExportRepositoryProvider`. |
+| **Analytics schema** | [`lib/models/analytics_events.dart`](../lib/models/analytics_events.dart#L20-L38) | Bổ sung `AN-16` `'upload_report': {'report_type': String, 'file_size_kb': int}`, thêm `'upload_report'` vào `actions` và cho phép `'coin_history_pdf'` ở [dòng 83](../lib/models/analytics_events.dart#L83). |
+| **Repository** | [`lib/repositories/report_export_repository.dart`](../lib/repositories/report_export_repository.dart#L10-L250) | Giữ nguyên `exportHistory` xuất CSV SAF; bổ sung `ReportUploadResult`, trình tạo `PDF 1.4` thuần Dart (`buildCoinHistoryPdf`, `_buildPdf` chỉ ghi `date \| kind \| coins`, không PII) và `uploadHistoryPdf` tải lên `reports/{uid}/coin_history_<id>.pdf` rồi `readBytes` đối chiếu khớp byte + từng dòng PDF. |
+| **ViewModel** | [`lib/viewmodels/report_export_view_model.dart`](../lib/viewmodels/report_export_view_model.dart#L12-L219) | Mở rộng `ReportExportState`; giữ nguyên `exportHistory()`; thêm `uploadHistoryToCloud()` (chặn gọi trùng, kiểm tra `_sameActiveSession(uid)` sau mỗi `await`, cập nhật tiến trình live, ghi `upload_report` / `action_error`). |
+| **View** | [`lib/screens/evia/coin_history_screen.dart`](../lib/screens/evia/coin_history_screen.dart#L35-L74), [`_CloudUploadStatusCard`](../lib/screens/evia/coin_history_screen.dart#L188-L246) | Giữ nguyên nút `Xuất CSV các giao dịch đang hiển thị`; bổ sung nút `Tải báo cáo PDF lên Cloud Storage`, `LinearProgressIndicator` + `%`, và thẻ kết quả dùng design tokens (`AppColors`, `EviaTheme`, `EviaCard`, `Semantics(liveRegion: true)`). |
+| **Automated tests *(mới)*** | [`test/services/firebase_storage_export_test.dart`](../test/services/firebase_storage_export_test.dart#L66-L303) | `5` tests mới dùng fake `StorageService` (pending rejection, upload PDF/progress/double-tap/analytics, failure/`action_error`/sign-out guard, responsive UI `360dp` & `412dp` ở `2.0x` text scale). |
+| **Tài liệu đồng bộ** | [`docs/analytics-plan.md`](../docs/analytics-plan.md#L5-L7), [`README.md`](../README.md#L26) | Cập nhật trạng thái `AN-16 upload_report` và mô tả `firebase_storage` tại [`README.md`](../README.md#L293-L295). |
+
+### 6.2. Kết quả kiểm chứng tự động (Flutter analyze, tests & APK build)
+
+| Kiểm tra | Lệnh thực thi | Kết quả quan sát |
+| --- | --- | --- |
+| **Format** | `dart format lib test` | Đạt (`Formatted 177 files`, exit code `0`). |
+| **Static Analysis** | `flutter analyze` | **Đạt — `No issues found!`** (`ran in 10.2s`, exit code `0`). |
+| **Targeted Tests (Storage / Analytics / Activity)** | `flutter test --no-pub test/services/firebase_storage_export_test.dart test/viewmodels/analytics_integration_test.dart test/services/analytics_repository_test.dart test/widgets/activity_screens_test.dart` | **Đạt — `40 / 40` tests passed** (`All tests passed!`, gồm cả `5` tests mới ở `firebase_storage_export_test.dart`). |
+| **Full Flutter Test Suite** | `flutter test --no-pub` | **`256 passed, 4 failed`** — cả `4` ca fail đều là **4 lỗi nền có sẵn** trước khi sửa đổi đã ghi nhận tại [`docs/test-plan.md`](../docs/test-plan.md#L10-L12) (`evia_screens_test.dart`, `flow1_screens_test.dart`, `flow3_screens_test.dart`, `registration_screens_test.dart`). |
+| **Debug APK (Firebase bật)** | `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true` | Build đạt (`Built build\app\outputs\flutter-apk\app-debug.apk` trong `107.2s`) và đã cài lên thiết bị `SM-A135F` (`R58T80PE55F`) cho đợt chạy `TC15` (cùng nội dung nguồn Dart đã đồng bộ lại và xác nhận sạch bằng `flutter analyze` + `flutter test` ở trên). |
+
+### 6.3. Kết quả chạy lại ARTEMIS `TC15` trên thiết bị thật (`2026-11-12`)
+
+- **Trace ID:** `89501bda-bb33-4334-a19d-77c05d76a9ab` (Model `Flash`, thiết bị `SM-A135F` / `R58T80PE55F`).
+- **Thời gian chạy:** `11:27:37` -> `11:29:06` (`+07:00`, ngày `2026-11-12`), **thời lượng `88.6 giây`**, trạng thái **`completed`**.
+- **Đối chiếu từng điều kiện nghiệm thu (`TC15`):**
+  1. `upload_complete == True`: Sau khi bấm **`Tải báo cáo PDF lên Cloud Storage`** trên màn `Coin History` (`10 items`, mới nhất `Reward redemption -100 coins`), app hiển thị thẻ xanh `"Đã tải báo cáo PDF lên Cloud Storage (10 giao dịch, 1153 bytes)."`.
+  2. `owner_path_matches == True`: Đường dẫn hiển thị trên UI là `reports/BcQhwvBW6tXOfw05cVNI5FP7dNZ2/coin_history_1794457723506_1.pdf` (đúng UID chủ sở hữu tài khoản `phuc250805@gmail.com`).
+  3. `file_size_bytes > 0`: Dung lượng tệp PDF là **`1153` bytes**, `Progress: 100%`.
+  4. `file_content_matches == True`: Hàm `readBytes` đọc lại trực tiếp tệp từ Cloud Storage và đối chiếu khớp toàn bộ byte + từng dòng nội dung: **`Verified (Matched): 1153 bytes · 10 rows · 2026-11-11T17:09:55.523Z | spent | -100`**.
+- **Xác minh chéo tầng Firebase Analytics (`adb logcat -d -s FA-SVC`):**
+  - `11-12 11:28:52.310`: `Logging event: origin=app,name=upload_report,params=Bundle[{file_size_kb=2, report_type=coin_history_pdf, ga_event_origin(_o)=app}]`
+  - `11-12 11:28:53.128`: `Network upload successful with code, uploadAttempted: 204, true`
+
+### 6.4. Thư viện ảnh Evidence sửa lỗi `TC15` (`evidence-2026-11-12-tc15/`)
+
+| 1. Màn `Coin History` sẵn sàng với 2 nút (CSV SAF + Cloud Storage PDF) | 2. Trạng thái đang tải lên Cloud Storage (`LinearProgressIndicator`, `0%`) | 3. Tải hoàn tất (`Path` theo UID, `1153 bytes`, `100%`, `Verified (Matched)`) |
+| :---: | :---: | :---: |
+| ![TC15 Ready Coin History](evidence-2026-11-12-tc15/tc15-coin-history-ready.jpg) | ![TC15 Uploading Progress](evidence-2026-11-12-tc15/tc15-uploading-progress.jpg) | ![TC15 Cloud Upload Verified](evidence-2026-11-12-tc15/tc15-cloud-upload-verified.jpg) |
+
+### 6.5. Tóm tắt tồn đọng tại thời điểm kết thúc đợt `TC15` (cập nhật tiến độ tiếp theo ở Mục 7)
+
+| STT | Mã TC / Phạm vi | Loại vấn đề | Trạng thái tại cuối đợt `TC15` | Trạng thái hiện tại (`2026-11-12` — Mục 7) |
+| :---: | --- | --- | --- | --- |
+| **1** | **`TC11`** (Admin Web nhập tay Ticket) | Backend / Deploy Bug (`HTTP 404`) | Chưa sửa | **Đã chẩn đoán & build `tsc` OK; chờ `firebase login` để deploy** ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404), [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)). |
+| **2** | **`TC03`** (`Search & Explore` Analytics) | Analytics Gap (`AN-04`) | Chưa sửa | **ĐÃ SỬA & PASSED** ([Mục 4.3](#43-tc03-đã-sửa-và-passed--search--explore-bắn-sự-kiện-firebase-analytics-search), [Mục 7.3](#73-bằng-chứng-e2e-thiết-bị-thật-sm-a135f--firebase-analytics-fa-svc-cho-tc03--tc19)). |
+| **3** | **`TC19`** (`EviaExploreScreen` Offline UX) | UX Layout Issue | Chưa sửa | **ĐÃ SỬA & PASSED** ([Mục 4.4](#44-tc19-đã-sửa-và-passed--hết-chồng-eviaskeleton-trên-apperrorwidget-và-khôi-phục-nút-thử-lại), [Mục 7.3](#73-bằng-chứng-e2e-thiết-bị-thật-sm-a135f--firebase-analytics-fa-svc-cho-tc03--tc19)). |
+| **4** | **ARTEMIS `artemis.jsonc`** | Tooling Quota Note | Ngoài app | **Ngoài phạm vi app** — dùng model `Flash` cho các đợt tái kiểm chứng ([Mục 4.5](#45-ghi-chú-cấu-hình-artemis-artemisjsonc--ngoài-phạm-vi-app-evia)). |
+
+---
+
+## 7. Bằng chứng khắc phục TC03, TC19 và chẩn đoán TC11
+
+> Sau khi hoàn tất `TC15`, tiếp tục xử lý 3 tồn đọng còn lại ngày `2026-11-12`: tích hợp `AN-04 search` (`TC03`), sửa UX offline + tắt auto-retry nền trên `flow1SearchProvider` (`TC19`), khôi phục/bổ sung bộ tests tự động và chẩn đoán nguyên nhân HTTP `404` trên Cloud Functions (`TC11`).
+
+### 7.1. Phạm vi mã nguồn, tests và tài liệu đã cập nhật
+
+| Tầng (MVVM / Docs) | Tệp | Thay đổi chính đã áp dụng |
+| --- | --- | --- |
+| **Model** | [`lib/models/evia_models.dart`](../lib/models/evia_models.dart#L100-L137) | Bổ sung `operator ==` và `hashCode` theo giá trị cho `EventFilters` để `flow1SearchProvider` không tạo family key dư thừa khi bộ lọc giữ nguyên. |
+| **Analytics schema** | [`lib/models/analytics_events.dart`](../lib/models/analytics_events.dart#L1-L87) | Bổ sung `AN-04`: `'search': {'search_term': String, 'loaded_count': int, 'has_more': int, 'outcome': String}`, thêm `'search'` vào `actions`, định nghĩa allowlist `searchTerms` + `searchOutcomes`, `redactSearchTerm(...)` (mã hóa free text thành `'free_text_redacted'`) và kiểm tra `has_more` (`0`/`1`) trong `validate()`. |
+| **ViewModel (`Flow 1`)** | [`lib/viewmodels/flow1_view_model.dart`](../lib/viewmodels/flow1_view_model.dart#L241-L248) | Tắt cơ chế auto-retry mặc định của Riverpod 3.4.3 trên `flow1SearchProvider` bằng `retry: (_, _) => null` để lỗi offline settle ngay về `AsyncError`. |
+| **ViewModel (`EviaViewModel`)** | [`lib/viewmodels/evia_view_model.dart`](../lib/viewmodels/evia_view_model.dart#L112-L120) | Thêm `_searchSub` / `_searchNonce` (hủy listener ở `ref.onDispose`), phương thức `retrySearch()` và `_recordSearchSubmission()` tại `submitSearch`, `showSearch(referenceResults: true)`, `selectCategory`, `applyFilters`, `clearFilters`, `removeFilter`, `retrySearch` để phát đúng 1 event `search` (`data`/`empty`/`error`) và `action_error` (`action=search`) khi lỗi. |
+| **View** | [`lib/screens/evia/explore_screen.dart`](../lib/screens/evia/explore_screen.dart#L71-L81), [`L247-266`](../lib/screens/evia/explore_screen.dart#L247-L266) | Chuyển các nhánh `hasError` / `isLoading` / empty / list sang `if / else if` loại trừ lẫn nhau (tuyệt đối không xếp `EviaSkeleton()` trên `AppErrorWidget`), nối `onRetry: vm.retrySearch`, và dùng `vm.catalog?.organizerName(event.organizerId) ?? event.organizerId` an toàn khi chưa có catalog. |
+| **Unit / VM / Widget Tests** | [`test/services/analytics_repository_test.dart`](../test/services/analytics_repository_test.dart), [`test/viewmodels/analytics_integration_test.dart`](../test/viewmodels/analytics_integration_test.dart), [`test/widgets/explore_offline_search_test.dart`](../test/widgets/explore_offline_search_test.dart), [`test/services/firebase_storage_export_test.dart`](../test/services/firebase_storage_export_test.dart) | Kiểm tra validate/redact `AN-04 search`, ViewModel emission trên data/empty/error + hủy kết quả trễ khi clear/logout, widget test UX offline không đè skeleton & hiển thị `'Thử lại'` ở `360dp`, `412dp` và `2.0x` text scale, cùng khôi phục đầy đủ suite unit/ViewModel/widget cho `TC15`. |
+| **Tài liệu** | [`docs/analytics-plan.md`](../docs/analytics-plan.md), [`docs/ANALYTICS_INTEGRATION.md`](../docs/ANALYTICS_INTEGRATION.md), [`README.md`](../README.md) | Cập nhật trạng thái tích hợp từ `12` lên `13/17` events Android (`AN-04 search` + `AN-16 upload_report`, còn `AN-06/07/10/14` pending). |
+
+### 7.2. Kết quả kiểm chứng tự động và build APK mới nhất
+
+| Kiểm tra | Lệnh thực thi | Kết quả quan sát |
+| --- | --- | --- |
+| **Format** | `dart format --output=none --set-exit-if-changed lib test` | Đạt — `Formatted 178 files (0 changed) in 1.11 seconds`, exit code `0`. |
+| **Static Analysis** | `flutter analyze --no-pub` | **Đạt — `No issues found!`** (`ran in 4.4s`), exit code `0`. |
+| **Targeted Tests (`TC15`, `TC03`, `TC19`)** | `flutter test --no-pub --reporter expanded test/services/firebase_storage_export_test.dart test/services/analytics_repository_test.dart test/viewmodels/analytics_integration_test.dart test/widgets/explore_offline_search_test.dart` | **Đạt — `23 / 23` tests passed** (`All tests passed!`). |
+| **Full Flutter Test Suite** | `flutter test --no-pub --reporter expanded` | **`260 passed, 4 failed`** (`01:08`) — không phát sinh lỗi mới; chỉ còn `4` lỗi nền có sẵn trước khi sửa đổi (`test/widgets/evia_screens_test.dart`: `all nine screens fit 360.0dp at 2.0x text`; `test/widgets/flow1_screens_test.dart`: `catalog network error uses the existing retry component`; `test/widgets/flow3_screens_test.dart`: `network error offers retry and never falls back to mock rewards`; `test/widgets/registration_screens_test.dart`: `/registration/loading fits phone widths and scaled text` timeout `pumpAndSettle`). |
+| **Backend Build (`TC11`)** | `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` & `run build` | Cài `248` packages và biên dịch TypeScript (`tsc`) đạt **`0` lỗi**. (`node --test` cục bộ không chạy được khi thiếu Firebase Emulators — xem [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)). |
+| **Debug APK (Firebase + Analytics bật)** | `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=ANALYTICS_ENABLED=true` | Build đạt trong `103.6s` và đã cài lên thiết bị `SM-A135F` (`R58T80PE55F`) cho toàn bộ đợt chạy `TC03` & `TC19`. |
+
+### 7.3. Bằng chứng E2E thiết bị thật (`SM-A135F`) & Firebase Analytics (`FA-SVC`) cho `TC03` & `TC19`
+
+- **Bản build thử nghiệm:** `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=ANALYTICS_ENABLED=true` (`103.6s`), cài qua `adb -s R58T80PE55F install -r build/app/outputs/flutter-apk/app-debug.apk` (`Success`).
+- **Kết quả ARTEMIS (`SM-A135F` / `R58T80PE55F`, Model `Flash`):**
+  1. **`TC03` (Trace `88a878c4-6002-49e4-86f0-692504baa441`, `95.3s`, `completed`):** Tìm `"Flutter"` trả về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in`, `[DEMO] Flutter và Firebase từ cơ bản`).
+  2. **`TC19` Phase 1 Offline (Trace `dfb740a1-b46a-4150-9abb-686299251b5a`, `49.0s`, `completed`):** Tắt Wi-Fi (`svc wifi disable`), giữ query `"Flutter"` và gửi tìm kiếm -> hiện ngay `"The server could not complete this request. Please retry."` và nút **`Thử lại`** căn giữa ngay trên bàn phím, không có `EviaSkeleton()` / `"Searching…"`.
+  3. **`TC19` Phase 2 Recovery (Trace `1f7cb4e5-ddfb-4b16-b0ac-28067f52bd91`, `48.3s`, `completed`):** Bật lại Wi-Fi (`svc wifi enable`), chạm **`Thử lại`** trực tiếp từ màn lỗi và đóng bàn phím -> tải sạch về `"2 events found"`.
+- **Log Firebase Analytics (`adb -s R58T80PE55F logcat -d -s FA-SVC`):**
+  - **Tìm `"Flutter"` thành công (`TC03` / Trace `88a878c4`):** `11-12 12:14:16.327` `Logging event: origin=app,name=search,params=Bundle[{loaded_count=2, outcome=data, search_term=free_text_redacted, ga_event_origin(_o)=app, has_more=0}]` -> `12:14:16.976` `Network upload successful with code, uploadAttempted: 204, true`.
+  - **Tìm khi mất Wi-Fi (`TC19` Phase 1 / Trace `dfb740a1`):** `11-12 12:22:19.685` `Logging event: origin=app,name=search,params=Bundle[{loaded_count=0, outcome=error, search_term=free_text_redacted, ga_event_origin(_o)=app, has_more=0}]` + `12:22:19.751` `Logging event: origin=app,name=action_error,params=Bundle[{action=search, ga_event_origin(_o)=app, error_code=unexpected}]`.
+  - **Bấm `'Thử lại'` khi có Wi-Fi (`TC19` Phase 2 / Trace `1f7cb4e5`):** `11-12 12:24:36.249` `name: search` (`loaded_count=2`, `outcome=data`, `search_term=free_text_redacted`, `has_more=0`) -> `12:24:36.335` `Network upload successful with code, uploadAttempted: 204, true`.
+- **Thư viện ảnh Evidence (`evidence-2026-11-12-fixes/`):**
+
+| `TC03` & `TC19` Recovery: `"2 events found"` (không PII trong `search_term`) | `TC19` Phase 1 Offline: lỗi sạch, ẩn skeleton, thấy ngay `'Thử lại'` | `TC19` Phase 2: chạm `'Thử lại'` sau bật Wi-Fi phục hồi `"2 events found"` |
+| :---: | :---: | :---: |
+| ![TC03 Search Flutter Verified](evidence-2026-11-12-fixes/tc03-search-flutter-verified.jpg) | ![TC19 Offline Error Clean](evidence-2026-11-12-fixes/tc19-offline-error-clean.jpg) | ![TC19 Recovery Verified](evidence-2026-11-12-fixes/tc19-recovery-verified.jpg) |
+
+*(Ghi chú ảnh: màn hình sau phục hồi ổn định tại Trace `1f7cb4e5` [lúc `12:25`] khớp trạng thái `"2 events found"` của `TC03`; ở Trace `88a878c4` trước đó event `FA-SVC` `12:14:16` đã ghi nhận HTTP `204` trước khi frame kịp chụp lại sau animation).*
+
+### 7.4. Hiện trạng chẩn đoán `TC11` (`verifyAdminTicketNumber`) & bước hoàn tất còn lại
+
+- **Mã nguồn & build TypeScript:** `verifyAdminTicketNumber` đã tồn tại tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) (`region = 'asia-southeast1'`, codebase `evia`). Đã chạy `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` (`248` packages) và `& "C:\Program Files\nodejs\npm.cmd" --prefix functions run build` (`tsc`) -> **đạt, `0` lỗi**.
+- **Endpoint live & bộ test backend:** `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` trả về **HTTP `404`**. Bộ test `functions/test/*.test.mjs` yêu cầu chạy kèm Firebase Emulators (`FIRESTORE_EMULATOR_HOST`).
+- **Điểm nghẽn duy nhất:** `& "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login:list` báo **`! No authorized accounts, run "firebase login"`**, nên không thể tự deploy non-interactive. Cần người dùng đăng nhập Firebase CLI rồi deploy `functions:evia:verifyAdminTicketNumber` và kiểm tra lại màn `#checkin` trên Admin Web.
+
+---
+
+## 8. Phụ lục: Danh sách toàn bộ 41 ARTEMIS Traces ngày `2026-11-11`
 
 > Đối soát trực tiếp từ `E:\Desktop\artemis\artemis\traces\<trace_id>\status.json` (`Start`/`End` theo múi giờ `+07:00`, tổng = **`4,665.1 giây`**).
 

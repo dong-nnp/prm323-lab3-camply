@@ -72,7 +72,8 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
         ? (remote?.asData?.value
                   .map(
                     (event) => event.card(
-                      vm.catalog!.organizerName(event.organizerId),
+                      vm.catalog?.organizerName(event.organizerId) ??
+                          event.organizerId,
                     ),
                   )
                   .toList() ??
@@ -245,24 +246,23 @@ class _EviaExploreScreenState extends ConsumerState<EviaExploreScreen> {
             ],
           ),
           if (remote?.isLoading == true && remote?.hasValue != true)
-            const EviaSkeleton(),
-          if (remote?.hasError == true)
+            const EviaSkeleton()
+          else if (remote?.hasError == true)
             AppErrorWidget(
               message: ExceptionMapper.map(remote!.error!).message,
-              onRetry: () => ref.invalidate(flow1SearchProvider(input)),
-            ),
-          if (events.isEmpty &&
-              remote?.isLoading != true &&
-              remote?.hasError != true)
+              onRetry: vm.retrySearch,
+            )
+          else if (events.isEmpty && remote?.isLoading != true)
             const AppEmptyWidget(
               title: 'No events found',
               message: 'No events match your search. Try another topic or clear the filters.',
-            ),
-          for (final event in events)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: SearchEventCard(event: event),
-            ),
+            )
+          else
+            for (final event in events)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: SearchEventCard(event: event),
+              ),
         ] else ...[
           const SizedBox(height: AppSpacing.xl),
           Row(

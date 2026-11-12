@@ -304,4 +304,77 @@ void main() {
       isTrue,
     );
   });
+  test(
+    'search tracks AN-04 redacted search_term, outcomes, failure and retry',
+    () async {
+      var fail = false;
+      backend.handle = (op, input) async {
+        if (op == 'getPublicCatalog') {
+          if (fail) {
+            throw const AppException(code: 'unavailable', message: 'Offline');
+          }
+          if (input['category'] == 'sports') {
+            return {'items': <Map<String, dynamic>>[], 'nextCursor': null};
+          }
+        }
+        return backend.respond(op, input);
+      };
+      c.listen(eviaViewModelProvider, (_, _) {});
+      final vm = c.read(eviaViewModelProvider.notifier);
+      vm.updateQuery('Server');
+      await settle();
+      expect(analytics.events, isEmpty);
+
+      vm.submitSearch('Server');
+      await settle();
+      expect(analytics.events.single.name, 'search');
+      expect(analytics.events.single.parameters, {
+        'search_term': 'free_text_redacted',
+        'loaded_count': 1,
+        'has_more': 0,
+        'outcome': 'data',
+      });
+
+      analytics.events.clear();
+      vm.updateQuery('');
+      vm.selectCategory('Sports');
+      await settle();
+      expect(analytics.events.single.name, 'search');
+      expect(analytics.events.single.parameters, {
+        'search_term': 'sports',
+        'loaded_count': 0,
+        'has_more': 0,
+        'outcome': 'empty',
+      });
+
+      analytics.events.clear();
+      fail = true;
+      vm.selectCategory('All');
+      vm.submitSearch('Offline secret');
+      await settle();
+      expect(analytics.events.map((e) => e.name), ['search', 'action_error']);
+      expect(analytics.events.first.parameters, {
+        'search_term': 'free_text_redacted',
+        'loaded_count': 0,
+        'has_more': 0,
+        'outcome': 'error',
+      });
+      expect(analytics.events.last.parameters, {
+        'action': 'search',
+        'error_code': 'unavailable',
+      });
+
+      analytics.events.clear();
+      fail = false;
+      vm.retrySearch();
+      await settle();
+      expect(analytics.events.single.name, 'search');
+      expect(analytics.events.single.parameters, {
+        'search_term': 'free_text_redacted',
+        'loaded_count': 1,
+        'has_more': 0,
+        'outcome': 'data',
+      });
+    },
+  );
 }

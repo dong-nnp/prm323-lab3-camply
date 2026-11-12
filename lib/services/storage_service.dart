@@ -5,5 +5,11 @@ abstract interface class StorageService {
     required String path,
     required Uint8List bytes,
     required String contentType,
+    void Function(double progress)? onProgress,
+  });
+
+  Future<Uint8List> readBytes({
+    required String path,
+    int maxSizeBytes = 5 * 1024 * 1024,
   });
 }

@@ -15,6 +15,8 @@ Analytics không quyết định số dư, vé hay attendance chính thức.
 Google sign-in chỉ ghi `login`: contract hiện tại không trả `isNewUser`, nên
 không suy đoán Google sign-up. Sáu events còn lại trong analytics-plan vẫn là kế hoạch.
 
+Cập nhật 12/11/2026: đã kích hoạt thêm `upload_report` (`AN-16`) cho tải PDF Coin History lên Cloud Storage và `search` (`AN-04`) cho Search & Explore qua `EviaViewModel` (nâng lên 13/17 events Android; `AN-06/07/10/14` vẫn pending). Nguồn xác minh thực địa bổ sung xem [báo cáo E2E ARTEMIS](../reports/artemis-e2e-report.md).
+
 ## Chạy Android
 
 ```powershell

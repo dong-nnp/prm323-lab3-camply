@@ -25,6 +25,7 @@ import '../../services/backend_service.dart';
 import '../../services/firebase_backend_service.dart';
 import '../../services/firebase_authentication_service.dart';
 import '../../services/firebase_messaging_service.dart';
+import '../../services/firebase_storage_service.dart';
 import '../../services/unavailable_backend_service.dart';
 
 final firebaseEnabledProvider = Provider<bool>(
@@ -83,7 +84,9 @@ final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
   return service;
 });
 final storageServiceProvider = Provider<StorageService>(
-  (ref) => ref.watch(_pendingServicesProvider),
+  (ref) => ref.watch(realBackendEnabledProvider)
+      ? FirebaseStorageService(ref.watch(_firebaseReadyProvider))
+      : ref.watch(_pendingServicesProvider),
 );
 final messagingServiceProvider = Provider<MessagingService>(
   (ref) => ref.watch(realBackendEnabledProvider)

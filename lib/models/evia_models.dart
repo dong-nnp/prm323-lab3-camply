@@ -105,4 +105,33 @@ class EventFilters {
     rangeStart: start,
     rangeEnd: end,
   );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EventFilters &&
+          category == other.category &&
+          date == other.date &&
+          time == other.time &&
+          duration == other.duration &&
+          audience == other.audience &&
+          policy == other.policy &&
+          availability == other.availability &&
+          eligibleOnly == other.eligibleOnly &&
+          rangeStart == other.rangeStart &&
+          rangeEnd == other.rangeEnd;
+
+  @override
+  int get hashCode => Object.hash(
+    category,
+    date,
+    time,
+    duration,
+    audience,
+    policy,
+    availability,
+    eligibleOnly,
+    rangeStart,
+    rangeEnd,
+  );
 }
