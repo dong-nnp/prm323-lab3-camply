@@ -17,7 +17,7 @@
 - **Thư mục ảnh chứng cứ:**
   - Phiên đầy đủ ngày `2026-11-11`: [`evidence-2026-11-11/`](evidence-2026-11-11/) (`40` ảnh đã đối chiếu trực quan theo từng bước trace)
   - Đợt sửa & tái kiểm chứng `TC15` ngày `2026-11-12`: [`evidence-2026-11-12-tc15/`](evidence-2026-11-12-tc15/) (`3` ảnh xác minh trực quan theo Trace `89501bda`)
-  - Đợt sửa & tái kiểm chứng `TC03`, `TC19` ngày `2026-11-12`: [`evidence-2026-11-12-fixes/`](evidence-2026-11-12-fixes/) (`3` ảnh xác minh trực quan từ các Traces `dfb740a1` và `1f7cb4e5`)
+  - Đợt sửa & tái kiểm chứng `TC03`, `TC19` và re-test Admin Web `TC11` ngày `2026-11-12`: [`evidence-2026-11-12-fixes/`](evidence-2026-11-12-fixes/) (`4` ảnh xác minh trực quan từ các Traces `dfb740a1`, `1f7cb4e5` và phiên Chrome `#check-in`)
 - **Phạm vi báo cáo:** Tổng hợp **phiên hồi quy đầy đủ ngày `2026-11-11`** (`19/19` TCs với `FIREBASE_ENABLED=true`), **đợt sửa & tái kiểm chứng `TC15`** và **đợt sửa `TC03`, `TC19` + chẩn đoán `TC11` ngày `2026-11-12`**.
 
 ---
@@ -78,12 +78,13 @@
 - **Hiện tượng quan sát:**
   - Check-in bằng QR (`verifyRegisteredTicket`) chạy thành công (lần 1 HTTP `200`, `coinsGranted: 60`, `depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`), app cập nhật `Attendance confirmed` và ví lên `160 coins`.
   - Khi kiểm tra luồng nhập tay số vé `EV-0136E01E5D6C` trên Admin Web `#checkin`, trình duyệt gọi `https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` và gặp lỗi **HTTP `404` (`net::ERR_FAILED`)**.
-- **Kết quả chẩn đoán ngày `2026-11-12`:**
+- **Kết quả chẩn đoán & kiểm thử lại trên Admin Web (`2026-11-12`, sau khi đẩy commit `9117361` lên `main`):**
   1. Hàm `verifyAdminTicketNumber` **đã được cài đặt và export sẵn** trong mã nguồn tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) với region `asia-southeast1` ([`functions/src/policy.ts`](../functions/src/policy.ts#L5), [`firebase.json`](../firebase.json#L27) codebase `evia`), khớp lời gọi tại [`admin/src/firebase.js`](../admin/src/firebase.js#L25-L65).
   2. Đã chạy `npm --prefix functions ci` (`248 packages`) và `npm --prefix functions run build` (`tsc`) -> **biên dịch sạch, `0` lỗi TypeScript**.
-  3. Probe trực tiếp `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` ngày `2026-11-12` vẫn trả **HTTP `404`**, xác nhận endpoint chưa được deploy lên `prm393-31822`.
-  4. Kiểm tra CLI (`npx --yes firebase-tools@15.30.2 login:list`) trả về **`! No authorized accounts, run "firebase login"`**; bộ test `functions/test/*.test.mjs` cũng yêu cầu Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Do quy tắc không tự vượt xác thực, bước deploy đang **chờ người dùng đăng nhập Firebase CLI**.
-- **Trạng thái:** **Đã chẩn đoán & build sạch; CHỜ DEPLOY (`firebase login`).**
+  3. Mở lại [`https://admin-evia.vercel.app/`](https://admin-evia.vercel.app/) trên Chrome (`index-BER142br.js`), đăng nhập tài khoản quản trị `evia.lab3.admin.42669bfdb6@fpt.edu.vn`: header đã ẩn Firebase Project ID, toàn bộ các tab (`Tổng quan`, `Sự kiện` 18 mục, `Thông báo` 12 tài khoản, `Voucher` 5 mục, `Analytics` 23 mục, `Crashlytics`, `Remote Config`) đều tải sạch (`200`/`204`).
+  4. Do các sự kiện `[DEMO]` `10–11/11` trên `#check-in` đều đã chuyển sang `Đã đóng` (server time `2026-11-12T05:42:41.812Z`), đã tạo mới và xuất bản sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`, khung giờ check-in đang mở `12:30 12/11/26 – 23:59 12/11/26`). Khi nhập thử mã vé `EV-000000000000` lúc `12:52:33`, UI báo `"Nhập số vé lúc 12:52:33 · Không thể hoàn tất thao tác. Hãy thử lại."`, còn Network Chrome DevTools ghi nhận `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` vẫn trả **HTTP `404`** (thiếu header `Access-Control-Allow-Origin` -> `POST net::ERR_FAILED` / `PreflightMissingAllowOriginHeader`), xác nhận endpoint vẫn chưa được deploy lên `prm393-31822`.
+  5. Kiểm tra CLI (`npx --yes firebase-tools@15.30.2 login:list`) trả về **`! No authorized accounts, run "firebase login"`**; bộ test `functions/test/*.test.mjs` cũng yêu cầu Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Do quy tắc không tự vượt xác thực, bước deploy đang **chờ người dùng đăng nhập Firebase CLI**.
+- **Trạng thái:** **Đã chẩn đoán, build `tsc` sạch & tái xác nhận HTTP `404` trên Admin Web live; CHỜ DEPLOY (`firebase login`).**
 - **Lệnh cần chạy khi có tài khoản triển khai:**
   1. Đăng nhập tương tác qua trình duyệt:
      ```powershell
@@ -260,7 +261,7 @@
 #### TC11 — Check-in QR & thưởng Coin + Admin Web (`PASSED QR / CHỜ DEPLOY ADMIN WEB`, `139.4s` ARTEMIS + Admin Web Chrome MCP, Trace `b7e43924-5d31-414f-abb9-87c656bf8f35` + `dc7a050c-456e-4d5e-b3f2-846227904cd6`)
 - **Kết quả:**
   - **QR Check-in (PASS):** Dùng mã QR vé `EV-0136E01E5D6C` trên Android gửi tới callable `verifyRegisteredTicket` (lần 1 HTTP `200`: `coinsGranted: 60, depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`). Trên app vé chuyển thành `Attendance confirmed`, ví tăng từ `50 available / 50 held` lên `160 available / 0 held`.
-  - **Admin Web nhập tay số vé (ĐÃ CHẨN ĐOÁN / CHỜ DEPLOY):** Form nhập tay `EV-...` gọi `verifyAdminTicketNumber` gặp HTTP `404` trên `asia-southeast1-prm393-31822.cloudfunctions.net`. Đã xác minh mã nguồn & build `tsc` sạch (`0` lỗi), nhưng chưa thể deploy do Firebase CLI chưa đăng nhập (xem [Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404) và [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)).
+  - **Admin Web nhập tay số vé (ĐÃ TÁI KIỂM CHỨNG `2026-11-12` / CHỜ DEPLOY):** Form nhập tay `EV-...` gọi `verifyAdminTicketNumber` vẫn gặp HTTP `404` (`PreflightMissingAllowOriginHeader` / `net::ERR_FAILED`) trên `asia-southeast1-prm393-31822.cloudfunctions.net` khi test lại trên Admin Web bản mới (sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11`). Đã xác minh mã nguồn & build `tsc` sạch (`0` lỗi), đang chờ `firebase login` để deploy (xem [Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404) và [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)).
 - **Ảnh chụp màn hình:**
 
 | QR trước khi scan | Vé chuyển `Attendance confirmed` | Ví sau check-in: `160 coins` |
@@ -469,8 +470,15 @@
 ### 7.4. Hiện trạng chẩn đoán `TC11` (`verifyAdminTicketNumber`) & bước hoàn tất còn lại
 
 - **Mã nguồn & build TypeScript:** `verifyAdminTicketNumber` đã tồn tại tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) (`region = 'asia-southeast1'`, codebase `evia`). Đã chạy `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` (`248` packages) và `& "C:\Program Files\nodejs\npm.cmd" --prefix functions run build` (`tsc`) -> **đạt, `0` lỗi**.
-- **Endpoint live & bộ test backend:** `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` trả về **HTTP `404`**. Bộ test `functions/test/*.test.mjs` yêu cầu chạy kèm Firebase Emulators (`FIRESTORE_EMULATOR_HOST`).
-- **Điểm nghẽn duy nhất:** `& "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login:list` báo **`! No authorized accounts, run "firebase login"`**, nên không thể tự deploy non-interactive. Cần người dùng đăng nhập Firebase CLI rồi deploy `functions:evia:verifyAdminTicketNumber` và kiểm tra lại màn `#checkin` trên Admin Web.
+- **Tái kiểm chứng trực tiếp trên Admin Web (`https://admin-evia.vercel.app/` — sau khi đẩy commit `9117361` lên `main`):**
+  - Toàn bộ giao diện Admin (`index-BER142br.js`) và các hàm đã deploy (`createEvent`, `updateEvent`, `publishEvent`, `getEvent`, `getServerInfo`, `listAdminEvents`, `listAdminRecords`, `listAdminRewards`, `getAdminAnalyticsReport`, `getAdminRemoteConfig`, `getPublicCatalog`) đều trả **`200` / `204`**, header đã ẩn Firebase Project ID (`Không gian quản trị / Check in`).
+  - Do các sự kiện `[DEMO]` từ `10–11/11` trên `#check-in` đều đã hết giờ (`Đã đóng` tại `serverTime = 2026-11-12T05:42:41.812Z`), đã tạo và xuất bản sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`, `12:30 12/11/26 – 23:59 12/11/26`). Thử nhập `EV-000000000000` tại `#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19` lúc `12:52:33`:
+    - UI hiển thị: `Nhập số vé lúc 12:52:33 · Không thể hoàn tất thao tác. Hãy thử lại.`
+    - Chrome DevTools Network: `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` -> **HTTP `404`** (`272 bytes`, không có `Access-Control-Allow-Origin`), kéo theo `POST` lỗi `net::ERR_FAILED` (`PreflightMissingAllowOriginHeader`).
+  - *Ghi chú dữ liệu QA:* `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`) hiện vẫn giữ trạng thái `Đã xuất bản` (`Công khai`) vì form Admin chủ động khóa (`disabled`) trường `Phạm vi hiển thị` sau khi xuất bản.
+- **Bộ test backend & điểm nghẽn duy nhất:** Bộ test `functions/test/*.test.mjs` yêu cầu chạy kèm Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Lệnh `& "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login:list` báo **`! No authorized accounts, run "firebase login"`**, nên không thể tự deploy non-interactive. Cần người dùng đăng nhập Firebase CLI rồi deploy `functions:evia:verifyAdminTicketNumber` và thử lại ngay trên `#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19` (hoặc tạo vé đăng ký thật).
+
+![TC11 Admin Web Manual Check-in HTTP 404](evidence-2026-11-12-fixes/tc11-admin-manual-checkin-404.png)
 
 ---
 
