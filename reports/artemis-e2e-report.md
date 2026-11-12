@@ -1,8 +1,8 @@
 # Báo cáo Kiểm thử E2E ARTEMIS — EVIA (`TC01`–`TC19`)
 
 > [!IMPORTANT]
-> **Trạng thái sửa lỗi: ĐÃ SỬA VÀ XÁC MINH ĐẠT `TC15`, `TC03` VÀ `TC19` (`18/19` TCs PASSED HOÀN TOÀN); CÒN `TC11` CHỜ `firebase login` + DEPLOY `verifyAdminTicketNumber`.**
-> Đợt kiểm thử nền tảng ngày `2026-11-11` chạy 19 test cases (21 biến thể) trên bản build thật (`FIREBASE_ENABLED=true`). Ngày `2026-11-12`, đã khắc phục theo kiến trúc MVVM và tái kiểm chứng PASSED trên thiết bị thật qua Google ARTEMIS + `adb logcat -s FA-SVC`: **`TC15`** ([Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15)), **`TC03`** và **`TC19`** ([Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11)). Với **`TC11`** ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404)), Cloud Function `verifyAdminTicketNumber` đã có sẵn trong `functions/src/` và build TypeScript (`tsc`) thành công, nhưng việc deploy lên Firebase project `prm393-31822` đang bị chặn bởi `firebase login` tương tác nên endpoint `asia-southeast1` vẫn trả HTTP `404`.
+> **Trạng thái sửa lỗi: ĐÃ SỬA, DEPLOY VÀ XÁC MINH ĐẠT `TC15`, `TC03`, `TC19` VÀ `TC11` (`19/19` TCs PASSED HOÀN TOÀN; `0` FAILED).**
+> Đợt kiểm thử nền tảng ngày `2026-11-11` chạy 19 test cases (21 biến thể) trên bản build thật (`FIREBASE_ENABLED=true`). Ngày `2026-11-12`, toàn bộ các tồn đọng đã được khắc phục, triển khai và tái kiểm chứng PASSED end-to-end trên thiết bị thật (`SM-A135F`) qua Google ARTEMIS + `adb logcat -s FA-SVC` và Admin Web live (`https://admin-evia.vercel.app/`): **`TC15`** ([Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15)), **`TC03`**, **`TC19`** và **`TC11`** ([Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11)) sau khi đăng nhập Firebase CLI và deploy `verifyAdminTicketNumber(asia-southeast1)` lên project `prm393-31822`.
 
 ---
 
@@ -17,8 +17,8 @@
 - **Thư mục ảnh chứng cứ:**
   - Phiên đầy đủ ngày `2026-11-11`: [`evidence-2026-11-11/`](evidence-2026-11-11/) (`40` ảnh đã đối chiếu trực quan theo từng bước trace)
   - Đợt sửa & tái kiểm chứng `TC15` ngày `2026-11-12`: [`evidence-2026-11-12-tc15/`](evidence-2026-11-12-tc15/) (`3` ảnh xác minh trực quan theo Trace `89501bda`)
-  - Đợt sửa & tái kiểm chứng `TC03`, `TC19` và re-test Admin Web `TC11` ngày `2026-11-12`: [`evidence-2026-11-12-fixes/`](evidence-2026-11-12-fixes/) (`4` ảnh xác minh trực quan từ các Traces `dfb740a1`, `1f7cb4e5` và phiên Chrome `#check-in`)
-- **Phạm vi báo cáo:** Tổng hợp **phiên hồi quy đầy đủ ngày `2026-11-11`** (`19/19` TCs với `FIREBASE_ENABLED=true`), **đợt sửa & tái kiểm chứng `TC15`** và **đợt sửa `TC03`, `TC19` + chẩn đoán `TC11` ngày `2026-11-12`**.
+  - Đợt sửa & tái kiểm chứng `TC03`, `TC19` và deploy + re-test `TC11` ngày `2026-11-12`: [`evidence-2026-11-12-fixes/`](evidence-2026-11-12-fixes/) (`7` ảnh xác minh trực quan từ các Traces `dfb740a1`, `1f7cb4e5`, `b06ee08f`, `fcb9f81d` và phiên Chrome `#check-in`)
+- **Phạm vi báo cáo:** Tổng hợp **phiên hồi quy đầy đủ ngày `2026-11-11`** (`19/19` TCs với `FIREBASE_ENABLED=true`), **đợt sửa & tái kiểm chứng `TC15`** và **đợt sửa `TC03`, `TC19` + deploy & tái kiểm chứng `TC11` ngày `2026-11-12`**.
 
 ---
 
@@ -35,6 +35,7 @@
 | **Thời gian chạy lại `TC03` sau sửa (`2026-11-12`, Trace `88a878c4`)** | **`95.3 giây` (`1 phút 35.3 giây`)** | Đợt `2026-11-12` trên bản APK bật cả `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`, model `Flash`, `completed`. |
 | **Thời gian chạy lại `TC19` Phase 1 — Offline Error (`2026-11-12`, Trace `dfb740a1`)** | **`49.0 giây`** | Tắt Wi-Fi qua `svc wifi disable`, tìm `"Flutter"`, kiểm tra ẩn `EviaSkeleton` và hiện ngay nút `'Thử lại'`, model `Flash`, `completed`. |
 | **Thời gian chạy lại `TC19` Phase 2 — Recovery (`2026-11-12`, Trace `1f7cb4e5`)** | **`48.3 giây`** | Bật lại Wi-Fi (`svc wifi enable`), chạm trực tiếp nút `'Thử lại'` từ màn lỗi, phục hồi `"2 events found"`, model `Flash`, `completed`. |
+| **Thời gian tái kiểm chứng `TC11` End-to-End sau deploy (`2026-11-12`, Traces `b06ee08f` + `fcb9f81d`)** | **`225.8 giây`** | `b06ee08f` (`195.0s`, đăng ký `[QA] Kiểm thử Check-in Admin 12/11` -> vé `EV-EA2798C01639`, số dư `30 coins`) + Admin Web `verifyAdminTicketNumber` HTTP `200`/`409` + `fcb9f81d` (`30.8s`, xác nhận `Attended` & ví tăng `35 coins`), model `Flash`, `completed`. |
 
 ---
 
@@ -44,16 +45,16 @@
 
 | Nhóm kết quả | Số Test Case (`19` TCs) | Số biến thể (`21` biến thể) | Danh sách cụ thể |
 | --- | --- | --- | --- |
-| **PASSED hoàn toàn** | **18** *(trước các đợt sửa `2026-11-12`: 15)* | **20** *(trước sửa: 17)* | `TC01`, `TC02`, **`TC03` (Đã sửa & Re-test `2026-11-12`)**, `TC04`, `TC05`, `TC06`, `TC07`, `TC08`, `TC09`, `TC10`, `TC12`, `TC13`, `TC14`, **`TC15` (Đã sửa & Re-test `2026-11-12`)**, `TC16`, `TC17` (`foreground`, `background`, `terminated`), `TC18`, **`TC19` (Đã sửa & Re-test `2026-11-12`)** |
-| **PASSED App QR / CHỜ DEPLOY Admin Web** | **1** *(chờ `firebase login`)* | **1** | **`TC11`** (QR Check-in PASS; Admin Web nhập tay ticket gọi `verifyAdminTicketNumber` gặp HTTP `404` do chưa deploy lên `prm393-31822`) |
-| **FAILED** | **0** *(trước sửa `TC15`: 1)* | **0** *(trước sửa: 1)* | *(Không còn TC FAILED; 3/4 tồn đọng đã sửa và verified — xem [Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15) và [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11))* |
-| **Tổng cộng** | **19** | **21** | **18 / 19 TCs PASSED hoàn toàn (20/21 biến thể); 0 / 19 TC FAILED; còn 1 điểm deploy Cloud Functions (`TC11`) chờ `firebase login`** |
+| **PASSED hoàn toàn** | **19** *(trước các đợt sửa `2026-11-12`: 15)* | **21** *(trước sửa: 17)* | `TC01`, `TC02`, **`TC03` (Đã sửa & Re-test `2026-11-12`)**, `TC04`, `TC05`, `TC06`, `TC07`, `TC08`, `TC09`, `TC10`, **`TC11` (Đã deploy & Re-test `2026-11-12`)**, `TC12`, `TC13`, `TC14`, **`TC15` (Đã sửa & Re-test `2026-11-12`)**, `TC16`, `TC17` (`foreground`, `background`, `terminated`), `TC18`, **`TC19` (Đã sửa & Re-test `2026-11-12`)** |
+| **CHỜ DEPLOY Admin Web** | **0** *(đã hoàn tất deploy `TC11`)* | **0** | *(Đã deploy `functions:evia:verifyAdminTicketNumber` lên `prm393-31822` và xác minh HTTP `404 TICKET_NUMBER_NOT_FOUND` / `200` / `409 ALREADY_CHECKED_IN`)* |
+| **FAILED** | **0** *(trước sửa `TC15`: 1)* | **0** *(trước sửa: 1)* | *(Không còn TC FAILED; toàn bộ tồn đọng trong phạm vi app/backend đã sửa, deploy và verified — xem [Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15) và [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11))* |
+| **Tổng cộng** | **19** | **21** | **19 / 19 TCs PASSED hoàn toàn (21/21 biến thể); 0 / 19 TC FAILED** |
 
 ---
 
 ## 4. Tổng hợp lỗi và trạng thái xử lý
 
-**`TC15` ([Mục 4.1](#41-tc15-đã-sửa-và-passed--lưu-csv-cục-bộ-và-tải-báo-cáo-pdf-lên-firebase-cloud-storage)), `TC03` ([Mục 4.3](#43-tc03-đã-sửa-và-passed--search--explore-bắn-sự-kiện-firebase-analytics-search)) và `TC19` ([Mục 4.4](#44-tc19-đã-sửa-và-passed--hết-chồng-eviaskeleton-trên-apperrorwidget-và-khôi-phục-nút-thử-lại)) đã được sửa và tái kiểm chứng PASSED ngày `2026-11-12`; hiện chỉ còn `TC11` ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404)) chờ người dùng `firebase login` để deploy Cloud Function `verifyAdminTicketNumber`.**
+**Toàn bộ 4/4 vấn đề app/backend đã được khắc phục, triển khai và tái kiểm chứng PASSED ngày `2026-11-12`: `TC15` ([Mục 4.1](#41-tc15-đã-sửa-và-passed--lưu-csv-cục-bộ-và-tải-báo-cáo-pdf-lên-firebase-cloud-storage)), `TC11` ([Mục 4.2](#42-tc11-đã-deploy-và-passed--nhập-tay-ticket-number-trên-admin-web-và-cộng-xu-end-to-end)), `TC03` ([Mục 4.3](#43-tc03-đã-sửa-và-passed--search--explore-bắn-sự-kiện-firebase-analytics-search)) và `TC19` ([Mục 4.4](#44-tc19-đã-sửa-và-passed--hết-chồng-eviaskeleton-trên-apperrorwidget-và-khôi-phục-nút-thử-lại)).**
 
 ### 4.1. TC15 ĐÃ SỬA VÀ PASSED — Lưu CSV cục bộ và tải báo cáo PDF lên Firebase Cloud Storage
 
@@ -73,28 +74,24 @@
 
 ---
 
-### 4.2. TC11 CHỜ DEPLOY — Nhập tay Ticket Number trên Admin Web trả HTTP 404
+### 4.2. TC11 ĐÃ DEPLOY VÀ PASSED — Nhập tay Ticket Number trên Admin Web và cộng xu End-to-End
 
-- **Hiện tượng quan sát:**
-  - Check-in bằng QR (`verifyRegisteredTicket`) chạy thành công (lần 1 HTTP `200`, `coinsGranted: 60`, `depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`), app cập nhật `Attendance confirmed` và ví lên `160 coins`.
-  - Khi kiểm tra luồng nhập tay số vé `EV-0136E01E5D6C` trên Admin Web `#checkin`, trình duyệt gọi `https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` và gặp lỗi **HTTP `404` (`net::ERR_FAILED`)**.
-- **Kết quả chẩn đoán & kiểm thử lại trên Admin Web (`2026-11-12`, sau khi đẩy commit `9117361` lên `main`):**
-  1. Hàm `verifyAdminTicketNumber` **đã được cài đặt và export sẵn** trong mã nguồn tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) với region `asia-southeast1` ([`functions/src/policy.ts`](../functions/src/policy.ts#L5), [`firebase.json`](../firebase.json#L27) codebase `evia`), khớp lời gọi tại [`admin/src/firebase.js`](../admin/src/firebase.js#L25-L65).
-  2. Đã chạy `npm --prefix functions ci` (`248 packages`) và `npm --prefix functions run build` (`tsc`) -> **biên dịch sạch, `0` lỗi TypeScript**.
-  3. Mở lại [`https://admin-evia.vercel.app/`](https://admin-evia.vercel.app/) trên Chrome (`index-BER142br.js`), đăng nhập tài khoản quản trị `evia.lab3.admin.42669bfdb6@fpt.edu.vn`: header đã ẩn Firebase Project ID, toàn bộ các tab (`Tổng quan`, `Sự kiện` 18 mục, `Thông báo` 12 tài khoản, `Voucher` 5 mục, `Analytics` 23 mục, `Crashlytics`, `Remote Config`) đều tải sạch (`200`/`204`).
-  4. Do các sự kiện `[DEMO]` `10–11/11` trên `#check-in` đều đã chuyển sang `Đã đóng` (server time `2026-11-12T05:42:41.812Z`), đã tạo mới và xuất bản sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`, khung giờ check-in đang mở `12:30 12/11/26 – 23:59 12/11/26`). Khi nhập thử mã vé `EV-000000000000` lúc `12:52:33`, UI báo `"Nhập số vé lúc 12:52:33 · Không thể hoàn tất thao tác. Hãy thử lại."`, còn Network Chrome DevTools ghi nhận `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` vẫn trả **HTTP `404`** (thiếu header `Access-Control-Allow-Origin` -> `POST net::ERR_FAILED` / `PreflightMissingAllowOriginHeader`), xác nhận endpoint vẫn chưa được deploy lên `prm393-31822`.
-  5. Kiểm tra CLI (`npx --yes firebase-tools@15.30.2 login:list`) trả về **`! No authorized accounts, run "firebase login"`**; bộ test `functions/test/*.test.mjs` cũng yêu cầu Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Do quy tắc không tự vượt xác thực, bước deploy đang **chờ người dùng đăng nhập Firebase CLI**.
-- **Trạng thái:** **Đã chẩn đoán, build `tsc` sạch & tái xác nhận HTTP `404` trên Admin Web live; CHỜ DEPLOY (`firebase login`).**
-- **Lệnh cần chạy khi có tài khoản triển khai:**
-  1. Đăng nhập tương tác qua trình duyệt:
+- **Hiện tượng ban đầu (`2026-11-11` & trước deploy `2026-11-12`):**
+  - Check-in bằng QR trên app (`verifyRegisteredTicket`) chạy thành công (lần 1 HTTP `200`, `coinsGranted: 60`, `depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`), app cập nhật `Attendance confirmed` và ví lên `160 coins`.
+  - Khi kiểm tra luồng nhập tay số vé trên Admin Web `#check-in`, trình duyệt gọi `https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` và gặp lỗi **HTTP `404` (`net::ERR_FAILED` / `PreflightMissingAllowOriginHeader`)** vì hàm này chưa từng được deploy lên Firebase project `prm393-31822` (Firebase Console chỉ liệt kê `65` functions, vắng `verifyAdminTicketNumber`).
+- **Khắc phục, deploy và tái kiểm chứng End-to-End (`2026-11-12`):**
+  1. Xác nhận mã nguồn [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) & [`functions/src/index.ts`](../functions/src/index.ts#L62) (`region = 'asia-southeast1'`, codebase `evia`) và build sạch với `npm --prefix functions ci` + `npm --prefix functions run build` (`tsc`, `0` lỗi).
+  2. Hoàn tất đăng nhập Firebase CLI (`firebase login`) cho tài khoản chủ sở hữu `phuc250805@gmail.com` (`Owner` trên `prm393-31822`) và deploy:
      ```powershell
-     & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login
+     & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 deploy --project prm393-31822 --only functions:evia:verifyAdminTicketNumber --non-interactive
      ```
-  2. Deploy function còn thiếu trên codebase `evia`:
-     ```powershell
-     & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 deploy --project prm393-31822 --only functions:evia:verifyAdminTicketNumber
-     ```
-  3. Mở Admin Web (`https://admin-evia.vercel.app/` -> `#checkin`), nhập tay một mã vé `EV-...` hợp lệ để xác nhận trả HTTP `200` (hoặc `409 ALREADY_CHECKED_IN` nếu vé đã quét).
+     -> `+ functions[evia:verifyAdminTicketNumber(asia-southeast1)] Successful create operation.` & `+ Deploy complete!`.
+  3. Kiểm thử lại trực tiếp trên Admin Web live (`https://admin-evia.vercel.app/#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`) kết hợp thiết bị Android `SM-A135F` (`R58T80PE55F`) — xem chi tiết log, payload và ảnh xác minh tại [Mục 7.4](#74-bằng-chứng-deploy-verifyadminticketnumber-và-re-test-tc11-passed):
+     - Vé không tồn tại (`EV-000000000000`, `13:12:22`): `OPTIONS 204`, `POST 404` (`TICKET_NUMBER_NOT_FOUND`), UI hiển thị rõ `"Không tìm thấy số vé này trong sự kiện. Kiểm tra lại Ticket No. và sự kiện đang mở."`.
+     - Đăng ký thật trên Android (`Trace b06ee08f`, số dư đầu `30 coins` -> mã vé **`EV-EA2798C01639`**) và nhập tay trên Admin Web: `OPTIONS 204`, **`POST 200`** (`attendanceId: 0a4fd76d...`, `coinsGranted: 5`, `depositRefunded: 0`), UI báo xanh **`"Check-in thành công · +5 xu thưởng · Hoàn 0 xu đặt cọc."`**.
+     - Nhập lặp lại (`EV-EA2798C01639`, `13:24:21`): **`POST 409`** (`ALREADY_CHECKED_IN`), UI báo `"Sinh viên đã check-in bằng vé này."`.
+     - Kiểm tra lại trên Android (`Trace fcb9f81d`, `30.8s`, `completed`): `My Events` hiển thị `Attended`, `+5 Coins`, `Attendance verified`; tab `Rewards` tăng số dư từ `30 coins` lên **`35 coins`** (`In Deposits: 0 coins`).
+- **Trạng thái:** **ĐÃ DEPLOY VÀ PASSED END-TO-END (`TC11` = `PASSED` hoàn toàn).**
 
 ---
 
@@ -108,7 +105,7 @@
 - **Tóm tắt phương án đã triển khai:**
   1. Cập nhật [`lib/models/analytics_events.dart`](../lib/models/analytics_events.dart): thêm `'search'` (`search_term: String`, `loaded_count: int`, `has_more: int` `0/1`, `outcome: String` thuộc `{'data', 'empty', 'error'}`), allowlist `searchTerms` + hàm `redactSearchTerm(...)` quy mọi truy vấn tự do thành `'free_text_redacted'` (không gửi PII), và kiểm tra ràng buộc trong `validate()`.
   2. Cập nhật [`lib/viewmodels/evia_view_model.dart`](../lib/viewmodels/evia_view_model.dart): bổ sung `_searchSub`, `_searchNonce` (đóng subscription trong `ref.onDispose`), `retrySearch()`, và `_recordSearchSubmission()` gắn tại `submitSearch`, `showSearch(referenceResults: true)`, `selectCategory`, `applyFilters`, `clearFilters`, `removeFilter`, `retrySearch` — phát đúng **1 event `search`** khi request hoàn tất/lỗi (kèm `action_error` khi lỗi).
-  3. Đồng bộ tài liệu [`docs/analytics-plan.md`](../docs/analytics-plan.md), [`docs/ANALYTICS_INTEGRATION.md`](../docs/ANALYTICS_INTEGRATION.md) và [`README.md`](../README.md) (`13/17` events). Xem chi tiết & log `FA-SVC` tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+  3. Đồng bộ tài liệu [`docs/analytics-plan.md`](../docs/analytics-plan.md), [`docs/ANALYTICS_INTEGRATION.md`](../docs/ANALYTICS_INTEGRATION.md) và [`README.md`](../README.md) (`13/17` events). Xem chi tiết & log `FA-SVC` tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11).
 
 ---
 
@@ -122,7 +119,7 @@
 - **Tóm tắt phương án đã triển khai:**
   1. Tắt retry ngầm trên [`flow1SearchProvider`](../lib/viewmodels/flow1_view_model.dart#L241-L248) bằng `retry: (_, _) => null` để lỗi mạng trả về `AsyncError` tức thì.
   2. Đổi nhánh hiển thị trong [`EviaExploreScreen`](../lib/screens/evia/explore_screen.dart#L247-L266) thành loại trừ lẫn nhau hoàn toàn (`hasError` -> `AppErrorWidget(onRetry: vm.retrySearch)` | `isLoading` -> `EviaSkeleton()` | empty | list), không bao giờ xếp chồng skeleton và lỗi; đồng thời thêm null-safety `vm.catalog?.organizerName(event.organizerId) ?? event.organizerId` khi tìm lỗi ngay từ đầu phiên chưa có catalog.
-  3. Bổ sung `operator ==` và `hashCode` theo giá trị cho [`EventFilters`](../lib/models/evia_models.dart#L100-L137) để tránh family key của `flow1SearchProvider` tạo instance mới không cần thiết khi lọc. Xem chi tiết & ảnh chứng cứ tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+  3. Bổ sung `operator ==` và `hashCode` theo giá trị cho [`EventFilters`](../lib/models/evia_models.dart#L100-L137) để tránh family key của `flow1SearchProvider` tạo instance mới không cần thiết khi lọc. Xem chi tiết & ảnh chứng cứ tại [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11).
 
 ---
 
@@ -148,7 +145,7 @@
 | **TC08** | Đăng ký sự kiện có cọc Coin (`50 coins`) | `e4dddd4c` + `90acf51c` (`+ 065b49ce`) | Flash | `381.7s` (`814.5s`) | **PASSED** | `100 -> 50 available / 50 held`, sinh vé `EV-0136E01E5D6C`, `Upcoming 1`. |
 | **TC09** | Từ chối sự kiện đã hết vé (`0 spots left`) | `1df86f72` (`+ 82809e4a, 1c447dac`) | Flash | `122.1s` (`364.1s`) | **PASSED** | `[DEMO] Workshop đã đóng số lượng vé`, nút `Registration Full` disabled, ví giữ nguyên `50/50`. |
 | **TC10** | Hủy đăng ký & hoàn cọc 30% (`+15 coins`) | `0cfbb0ef` + `a53044a2` | Flash | `360.0s` | **PASSED** | `110 -> 125 available / 0 held`, `Coin History` ghi `+15 coins`, vé bị thu hồi, không hoàn trùng. |
-| **TC11** | Check-in QR & thưởng Coin + Admin Web | `b7e43924` + `dc7a050c` (+ Chrome MCP) | Flash | `139.4s` | **PASSED QR / CHỜ DEPLOY** | QR `verifyRegisteredTicket` OK (`Attended`, `+60 coins`, `160` tổng, lần 2 `409`); **nhập tay HTTP `404` (`functions` đã build `tsc` OK, chờ `firebase login` để deploy)**. |
+| **TC11** | Check-in QR & thưởng Coin + Admin Web | `b7e43924` + `dc7a050c` + **`b06ee08f` + `fcb9f81d`** (+ Chrome MCP) | Flash | `139.4s` + `225.8s` | **PASSED (Đã deploy & Re-test `2026-11-12`)** | QR `verifyRegisteredTicket` OK (`+60`, `160` xu, `409`); **đã deploy `verifyAdminTicketNumber` & re-test live (`EV-EA2798C01639`: `200` `+5 xu`, `30 -> 35` xu trên Android, lặp `409`, sai mã `404`).** |
 | **TC12** | Daily Check-In & chặn nhận trùng trong ngày | `28a8e3d2` | Flash | `58.9s` | **PASSED** | `125 -> 130 coins`, nút chuyển `Checked In Today · +5 coins` disabled, giữ nguyên sau chuyển tab. |
 | **TC13** | Đổi thưởng tạo Voucher & trừ Coin | `fcc4064d` | Flash | `116.9s` | **PASSED** | Đổi `[DEMO] Combo nước và bánh` (`100 coins`), còn `30 coins`, voucher `Available (1)`. |
 | **TC14** | Từ chối đổi quà khi không đủ Coin | `31744963` + `d4d52279` | Flash | `109.2s` | **PASSED** | `[DEMO] Áo hoodie Evia` (`800 coins`) disabled `'Not enough coins'` khi ví còn `30`. |
@@ -183,7 +180,7 @@
 #### TC03 — Search & Explore + Analytics (`PASSED — Đã sửa & Re-test 2026-11-12`, Trace nền `c3b37ab8` [`39.8s`] -> Re-test `88a878c4-6002-49e4-86f0-692504baa441` [`95.3s`] + `1f7cb4e5`)
 - **Kết quả đợt nền (`2026-11-11`, Trace `c3b37ab8`):** Tìm `"Flutter"` trả về `"2 events found"`, nhưng chưa phát `AN-04 search`.
 - **Kết quả sau sửa & tái kiểm chứng (`2026-11-12`, Traces `88a878c4` & `1f7cb4e5`):**
-  - **Tìm kiếm & Analytics `AN-04` (PASSED):** Trên bản build bật `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`, gõ `"Flutter"` trả về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`). `adb logcat -d -s FA-SVC` xác nhận log `name=search` (`search_term=free_text_redacted`, `loaded_count=2`, `has_more=0`, `outcome=data`) và upload thành công HTTP `204` (`12:14:16.976` và `12:24:36.335`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+  - **Tìm kiếm & Analytics `AN-04` (PASSED):** Trên bản build bật `FIREBASE_ENABLED=true` và `ANALYTICS_ENABLED=true`, gõ `"Flutter"` trả về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`). `adb logcat -d -s FA-SVC` xác nhận log `name=search` (`search_term=free_text_redacted`, `loaded_count=2`, `has_more=0`, `outcome=data`) và upload thành công HTTP `204` (`12:14:16.976` và `12:24:36.335`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11).
 - **Ảnh chụp màn hình (Đợt nền `2026-11-11` vs Sau sửa `2026-11-12` — trạng thái kết quả ổn định):**
 
 | Đợt nền `2026-11-11` (chưa log `AN-04 search`) | Sau sửa `2026-11-12` (`"2 events found"` + `FA-SVC` HTTP `204`) |
@@ -258,10 +255,10 @@
 
 ---
 
-#### TC11 — Check-in QR & thưởng Coin + Admin Web (`PASSED QR / CHỜ DEPLOY ADMIN WEB`, `139.4s` ARTEMIS + Admin Web Chrome MCP, Trace `b7e43924-5d31-414f-abb9-87c656bf8f35` + `dc7a050c-456e-4d5e-b3f2-846227904cd6`)
+#### TC11 — Check-in QR & thưởng Coin + Admin Web (`PASSED — Đã deploy & Re-test 2026-11-12`, `139.4s` + `225.8s` ARTEMIS + Chrome MCP, Traces `b7e43924`, `dc7a050c`, `b06ee08f`, `fcb9f81d`)
 - **Kết quả:**
-  - **QR Check-in (PASS):** Dùng mã QR vé `EV-0136E01E5D6C` trên Android gửi tới callable `verifyRegisteredTicket` (lần 1 HTTP `200`: `coinsGranted: 60, depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`). Trên app vé chuyển thành `Attendance confirmed`, ví tăng từ `50 available / 50 held` lên `160 available / 0 held`.
-  - **Admin Web nhập tay số vé (ĐÃ TÁI KIỂM CHỨNG `2026-11-12` / CHỜ DEPLOY):** Form nhập tay `EV-...` gọi `verifyAdminTicketNumber` vẫn gặp HTTP `404` (`PreflightMissingAllowOriginHeader` / `net::ERR_FAILED`) trên `asia-southeast1-prm393-31822.cloudfunctions.net` khi test lại trên Admin Web bản mới (sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11`). Đã xác minh mã nguồn & build `tsc` sạch (`0` lỗi), đang chờ `firebase login` để deploy (xem [Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404) và [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)).
+  - **QR Check-in (`2026-11-11`, PASSED):** Dùng mã QR vé `EV-0136E01E5D6C` trên Android gửi tới callable `verifyRegisteredTicket` (lần 1 HTTP `200`: `coinsGranted: 60, depositRefunded: 50`; lần 2 HTTP `409 ALREADY_CHECKED_IN`). Trên app vé chuyển thành `Attendance confirmed`, ví tăng từ `50 available / 50 held` lên `160 available / 0 held`.
+  - **Admin Web nhập tay số vé & cộng xu E2E (`2026-11-12` sau khi deploy `verifyAdminTicketNumber`, PASSED):** Sau khi deploy `functions:evia:verifyAdminTicketNumber(asia-southeast1)` lên `prm393-31822`, tái kiểm chứng đầy đủ trên Admin Web (`https://admin-evia.vercel.app/#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`) và Android `SM-A135F`: nhập `EV-000000000000` trả HTTP `404 TICKET_NUMBER_NOT_FOUND`; đăng ký vé thật `EV-EA2798C01639` (`b06ee08f`, `30 coins`), nhập tay lần 1 trả **HTTP `200`** (`coinsGranted: 5`, UI xanh `"Check-in thành công · +5 xu thưởng · Hoàn 0 xu đặt cọc."`), lần 2 trả **HTTP `409 ALREADY_CHECKED_IN`**, Android (`fcb9f81d`) cập nhật `Attended` / `Attendance verified` và tăng ví từ `30` lên **`35 coins`** (chi tiết xem [Mục 4.2](#42-tc11-đã-deploy-và-passed--nhập-tay-ticket-number-trên-admin-web-và-cộng-xu-end-to-end) và [Mục 7.4](#74-bằng-chứng-deploy-verifyadminticketnumber-và-re-test-tc11-passed)).
 - **Ảnh chụp màn hình:**
 
 | QR trước khi scan | Vé chuyển `Attendance confirmed` | Ví sau check-in: `160 coins` |
@@ -351,7 +348,7 @@
 - **Kết quả đợt nền (`2026-11-11`):** Tắt Wi-Fi hiện đúng lỗi kết nối nhưng `EviaSkeleton()` hiển thị cùng `AppErrorWidget` đẩy nút `'Thử lại'` xuống ngoài màn hình đầu (`y > 2408`).
 - **Kết quả sau sửa & tái kiểm chứng (`2026-11-12`, Traces `dfb740a1` & `1f7cb4e5`):**
   - **Phase 1 — Offline (`dfb740a1`, `49.0s`, `completed`):** Tắt Wi-Fi (`svc wifi disable`) và tìm `"Flutter"`, ứng dụng chuyển thẳng sang thông báo lỗi `"The server could not complete this request. Please retry."` cùng nút **`Thử lại`** căn giữa ngay trên bàn phím, **không còn `EviaSkeleton()` / `"Searching..."`**; `FA-SVC` ghi `search` (`outcome=error`, `loaded_count=0`) và `action_error` (`action=search`).
-  - **Phase 2 — Recovery (`1f7cb4e5`, `48.3s`, `completed`):** Bật lại Wi-Fi (`svc wifi enable`) và bấm nút **`Thử lại`**, màn kết quả tải sạch về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`), `FA-SVC` ghi `search` (`outcome=data`, `loaded_count=2`, HTTP `204`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-chẩn-đoán-tc11).
+  - **Phase 2 — Recovery (`1f7cb4e5`, `48.3s`, `completed`):** Bật lại Wi-Fi (`svc wifi enable`) và bấm nút **`Thử lại`**, màn kết quả tải sạch về `"2 events found"` (`[DEMO] Workshop Flutter đang mở check-in` và `[DEMO] Flutter và Firebase từ cơ bản`), `FA-SVC` ghi `search` (`outcome=data`, `loaded_count=2`, HTTP `204`). Chi tiết xem [Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11).
 - **Ảnh chụp màn hình (Trước sửa `2026-11-11` vs Sau sửa `2026-11-12`):**
 
 | Đợt nền: Offline Error | Sau sửa Phase 1: Lỗi sạch & nút `'Thử lại'` hiện rõ | Sau sửa Phase 2: Bấm `'Thử lại'` phục hồi `"2 events found"` |
@@ -414,16 +411,16 @@
 
 | STT | Mã TC / Phạm vi | Loại vấn đề | Trạng thái tại cuối đợt `TC15` | Trạng thái hiện tại (`2026-11-12` — Mục 7) |
 | :---: | --- | --- | --- | --- |
-| **1** | **`TC11`** (Admin Web nhập tay Ticket) | Backend / Deploy Bug (`HTTP 404`) | Chưa sửa | **Đã chẩn đoán & build `tsc` OK; chờ `firebase login` để deploy** ([Mục 4.2](#42-tc11-chờ-deploy--nhập-tay-ticket-number-trên-admin-web-trả-http-404), [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)). |
+| **1** | **`TC11`** (Admin Web nhập tay Ticket) | Backend / Deploy Bug (`HTTP 404`) | Chưa sửa | **ĐÃ DEPLOY & PASSED** ([Mục 4.2](#42-tc11-đã-deploy-và-passed--nhập-tay-ticket-number-trên-admin-web-và-cộng-xu-end-to-end), [Mục 7.4](#74-bằng-chứng-deploy-verifyadminticketnumber-và-re-test-tc11-passed)). |
 | **2** | **`TC03`** (`Search & Explore` Analytics) | Analytics Gap (`AN-04`) | Chưa sửa | **ĐÃ SỬA & PASSED** ([Mục 4.3](#43-tc03-đã-sửa-và-passed--search--explore-bắn-sự-kiện-firebase-analytics-search), [Mục 7.3](#73-bằng-chứng-e2e-thiết-bị-thật-sm-a135f--firebase-analytics-fa-svc-cho-tc03--tc19)). |
 | **3** | **`TC19`** (`EviaExploreScreen` Offline UX) | UX Layout Issue | Chưa sửa | **ĐÃ SỬA & PASSED** ([Mục 4.4](#44-tc19-đã-sửa-và-passed--hết-chồng-eviaskeleton-trên-apperrorwidget-và-khôi-phục-nút-thử-lại), [Mục 7.3](#73-bằng-chứng-e2e-thiết-bị-thật-sm-a135f--firebase-analytics-fa-svc-cho-tc03--tc19)). |
 | **4** | **ARTEMIS `artemis.jsonc`** | Tooling Quota Note | Ngoài app | **Ngoài phạm vi app** — dùng model `Flash` cho các đợt tái kiểm chứng ([Mục 4.5](#45-ghi-chú-cấu-hình-artemis-artemisjsonc--ngoài-phạm-vi-app-evia)). |
 
 ---
 
-## 7. Bằng chứng khắc phục TC03, TC19 và chẩn đoán TC11
+## 7. Bằng chứng khắc phục TC03, TC19 và hoàn tất TC11
 
-> Sau khi hoàn tất `TC15`, tiếp tục xử lý 3 tồn đọng còn lại ngày `2026-11-12`: tích hợp `AN-04 search` (`TC03`), sửa UX offline + tắt auto-retry nền trên `flow1SearchProvider` (`TC19`), khôi phục/bổ sung bộ tests tự động và chẩn đoán nguyên nhân HTTP `404` trên Cloud Functions (`TC11`).
+> Sau khi hoàn tất `TC15`, tiếp tục xử lý toàn bộ 3 tồn đọng còn lại ngày `2026-11-12`: tích hợp `AN-04 search` (`TC03`), sửa UX offline + tắt auto-retry nền trên `flow1SearchProvider` (`TC19`), khôi phục/bổ sung bộ tests tự động, deploy `verifyAdminTicketNumber` lên Firebase `prm393-31822` và tái kiểm chứng end-to-end trên Admin Web live + thiết bị thật `SM-A135F` (`TC11`).
 
 ### 7.1. Phạm vi mã nguồn, tests và tài liệu đã cập nhật
 
@@ -445,7 +442,7 @@
 | **Static Analysis** | `flutter analyze --no-pub` | **Đạt — `No issues found!`** (`ran in 4.4s`), exit code `0`. |
 | **Targeted Tests (`TC15`, `TC03`, `TC19`)** | `flutter test --no-pub --reporter expanded test/services/firebase_storage_export_test.dart test/services/analytics_repository_test.dart test/viewmodels/analytics_integration_test.dart test/widgets/explore_offline_search_test.dart` | **Đạt — `23 / 23` tests passed** (`All tests passed!`). |
 | **Full Flutter Test Suite** | `flutter test --no-pub --reporter expanded` | **`260 passed, 4 failed`** (`01:08`) — không phát sinh lỗi mới; chỉ còn `4` lỗi nền có sẵn trước khi sửa đổi (`test/widgets/evia_screens_test.dart`: `all nine screens fit 360.0dp at 2.0x text`; `test/widgets/flow1_screens_test.dart`: `catalog network error uses the existing retry component`; `test/widgets/flow3_screens_test.dart`: `network error offers retry and never falls back to mock rewards`; `test/widgets/registration_screens_test.dart`: `/registration/loading fits phone widths and scaled text` timeout `pumpAndSettle`). |
-| **Backend Build (`TC11`)** | `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` & `run build` | Cài `248` packages và biên dịch TypeScript (`tsc`) đạt **`0` lỗi**. (`node --test` cục bộ không chạy được khi thiếu Firebase Emulators — xem [Mục 7.4](#74-hiện-trạng-chẩn-đoán-tc11-verifyadminticketnumber--bước-hoàn-tất-còn-lại)). |
+| **Backend Build & Deploy (`TC11`)** | `npm --prefix functions ci` & `run build` + `firebase deploy --only functions:evia:verifyAdminTicketNumber` | Biên dịch TypeScript (`tsc`) đạt **`0` lỗi** (`248` packages) và deploy thành công `functions[evia:verifyAdminTicketNumber(asia-southeast1)]` lên `prm393-31822` ([Mục 7.4](#74-bằng-chứng-deploy-verifyadminticketnumber-và-re-test-tc11-passed)). *(Lưu ý: `node --test` cục bộ cần Firebase Emulators)* |
 | **Debug APK (Firebase + Analytics bật)** | `flutter build apk --debug --dart-define=FIREBASE_ENABLED=true --dart-define=ANALYTICS_ENABLED=true` | Build đạt trong `103.6s` và đã cài lên thiết bị `SM-A135F` (`R58T80PE55F`) cho toàn bộ đợt chạy `TC03` & `TC19`. |
 
 ### 7.3. Bằng chứng E2E thiết bị thật (`SM-A135F`) & Firebase Analytics (`FA-SVC`) cho `TC03` & `TC19`
@@ -467,18 +464,32 @@
 
 *(Ghi chú ảnh: màn hình sau phục hồi ổn định tại Trace `1f7cb4e5` [lúc `12:25`] khớp trạng thái `"2 events found"` của `TC03`; ở Trace `88a878c4` trước đó event `FA-SVC` `12:14:16` đã ghi nhận HTTP `204` trước khi frame kịp chụp lại sau animation).*
 
-### 7.4. Hiện trạng chẩn đoán `TC11` (`verifyAdminTicketNumber`) & bước hoàn tất còn lại
+### 7.4. Bằng chứng deploy `verifyAdminTicketNumber` và re-test `TC11` PASSED
 
-- **Mã nguồn & build TypeScript:** `verifyAdminTicketNumber` đã tồn tại tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) (`region = 'asia-southeast1'`, codebase `evia`). Đã chạy `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` (`248` packages) và `& "C:\Program Files\nodejs\npm.cmd" --prefix functions run build` (`tsc`) -> **đạt, `0` lỗi**.
-- **Tái kiểm chứng trực tiếp trên Admin Web (`https://admin-evia.vercel.app/` — sau khi đẩy commit `9117361` lên `main`):**
-  - Toàn bộ giao diện Admin (`index-BER142br.js`) và các hàm đã deploy (`createEvent`, `updateEvent`, `publishEvent`, `getEvent`, `getServerInfo`, `listAdminEvents`, `listAdminRecords`, `listAdminRewards`, `getAdminAnalyticsReport`, `getAdminRemoteConfig`, `getPublicCatalog`) đều trả **`200` / `204`**, header đã ẩn Firebase Project ID (`Không gian quản trị / Check in`).
-  - Do các sự kiện `[DEMO]` từ `10–11/11` trên `#check-in` đều đã hết giờ (`Đã đóng` tại `serverTime = 2026-11-12T05:42:41.812Z`), đã tạo và xuất bản sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`, `12:30 12/11/26 – 23:59 12/11/26`). Thử nhập `EV-000000000000` tại `#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19` lúc `12:52:33`:
-    - UI hiển thị: `Nhập số vé lúc 12:52:33 · Không thể hoàn tất thao tác. Hãy thử lại.`
-    - Chrome DevTools Network: `OPTIONS https://asia-southeast1-prm393-31822.cloudfunctions.net/verifyAdminTicketNumber` -> **HTTP `404`** (`272 bytes`, không có `Access-Control-Allow-Origin`), kéo theo `POST` lỗi `net::ERR_FAILED` (`PreflightMissingAllowOriginHeader`).
-  - *Ghi chú dữ liệu QA:* `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`) hiện vẫn giữ trạng thái `Đã xuất bản` (`Công khai`) vì form Admin chủ động khóa (`disabled`) trường `Phạm vi hiển thị` sau khi xuất bản.
-- **Bộ test backend & điểm nghẽn duy nhất:** Bộ test `functions/test/*.test.mjs` yêu cầu chạy kèm Firebase Emulators (`FIRESTORE_EMULATOR_HOST`). Lệnh `& "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 login:list` báo **`! No authorized accounts, run "firebase login"`**, nên không thể tự deploy non-interactive. Cần người dùng đăng nhập Firebase CLI rồi deploy `functions:evia:verifyAdminTicketNumber` và thử lại ngay trên `#check-in/event-8d7f9f60-8b3d-4e59-b919-05709e2acf19` (hoặc tạo vé đăng ký thật).
+- **Mã nguồn, build TypeScript & Deploy (`prm393-31822`):**
+  - Hàm `verifyAdminTicketNumber` đã tồn tại tại [`functions/src/events.ts`](../functions/src/events.ts#L150-L169) và [`functions/src/index.ts`](../functions/src/index.ts#L62) (`region = 'asia-southeast1'`, codebase `evia`).
+  - Đã chạy `& "C:\Program Files\nodejs\npm.cmd" --prefix functions ci` (`248` packages) và `& "C:\Program Files\nodejs\npm.cmd" --prefix functions run build` (`tsc`) -> **`0` lỗi**.
+  - Đối chiếu Firebase Console (`/functions/list`) xác nhận tài khoản `phuc250805@gmail.com` giữ vai trò `Owner` trên `prm393-31822` (gói Blaze) và danh sách `65` functions đã deploy trước đó chưa có `verifyAdminTicketNumber`.
+  - Sau khi hoàn tất `firebase login` (`Success! Logged in as phuc250805@gmail.com`), chạy:
+    ```powershell
+    & "C:\Program Files\nodejs\npx.cmd" --yes firebase-tools@15.30.2 deploy --project prm393-31822 --only functions:evia:verifyAdminTicketNumber --non-interactive
+    ```
+    -> `+ functions[evia:verifyAdminTicketNumber(asia-southeast1)] Successful create operation.` và **`+ Deploy complete!`** *(không ghi nhận bất kỳ mã xác thực/token nào vào repo)*.
+- **Trước khi deploy (Admin Web `https://admin-evia.vercel.app/`, `index-BER142br.js`):**
+  - Toàn bộ các tab quản trị (`Analytics` `23 mục`, `Sự kiện` `18 mục`, `Thông báo` `12 tài khoản`, `Voucher` `5 mục`) tải `200`/`204`, header đã ẩn Firebase Project ID (`Không gian quản trị / Check in`).
+  - Tạo & xuất bản sự kiện QA `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`, `checkInStartAt = 12:30 12/11/26`, `endAt`/`checkInEndAt = 23:59 12/11/26`, `startAt` cập nhật thành `22:00 12/11/26` để mở đăng ký sinh viên).
+  - Trước deploy (`12:52:33`), nhập `EV-000000000000` gây `OPTIONS` **HTTP `404`** (`PreflightMissingAllowOriginHeader` / `net::ERR_FAILED`), UI báo `"Không thể hoàn tất thao tác. Hãy thử lại."`.
+- **Sau khi deploy (Tái kiểm chứng trực tiếp Admin Web + Android `SM-A135F`):**
+  1. **Kiểm tra vé không tồn tại (`EV-000000000000`, `13:12:22`):** `OPTIONS` -> **`204`** (`access-control-allow-origin: https://admin-evia.vercel.app`); `POST` -> **`404`** JSON `{"error":{"details":{"code":"TICKET_NUMBER_NOT_FOUND"},"message":"TICKET_NUMBER_NOT_FOUND","status":"NOT_FOUND"}}`; UI hiển thị: `"Nhập số vé lúc 13:12:22 · Không tìm thấy số vé này trong sự kiện. Kiểm tra lại Ticket No. và sự kiện đang mở."`.
+  2. **Đăng ký sự kiện thật trên Android (`Trace b06ee08f`, `195.0s`, Flash, `completed`):** Số dư đầu phiên trên Discover là **`30 coins`**, đăng ký `[QA] Kiểm thử Check-in Admin 12/11` nhận Ticket No. **`EV-EA2798C01639`**.
+  3. **Check-in nhập tay hợp lệ lần 1 (`EV-EA2798C01639`):** `OPTIONS` -> **`204`**; **`POST` -> `200`** với payload `{"result":{"attendanceId":"0a4fd76d19d5c5db279b0f88d25ffc74baa28fd70bc51f3b12304d52dadd436f","eventId":"event-8d7f9f60-8b3d-4e59-b919-05709e2acf19","coinsGranted":5,"depositRefunded":0}}`; banner xanh Admin Web: **`"Check-in thành công · +5 xu thưởng · Hoàn 0 xu đặt cọc."`**.
+  4. **Check-in lặp lại để chặn gian lận (`EV-EA2798C01639`, `13:24:21`):** `OPTIONS` -> **`204`**; **`POST` -> `409`** JSON `{"error":{"details":{"code":"ALREADY_CHECKED_IN"},"message":"ALREADY_CHECKED_IN","status":"ALREADY_EXISTS"}}`; UI báo đỏ: `"Nhập số vé lúc 13:24:21 · Sinh viên đã check-in bằng vé này."`.
+  5. **Đối chiếu lại app Android sau check-in (`Trace fcb9f81d`, `30.8s`, Flash, `completed`):** Trang `My Events` cập nhật nhãn **`Attended`**, **`+5 Coins`** và **`Attendance verified`** cho `[QA] Kiểm thử Check-in Admin 12/11`; tab `Rewards` tăng số dư khả dụng từ `30` lên **`35` coins** (`In Deposits: 0 coins`).
+- *Ghi chú dữ liệu QA:* Sự kiện `[QA] Kiểm thử Check-in Admin 12/11` (`event-8d7f9f60-8b3d-4e59-b919-05709e2acf19`) giữ nguyên trạng thái `Đã xuất bản` (`Công khai`) trên dự án vì form Admin chủ động khóa (`disabled`) trường `Phạm vi hiển thị` sau khi xuất bản; các bài kiểm thử backend cục bộ `functions/test/*.test.mjs` vẫn yêu cầu Firebase Emulators (`FIRESTORE_EMULATOR_HOST`).
 
-![TC11 Admin Web Manual Check-in HTTP 404](evidence-2026-11-12-fixes/tc11-admin-manual-checkin-404.png)
+| 1. Trước deploy (`12:52:33`): HTTP `404` CORS preflight | 2. Sau deploy: Admin Web HTTP `200` (`+5 xu thưởng`) | 3. Android `My Events`: `Attended` & `Attendance verified` | 4. Android `Rewards`: ví tăng `30` -> `35` coins |
+| :---: | :---: | :---: | :---: |
+| ![TC11 Admin Web Manual Check-in HTTP 404](evidence-2026-11-12-fixes/tc11-admin-manual-checkin-404.png) | ![TC11 Admin Web Manual Check-in HTTP 200](evidence-2026-11-12-fixes/tc11-admin-manual-checkin-200.png) | ![TC11 Android My Events Attended](evidence-2026-11-12-fixes/tc11-android-my-events-attended.jpg) | ![TC11 Android Rewards 35 Coins](evidence-2026-11-12-fixes/tc11-android-attended-35coins.jpg) |
 
 ---
 
