@@ -1,5 +1,11 @@
 # Báo cáo Kiểm thử E2E ARTEMIS — EVIA (`TC01`–`TC19`)
 
+> **Flutter regression cập nhật 12/11/2026:** đã xử lý bốn test thất bại ở
+> mục 7.2. Bốn file widget test đạt **47/47**, toàn bộ Flutter suite đạt
+> **264/264**, analyzer sạch. Chi tiết sửa UI/retry và cách test spinner tại
+> [test plan](../docs/test-plan.md#khắc-phục-bốn-flutter-regression--12112026).
+> Kết quả `260 passed, 4 failed` ở mục 7.2 được giữ để đối chiếu trước sửa.
+
 > [!IMPORTANT]
 > **Trạng thái sửa lỗi: ĐÃ SỬA, DEPLOY VÀ XÁC MINH ĐẠT `TC15`, `TC03`, `TC19` VÀ `TC11` (`19/19` TCs PASSED HOÀN TOÀN; `0` FAILED).**
 > Đợt kiểm thử nền tảng ngày `2026-11-11` chạy 19 test cases (21 biến thể) trên bản build thật (`FIREBASE_ENABLED=true`). Ngày `2026-11-12`, toàn bộ các tồn đọng đã được khắc phục, triển khai và tái kiểm chứng PASSED end-to-end trên thiết bị thật (`SM-A135F`) qua Google ARTEMIS + `adb logcat -s FA-SVC` và Admin Web live (`https://admin-evia.vercel.app/`): **`TC15`** ([Mục 6](#6-bằng-chứng-khắc-phục-và-tái-kiểm-chứng-lỗi-tc15)), **`TC03`**, **`TC19`** và **`TC11`** ([Mục 7](#7-bằng-chứng-khắc-phục-tc03-tc19-và-hoàn-tất-tc11)) sau khi đăng nhập Firebase CLI và deploy `verifyAdminTicketNumber(asia-southeast1)` lên project `prm393-31822`.

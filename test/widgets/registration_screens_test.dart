@@ -90,7 +90,15 @@ void main() {
             child: const LabApp(),
           ),
         );
-        await tester.pumpAndSettle();
+        if (route == '/registration/loading') {
+          // The indeterminate spinner intentionally keeps scheduling frames.
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+          expect(find.byType(CircularProgressIndicator), findsOneWidget);
+          expect(find.text('Confirming your\nregistration...'), findsOneWidget);
+        } else {
+          await tester.pumpAndSettle();
+        }
         expect(tester.takeException(), isNull, reason: '$route at $viewport');
       }
     });

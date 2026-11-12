@@ -15,7 +15,10 @@ import 'authentication_view_model.dart';
 import 'flow1_view_model.dart';
 
 final flow3ViewModelProvider =
-    AsyncNotifierProvider<Flow3ViewModel, Flow3Snapshot>(Flow3ViewModel.new);
+    AsyncNotifierProvider<Flow3ViewModel, Flow3Snapshot>(
+      Flow3ViewModel.new,
+      retry: (_, _) => null,
+    );
 
 class Flow3ViewModel extends AsyncNotifier<Flow3Snapshot> {
   int _generation = 0;

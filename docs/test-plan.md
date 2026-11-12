@@ -1,5 +1,23 @@
 # Test plan — template
 
+## Khắc phục bốn Flutter regression — 12/11/2026
+
+- Tái hiện bốn lỗi trong bốn file widget test, trước sửa có 43 đạt / 4 lỗi.
+- `flow1ViewModelProvider` và `flow3ViewModelProvider` tắt automatic retry để
+  hiển thị lỗi ngay và cho người dùng gọi `refresh()` qua nút Thử lại.
+- Recommended card Discover tự xuống hàng policy/xu khi thiếu chiều rộng,
+  đạt kiểm tra 360/412dp và text scale 1x/2x.
+- Test `/registration/loading` dùng bounded pump và xác nhận spinner/nội dung
+  loading ở từng viewport, vì spinner chạy liên tục khi đang chờ server.
+- Chạy lại bốn file widget test đạt **47/47**. Toàn bộ `flutter test --no-pub
+  --reporter expanded` đạt **264/264**, không có test thất bại.
+- `flutter pub get`, `dart format lib test`, `flutter analyze --no-pub` và
+  `git diff --check` đạt. Logs cục bộ tại `.local/flutter-four-before-elevated.log`,
+  `.local/flutter-four-after.log`, `.local/flutter-regression-full.log` và
+  `.local/flutter-regression-analyze-final.log` (Git ignored).
+- Lượt này xác thực Flutter unit/widget; trạng thái kiểm thử thiết bị thật và
+  ARTEMIS tham chiếu các đợt riêng trong báo cáo.
+
 > **Interests — 09/11/2026:** hai widget regression tests ở
 > `test/widgets/flow1_screens_test.dart` đạt: chọn/lưu đủ 10 danh mục bằng ID
 > canonical, nút Continue chỉ bật từ 3 lựa chọn và chờ server; My Interests khôi

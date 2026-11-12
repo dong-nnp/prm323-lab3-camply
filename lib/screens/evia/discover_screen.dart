@@ -679,28 +679,32 @@ class _RecommendedCard extends StatelessWidget {
           meta(event.audience, 'imgContainer9'),
           const Spacer(),
           const Divider(height: AppSpacing.xl),
-          Row(
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: EventBadge(
-                    event.policy,
-                    color: event.policy == 'Walk-in allowed'
-                        ? AppColors.successSurface
-                        : AppColors.primarySoft,
-                    foreground: event.policy == 'Walk-in allowed'
-                        ? AppColors.success
-                        : AppColors.primary,
-                  ),
-                ),
+              EventBadge(
+                event.policy,
+                color: event.policy == 'Walk-in allowed'
+                    ? AppColors.successSurface
+                    : AppColors.primarySoft,
+                foreground: event.policy == 'Walk-in allowed'
+                    ? AppColors.success
+                    : AppColors.primary,
               ),
-              const SizedBox(width: AppSpacing.sm),
-              const CoinIcon(),
-              const SizedBox(width: AppSpacing.xs),
-              Text(
-                '+${event.coins} coins',
-                style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CoinIcon(),
+                  const SizedBox(width: AppSpacing.xs),
+                  Flexible(
+                    child: Text(
+                      '+${event.coins} coins',
+                      style: EviaTheme.caption.copyWith(color: EviaTheme.gold),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
