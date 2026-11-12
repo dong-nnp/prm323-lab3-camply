@@ -1,5 +1,10 @@
 # Design traceability — Evia
 
+> **Discover accessibility — 12/11/2026:** hàng policy/xu trong recommended card
+> dùng Wrap, giữ cùng hàng khi đủ chiều rộng và tự xuống hàng khi phóng chữ.
+> Icon và số xu được nhóm cùng nhau; dùng spacing/token hiện có, hỗ trợ 360dp
+> với text scaling 2x.
+
 > **Interests — yêu cầu trực tiếp 09/11/2026:** đối chiếu ảnh danh mục admin và
 > màn interest người dùng gửi, dùng Technology, Music, Arts, Sports, Photography,
 > Career, Volunteering, Business, Gaming và Environment. Giữ bố cục hai cột,

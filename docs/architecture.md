@@ -1,5 +1,10 @@
 # Kiến trúc source base
 
+> **Retry catalog và Rewards — 12/11/2026:** `flow1ViewModelProvider` và
+> `flow3ViewModelProvider` tắt automatic retry của Riverpod khi `build()` lỗi.
+> View hiển thị error/retry ngay; nút Thử lại gọi `refresh()` hiện có. Refresh,
+> kiểm tra generation/UID và receipt nghiệp vụ giữ cơ chế hiện có.
+
 > **Interests — 09/11/2026:** danh sách presentation dùng chung ở onboarding và
 > Profile gồm 10 danh mục. `EviaViewModel.interestIds` ánh xạ tên tiếng Anh sang
 > ID catalog hiện có, nên các lựa chọn đã lưu vẫn được khôi phục và chỉnh sửa.

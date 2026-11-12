@@ -14,7 +14,10 @@ import '../models/evia_models.dart';
 import 'authentication_view_model.dart';
 
 final flow1ViewModelProvider =
-    AsyncNotifierProvider<Flow1ViewModel, Flow1Snapshot>(Flow1ViewModel.new);
+    AsyncNotifierProvider<Flow1ViewModel, Flow1Snapshot>(
+      Flow1ViewModel.new,
+      retry: (_, _) => null,
+    );
 
 class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
   bool _busy = false;
