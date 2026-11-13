@@ -35,6 +35,7 @@ import '../viewmodels/authentication_view_model.dart';
 import '../viewmodels/evia_view_model.dart';
 import '../models/auth_session.dart';
 import '../widgets/responsive_body.dart';
+import '../widgets/app_feedback.dart';
 import '../widgets/rewards_backend_gate.dart';
 import '../widgets/status_widgets.dart';
 import '../widgets/evia_skeleton.dart';
@@ -417,8 +418,7 @@ Widget _catalogReady(Widget child) => Consumer(
       if (error != null && error != previous?.asData?.value.actionError) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (context.mounted && (ModalRoute.of(context)?.isCurrent ?? false)) {
-            ScaffoldMessenger.maybeOf(context)
-                ?.showSnackBar(SnackBar(content: Text(error)));
+            AppFeedback.show(context, error, isError: true);
           }
         });
       }

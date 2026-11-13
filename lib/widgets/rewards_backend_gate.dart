@@ -7,6 +7,7 @@ import '../core/providers/service_providers.dart';
 import '../core/utils/exception_mapper.dart';
 import '../viewmodels/flow1_view_model.dart';
 import '../viewmodels/flow3_view_model.dart';
+import 'app_feedback.dart';
 import 'evia_widgets.dart';
 import 'status_widgets.dart';
 import 'evia_skeleton.dart';
@@ -64,8 +65,7 @@ class _RewardsBackendGateState extends ConsumerState<RewardsBackendGate>
       if (error != null && error != previous?.asData?.value.error) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (context.mounted && (ModalRoute.of(context)?.isCurrent ?? false)) {
-            ScaffoldMessenger.maybeOf(context)
-                ?.showSnackBar(SnackBar(content: Text(error)));
+            AppFeedback.show(context, error, isError: true);
           }
         });
       }

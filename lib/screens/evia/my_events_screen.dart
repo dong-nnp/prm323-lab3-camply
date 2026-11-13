@@ -8,6 +8,7 @@ import '../../core/providers/service_providers.dart';
 import '../../viewmodels/flow1_view_model.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../widgets/app_feedback.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
@@ -896,13 +897,11 @@ class _CancelRegistration extends ConsumerWidget {
                     }
                   } else {
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          ref.read(activityViewModelProvider).message ??
-                              'Please retry.',
-                        ),
-                      ),
+                    AppFeedback.show(
+                      context,
+                      ref.read(activityViewModelProvider).message ??
+                          'Please retry.',
+                      isError: true,
                     );
                   }
                 },

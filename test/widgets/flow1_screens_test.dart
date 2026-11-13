@@ -85,10 +85,8 @@ Future<ProviderContainer> open(
     UncontrolledProviderScope(
       container: c,
       child: MediaQuery(
-        data: MediaQueryData(
-          size: Size(width, 884),
-          textScaler: TextScaler.linear(textScale),
-        ),
+        data: MediaQueryData.fromView(tester.view)
+            .copyWith(textScaler: TextScaler.linear(textScale)),
         child: const LabApp(),
       ),
     ),
@@ -525,45 +523,82 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets(
-    'profile restores category selections and can clear all interests',
-    (tester) async {
-      final backend = Flow1TestBackend()
-        ..selected = {
-          'technology',
-          'music',
-          'arts',
-          'business',
-          'gaming',
-          'environment',
-        };
-      final c = await open(tester, backend, '/profile/interests');
-      expect(c.read(eviaViewModelProvider).interests, {
-        'Technology',
-        'Music',
-        'Arts',
-        'Business',
-        'Gaming',
-        'Environment',
-      });
-      for (final label in [
-        'Technology',
-        'Music',
-        'Arts',
-        'Business',
-        'Gaming',
-        'Environment',
-      ]) {
-        expect(find.text(label), findsOneWidget);
-        await tester.ensureVisible(find.text(label));
-        await tester.tap(find.text(label));
-        await tester.pump();
+  testWidgets('saving cleared interests shows feedback below the status bar', (
+    tester,
+  ) async {
+    tester.view.padding = const FakeViewPadding(top: 28);
+    addTearDown(tester.view.resetPadding);
+    final backend = Flow1TestBackend()
+      ..selected = {
+        'technology',
+        'music',
+        'arts',
+        'business',
+        'gaming',
+        'environment',
+      };
+    final c = await open(
+      tester,
+      backend,
+      '/profile/interests',
+      width: 360,
+      textScale: 2,
+    );
+    expect(c.read(eviaViewModelProvider).interests, {
+      'Technology',
+      'Music',
+      'Arts',
+      'Business',
+      'Gaming',
+      'Environment',
+    });
+    for (final label in [
+      'Technology',
+      'Music',
+      'Arts',
+      'Business',
+      'Gaming',
+      'Environment',
+    ]) {
+      expect(find.text(label), findsOneWidget);
+      await tester.ensureVisible(find.text(label));
+      await tester.tap(find.text(label));
+      await tester.pump();
+    }
+    await tester.tap(find.text('Save Preferences'));
+    await tester.pumpAndSettle();
+    expect(backend.selected, isEmpty);
+    final confirmation = find.text('Preferences saved.');
+    expect(tester.getTopLeft(confirmation).dy, inInclusiveRange(28, 100));
+
+    const failure =
+        'Cannot reach the service. Check your connection and retry.';
+    backend.handle = (name, input) async {
+      if (name == 'saveInterests') {
+        throw const AppException(code: 'unavailable', message: failure);
       }
-      await tester.tap(find.text('Save Preferences'));
-      await tester.pumpAndSettle();
-      expect(backend.selected, isEmpty);
-      expect(find.text('Preferences saved.'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+      return backend.respond(name, input);
+    };
+    await tester.tap(find.text('Save Preferences'));
+    await tester.pumpAndSettle();
+    expect(confirmation, findsNothing);
+    expect(tester.getTopLeft(find.text(failure)).dy, inInclusiveRange(28, 100));
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pump();
+      await tester.tap(find.bySemanticsLabel('Close'));
+    } finally {
+      semantics.dispose();
+    }
+    await tester.pumpAndSettle();
+    expect(find.text(failure), findsNothing);
+
+    backend.handle = null;
+    await tester.tap(find.text('Save Preferences'));
+    await tester.pumpAndSettle();
+    expect(confirmation, findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
+    expect(confirmation, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

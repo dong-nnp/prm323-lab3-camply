@@ -1,5 +1,11 @@
 # Design traceability — Evia
 
+> **Popup thông báo thao tác — yêu cầu trực tiếp 13/11/2026:** phản hồi như
+> “Preferences saved.” hiển thị dưới thanh trạng thái. Dùng `AppColors`,
+> `AppRadius` và typography chung cho thành công và lỗi. Popup có nút đóng và
+> tự ẩn sau 4 giây. Khi hệ thống bật điều hướng hỗ trợ tiếp cận, popup chờ người
+> dùng đóng hoặc được thay thế bằng thông báo mới.
+
 > **Interests — yêu cầu trực tiếp 13/11/2026:** màn `2088:2` có nút **Skip** cạnh
 > **Continue** ở cuối màn hình. Người dùng có thể chọn tùy ý hoặc bỏ qua. Màn
 > `2089:296` cho phép lưu danh sách rỗng khi xóa mọi sở thích.

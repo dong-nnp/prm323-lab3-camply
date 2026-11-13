@@ -16,6 +16,7 @@ import '../../viewmodels/activity_view_model.dart';
 import '../../viewmodels/registration_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_feedback.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/status_widgets.dart';
@@ -224,8 +225,7 @@ class ProfileScreen extends ConsumerWidget {
                     .signOut();
                 if (!context.mounted) return;
                 if (error != null) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(error)));
+                  AppFeedback.show(context, error, isError: true);
                   return;
                 }
                 ref.invalidate(profileViewModelProvider);
@@ -251,8 +251,7 @@ class ProfileScreen extends ConsumerWidget {
                           .read(profileViewModelProvider.notifier)
                           .triggerTestCrash();
                       if (error != null && context.mounted) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(error)));
+                        AppFeedback.show(context, error, isError: true);
                       }
                     }
                   : null,
@@ -309,12 +308,10 @@ class ProfileScreen extends ConsumerWidget {
               if (success) {
                 Navigator.pop(dialog);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Enter your name, student ID and a valid email.',
-                    ),
-                  ),
+                AppFeedback.show(
+                  dialog,
+                  'Enter your name, student ID and a valid email.',
+                  isError: true,
                 );
               }
             },
@@ -359,15 +356,13 @@ class ProfileInterestsScreen extends ConsumerWidget {
               onPressed: () async {
                 final saved = await vm.persistInterests();
                 if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      saved
-                          ? 'Preferences saved.'
-                          : ref.read(profileViewModelProvider).message ??
-                                'Could not save preferences. Please retry.',
-                    ),
-                  ),
+                AppFeedback.show(
+                  context,
+                  saved
+                      ? 'Preferences saved.'
+                      : ref.read(profileViewModelProvider).message ??
+                            'Could not save preferences. Please retry.',
+                  isError: !saved,
                 );
               },
             ),
@@ -527,9 +522,11 @@ class ProfileInterestsScreen extends ConsumerWidget {
                       color: AppColors.primary,
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      '${selected.length} interests selected',
-                      style: EviaTheme.label,
+                    Flexible(
+                      child: Text(
+                        '${selected.length} interests selected',
+                        style: EviaTheme.label,
+                      ),
                     ),
                   ],
                 ),
@@ -724,9 +721,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final remote = live ? ref.watch(notificationsViewModelProvider) : null;
     if (live) {
       ref.listen(pushNotificationsViewModelProvider, (previous, next) {
-        if (next.error != null && previous?.error != next.error) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(next.error!)));
+        final error = next.error;
+        if (error != null && previous?.error != error) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted &&
+                (ModalRoute.of(context)?.isCurrent ?? false)) {
+              AppFeedback.show(context, error, isError: true);
+            }
+          });
         }
       });
     }
@@ -754,10 +756,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             if (!success &&
                 context.mounted &&
                 ref.read(profileViewModelProvider).message != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(ref.read(profileViewModelProvider).message!),
-                ),
+              AppFeedback.show(
+                context,
+                ref.read(profileViewModelProvider).message!,
+                isError: true,
               );
             }
           },
@@ -812,15 +814,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                 await vm.readNotice(notice.id);
                             if (!context.mounted) return;
                             if (!success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    ref
-                                            .read(profileViewModelProvider)
-                                            .message ??
-                                        'Please retry.',
-                                  ),
-                                ),
+                              AppFeedback.show(
+                                context,
+                                ref.read(profileViewModelProvider).message ??
+                                    'Please retry.',
+                                isError: true,
                               );
                               return;
                             }

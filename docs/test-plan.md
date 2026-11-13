@@ -1,5 +1,14 @@
 # Test plan — template
 
+## Popup thông báo thao tác — 13/11/2026
+
+- `flutter test --no-pub --reporter expanded` đạt **265/265**. Widget test ở
+  360dp với chữ 2× kiểm phản hồi thành công và lỗi dưới thanh trạng thái, thay
+  thông báo cũ, nút đóng và tự ẩn sau 4 giây.
+- `flutter pub get`, `dart format lib test`, `flutter analyze --no-pub` và
+  build APK debug arm64 đạt. Đã cài lên Samsung SM-G996N, bấm Save Preferences
+  và xác nhận popup xuất hiện phía trên, tự ẩn và nút lưu vẫn bấm được.
+
 ## Sở thích tùy chọn — 13/11/2026
 
 - `flutter test --no-pub --reporter expanded` đạt **265/265**. Widget tests kiểm

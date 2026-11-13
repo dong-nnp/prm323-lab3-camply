@@ -13,6 +13,7 @@ import '../../widgets/evia_skeleton.dart';
 import '../../core/utils/exception_mapper.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../widgets/app_feedback.dart';
 import '../../theme/flow_theme.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../viewmodels/authentication_view_model.dart';
@@ -241,14 +242,11 @@ class EventDetailsScreen extends ConsumerWidget {
                                         .read(profileViewModelProvider.notifier)
                                         .toggleSaved(event.id);
                                     if (!context.mounted || !success) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          saved
-                                              ? 'Event removed from saved.'
-                                              : 'Event saved.',
-                                        ),
-                                      ),
+                                    AppFeedback.show(
+                                      context,
+                                      saved
+                                          ? 'Event removed from saved.'
+                                          : 'Event saved.',
                                     );
                                   },
                             icon: Icon(

@@ -1,5 +1,10 @@
 # Kiến trúc source base
 
+> **Thông báo thao tác trong app:** `MaterialApp.router` đặt `AppFeedback` trên
+> vùng điều hướng. Các màn hình gửi nội dung và trạng thái thành công hoặc lỗi
+> cho widget này, kể cả khi đang mở hộp thoại. `AppFeedback` quản lý vị trí,
+> nút đóng và thời gian hiển thị ở tầng giao diện.
+
 > **Retry catalog và Rewards — 12/11/2026:** `flow1ViewModelProvider` và
 > `flow3ViewModelProvider` tắt automatic retry của Riverpod khi `build()` lỗi.
 > View hiển thị error/retry ngay; nút Thử lại gọi `refresh()` hiện có. Refresh,

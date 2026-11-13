@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../core/constants/activity_assets.dart';
 import '../theme/app_tokens.dart';
 import '../theme/evia_theme.dart';
 import '../theme/activity_theme.dart';
+import 'app_feedback.dart';
 
 class ActivityIcon extends StatelessWidget {
   const ActivityIcon(this.screen, this.name, {this.color, super.key});
@@ -251,8 +253,7 @@ class ActivityOverlay extends StatelessWidget {
 Future<void> copyActivityCode(BuildContext context, String code) async {
   await Clipboard.setData(ClipboardData(text: code));
   if (context.mounted) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Code copied.')));
+    AppFeedback.show(context, 'Code copied.');
   }
 }
 
