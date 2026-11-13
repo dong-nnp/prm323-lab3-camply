@@ -19,7 +19,7 @@
 
 > **Flow 1 đã có adapter trong source 05/11/2026:** xem
 > [API_INTEGRATION_PHASES.md](API_INTEGRATION_PHASES.md). Live dùng ID/catalog
-> server, mandatory onboarding, follow/bookmark, registration receipt và vé.
+> server, chọn hoặc bỏ qua sở thích, follow/bookmark, registration receipt và vé.
 > Các ghi chú pending phía dưới vẫn áp dụng cho Flow 2/3 và instrumentation.
 
 > **Dataset đã sẵn sàng để nối 05/11/2026:** [DEMO_DATA.md](DEMO_DATA.md) có
@@ -48,7 +48,7 @@ Ngày 04/11/2026. **Backend mới đã deploy: 34 Functions ACTIVE, 34 Cloud Run
 
 | Flow | Trình tự gọi | State và lỗi quan trọng |
 |---|---|---|
-| Auth/onboarding | Auth SDK → `initializeUser` → `getAccount` → `saveInterests` khi cần | Auth cancelled/failed, ≥3 valid interests, account disabled. Không suy ra login thật từ nút Continue |
+| Auth/onboarding | Auth SDK → `initializeUser` → `getAccount` → `saveInterests` khi cần | Auth cancelled/failed, account disabled, Continue với số sở thích tùy ý hoặc Skip giữ lựa chọn đã lưu. |
 | Discover/search | `getPublicCatalog`, `getEvent`, `getOrganizer`, follow/bookmark | Trang rỗng có cursor chưa phải empty toàn bộ; `following`/`recommended` cần auth/onboarding |
 | Đăng ký/hủy/đăng ký lại | Event detail → confirm quote/terms → `registerForEvent` → `getTicket`; cancel qua `cancelRegistration` | `EVENT_FULL`, `QUOTE_CHANGED`, `TERMS_CHANGED`, `INSUFFICIENT_COINS`. Hủy hoàn 30% cọc làm tròn xuống; đăng ký lại tính cọc mới và cạnh tranh slot hiện còn |
 | My Events/ticket | `listMyEvents` → `getTicket({eventId})` → `getTicketQr` | Phân biệt registered/cancelled/attended/no_show. Vé cũ đã revoked không được hiện như vé active |

@@ -51,7 +51,7 @@ class FirebaseBackendService implements BackendService {
         'INSUFFICIENT_COINS': 'Not enough available coins.',
         'ALREADY_REGISTERED':
             'You are already registered. Open your ticket in My Events.',
-        'ONBOARDING_REQUIRED': 'Save at least 3 interests before continuing.',
+        'ONBOARDING_REQUIRED': 'Open Interests and choose Continue or Skip.',
         'EMAIL_REQUIRED': 'Enter a valid email address.',
         'ACCOUNT_DISABLED': 'This account is unavailable.',
         'EVENT_NOT_FOUND': 'This event is no longer available.',

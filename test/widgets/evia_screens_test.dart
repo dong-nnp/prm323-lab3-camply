@@ -205,38 +205,37 @@ void main() {
     },
   );
 
-  testWidgets(
-    'interests enforce minimum selection and login never fakes success',
-    (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [initialLocationProvider.overrideWithValue('/interests')],
-          child: const LabApp(),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Technology'));
-      await tester.pumpAndSettle();
-      expect(find.text('2 interests selected'), findsOneWidget);
-      expect(
-        tester
-            .widget<FilledButton>(find.widgetWithText(FilledButton, 'Continue'))
-            .onPressed,
-        isNull,
-      );
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(LabApp)),
-      );
-      container.read(routerProvider).go('/login');
-      await tester.pumpAndSettle();
-      final login = find.text('Log in');
-      await tester.ensureVisible(login);
-      await tester.tap(login);
-      await tester.pumpAndSettle();
-      expect(find.text('Enter a valid email address.'), findsOneWidget);
-      expect(container.read(eviaViewModelProvider).results, isFalse);
-    },
-  );
+  testWidgets('interests are optional and login never fakes success', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [initialLocationProvider.overrideWithValue('/interests')],
+        child: const LabApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Technology'));
+    await tester.pumpAndSettle();
+    expect(find.text('2 interests selected'), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(find.widgetWithText(FilledButton, 'Continue'))
+          .onPressed,
+      isNotNull,
+    );
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(LabApp)),
+    );
+    container.read(routerProvider).go('/login');
+    await tester.pumpAndSettle();
+    final login = find.text('Log in');
+    await tester.ensureVisible(login);
+    await tester.tap(login);
+    await tester.pumpAndSettle();
+    expect(find.text('Enter a valid email address.'), findsOneWidget);
+    expect(container.read(eviaViewModelProvider).results, isFalse);
+  });
 
   // Opt-in local render evidence; no binary golden files are added to the repo.
   if (Platform.environment['EVIA_CAPTURE_DIR'] case final String captureDir) {

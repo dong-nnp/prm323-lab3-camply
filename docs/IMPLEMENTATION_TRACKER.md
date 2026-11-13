@@ -85,13 +85,13 @@ Owner đã chốt Monthly Gift tự động ngày 1, no-show mất cọc, đăng
 | O-13 | DEFERRED — student/faculty/club verification | Owner temporarily excluded this feature | No verified badges/filters; no client-forged verification or bypass of existing restricted events |
 | O-14 | RESOLVED — Café price is 200 Coin; Figma content illustrative | One server record, no hard-coded UI values | 200 applies only to the Café voucher; real event/catalog data still needs sources under O-08 |
 | O-15 | OUT OF SCOPE — ticket email/fixed reminders, feedback bonus, missions, seasonal targets, seats/VIP/tiers | Owner explicitly removed these business paths | No jobs/grants/inventory; Auth reset emails and required lab FCM remain in scope |
-| O-16 | PARTIAL — minimum 3 distinct interests mandatory, no Skip; taxonomy/ranking/search boundaries OPEN | Onboarding/preference contract decided; query details still need design | Enforce complete/save minimum 3; do not infer taxonomy or ranking from prototype labels |
+| O-16 | PARTIAL — optional interests with onboarding Skip; taxonomy/ranking/search boundaries OPEN | Preferences accept 0–50 distinct active IDs. Skip keeps saved interests. | Query design remains open. |
 | O-17 | PARTIAL RESOLVED — admin verifies voucher at sponsor | Claim + server-only admin assignment, atomic use | Local verify API tested. Per-record source/expiry + code rotation remain separate |
 
 **Resolved (binding):** Follow requires authentication (Google or email/password);
 no Waitlist; full closes registration and cancellation releases one place;
 Daily 5/10/15/30/50/70/100, day8+100; monthly 200 automatically on day 1 for all initialized accounts;
-Café voucher 200; at least 3 distinct interests mandatory; registered staff scans
+Café voucher 200; interests optional; registered staff scans
 student ticket, walk-in uses QR only; cancel refunds 30% of deposit rounded down, forfeiting the remainder. Milestones restored
 05/11/2026 (EVENT_MILESTONES.md); FD-09/10 business paths removed;
 academic/club verification deferred.

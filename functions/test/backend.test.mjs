@@ -136,7 +136,10 @@ test('any valid email domain can initialize, edit profile and register while ide
   const initialized = await call('initializeUser', newcomer);
   assert.equal(initialized.profile.universityEmail, 'person@gmail.com');
   assert.equal(initialized.wallet.availableCoins, 200);
-  await call('saveInterests', newcomer, { interests: ['technology', 'music', 'arts'] });
+  assert.deepEqual(await call('saveInterests', newcomer, { skip: true }), { interests: [], onboardingCompleted: true });
+  const skipped = (await call('getAccount', newcomer)).profile;
+  assert.deepEqual(skipped.interests, []);
+  assert.equal(skipped.onboardingCompleted, true);
   await call('updateProfile', newcomer, { studentId: ' se123456 ', universityEmail: ' Person@Outlook.COM ' });
   assert.equal((await db.doc('users/gmail-user').get()).get('universityEmail'), 'person@outlook.com');
   const registered = await call('registerForEvent', newcomer, { ...registration('any-email-register'), attendeeInput: { ...registration().attendeeInput, universityEmail: 'person+event@custom-domain.org' } });
@@ -190,14 +193,24 @@ test('manual code guessing is limited per authenticated account across process r
   assert.equal((await db.doc(`wallets/${bob.uid}`).get()).get('availableCoins'), 200);
 });
 
-test('signup bonus is once per UID and interests cannot be forged/duplicated', async () => {
+test('signup bonus is once per UID and optional interests stay validated', async () => {
   await Promise.all(Array.from({ length: 5 }, () => call('initializeUser')));
   assert.equal((await db.doc(`wallets/${alice.uid}`).get()).get('availableCoins'), 200);
   assert.equal((await db.collection(`wallets/${alice.uid}/ledger`).get()).size, 1);
   await rejects(call('saveInterests', alice, { interests: ['music', 'music', 'arts'] }), 'VALIDATION_FAILED');
-  await rejects(call('saveInterests', alice, { interests: ['music', 'arts'] }), 'VALIDATION_FAILED');
+  await rejects(call('saveInterests', null, { skip: true }), 'UNAUTHENTICATED');
+  await rejects(call('saveInterests', alice, { skip: true, interests: [] }), 'VALIDATION_FAILED');
   await rejects(call('updateProfile', alice, { eligibility: { verificationStatus: 'verified' } }), 'VALIDATION_FAILED');
-  await rejects(call('saveInterests', alice, { interests: ['music', 'arts', 'unknown'] }), 'INVALID_INTERESTS');
+  await rejects(call('saveInterests', alice, { interests: ['unknown'] }), 'INVALID_INTERESTS');
+  await Promise.all([
+    call('saveInterests', alice, { interests: ['music'] }),
+    call('saveInterests', alice, { skip: true }),
+  ]);
+  assert.deepEqual((await call('getAccount')).profile.interests, ['music']);
+  for (const interests of [['music', 'arts'], ['music'], []]) {
+    assert.deepEqual(await call('saveInterests', alice, { interests }), { interests, onboardingCompleted: true });
+    assert.deepEqual((await db.doc(`users/${alice.uid}`).get()).get('interests'), interests);
+  }
   await rejects(call('initializeUser', null), 'UNAUTHENTICATED');
 });
 test('last seat race has one winner, full event has no monetary side effects', async () => {
@@ -573,6 +586,9 @@ test('real callable transport validates Firebase Auth and returns stable error c
   const response = await fetch(`${base}/initializeUser`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${session.idToken}` }, body: JSON.stringify({ data: {} }) });
   assert.equal(response.status, 200);
   assert.equal((await response.json()).result.wallet.availableCoins, 200);
+  const skipped = await fetch(`${base}/saveInterests`, { method: 'POST', headers: headersFor(session.idToken), body: JSON.stringify({ data: { skip: true } }) });
+  assert.equal(skipped.status, 200);
+  assert.deepEqual((await skipped.json()).result, { interests: [], onboardingCompleted: true });
 });
 
 

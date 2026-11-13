@@ -95,6 +95,8 @@ class Flow1Repository {
       backend.call('setBookmark', {'eventId': id, 'saved': value});
   Future<void> saveInterests(Set<String> ids) =>
       backend.call('saveInterests', {'interests': ids.toList()});
+  Future<void> skipPersonalization() =>
+      backend.call('saveInterests', {'skip': true});
   Future<void> updateProfile(Map<String, dynamic> profile) =>
       backend.call('updateProfile', profile);
   Future<void> going(String eventId) =>

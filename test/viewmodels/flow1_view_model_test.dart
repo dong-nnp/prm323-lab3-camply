@@ -185,18 +185,16 @@ void main() {
       'server-event-17',
     });
   });
-  test('onboarding waits for server and uses interest IDs', () async {
+  test('saving fewer than three interests uses canonical IDs', () async {
     final vm = c.read(flow1ViewModelProvider.notifier);
     vm.selectInterest('sports');
-    expect(await vm.saveInterests(), isFalse);
-    vm.selectInterest('arts');
     expect(await vm.saveInterests(), isTrue);
-    expect(backend.selected, {'technology', 'music', 'arts'});
+    expect(backend.selected, {'technology', 'music'});
     expect(
       backend.calls
           .lastWhere((c) => c.name == 'saveInterests')
           .input['interests'],
-      contains('arts'),
+      unorderedEquals(['technology', 'music']),
     );
   });
   final fields = {

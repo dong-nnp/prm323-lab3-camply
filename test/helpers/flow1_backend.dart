@@ -107,7 +107,9 @@ class Flow1TestBackend implements BackendService {
       case 'getEvent':
         return testEvent();
       case 'saveInterests':
-        selected = Set<String>.from(input['interests'] as List);
+        if (input['skip'] != true) {
+          selected = Set<String>.from(input['interests'] as List);
+        }
         onboarded = true;
         return {};
       case 'followOrganizer':

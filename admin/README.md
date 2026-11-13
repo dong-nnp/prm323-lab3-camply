@@ -116,6 +116,7 @@ thiếu quyền, kết quả phiên cũ và lỗi observer. Build và 15 unit te
   rồi bấm **Bật camera**. Trên Evia, sinh viên mở QR vé và đưa vào khung quét.
   Web dùng camera trên `localhost` hoặc HTTPS. Máy chủ xác nhận vé qua
   `verifyRegisteredTicket`, ghi nhận tham dự, hoàn cọc và cộng xu theo vé.
+  Nếu camera đọc lại cùng mã ngay sau khi xác nhận, web giữ dòng báo thành công.
   Khi vé hết hạn, sinh viên mở lại QR vé trong app.
   Khi không quét được, nhập **Ticket No.** (dạng `EV-…`) ở cạnh camera rồi bấm
   **Xác nhận check-in**. Firebase cần callable `verifyAdminTicketNumber`. Chức

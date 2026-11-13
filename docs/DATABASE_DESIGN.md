@@ -55,8 +55,7 @@ contracts. The earlier Figma review was documentation only. Current implementati
   failed/repeated cancellation releases no additional place. Capacity 100 is an
   example, not a default. Same-user re-registration after cancel is now allowed if capacity remains; issue a new ticket and archive the cancelled attempt.
 - Guest may read **public/published** organizers/events; **Follow/Unfollow, Register, Bookmark, Wallet and rewards are account-bound**. Support Google and email/password sign-up/sign-in/reset. The original Google flow remains supported; Follow is optional.
-- At least **3 distinct valid interest IDs** are required to complete/save
-  authenticated onboarding/preferences. No onboarding Skip; guest browsing is unaffected.
+- Interests are optional. The account can complete onboarding via Continue or Skip.
 - The Café voucher in FD-04 costs **200 Coin**, configured in its server reward
   record. No screen-level price constant; all other Figma values remain illustrative.
 - Event Milestones restored 05/11/2026; see [current contract](EVENT_MILESTONES.md).
@@ -144,10 +143,8 @@ owner-approved business policies. See [44-frame evidence and conflicts](database
   not proof of academic eligibility. Provider linking must not silently merge
   accounts or grant a second signup bonus. This is a design contract, not a claim
   that the existing Google-only service interface already implements email auth.
-- **Interests:** validate at least 3 distinct IDs from the canonical interest
-  vocabulary on complete/save. A new/incomplete account may have fewer while
-  onboarding, but cannot set `onboardingCompleted=true` or save final preferences
-  below 3. The UI must remove Skip from this step; no new business collection needed.
+- **Interests:** accept 0–50 distinct active IDs from the catalog on save. Skip
+  writes `onboardingCompleted=true` and keeps the existing interest list.
 - **User identity (verification deferred by owner):** `phoneNumber` is optional, private, with format validated
   server-side. `eligibility` contains `verificationStatus:S`, `universityId:S?`,
   `facultyId:S?`, `memberOrganizerIds:A<S>`, `verifiedAt:T?`. Only a trusted server
@@ -474,7 +471,7 @@ Tests must show commands, logs and commit references; all results are **NOT RUN*
 | FIG-05 | Owner sees voucher metadata but cannot directly read secrets/hash; unauthorized cashier rejected; replayed use never consumes twice or debits coins again. |
 | FIG-06 | Duplicate FCM deliveries create one inbox item; mark-all-read affects only caller's notifications before cutoff; sign-out unlinks device; new arrivals stay unread. |
 | FIG-07 | My Events/bookmarks date filters use canonical event time, handle rescheduling/timezone/day boundaries, de-duplicate intent/registration/attendance, and never equate past with attended. |
-| FIG-08 | Fewer than 3 distinct valid interests cannot complete onboarding or save final preferences; duplicate/unknown IDs do not satisfy the count; no Skip; guest public browsing still works. |
+| FIG-08 | Continue accepts 0, 1 or more valid interests. Skip completes onboarding and keeps saved preferences. Duplicate and unknown IDs are rejected. |
 | FIG-09 | Milestones restored 05/11/2026 (EVENT_MILESTONES.md). Feedback/mission/seasonal Coin paths, assigned seats, ticket-email/fixed reminder jobs and manual walk-in code remain excluded. |
 
 ## 9. Database deliverables / review gate for Codex

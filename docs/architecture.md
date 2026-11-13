@@ -5,10 +5,11 @@
 > View hiển thị error/retry ngay; nút Thử lại gọi `refresh()` hiện có. Refresh,
 > kiểm tra generation/UID và receipt nghiệp vụ giữ cơ chế hiện có.
 
-> **Interests — 09/11/2026:** danh sách presentation dùng chung ở onboarding và
+> **Interests:** danh sách presentation dùng chung ở onboarding và
 > Profile gồm 10 danh mục. `EviaViewModel.interestIds` ánh xạ tên tiếng Anh sang
 > ID catalog hiện có, nên các lựa chọn đã lưu vẫn được khôi phục và chỉnh sửa.
-> Thay thế giới hạn 8 thẻ/Gaming và Environment pending trong ghi chú 05/11.
+> `EviaViewModel` dùng `Flow1Repository` để lưu lựa chọn hoặc gửi Skip. Server ghi
+> `onboardingCompleted` cho cả hai thao tác và chỉ ghi `interests` khi lưu.
 
 > **Evibaby — 09/11/2026:** Chat → EvibabyViewModel → EvibabyRepository →
 > BackendService/FirebaseBackendService → callable `chatWithEvibaby` → DeepSeek.
@@ -308,10 +309,9 @@ Auth unavailable/signed out/lỗi đến Welcome. Signed in đến Interests ho�
 theo `AuthSession.personalizationHandled` và thao tác Continue/Skip trong phiên.
 Không dùng các interests demo làm bằng chứng đã hoàn tất onboarding.
 
-Chưa có account-profile adapter/persistence: field personalization phải được
-adapter thật cung cấp khi tích hợp. Trạng thái hoàn tất trong phiên được tách
-theo user ID, không đổi session và không xóa sở thích. Không ghi nhận đây là
-đồng bộ backend. Các deep link UI hiện có vẫn giữ nguyên.
+Trong chế độ live, `FirebaseAuthenticationService` đọc `onboardingCompleted` từ
+hồ sơ tài khoản. ViewModel cập nhật catalog/hồ sơ sau khi server xác nhận
+Continue hoặc Skip, rồi màn hình chuyển về đích điều hướng ban đầu hoặc Discover.
 
 Khi mở `/foundation`: `main` → `LabApp` → foundation screen → `BootstrapViewModel` → `BootstrapRepository`
 → `FirebaseInitializer`.

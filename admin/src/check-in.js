@@ -187,6 +187,7 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
         : await firebase.verifyTicket({ expectedEventId: current.eventId, qrPayload: attempt.payload, requestId });
       if (!isCurrent(current)) return;
       attempt.retry = false;
+      attempt.confirmed = true;
       if (byNumber && ticketNumber.value.trim().toUpperCase() === attempt.ticketNumber) ticketNumber.value = '';
       showResult(`Check-in thành công · +${result.coinsGranted} xu thưởng · Hoàn ${result.depositRefunded} xu đặt cọc.`, 'success');
     } catch (error) {
@@ -213,7 +214,7 @@ export function setupCheckIn({ firebase, session, status, text, formatDate, erro
     if (payload === previous?.payload) {
       const stillVisible = detectedAt - previous.detectedAt < 1500;
       previous.detectedAt = detectedAt;
-      if (stillVisible || previous.invalid) return;
+      if (stillVisible || previous.invalid || previous.confirmed) return;
     }
     if (current.busy) return;
     const attempt = current.last = {

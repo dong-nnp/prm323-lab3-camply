@@ -201,21 +201,16 @@ class ProfileViewModel extends Notifier<ProfileState> {
         ? ({...state.draftInterests}..remove(interest))
         : {...state.draftInterests, interest},
   );
-  bool saveInterests() {
-    final success = ref
-        .read(eviaViewModelProvider.notifier)
-        .saveInterests(state.draftInterests);
-    state = state.copy(
-      message: success ? 'Preferences saved.' : 'Select at least 3 interests.',
-    );
-    return success;
-  }
-
   Future<bool> persistInterests() async {
-    if (!ref.read(realBackendEnabledProvider)) return saveInterests();
     final vm = ref.read(eviaViewModelProvider.notifier);
-    if (!vm.saveInterests(state.draftInterests)) return false;
-    final result = await vm.finishPersonalization();
+    if (!ref.read(realBackendEnabledProvider)) {
+      vm.setInterests(state.draftInterests);
+      state = state.copy(message: 'Preferences saved.');
+      return true;
+    }
+    final result = await vm.finishPersonalization(
+      interests: state.draftInterests,
+    );
     if (!ref.mounted) return false;
     state = state.copy(
       message: result == null

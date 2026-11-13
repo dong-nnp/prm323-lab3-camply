@@ -166,7 +166,7 @@ void main() {
         handled ? '/discover' : '/interests',
       );
       if (!handled) {
-        expect(find.text('Skip'), findsNothing);
+        expect(find.text('Skip'), findsOneWidget);
         await tester.tap(find.text('Continue'));
         await tester.pumpAndSettle();
         expect(

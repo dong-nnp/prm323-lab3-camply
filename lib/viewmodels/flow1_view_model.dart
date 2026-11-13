@@ -185,7 +185,7 @@ class Flow1ViewModel extends AsyncNotifier<Flow1Snapshot> {
 
   Future<bool> saveInterests() async {
     final selected = state.asData?.value.selectedInterests;
-    if (selected == null || selected.length < 3) return false;
+    if (selected == null) return false;
     return _action(
       () => ref.read(flow1RepositoryProvider).saveInterests(selected),
     );

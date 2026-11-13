@@ -337,6 +337,9 @@ class ProfileInterestsScreen extends ConsumerWidget {
     final selected = ref.watch(
       profileViewModelProvider.select((s) => s.draftInterests),
     );
+    final isSaving = ref.watch(
+      eviaViewModelProvider.select((s) => s.isSavingInterests),
+    );
     final vm = ref.read(profileViewModelProvider.notifier);
     return EviaPage(
       header: const ActivityHeader(
@@ -352,21 +355,21 @@ class ProfileInterestsScreen extends ConsumerWidget {
           children: [
             AppButton(
               label: 'Save Preferences',
-              onPressed: selected.length < 3
-                  ? null
-                  : () async {
-                      final saved = await vm.persistInterests();
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            saved
-                                ? 'Preferences saved.'
-                                : ref.read(profileViewModelProvider).message ?? 'Could not save preferences. Please retry.',
-                          ),
-                        ),
-                      );
-                    },
+              isLoading: isSaving,
+              onPressed: () async {
+                final saved = await vm.persistInterests();
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      saved
+                          ? 'Preferences saved.'
+                          : ref.read(profileViewModelProvider).message ??
+                                'Could not save preferences. Please retry.',
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: AppSpacing.sm),
             const Text(
@@ -409,7 +412,9 @@ class ProfileInterestsScreen extends ConsumerWidget {
                                 selected: active,
                                 button: true,
                                 child: InkWell(
-                                  onTap: () => vm.toggleInterest(topic.name),
+                                  onTap: isSaving
+                                      ? null
+                                      : () => vm.toggleInterest(topic.name),
                                   borderRadius: BorderRadius.circular(
                                     AppRadius.large,
                                   ),
@@ -533,11 +538,6 @@ class ProfileInterestsScreen extends ConsumerWidget {
                   style: TextStyle(color: AppColors.primary),
                 ),
               ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            const Text(
-              'Select at least 3 interests for best recommendations',
-              style: EviaTheme.caption,
             ),
           ],
         ),
