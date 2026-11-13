@@ -6,6 +6,7 @@ import '../../core/constants/flow_assets.dart';
 import '../../data/mock/registration_mock_data.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../widgets/app_feedback.dart';
 import '../../viewmodels/evia_view_model.dart';
 import '../../viewmodels/authentication_view_model.dart';
 import '../../viewmodels/profile_view_model.dart';
@@ -304,23 +305,15 @@ class OrganizerProfileScreen extends ConsumerWidget {
                                         if (!context.mounted || !success) {
                                           return;
                                         }
-                                        ScaffoldMessenger.of(
+                                        final saved = ref
+                                            .read(profileViewModelProvider)
+                                            .saved
+                                            .contains(events[index].id);
+                                        AppFeedback.show(
                                           context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              ref
-                                                      .read(
-                                                        profileViewModelProvider,
-                                                      )
-                                                      .saved
-                                                      .contains(
-                                                        events[index].id,
-                                                      )
-                                                  ? 'Event saved.'
-                                                  : 'Event removed from saved.',
-                                            ),
-                                          ),
+                                          saved
+                                              ? 'Event saved.'
+                                              : 'Event removed from saved.',
                                         );
                                       },
                                 icon: Icon(

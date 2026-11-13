@@ -10,6 +10,7 @@ import '../../theme/evia_theme.dart';
 import '../../viewmodels/registration_view_model.dart';
 import '../../widgets/activity_widgets.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_feedback.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/event_flow_widgets.dart';
@@ -82,13 +83,11 @@ class RegistrationResultScreen extends ConsumerWidget {
       } else if (status == RegistrationStatus.idle) {
         back();
       } else if (status == RegistrationStatus.failed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              ref.read(registrationViewModelProvider).message ??
-                  'Please try again.',
-            ),
-          ),
+        AppFeedback.show(
+          context,
+          ref.read(registrationViewModelProvider).message ??
+              'Please try again.',
+          isError: true,
         );
       }
     }

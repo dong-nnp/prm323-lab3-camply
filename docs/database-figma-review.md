@@ -1,5 +1,9 @@
 # Evia — đối chiếu Figma với database
 
+> **Cập nhật 13/11/2026:** [FD-13 hiện hành](PROJECT_CONTEXT.md) cho phép bỏ qua
+> onboarding sở thích và lưu danh sách rỗng. Các yêu cầu cũ trong bản review
+> dưới đây ghi lại quyết định tại thời điểm đối chiếu.
+
 > **Quyết định mới 05/11/2026:** owner đã khôi phục Event Milestones, manual
 > claim 1/3/5/10/20 → 50/100/150/300/500 xu. [Contract hiện tại](EVENT_MILESTONES.md)
 > thay thế các kết luận bỏ FD-03/milestones trong bản review lịch sử bên dưới.

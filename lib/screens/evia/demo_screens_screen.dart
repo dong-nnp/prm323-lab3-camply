@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../widgets/app_feedback.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../viewmodels/authentication_view_model.dart';
 import '../../viewmodels/registration_view_model.dart';
@@ -84,9 +85,7 @@ class DemoScreensScreen extends ConsumerWidget {
           onPressed: () {
             ref.read(activityViewModelProvider.notifier).resetDemo();
             ref.invalidate(registrationViewModelProvider);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Demo reset · 2,000 coins.')),
-            );
+            AppFeedback.show(context, 'Demo reset · 2,000 coins.');
           },
           child: const Text('Reset demo'),
         ),
@@ -97,8 +96,7 @@ class DemoScreensScreen extends ConsumerWidget {
                 .signOut();
             if (!context.mounted) return;
             if (error != null) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(error)));
+              AppFeedback.show(context, error, isError: true);
               return;
             }
             context.go('/splash');

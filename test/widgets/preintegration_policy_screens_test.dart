@@ -27,21 +27,22 @@ Future<ProviderContainer> open(WidgetTester tester, String route) async {
 }
 
 void main() {
-  testWidgets(
-    'onboarding has no Skip and cannot navigate on an unavailable save',
-    (tester) async {
-      final c = await open(tester, '/interests');
-      expect(find.text('Skip'), findsNothing);
-      await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
-      expect(
-        c.read(routerProvider).routeInformationProvider.value.uri.path,
-        '/interests',
-      );
-      expect(c.read(eviaViewModelProvider).personalizedUsers, isEmpty);
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('Skip reports an unavailable save and keeps onboarding open', (
+    tester,
+  ) async {
+    final c = await open(tester, '/interests');
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
+    expect(
+      c.read(routerProvider).routeInformationProvider.value.uri.path,
+      '/interests',
+    );
+    expect(c.read(eviaViewModelProvider).personalizedUsers, isEmpty);
+    final message = c.read(eviaViewModelProvider).message;
+    expect(message, isNotNull);
+    expect(find.text(message!), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'full event offers browsing rather than a waitlist or fake registration',

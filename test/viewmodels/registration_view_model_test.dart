@@ -149,21 +149,11 @@ void main() {
     expect(vm.visibleSaved, isEmpty);
     expect(vm.savedCount('All'), 3);
   });
-  test('preferences require three selections and update Discover state', () {
+  test('saving two interests updates Discover preferences', () async {
     final vm = container.read(profileViewModelProvider.notifier);
     vm.toggleInterest('Technology');
-    expect(vm.saveInterests(), isFalse);
-    expect(container.read(eviaViewModelProvider).interests.length, 3);
-    vm.toggleInterest('Photography');
-    expect(vm.saveInterests(), isTrue);
-    expect(
-      container.read(eviaViewModelProvider).interests,
-      contains('Photography'),
-    );
-    expect(
-      container.read(eviaViewModelProvider).interests,
-      isNot(contains('Technology')),
-    );
+    expect(await vm.persistInterests(), isTrue);
+    expect(container.read(eviaViewModelProvider).interests, {'Music', 'Arts'});
   });
   test('mark all read clears only unread presentation state', () {
     final vm = container.read(profileViewModelProvider.notifier);

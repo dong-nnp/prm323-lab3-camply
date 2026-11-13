@@ -8,7 +8,6 @@ import '../core/utils/exception_mapper.dart';
 import '../data/mock/registration_mock_data.dart';
 import '../models/analytics_events.dart';
 import '../models/evia_models.dart';
-import '../models/auth_session.dart';
 import '../core/constants/app_routes.dart';
 import '../core/utils/fpt_identity.dart';
 import 'authentication_view_model.dart';
@@ -145,45 +144,60 @@ class EviaViewModel extends Notifier<EviaState> {
     );
   }
 
-  Future<String?> finishPersonalization() async {
-    if (!canContinue || state.isSavingInterests) return null;
+  Future<String?> skipPersonalization() => _completePersonalization();
+
+  Future<String?> finishPersonalization({Set<String>? interests}) =>
+      _completePersonalization(interests: interests ?? state.interests);
+
+  Future<String?> _completePersonalization({Set<String>? interests}) async {
+    if (state.isSavingInterests) return null;
     final session = ref.read(authenticationViewModelProvider).asData?.value;
-    if (session?.status != AuthStatus.signedIn) {
+    final userId = session?.userId;
+    if (userId == null) {
       state = state.copyWith(message: 'Log in before saving your interests.');
       return null;
     }
+    final useBackend = live;
+    final actionRef = ref;
+    bool isCurrentUser() =>
+        actionRef.mounted &&
+        actionRef.read(authenticationViewModelProvider).asData?.value.userId ==
+            userId;
     state = state.copyWith(isSavingInterests: true);
     try {
-      if (live) {
-        final ids = state.interests.map((name) => interestIds[name]!).toSet();
-        // Preserve server interests unknown to this app when saving preferences.
-        ids.addAll(
-          (catalog?.selectedInterests ?? {}).where(
-            (id) => !interestIds.containsValue(id),
-          ),
-        );
-        await ref.read(flow1RepositoryProvider).saveInterests(ids);
-        await ref.read(flow1ViewModelProvider.notifier).refresh();
-        if (ref.read(flow1ViewModelProvider).hasError) {
-          throw ref.read(flow1ViewModelProvider).error!;
+      if (useBackend) {
+        final repository = ref.read(flow1RepositoryProvider);
+        if (interests == null) {
+          await repository.skipPersonalization();
+        } else {
+          final ids = interests.map((name) => interestIds[name]!).toSet();
+          // Preserve server interests unknown to this app when saving preferences.
+          ids.addAll(
+            (catalog?.selectedInterests ?? {}).where(
+              (id) => !interestIds.containsValue(id),
+            ),
+          );
+          await repository.saveInterests(ids);
         }
+        if (!isCurrentUser()) return null;
+        await ref.read(flow1ViewModelProvider.notifier).refresh();
       } else {
         await ref
             .read(campusRepositoryProvider)
-            .saveInterests(Set.unmodifiable(state.interests));
+            .saveInterests(Set.unmodifiable(interests ?? {}));
       }
-      if (!ref.mounted ||
-          ref.read(authenticationViewModelProvider).asData?.value.userId !=
-              session!.userId) {
-        return null;
+      if (!isCurrentUser()) return null;
+      if (useBackend && ref.read(flow1ViewModelProvider).hasError) {
+        throw ref.read(flow1ViewModelProvider).error!;
       }
       state = state.copyWith(
-        personalizedUsers: {...state.personalizedUsers, session.userId!},
+        interests: useBackend ? null : Set.unmodifiable(interests ?? {}),
+        personalizedUsers: {...state.personalizedUsers, userId},
         isSavingInterests: false,
       );
       return AppRoutes.discover;
     } catch (error) {
-      if (ref.mounted) {
+      if (isCurrentUser()) {
         state = state.copyWith(
           isSavingInterests: false,
           message: ExceptionMapper.map(error).message,
@@ -191,7 +205,7 @@ class EviaViewModel extends Notifier<EviaState> {
       }
       return null;
     } finally {
-      if (ref.mounted && state.isSavingInterests) {
+      if (actionRef.mounted && state.isSavingInterests) {
         state = state.copyWith(
           isSavingInterests: false,
           message: state.message,
@@ -210,10 +224,8 @@ class EviaViewModel extends Notifier<EviaState> {
     }
   }
 
-  bool saveInterests(Set<String> values) {
-    if (values.length < 3) return false;
+  void setInterests(Set<String> values) {
     state = state.copyWith(interests: Set.unmodifiable(values));
-    return true;
   }
 
   Future<bool> toggleSaved(String id) async {
@@ -430,7 +442,6 @@ class EviaViewModel extends Notifier<EviaState> {
 
   void togglePassword() =>
       state = state.copyWith(showPassword: !state.showPassword);
-  bool get canContinue => state.interests.length >= 3;
   List<CampusEvent> get registeredEvents {
     if (!ref.read(hasAuthenticatedSessionProvider)) return [];
     final activity = ref.read(activityViewModelProvider);

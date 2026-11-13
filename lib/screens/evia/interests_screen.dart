@@ -14,50 +14,70 @@ class EviaInterestsScreen extends ConsumerWidget {
   const EviaInterestsScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selected = ref.watch(
-      eviaViewModelProvider.select((s) => s.interests),
-    );
-    final ready = ref.read(eviaViewModelProvider.notifier).canContinue;
     final state = ref.watch(eviaViewModelProvider);
+    final selected = state.interests;
+    final vm = ref.read(eviaViewModelProvider.notifier);
+
+    Future<void> submit(Future<String?> Function() finish) async {
+      final destination = await finish();
+      if (!context.mounted || destination == null) return;
+      final from = GoRouterState.of(context).uri.queryParameters['from'];
+      final target = Uri.tryParse(from ?? '');
+      context.go(
+        target != null &&
+                !target.hasScheme &&
+                !target.hasAuthority &&
+                target.path.startsWith('/') &&
+                ![
+                  '/interests',
+                  '/profile/interests',
+                  '/login',
+                  '/signup',
+                  '/',
+                ].contains(target.path)
+            ? target.toString()
+            : destination,
+      );
+    }
+
     return EviaPage(
       footer: Container(
         color: AppColors.surface,
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: SizedBox(
-          width: double.infinity,
-          child: AppButton(
-            label: 'Continue',
-            isLoading: state.isSavingInterests,
-            trailing: const FigmaIcon('2088:2', 'imgContainer11'),
-            onPressed: ready && !state.isSavingInterests
-                ? () async {
-                    final destination = await ref
-                        .read(eviaViewModelProvider.notifier)
-                        .finishPersonalization();
-                    if (context.mounted && destination != null) {
-                      final from = GoRouterState.of(context)
-                          .uri
-                          .queryParameters['from'];
-                      final target = Uri.tryParse(from ?? '');
-                      context.go(
-                        target != null &&
-                                !target.hasScheme &&
-                                !target.hasAuthority &&
-                                target.path.startsWith('/') &&
-                                ![
-                                  '/interests',
-                                  '/profile/interests',
-                                  '/login',
-                                  '/signup',
-                                  '/',
-                                ].contains(target.path)
-                            ? target.toString()
-                            : destination,
-                      );
-                    }
-                  }
-                : null,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (state.message case final String message) ...[
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  message,
+                  style: EviaTheme.caption.copyWith(color: AppColors.error),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+            Row(
+              children: [
+                TextButton(
+                  onPressed: state.isSavingInterests
+                      ? null
+                      : () => submit(vm.skipPersonalization),
+                  child: const Text('Skip'),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: AppButton(
+                    label: 'Continue',
+                    isLoading: state.isSavingInterests,
+                    trailing: const FigmaIcon('2088:2', 'imgContainer11'),
+                    onPressed: () => submit(vm.finishPersonalization),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
       child: SingleChildScrollView(
@@ -66,38 +86,14 @@ class EviaInterestsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const EviaLogo(interests: true),
-            if (state.message != null)
-              Text(state.message!, style: EviaTheme.caption),
             const SizedBox(height: AppSpacing.xl),
             const EventBadge('PERSONALIZE YOUR FEED'),
             const SizedBox(height: AppSpacing.md),
             const Text('What interests you?', style: EviaTheme.heading),
             const SizedBox(height: AppSpacing.sm),
             const Text(
-              'Choose the topics you enjoy so we can recommend events you’ll actually want to join.',
+              'Pick topics for event recommendations. You can skip and add interests later.',
               style: EviaTheme.caption,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.primarySoft,
-                border: Border.all(color: AppColors.border),
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-              child: Row(
-                children: [
-                  const FigmaIcon('2088:2', 'imgContainer'),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Text(
-                      ready
-                          ? 'Nice! You’ve selected enough to continue.'
-                          : 'Choose at least 3 interests to continue.',
-                    ),
-                  ),
-                ],
-              ),
             ),
             const SizedBox(height: AppSpacing.xl),
             LayoutBuilder(
@@ -118,6 +114,7 @@ class EviaInterestsScreen extends ConsumerWidget {
                                 width: width,
                                 child: _InterestCard(
                                   index: j,
+                                  enabled: !state.isSavingInterests,
                                   selected: selected.contains(
                                     EviaMockData.topics[j].name,
                                   ),
@@ -146,18 +143,8 @@ class EviaInterestsScreen extends ConsumerWidget {
                     style: EviaTheme.label,
                   ),
                 ),
-                Flexible(
-                  child: Text(
-                    ready
-                        ? 'Ready to continue'
-                        : 'Select ${3 - selected.length} more',
-                    style: EviaTheme.label.copyWith(color: EviaTheme.blue),
-                  ),
-                ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
-            const Text('Pick as many as you like', style: EviaTheme.caption),
             const SizedBox(height: AppSpacing.xxxl),
           ],
         ),
@@ -167,14 +154,19 @@ class EviaInterestsScreen extends ConsumerWidget {
 }
 
 class _InterestCard extends ConsumerWidget {
-  const _InterestCard({required this.index, required this.selected});
+  const _InterestCard({
+    required this.index,
+    required this.selected,
+    required this.enabled,
+  });
   final int index;
-  final bool selected;
+  final bool selected, enabled;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final topic = EviaMockData.topics[index];
     return Semantics(
       selected: selected,
+      enabled: enabled,
       button: true,
       label: topic.name,
       child: Material(
@@ -187,9 +179,11 @@ class _InterestCard extends ConsumerWidget {
           ),
         ),
         child: InkWell(
-          onTap: () => ref
-              .read(eviaViewModelProvider.notifier)
-              .toggleInterest(topic.name),
+          onTap: enabled
+              ? () => ref
+                    .read(eviaViewModelProvider.notifier)
+                    .toggleInterest(topic.name)
+              : null,
           borderRadius: BorderRadius.circular(AppRadius.large),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),

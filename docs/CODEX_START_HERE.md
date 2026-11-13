@@ -40,7 +40,8 @@
 
 > **Owner update 2026-11-04:** read PROJECT_CONTEXT v1.3 / DATABASE_DESIGN v1.3
 > before using older handoff/prototype text. Authentication now includes Google
-> and email/password sign-up/sign-in/reset; minimum 3 distinct interests is required.
+> and email/password sign-up/sign-in/reset.
+> **Owner update 2026-11-13:** interests are optional and onboarding offers Skip.
 > Café voucher is 200 Coin; Figma data is illustrative. Event Milestones restored
 > 05/11/2026 with manual claims; read [current policy](EVENT_MILESTONES.md).
 > Later review approves unrestricted email domains, manual check-in fallback and three-day event
@@ -111,7 +112,7 @@ When this report is shared with ChatGPT, it will be reviewed against `docs/PROJE
 ## One-message instruction to paste into Codex
 
 The original snippet below retains the student's Google path. Apply the current
-owner update above as well: email/password is also supported, minimum 3 interests
-is mandatory, Café is 200 Coin, and removed features must not be implemented.
+owner updates above. Email/password is supported, interests are optional and
+Café is 200 Coin. Follow the current scope for other features.
 
 > Tôi giao bạn triển khai Evia Lab 3 tại repository hiện có `https://github.com/dong-nnp/prm323-lab3-camply`. Trước khi sửa mã, hãy đọc toàn bộ `CODEX_START_HERE.md`, `docs/PROJECT_CONTEXT.md`, `docs/DATABASE_DESIGN.md`, `docs/IMPLEMENTATION_TRACKER.md` và tài liệu trong `reference/`. Bắt đầu bằng kiểm kê repo hiện tại và lập báo cáo as-is/gap so với schema. Tuyệt đối không tạo repo mới, không ghi đè dữ liệu thật, không triển khai production hoặc bật billing khi chưa được chấp thuận. Luồng 1: Guest xem sự kiện, Google Sign-In trước Follow CLB, Follow tùy chọn; không có Waitlist. Daily Coin lần lượt 5,10,15,30,50,70,100, ngày 8+ 100/ngày; quà tháng 200 nhưng eligibility/schedule còn OPEN. Dùng Firebase Auth/Firestore/Cloud Functions với Rules và emulator tests, giao dịch xu atomic/idempotent. Mỗi PR gửi SHA, file đã sửa, lệnh test và evidence; cập nhật `docs/IMPLEMENTATION_TRACKER.md`. Trước hết chỉ thực hiện repo audit và đề xuất PR nhỏ nhất, chưa triển khai database lên cloud.

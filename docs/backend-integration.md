@@ -90,7 +90,8 @@ cần đường kết nối riêng vì mặc định các server chỉ listen lo
   mạng lỗi. ID cũ + input khác trả `DUPLICATE_CONFLICT`; retry cùng input trả
   receipt cũ. Không cộng/trừ xu lạc quan ở client. Receipt có thể chứa số dư tại
   thời điểm giao dịch; đọc `getAccount`/wallet stream để lấy số dư hiện tại.
-- Trước actions nghiệp vụ phải `initializeUser`, rồi hoàn thành `saveInterests`.
+- Trước actions nghiệp vụ, gọi `initializeUser` rồi lưu hoặc bỏ qua sở thích
+  bằng `saveInterests` để đánh dấu đã đi qua bước cá nhân hóa.
   Guest được xem dữ liệu public; private collections chỉ owner đọc, client không
   được ghi trực tiếp. Người dùng không thể tự sửa tiền, vé, attendance hoặc staff.
 
@@ -108,11 +109,11 @@ fingerprint đúng signing key. Kiểm thử Auth Emulator không xác nhận Go
 | `initializeUser` | `{}` | `{profile,wallet,created}`; tặng **200 xu một lần/UID**, chưa onboarding |
 | `getAccount` | `{}` | `{profile,wallet,interestOptions:[{id,label}]}` |
 | `updateProfile` | Một hoặc nhiều `displayName`, `studentId`, `universityEmail` (string, không null), `phoneNumber` (string hoặc null) | `{updated:true}`; không sửa xác minh/role |
-| `saveInterests` | `{interests:[id,...]}` | Tối thiểu **3 ID khác nhau**, tối đa 50; phải tồn tại active trong `interests/`; `{interests,onboardingCompleted:true}` |
+| `saveInterests` | `{interests:[id,...]}` hoặc `{skip:true}` | Lưu từ 0 đến 50 ID active khác nhau. Skip giữ sở thích đã lưu. Cả hai trả `{interests,onboardingCompleted:true}`. |
 | `getServerInfo` | `{}`; guest được gọi | API version, server time, region, timezone, cờ monthly/admin voucher true trên cloud; monthly mode automatic |
 
-Danh mục sở thích phải do chủ dự án duyệt/import; backend không tự chọn taxonomy
-từ tên minh họa Figma. Chưa import thì options rỗng và không thể hoàn tất onboarding.
+Danh mục sở thích dùng các ID được duyệt/import. Tài khoản có thể bỏ qua kể cả
+khi danh mục chưa có lựa chọn.
 
 ## Khám phá, Follow, Saved, My Events
 

@@ -6,9 +6,9 @@
 
 # PRM393 Lab 3 — Flutter source base
 
-> **Interests — 09/11/2026:** onboarding và My Interests dùng đủ 10 danh mục
-> sự kiện, tên tiếng Anh và ID backend hiện có; thêm Gaming/Environment.
-> Vẫn chọn tối thiểu 3. Thay thế giới hạn 8 thẻ trong ghi chú ngày 05/11 bên dưới.
+> **Interests:** người dùng mới có thể chọn **Skip** để đi tiếp hoặc dùng
+> **Continue** với bất kỳ số lựa chọn nào. Có thể chỉnh hoặc xóa lựa chọn trong
+> **Profile → My Interests**. Hai màn dùng chung 10 danh mục sự kiện.
 
 > **Check-in Walk-in:** sinh viên mở chi tiết sự kiện → **Scan Event QR**. Ban tổ
 > chức tải PNG cố định từ [Evia Admin](admin/README.md) để in hoặc chiếu.
@@ -184,8 +184,8 @@ Thiết kế database đã được [đối chiếu trực tiếp với 44 frame
 xem [schema v1.2](docs/DATABASE_DESIGN.md), chưa triển khai dữ liệu nghiệp vụ.
 
 Owner đã làm rõ scope sau review: không Waitlist (hủy vé trả lại chỗ), Café
-voucher 200 xu từ server data, Google + email/password auth, tối thiểu 3 sở thích
-bắt buộc. Milestones khôi phục theo [policy mới](docs/EVENT_MILESTONES.md).
+voucher 200 xu từ server data, Google + email/password auth. Milestones khôi phục
+theo [policy mới](docs/EVENT_MILESTONES.md).
 Bỏ nhập mã walk-in và các nghiệp vụ FD-09/10; verification
 sinh viên/CLB tạm hoãn. Đây là yêu cầu cho implementation tiếp theo; UI demo
 và mô tả prototype phía dưới chưa được đổi hành vi trong task tài liệu này.
@@ -257,11 +257,9 @@ Giảm chuyển động hiển thị PNG đầy đủ tĩnh. Chỉ điều hư�
 Session chưa đăng nhập/unavailable/lỗi đến Welcome (`/`). Session thật đã đăng
 nhập đến `/interests` nếu chưa xử lý personalization, hoặc `/discover` nếu đã
 hoàn tất/bỏ qua. Khi session thật đăng nhập thành công trên Welcome/Login/Sign Up,
-router cũng áp dụng quy tắc này. `AuthSession.personalizationHandled` là field adapter thật cần
-cung cấp từ account profile; không suy ra từ sở thích mẫu. Continue/Skip giữ
-lựa chọn hiện có và đánh dấu theo user trong phiên, không tạo session giả.
-**Giới hạn:** chưa có adapter auth/profile thật; trạng thái này chưa được lưu lên
-backend/qua lần khởi động. Bản mặc định dùng auth unavailable nên đến Welcome.
+router cũng áp dụng quy tắc này. Firebase lưu trạng thái qua `saveInterests` và
+đọc `onboardingCompleted` vào `AuthSession.personalizationHandled`. Continue lưu
+các lựa chọn, còn Skip bỏ qua lựa chọn đang chỉnh và giữ sở thích đã lưu.
 Android native splash dùng riêng ảnh vé xanh chữ e (`evia_ticket.png`) trên nền
 trắng, tự nhường cho frame Flutter đầu tiên; logo EVIA đầy đủ nằm trong animation Flutter.
 S01 render logo gốc và `assets/EVIA_Welcome_Hero.png` thành hai image riêng, cùng

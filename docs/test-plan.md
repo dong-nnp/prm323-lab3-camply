@@ -1,5 +1,33 @@
 # Test plan — template
 
+## Popup thông báo thao tác — 13/11/2026
+
+- `flutter test --no-pub --reporter expanded` đạt **265/265**. Widget test ở
+  360dp với chữ 2× kiểm phản hồi thành công và lỗi dưới thanh trạng thái, thay
+  thông báo cũ, nút đóng và tự ẩn sau 4 giây.
+- `flutter pub get`, `dart format lib test`, `flutter analyze --no-pub` và
+  build APK debug arm64 đạt. Đã cài lên Samsung SM-G996N, bấm Save Preferences
+  và xác nhận popup xuất hiện phía trên, tự ẩn và nút lưu vẫn bấm được.
+
+## Sở thích tùy chọn — 13/11/2026
+
+- `flutter test --no-pub --reporter expanded` đạt **265/265**. Widget tests kiểm
+  Skip bỏ qua lựa chọn đang chỉnh, đăng nhập lại vào Discover, Continue lưu một
+  sở thích, lỗi lưu/thử lại và My Interests xóa hết lựa chọn. Layout onboarding
+  được kiểm ở 360/412dp với cỡ chữ 1× và 2×.
+- `npm --prefix functions run test:emulator` đạt **102/102**. Kiểm `saveInterests`
+  qua Firebase Callable, đăng ký sự kiện sau Skip, lưu 0–2 sở thích và Skip song
+  song với lưu. Backend vẫn kiểm quyền và ID danh mục.
+- `flutter pub get`, `dart format lib test` và `flutter analyze --no-pub` đạt.
+  Kiểm thử backend dùng project Emulator `demo-evia-backend`.
+- Build APK debug arm64 với `FIREBASE_ENABLED=true` đạt. Đã triển khai riêng
+  `saveInterests` lên `prm393-31822`. Revision `saveinterests-00005-qom` sẵn sàng
+  và nhận 100% lưu lượng. Kiểm tra API live với Skip và Continue (0 hoặc 1 sở
+  thích) đi đến bước xác thực, còn payload trùng ID bị từ chối.
+- Trên Samsung SM-G996N, bấm Skip từ màn chọn sở thích và xác nhận app mở
+  Discover. Continue với danh sách rỗng được kiểm thử đến bước ghi dữ liệu
+  bằng Emulator.
+
 ## Khắc phục bốn Flutter regression — 12/11/2026
 
 - Tái hiện bốn lỗi trong bốn file widget test, trước sửa có 43 đạt / 4 lỗi.

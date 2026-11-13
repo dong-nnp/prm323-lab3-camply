@@ -33,15 +33,25 @@ export function accounts(db: Firestore, clock: () => Date) {
       return { updated: true };
     },
     saveInterests: async (actor: Actor | null, raw: unknown) => {
-      const { interests } = z.object({ interests: z.array(id).min(3).max(50).refine(v => new Set(v).size === v.length) }).strict().parse(raw);
+      const input = z.union([
+        z.strictObject({ interests: z.array(id).max(50).refine(v => new Set(v).size === v.length) }),
+        z.strictObject({ skip: z.literal(true) }),
+      ]).parse(raw);
       const uid = authenticated(actor);
-      await db.runTransaction(async tx => {
-        await activeUser(tx, db, uid);
-        const options = await tx.getAll(...interests.map(interest => db.doc(`interests/${interest}`)));
-        if (options.some(option => option.get('status') !== 'active')) fail('INVALID_INTERESTS', 'invalid-argument');
-        tx.update(db.doc(`users/${uid}`), { interests, onboardingCompleted: true, updatedAt: Timestamp.fromDate(clock()) });
+      return db.runTransaction(async tx => {
+        const user = await activeUser(tx, db, uid);
+        if ('interests' in input && input.interests.length > 0) {
+          const options = await tx.getAll(...input.interests.map(interest => db.doc(`interests/${interest}`)));
+          if (options.some(option => option.get('status') !== 'active')) fail('INVALID_INTERESTS', 'invalid-argument');
+        }
+        tx.update(db.doc(`users/${uid}`), {
+          ...('interests' in input ? input : {}),
+          onboardingCompleted: true,
+          updatedAt: Timestamp.fromDate(clock()),
+        });
+        const interests = 'interests' in input ? input.interests : user.interests ?? [];
+        return { interests, onboardingCompleted: true };
       });
-      return { interests, onboardingCompleted: true };
     },
     claimDailyCheckin: async (actor: Actor | null, raw: unknown) => {
       empty.parse(raw);

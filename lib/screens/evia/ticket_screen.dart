@@ -21,6 +21,7 @@ import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/activity_widgets.dart';
+import '../../widgets/app_feedback.dart';
 
 class TicketScreen extends ConsumerWidget {
   const TicketScreen({this.eventId = 'music', super.key});
@@ -90,52 +91,11 @@ class TicketScreen extends ConsumerWidget {
                         final vm = ref.read(activityViewModelProvider.notifier);
                         final success = await vm.demoAttend(eventId);
                         if (context.mounted) {
-                          final color = success
-                              ? AppColors.success
-                              : AppColors.error;
-                          final messenger = ScaffoldMessenger.of(context);
-                          messenger.hideCurrentSnackBar();
-                          messenger.showSnackBar(
-                            SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: success
-                                  ? AppColors.successSurface
-                                  : AppColors.errorSurface,
-                              elevation: AppElevation.none,
-                              margin: const EdgeInsets.all(AppSpacing.lg),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.medium,
-                                ),
-                                side: BorderSide(
-                                  color: color.withValues(alpha: .25),
-                                ),
-                              ),
-                              content: Row(
-                                children: [
-                                  Icon(
-                                    success
-                                        ? Icons.check_circle_outline
-                                        : Icons.error_outline,
-                                    color: color,
-                                  ),
-                                  const SizedBox(width: AppSpacing.md),
-                                  Expanded(
-                                    child: Text(
-                                      ref
-                                              .read(activityViewModelProvider)
-                                              .message ??
-                                          'Please retry.',
-                                      style: EviaTheme.caption.copyWith(
-                                        color: color,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              showCloseIcon: true,
-                              closeIconColor: color,
-                            ),
+                          AppFeedback.show(
+                            context,
+                            ref.read(activityViewModelProvider).message ??
+                                'Please retry.',
+                            isError: !success,
                           );
                         }
                       },

@@ -165,37 +165,39 @@ class _EviaDiscoverScreenState extends ConsumerState<EviaDiscoverScreen> {
                   events: featured,
                   guest: guest,
                 ),
-              SectionHeading(
-                guest ? 'Popular Events' : 'Recommended for You',
-                subtitle: guest
-                    ? 'Trending on campus'
-                    : vm.recommendationSubtitle,
-                onSeeAll: _search,
-              ),
-              LayoutBuilder(
-                builder: (context, constraints) => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (var i = 0; i < recommendations.length; i++) ...[
-                          if (i > 0) const SizedBox(width: AppSpacing.md),
-                          SizedBox(
-                            width:
-                                constraints.maxWidth *
-                                EviaTheme.recommendedCardWidthFactor,
-                            child: _RecommendedCard(
-                              event: recommendations[i],
-                              guest: guest,
+              if (guest || recommendations.isNotEmpty) ...[
+                SectionHeading(
+                  guest ? 'Popular Events' : 'Recommended for You',
+                  subtitle: guest
+                      ? 'Trending on campus'
+                      : vm.recommendationSubtitle,
+                  onSeeAll: _search,
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (var i = 0; i < recommendations.length; i++) ...[
+                            if (i > 0) const SizedBox(width: AppSpacing.md),
+                            SizedBox(
+                              width:
+                                  constraints.maxWidth *
+                                  EviaTheme.recommendedCardWidthFactor,
+                              child: _RecommendedCard(
+                                event: recommendations[i],
+                                guest: guest,
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
               if (!guest) ...[
                 SectionHeading(
                   'From Clubs You Follow',

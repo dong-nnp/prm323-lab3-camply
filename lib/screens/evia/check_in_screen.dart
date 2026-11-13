@@ -10,6 +10,7 @@ import '../../theme/evia_theme.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_feedback.dart';
 import '../../widgets/evia_widgets.dart';
 import '../../widgets/coin_icon.dart';
 import '../../widgets/activity_widgets.dart';
@@ -61,8 +62,7 @@ class EventCheckInScreen extends ConsumerWidget {
                           ref.read(activityViewModelProvider).message ??
                           'Please retry.';
                       if (success) Navigator.pop(dialogContext);
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(message)));
+                      AppFeedback.show(context, message, isError: !success);
                     },
               child: const Text('Check in'),
             ),
@@ -226,17 +226,18 @@ class EventCheckInScreen extends ConsumerWidget {
                                   !confirmed && state.checkingInEventId == null,
                               torch: state.flashlight,
                               onScan: (value) async {
-                                await vm.verifyWalkIn(eventId, value);
+                                final success = await vm.verifyWalkIn(
+                                  eventId,
+                                  value,
+                                );
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        ref
-                                                .read(activityViewModelProvider)
-                                                .message ??
-                                            'Please retry.',
-                                      ),
-                                    ),
+                                  AppFeedback.show(
+                                    context,
+                                    ref
+                                            .read(activityViewModelProvider)
+                                            .message ??
+                                        'Please retry.',
+                                    isError: !success,
                                   );
                                 }
                               },

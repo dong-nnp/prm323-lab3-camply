@@ -6,6 +6,7 @@ import '../../core/constants/activity_assets.dart';
 import '../../models/activity_models.dart';
 import '../../theme/app_tokens.dart';
 import '../../theme/evia_theme.dart';
+import '../../widgets/app_feedback.dart';
 import '../../theme/activity_theme.dart';
 import '../../viewmodels/activity_view_model.dart';
 import '../../viewmodels/milestone_presentation_view_model.dart';
@@ -305,7 +306,7 @@ class _MilestoneRow extends ConsumerWidget {
                       isLoading: progress.claiming,
                       onPressed: progress.canClaim
                           ? () async {
-                              await ref
+                              final claimed = await ref
                                   .read(activityViewModelProvider.notifier)
                                   .claimMilestone(milestone.id);
                               if (!context.mounted) return;
@@ -313,8 +314,10 @@ class _MilestoneRow extends ConsumerWidget {
                                   .read(activityViewModelProvider)
                                   .message;
                               if (message != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(message)),
+                                AppFeedback.show(
+                                  context,
+                                  message,
+                                  isError: !claimed,
                                 );
                               }
                             }

@@ -1,5 +1,15 @@
 # Design traceability — Evia
 
+> **Popup thông báo thao tác — yêu cầu trực tiếp 13/11/2026:** phản hồi như
+> “Preferences saved.” hiển thị dưới thanh trạng thái. Dùng `AppColors`,
+> `AppRadius` và typography chung cho thành công và lỗi. Popup có nút đóng và
+> tự ẩn sau 4 giây. Khi hệ thống bật điều hướng hỗ trợ tiếp cận, popup chờ người
+> dùng đóng hoặc được thay thế bằng thông báo mới.
+
+> **Interests — yêu cầu trực tiếp 13/11/2026:** màn `2088:2` có nút **Skip** cạnh
+> **Continue** ở cuối màn hình. Người dùng có thể chọn tùy ý hoặc bỏ qua. Màn
+> `2089:296` cho phép lưu danh sách rỗng khi xóa mọi sở thích.
+
 > **Discover accessibility — 12/11/2026:** hàng policy/xu trong recommended card
 > dùng Wrap, giữ cùng hàng khi đủ chiều rộng và tự xuống hàng khi phóng chữ.
 > Icon và số xu được nhóm cùng nhau; dùng spacing/token hiện có, hỗ trợ 360dp
@@ -196,8 +206,8 @@ chuẩn **200 xu cho Café voucher**, không có Waitlist; Daily rewards theo PR
 Milestones được owner khôi phục ngày 05/11/2026 theo [hợp đồng mới](EVENT_MILESTONES.md);
 backend chỉ thêm policy/API, chưa thay UI. Owner đã bỏ ticket email/fixed reminders, feedback bonus,
 missions, seasonal targets và assigned seats/VIP/tiers. Walk-in chỉ QR, không
-nhập mã; auth mở rộng Google + email/password; tối thiểu 3 sở thích bắt buộc,
-không Skip. Student/club verification tạm hoãn; FD-12 cashier flow chưa chốt.
+nhập mã; auth mở rộng Google + email/password. Student/club verification tạm
+hoãn; FD-12 cashier flow chưa chốt ở lần review này.
 Các quyết định này là target hiện tại; source UI demo/lịch sử bên dưới chưa
 được sửa theo task cập nhật database. FD-06 do design team dự kiến sửa.
 ## S01 Welcome — yêu cầu trực tiếp 05/11/2026

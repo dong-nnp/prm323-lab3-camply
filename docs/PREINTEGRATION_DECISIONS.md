@@ -17,7 +17,7 @@ Task này cập nhật policy/UI contracts và backend; **chưa nối toàn bộ
 | Waitlist | Không có. Hết vé từ chối; hủy trả chỗ. Không tạo queue/intents kiểu waitlist |
 | Hủy đăng ký | Hoàn 30% cọc làm tròn xuống; mất phần còn lại. Held giảm toàn bộ, available tăng đúng phần hoàn; demo cùng policy server |
 | Daily | 5/10/15/30/50/70/100, ngày 8+100; Vietnam calendar, nghỉ ngày reset |
-| Onboarding | Không Skip cho tài khoản. Chỉ chuyển tiếp sau saveInterests thành công; lỗi không đánh dấu hoàn tất |
+| Onboarding (cập nhật 13/11/2026) | Chọn sở thích tùy ý hoặc Skip. Chuyển tiếp sau khi `saveInterests` thành công. |
 | Café | 200 xu. Chưa có nhà tài trợ/stock/địa điểm/hạn dùng/terms được duyệt: **không tạo record cloud** |
 | Check-in dự phòng | Có nhập mã, cùng xác nhận và quyền như QR; không phải mã đăng nhập/SMS OTP |
 | Thành tựu | Chưa đạt / Có thể nhận / Đã nhận, có loading; thao tác claim phải có server receipt, không tự cộng xu |
@@ -35,7 +35,7 @@ Task này cập nhật policy/UI contracts và backend; **chưa nối toàn bộ
   `identity.ts`. Không bỏ validation, không chấp nhận email rỗng/sai định dạng.
 - `authenticated()` vẫn cần Firebase Auth context có email hợp lệ, lỗi
   `EMAIL_REQUIRED`; không nhận UID/role từ body. Student ID giữ regex
-  `^[A-Z]{2}[0-9]{6}$`, trim/uppercase; yêu cầu min 3 interests giữ nguyên.
+  `^[A-Z]{2}[0-9]{6}$`, trim/uppercase.
 - Áp dụng cho email/password, Google, reset password, profile/contact email,
   registration và mọi protected callable. Không đổi tên wire field
   `universityEmail` để tránh phá contract; label hiện có đổi thành Email.

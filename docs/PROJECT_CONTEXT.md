@@ -84,8 +84,8 @@
   This does not remove Firebase Auth password-reset emails or required lab FCM.
 - FD-10 assigned seating/VIP/multiple ticket tiers are **out of scope**. Capacity
   is a ticket count, not a map of seats.
-- FD-13 requires **at least 3 distinct interests** to complete/save authenticated
-  onboarding/preferences. No Skip for that step; guest public browsing remains.
+- FD-13 updated on 13/11/2026. Interests are optional and first-time users can
+  choose Skip. Preferences accept an empty list or distinct active interests.
 - FD-06 will be corrected by the design team; no Figma edit was performed here.
 - FD-03 was superseded on 05/11/2026: Event Milestones are restored with manual
   claims; see [confirmed feature contract](EVENT_MILESTONES.md). FD-11 now supports
@@ -101,7 +101,7 @@ Evia helps students **discover campus events**, **participate and check in**, **
 1. Guest opens Evia and **can view public events and public organizer profiles without signing in**.
 2. Search/filter events by relevant categories, time and location; view results and event About/Schedule/Location details.
 3. **Authentication is required for account-bound actions** (including **Follow/Unfollow a club**, Bookmark/save, registration, wallet access). Support Google and email/password under the clarified scope; handle cancel/failure and **return to original screen/action context** on success. The student-authored Google path remains valid.
-4. Interests onboarding after sign-in **if not yet completed**; at least 3 distinct valid interests are mandatory, including on preference updates. Do not mark onboarding complete with fewer selections or via Skip.
+4. Offer interests after sign-in **if not yet completed**. Continue saves the chosen interests. Skip records completion and keeps saved interests.
 5. **Follow club is OPTIONAL** and is NOT a prerequisite for registering for an event. The numbered student design has Google Sign-In at **05**, interests at **06**, Follow at **07**. Conceptually Follow is an independent branch from Organizer Profile; keep the documented ordering without forcing it as a mandatory step.
 6. Followed organizers appear in Following Organizers, Their Events and `From Your Following` on Discover; Unfollow removes them. Following/Bookmark ≠ Registration ≠ Verified Attendance.
 7. Confirm registration (after authentication), verify event capacity and optional coin deposit, then show success, My Events and a QR ticket for events requiring registration. **No waitlist.** Full events reject new registrations; successful cancellation reopens the released place. Competing requests for that place must still be serialized safely.
@@ -138,7 +138,7 @@ Evia helps students **discover campus events**, **participate and check in**, **
 | Waitlist / capacity | **CONFIRMED** | No queue. Full closes registration; a committed cancellation releases capacity for a new registration. |
 | Café voucher | **CONFIRMED** | 200 Coin, stored in reward data; not a global price for all rewards. |
 | Figma sample values | **ILLUSTRATIVE** | Do not hard-code/seed screen content as real business data. |
-| Interests | **CONFIRMED** | Minimum 3 distinct valid interests to complete/save; no onboarding Skip. |
+| Interests | **CONFIRMED** | Optional in onboarding and My Interests. Skip records onboarding completion. |
 | Student/club verification | **DEFERRED** | No real verified badges or verified-eligibility feature in the current phase. |
 | FD-09 extra business paths | **UPDATED 05/11/2026** | Event reminders at 72 hours are approved. Ticket-email delivery, feedback Coin bonus, missions and seasonal targets remain excluded. |
 | Assigned seats / VIP | **OUT OF SCOPE** | General admission capacity only; no row/seat inventory or tiers. |
